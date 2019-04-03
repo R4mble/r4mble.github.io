@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | 三石的QQ空间</title>
+  <title>lambda演算入门 | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="击空明兮溯流光">
-<meta property="og:type" content="website">
-<meta property="og:title" content="三石的QQ空间">
-<meta property="og:url" content="http://yoursite.com/archives/2019/index.html">
+  <meta name="description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse.  求值一个”λ”一个”.”, 极简函数写法,比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.例子: (λx.(λy.x))a 求值结果为λy.a  就是把a带进去,返回一个&amp;quot;输入y返回a&amp;quot;的函数.  布尔逻辑T 表示为：λx.λy.x">
+<meta name="keywords" content="lambda演算,函数式编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lambda演算入门">
+<meta property="og:url" content="http://yoursite.com/2019/04/03/lambda演算/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="击空明兮溯流光">
+<meta property="og:description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse.  求值一个”λ”一个”.”, 极简函数写法,比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.例子: (λx.(λy.x))a 求值结果为λy.a  就是把a带进去,返回一个&amp;quot;输入y返回a&amp;quot;的函数.  布尔逻辑T 表示为：λx.λy.x">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-04-03T07:25:51.497Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三石的QQ空间">
-<meta name="twitter:description" content="击空明兮溯流光">
+<meta name="twitter:title" content="lambda演算入门">
+<meta name="twitter:description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse.  求值一个”λ”一个”.”, 极简函数写法,比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.例子: (λx.(λy.x))a 求值结果为λy.a  就是把a带进去,返回一个&amp;quot;输入y返回a&amp;quot;的函数.  布尔逻辑T 表示为：λx.λy.x">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -139,36 +141,66 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-lambda演算" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/04/03/lambda演算/" class="archive-article-date">
-  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/04/03/lambda演算/">lambda演算入门</a>
+    <h1 class="article-title" itemprop="name">
+      lambda演算入门
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/04/03/lambda演算/" class="archive-article-date">
+  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>来写一写lambda演算里的东西,主要是用代换模型人肉parse.</p>
+<ol>
+<li><p>求值<br>一个”λ”一个”.”, 极简函数写法,<br>比function,=&gt;,-&gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.<br>例子:</p>
+<pre><code>(λx.(λy.x))a 求值结果为λy.a 
+就是把a带进去,返回一个&quot;输入y返回a&quot;的函数.
+</code></pre></li>
+<li><p>布尔逻辑<br>T 表示为：λx.λy.x      它接收两个参数x和y,返回x, 也就是说它返回前面的那个参数<br>F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它返回后面的那个参数<br>这样一来, if函数就是λbtf, 等价于λb.λt.λf.btf</p>
+<pre><code>if函数接收三个参数,分别是判断条件b,
+                       当b为True时: (λx.λy.x)(t)(f)  返回的语句t 
+                       和b为False时: (λx.λy.y)(t)(f) 返回的语句f
+
+布尔逻辑运算符与或非分别是:
+与: λab.IFabF  接收两个参数a和b, 如果a是True,那就返回前一个也就是b,与的结果和b的取值一样
+                                如果a是False,那就返回后一个就是False
+或: λab.IFaTb  接收两个参数a和b, 如果a是True,那就返回前一个也就是True
+                                如果a是False,那就返回后一个就是b,或的结果和b的取值一样
+非: λa.IFaFT   接收一个参数a, 如果a是True,那就返回前一个也就是False
+                             如果a是False,那就返回后一个也就是True
+</code></pre></li>
+<li><p>数<br>0=λf.λx.x<br>1=λf.λx.fx<br>2=λf.λx.f(fx)<br>3=λf.λx.f(f(fx))<br>后继函数S=λn.λf.λx.f((nf)x)<br>加法: ADD = λab.(aS)b</p>
+<pre><code>举例: 0和0相加:  ((λf.λx.x)(λn.λf.λx.f((nf)x)))(λf.λx.x)
+               = (λx.x)(λf.λx.x)
+               = λf.λx.x
+               = 0
+      1和2相加: (λf.λx.fx)(λn.λf.λx.f((nf)x))(λf.λx.f(fx))
+               = (λn.λf.λx.f((nf)x))(λf.λx.f(fx))
+               = λf.λx.f(((λf.λx.f(fx))f)x)
+               = λf.λx.f((λx.f(fx))x)
+               = λf.λx.f(f(fx))
+               = 3
+</code></pre></li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -184,202 +216,126 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/04/03/lambda演算/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/04/03/ramda中的lens源码解读/" class="archive-article-date">
-  	<time datetime="2019-04-02T17:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/04/03/ramda中的lens源码解读/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Ramda中的lens源码解读</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/04/03/ramda中的lens源码解读/">Ramda中的lens源码解读</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">lens</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/04/02/Array/" class="archive-article-date">
-  	<time datetime="2019-04-02T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/04/02/Array/">Array</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Array</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/04/02/Tree/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/04/02/Tree/">Tree</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Tree</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/04/02/1018. Binary Prefix Divisible By 5/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:01:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/04/02/1018. Binary Prefix Divisible By 5/">1018. Binary Prefix Divisible By 5</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">二进制操作</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/LeetCode-Weekly-Contest//" class="article-tag-list-link color4">LeetCode Weekly Contest</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
+  
+  <div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="lambda演算" data-title="lambda演算入门" data-url="http://yoursite.com/2019/04/03/lambda演算/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -402,8 +358,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

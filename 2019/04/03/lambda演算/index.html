@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>lambda演算入门 | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse.  求值一个”λ”一个”.”, 极简函数写法,比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.例子: (λx.(λy.x))a 求值结果为λy.a  就是把a带进去,返回一个&amp;quot;输入y返回a&amp;quot;的函数.  布尔逻辑T 表示为：λx.λy.x">
+  <meta name="description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse. 1. 求值一个&amp;quot;λ&amp;quot;一个&amp;quot;.&amp;quot;, 极简函数写法, 比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了. 例子:     (λx.(λy.x))a 求值结果为λy.a      就是把a带进去,返回一个&amp;quot;输入y返回a&amp;">
 <meta name="keywords" content="lambda演算,函数式编程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="lambda演算入门">
 <meta property="og:url" content="http://yoursite.com/2019/04/03/lambda演算/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse.  求值一个”λ”一个”.”, 极简函数写法,比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.例子: (λx.(λy.x))a 求值结果为λy.a  就是把a带进去,返回一个&amp;quot;输入y返回a&amp;quot;的函数.  布尔逻辑T 表示为：λx.λy.x">
+<meta property="og:description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse. 1. 求值一个&amp;quot;λ&amp;quot;一个&amp;quot;.&amp;quot;, 极简函数写法, 比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了. 例子:     (λx.(λy.x))a 求值结果为λy.a      就是把a带进去,返回一个&amp;quot;输入y返回a&amp;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-03T07:25:51.497Z">
+<meta property="og:updated_time" content="2019-04-03T07:48:44.498Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="lambda演算入门">
-<meta name="twitter:description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse.  求值一个”λ”一个”.”, 极简函数写法,比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.例子: (λx.(λy.x))a 求值结果为λy.a  就是把a带进去,返回一个&amp;quot;输入y返回a&amp;quot;的函数.  布尔逻辑T 表示为：λx.λy.x">
+<meta name="twitter:description" content="来写一写lambda演算里的东西,主要是用代换模型人肉parse. 1. 求值一个&amp;quot;λ&amp;quot;一个&amp;quot;.&amp;quot;, 极简函数写法, 比function,=&amp;gt;,-&amp;gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了. 例子:     (λx.(λy.x))a 求值结果为λy.a      就是把a带进去,返回一个&amp;quot;输入y返回a&amp;">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -162,38 +162,42 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>来写一写lambda演算里的东西,主要是用代换模型人肉parse.</p>
-<ol>
-<li><p>求值<br>一个”λ”一个”.”, 极简函数写法,<br>比function,=&gt;,-&gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.<br>例子:</p>
-<pre><code>(λx.(λy.x))a 求值结果为λy.a 
-就是把a带进去,返回一个&quot;输入y返回a&quot;的函数.
-</code></pre></li>
-<li><p>布尔逻辑<br>T 表示为：λx.λy.x      它接收两个参数x和y,返回x, 也就是说它返回前面的那个参数<br>F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它返回后面的那个参数<br>这样一来, if函数就是λbtf, 等价于λb.λt.λf.btf</p>
-<pre><code>if函数接收三个参数,分别是判断条件b,
-                       当b为True时: (λx.λy.x)(t)(f)  返回的语句t 
-                       和b为False时: (λx.λy.y)(t)(f) 返回的语句f
+<h2 id="1-求值"><a href="#1-求值" class="headerlink" title="1. 求值"></a>1. 求值</h2><pre><code>一个&quot;λ&quot;一个&quot;.&quot;, 极简函数写法,
+比function,=&gt;,-&gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.
+例子:
+    (λx.(λy.x))a 求值结果为λy.a 
+    就是把a带进去,返回一个&quot;输入y返回a&quot;的函数.
+</code></pre><h2 id="2-布尔逻辑"><a href="#2-布尔逻辑" class="headerlink" title="2. 布尔逻辑"></a>2. 布尔逻辑</h2><pre><code>T 表示为：λx.λy.x      它接收两个参数x和y,返回x, 也就是说它返回前面的那个参数
+F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它返回后面的那个参数
+这样一来, if函数就是λbtf, 等价于λb.λt.λf.btf
+         if函数接收三个参数,分别是判断条件b,
+                                当b为True时: (λx.λy.x)(t)(f)  返回的语句t 
+                                和b为False时: (λx.λy.y)(t)(f) 返回的语句f
 
-布尔逻辑运算符与或非分别是:
-与: λab.IFabF  接收两个参数a和b, 如果a是True,那就返回前一个也就是b,与的结果和b的取值一样
-                                如果a是False,那就返回后一个就是False
-或: λab.IFaTb  接收两个参数a和b, 如果a是True,那就返回前一个也就是True
-                                如果a是False,那就返回后一个就是b,或的结果和b的取值一样
-非: λa.IFaFT   接收一个参数a, 如果a是True,那就返回前一个也就是False
-                             如果a是False,那就返回后一个也就是True
-</code></pre></li>
-<li><p>数<br>0=λf.λx.x<br>1=λf.λx.fx<br>2=λf.λx.f(fx)<br>3=λf.λx.f(f(fx))<br>后继函数S=λn.λf.λx.f((nf)x)<br>加法: ADD = λab.(aS)b</p>
-<pre><code>举例: 0和0相加:  ((λf.λx.x)(λn.λf.λx.f((nf)x)))(λf.λx.x)
-               = (λx.x)(λf.λx.x)
-               = λf.λx.x
-               = 0
-      1和2相加: (λf.λx.fx)(λn.λf.λx.f((nf)x))(λf.λx.f(fx))
-               = (λn.λf.λx.f((nf)x))(λf.λx.f(fx))
-               = λf.λx.f(((λf.λx.f(fx))f)x)
-               = λf.λx.f((λx.f(fx))x)
-               = λf.λx.f(f(fx))
-               = 3
-</code></pre></li>
-</ol>
-
+         布尔逻辑运算符与或非分别是:
+         与: λab.IFabF  接收两个参数a和b, 如果a是True,那就返回前一个也就是b,与的结果和b的取值一样
+                                         如果a是False,那就返回后一个就是False
+         或: λab.IFaTb  接收两个参数a和b, 如果a是True,那就返回前一个也就是True
+                                         如果a是False,那就返回后一个就是b,或的结果和b的取值一样
+         非: λa.IFaFT   接收一个参数a, 如果a是True,那就返回前一个也就是False
+                                      如果a是False,那就返回后一个也就是True
+</code></pre><h2 id="3-数"><a href="#3-数" class="headerlink" title="3. 数"></a>3. 数</h2><pre><code>0=λf.λx.x
+1=λf.λx.fx
+2=λf.λx.f(fx)
+3=λf.λx.f(f(fx))
+后继函数S=λn.λf.λx.f((nf)x)
+加法: ADD = λab.(aS)b
+      举例: 0和0相加:  ((λf.λx.x)(λn.λf.λx.f((nf)x)))(λf.λx.x)
+                     = (λx.x)(λf.λx.x)
+                     = λf.λx.x
+                     = 0
+            1和2相加: (λf.λx.fx)(λn.λf.λx.f((nf)x))(λf.λx.f(fx))
+                     = (λn.λf.λx.f((nf)x))(λf.λx.f(fx))
+                     = λf.λx.f(((λf.λx.f(fx))f)x)
+                     = λf.λx.f((λx.f(fx))x)
+                     = λf.λx.f(f(fx))
+                     = 3
+</code></pre>
       
 
       
@@ -279,6 +283,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/04/03/类型系统/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          类型系统入门
+        
+      </div>
+    </a>
   
   
     <a href="/2019/04/03/ramda中的lens源码解读/" id="article-nav-older" class="article-nav-link-wrap">
@@ -424,6 +437,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Tree</a>
               </li>
              
@@ -436,15 +457,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
               </li>
              
               <li class="article-tag-list-item">

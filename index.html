@@ -141,6 +141,93 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ramda中的lens源码解读" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/03/ramda中的lens源码解读/">Ramda中的lens源码解读</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/03/ramda中的lens源码解读/" class="archive-article-date">
+  	<time datetime="2019-04-02T17:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>先上源码:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig (s -&gt; a) -&gt; ((a, s) -&gt; s) -&gt; Lens s a</span><br><span class="line"> * @param &#123;Function&#125; getter</span><br><span class="line"> * @param &#123;Function&#125; setter</span><br><span class="line"> * @return &#123;Lens&#125;</span><br><span class="line"> * @see R.view, R.set, R.over, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      const xLens = R.lens(R.prop(&apos;x&apos;), R.assoc(&apos;x&apos;));</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;x: 1, y: 2&#125;);            //=&gt; 1</span><br><span class="line"> *      R.set(xLens, 4, &#123;x: 1, y: 2&#125;);          //=&gt; &#123;x: 4, y: 2&#125;</span><br><span class="line"> *      R.over(xLens, R.negate, &#123;x: 1, y: 2&#125;);  //=&gt; &#123;x: -1, y: 2&#125;</span><br><span class="line"> */</span><br><span class="line">var lens = _curry2(function lens(getter, setter) &#123;</span><br><span class="line">  return function(toFunctorFn) &#123;</span><br><span class="line">    return function(target) &#123;</span><br><span class="line">      return map(</span><br><span class="line">        function(focus) &#123;</span><br><span class="line">          return setter(focus, target);</span><br><span class="line">        &#125;,</span><br><span class="line">        toFunctorFn(getter(target))</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>不得不说这文档写的真棒,我好了.<br>使用代换模型人肉解析:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">const xLens = R.lens(R.prop(&apos;x&apos;), R.assoc(&apos;x&apos;));</span><br><span class="line">当执行完这一行时,</span><br><span class="line">xLens = function(toFunctorFn) &#123;</span><br><span class="line">    return function(target) &#123;</span><br><span class="line">      return map(</span><br><span class="line">        function(focus) &#123;</span><br><span class="line">          return R.assoc(&apos;x&apos;)(focus, target);</span><br><span class="line">        &#125;,</span><br><span class="line">        toFunctorFn(R.prop(&apos;x&apos;)(target))</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>同时也看下view的代码:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig Lens s a -&gt; s -&gt; a</span><br><span class="line"> * @param &#123;Lens&#125; lens</span><br><span class="line"> * @param &#123;*&#125; x</span><br><span class="line"> * @return &#123;*&#125;</span><br><span class="line"> * @see R.prop, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      const xLens = R.lensProp(&apos;x&apos;);</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;x: 1, y: 2&#125;);  //=&gt; 1</span><br><span class="line"> *      R.view(xLens, &#123;x: 4, y: 2&#125;);  //=&gt; 4</span><br><span class="line"> */</span><br><span class="line">var view = _curry2(function view(lens, x) &#123;</span><br><span class="line">  // Using `Const` effectively ignores the setter function of the `lens`,</span><br><span class="line">  // leaving the value returned by the getter function unmodified.</span><br><span class="line">  return lens(Const)(x).value;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// `Const` is a functor that effectively ignores the function given to `map`.</span><br><span class="line">var Const = function(x) &#123;</span><br><span class="line">  return &#123;value: x, &apos;fantasy-land/map&apos;: function() &#123; return this; &#125;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p> R.view(xLens, {x: 1, y: 2});</p>
+<p> function(toFunctorFn) {<br>    return function(target) {<br>      return map(<br>        function(focus) {<br>          return R.assoc(‘x’)(focus, target);<br>        },<br>        toFunctorFn(R.prop(‘x’)(target))<br>      );<br>    };<br>  }; (Const)(x).vale</p>
+<p>  map(function(focus) {<br>          return R.assoc(‘x’)(focus, {x: 1, y: 2});<br>        },<br>        Const(R.prop(‘x’)({x: 1, y: 2})))</p>
+<p>  map(function(focus) {<br>          return R.assoc(‘x’)(focus, {x: 1, y: 2});<br>        },<br>        Const(1))</p>
+<pre><code>1
+</code></pre><p>Ramda里面有很多地方用到了这个函数_dispatchable</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">lens</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -336,7 +423,7 @@
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">证明 (n * 2 + 1) % 5 等于 ((n % 5) * 2 + 1) % 5</span><br><span class="line">因为</span><br><span class="line">    (a + b) % p = (a % p + b % p) % p</span><br><span class="line">    (a * b) % p = (a % p * b % p) % p</span><br><span class="line">    a % p == a % p % p</span><br><span class="line">所以</span><br><span class="line">    左边 = ((n * 2) % 5 + 1 % 5) % 5</span><br><span class="line">        = ((((n % 5) * 2) % 5) + 1) % 5</span><br><span class="line"></span><br><span class="line">    右边 = 左边</span><br></pre></td></tr></table></figure>
 <p> 嗯…不知道这儿又可以引发多少对两种语言的思考.</p>
 </li>
-<li><p>写java的过程中同时又踩了其他的坑–运算符优先级:<br> 乘除取模 &gt; 加减 &gt; 移位 &gt; 按位或<br> 所以 </p>
+<li><p>写java的过程中同时又踩了其他的坑—–运算符优先级:<br> 乘除取模 &gt; 加减 &gt; 移位 &gt; 按位或<br> 所以 </p>
 <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">acc &lt;&lt; 1 + a 问题很大</span><br><span class="line">acc &lt;&lt; 1 | a 还ok</span><br><span class="line">acc &lt;&lt; 1 | a % 5 问题很大</span><br></pre></td></tr></table></figure>
 </code></pre><p> 多写括号可破:</p>
 <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((acc &lt;&lt; 1) | a) % 5</span><br></pre></td></tr></table></figure>
@@ -502,6 +589,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">

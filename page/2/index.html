@@ -141,6 +141,751 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Java实现2048/">Java实现2048</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Java实现2048/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:28:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.swing.JFrame;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JPanel;</span><br><span class="line"><span class="keyword">import</span> javax.swing.WindowConstants;</span><br><span class="line"><span class="keyword">import</span> java.awt.Color;</span><br><span class="line"><span class="keyword">import</span> java.awt.Dimension;</span><br><span class="line"><span class="keyword">import</span> java.awt.Font;</span><br><span class="line"><span class="keyword">import</span> java.awt.FontMetrics;</span><br><span class="line"><span class="keyword">import</span> java.awt.Graphics;</span><br><span class="line"><span class="keyword">import</span> java.awt.Graphics2D;</span><br><span class="line"><span class="keyword">import</span> java.awt.RenderingHints;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.KeyAdapter;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.KeyEvent;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Game2048</span> <span class="keyword">extends</span> <span class="title">JPanel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Tile[] myTiles;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> myScore;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> myWin;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> myLose;</span><br><span class="line">    <span class="keyword">private</span> Color BG_COLOR = <span class="keyword">new</span> Color(<span class="number">0xbbada0</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String FONT_NAME = <span class="string">"Arial"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TILE_SIZE = <span class="number">64</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TILES_MARGIN = <span class="number">16</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Game2048</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        setPreferredSize(<span class="keyword">new</span> Dimension(<span class="number">340</span>, <span class="number">400</span>));</span><br><span class="line">        setFocusable(<span class="keyword">true</span>);</span><br><span class="line">        addKeyListener(<span class="keyword">new</span> KeyAdapter() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">keyPressed</span><span class="params">(KeyEvent e)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (e.getKeyCode() == KeyEvent.VK_ESCAPE) &#123;</span><br><span class="line">                    resetGame();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (!canMove()) &#123;</span><br><span class="line">                    myLose = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!myWin &amp;&amp; !myLose) &#123;</span><br><span class="line">                    <span class="keyword">switch</span> (e.getKeyCode()) &#123;</span><br><span class="line">                        <span class="keyword">case</span> KeyEvent.VK_LEFT:</span><br><span class="line">                            left();</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> KeyEvent.VK_RIGHT:</span><br><span class="line">                            right();</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> KeyEvent.VK_DOWN:</span><br><span class="line">                            down();</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> KeyEvent.VK_UP:</span><br><span class="line">                            up();</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!myWin &amp;&amp; !canMove()) &#123;</span><br><span class="line">                    myLose = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                repaint();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        resetGame();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">down</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        myTiles = rotate(<span class="number">90</span>);</span><br><span class="line">        left();</span><br><span class="line">        myTiles = rotate(<span class="number">270</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Tile[] rotate(<span class="keyword">int</span> angle) &#123;</span><br><span class="line">        Tile[] newTiles = <span class="keyword">new</span> Tile[<span class="number">4</span> * <span class="number">4</span>];</span><br><span class="line">        <span class="keyword">int</span> offsetX = <span class="number">3</span>, offsetY = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">if</span> (angle == <span class="number">90</span>) &#123;</span><br><span class="line">            offsetY = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (angle == <span class="number">270</span>) &#123;</span><br><span class="line">            offsetX = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">double</span> rad = Math.toRadians(angle);</span><br><span class="line">        <span class="keyword">int</span> cos = (<span class="keyword">int</span>) Math.cos(rad);</span><br><span class="line">        <span class="keyword">int</span> sin = (<span class="keyword">int</span>) Math.sin(rad);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; <span class="number">4</span>; x++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; <span class="number">4</span>; y++) &#123;</span><br><span class="line">                <span class="keyword">int</span> newX = (x * cos) - (y * sin) + offsetX;</span><br><span class="line">                <span class="keyword">int</span> newY = (x * sin) + (y * cos) + offsetY;</span><br><span class="line">                newTiles[newX + newY * <span class="number">4</span>] = tileAt(x, y);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newTiles;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">right</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        myTiles = rotate(<span class="number">180</span>);</span><br><span class="line">        left();</span><br><span class="line">        myTiles = rotate(<span class="number">180</span>);&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">up</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        myTiles = rotate(<span class="number">270</span>);</span><br><span class="line">        left();</span><br><span class="line">        myTiles = rotate(<span class="number">90</span>);&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">resetGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        myScore = <span class="number">0</span>;</span><br><span class="line">        myWin = <span class="keyword">false</span>;</span><br><span class="line">        myLose = <span class="keyword">false</span>;</span><br><span class="line">        myTiles = <span class="keyword">new</span> Tile[<span class="number">4</span> * <span class="number">4</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; myTiles.length; i++) &#123;</span><br><span class="line">            myTiles[i] = <span class="keyword">new</span> Tile();</span><br><span class="line">        &#125;</span><br><span class="line">        addTile();</span><br><span class="line">        addTile();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">left</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> needAddTile = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            Tile[] line = getLine(i);</span><br><span class="line">            Tile[] merged = mergeLine(moveLine(line));</span><br><span class="line">            setLine(i, merged);</span><br><span class="line">            <span class="keyword">if</span> (!needAddTile &amp;&amp; !compare(line, merged)) &#123;</span><br><span class="line">                needAddTile = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (needAddTile) &#123;</span><br><span class="line">            addTile();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">compare</span><span class="params">(Tile[] line1, Tile[] line2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (line1 == line2) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (line1.length != line2.length) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; line1.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (line1[i].value != line2[i].value) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Tile <span class="title">tileAt</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> myTiles[x + y * <span class="number">4</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addTile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Tile&gt; list = availableSpace();</span><br><span class="line">        <span class="keyword">if</span> (!list.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">int</span> index = (<span class="keyword">int</span>) (Math.random() * list.size()) % list.size();</span><br><span class="line">            Tile temp = list.get(index);</span><br><span class="line">            temp.value = Math.random() &lt; <span class="number">0.9</span> ? <span class="number">2</span> : <span class="number">4</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> List&lt;Tile&gt; <span class="title">availableSpace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Tile&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Tile t : myTiles) &#123;</span><br><span class="line">            <span class="keyword">if</span> (t.isEmpty()) &#123;</span><br><span class="line">                list.add(t);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> availableSpace().size() == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">canMove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!isFull()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; <span class="number">4</span>; x++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; <span class="number">4</span>; y++) &#123;</span><br><span class="line">                Tile t = tileAt(x, y);</span><br><span class="line">                <span class="keyword">if</span> ((x &lt; <span class="number">3</span> &amp;&amp; t.value == tileAt(x + <span class="number">1</span>, y).value)</span><br><span class="line">                    || ((y &lt; <span class="number">3</span>) &amp;&amp; t.value == tileAt(x, y + <span class="number">1</span>).value)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Tile[] moveLine(Tile[] oldLine) &#123;</span><br><span class="line">        LinkedList&lt;Tile&gt; l = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!oldLine[i].isEmpty()) &#123;</span><br><span class="line">                l.addLast(oldLine[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (l.size() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> oldLine;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Tile[] newLine = <span class="keyword">new</span> Tile[<span class="number">4</span>];</span><br><span class="line">            ensureSize(l, <span class="number">4</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">                newLine[i] = l.removeFirst();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> newLine;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Tile[] mergeLine(Tile[] oldLine) &#123;</span><br><span class="line">        LinkedList&lt;Tile&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span> &amp;&amp; !oldLine[i].isEmpty(); i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> num = oldLine[i].value;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; <span class="number">3</span> &amp;&amp; oldLine[i].value == oldLine[i + <span class="number">1</span>].value) &#123;</span><br><span class="line">                num *= <span class="number">2</span>;</span><br><span class="line">                myScore += num;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    MusicDemo.playMusic();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">int</span> target = <span class="number">2048</span>;</span><br><span class="line">                <span class="keyword">if</span> (num == target) &#123;</span><br><span class="line">                    myWin = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line">            list.add(<span class="keyword">new</span> Tile(num));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (list.size() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> oldLine;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ensureSize(list, <span class="number">4</span>);</span><br><span class="line">            <span class="keyword">return</span> list.toArray(<span class="keyword">new</span> Tile[<span class="number">4</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureSize</span><span class="params">(List&lt;Tile&gt; l, <span class="keyword">int</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (l.size() != s) &#123;</span><br><span class="line">            l.add(<span class="keyword">new</span> Tile());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Tile[] getLine(<span class="keyword">int</span> index) &#123;</span><br><span class="line">        Tile[] result = <span class="keyword">new</span> Tile[<span class="number">4</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            result[i] = tileAt(i, index);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setLine</span><span class="params">(<span class="keyword">int</span> index, Tile[] res)</span> </span>&#123;</span><br><span class="line">        System.arraycopy(res, <span class="number">0</span>, myTiles, index * <span class="number">4</span>, <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paint</span><span class="params">(Graphics g)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.paint(g);</span><br><span class="line">        g.setColor(BG_COLOR);</span><br><span class="line">        g.fillRect(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">this</span>.getSize().width, <span class="keyword">this</span>.getSize().height);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; <span class="number">4</span>; y++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; <span class="number">4</span>; x++) &#123;</span><br><span class="line">                drawTile(g, myTiles[x + y * <span class="number">4</span>], x, y);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawTile</span><span class="params">(Graphics g2, Tile tile, <span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        Graphics2D g = (Graphics2D) g2;</span><br><span class="line">        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span><br><span class="line">        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);</span><br><span class="line">        <span class="keyword">int</span> value = tile.value;</span><br><span class="line">        <span class="keyword">int</span> xOffset = offsetCoors(x);</span><br><span class="line">        <span class="keyword">int</span> yOffset = offsetCoors(y);</span><br><span class="line">        g.setColor(tile.getBackground());</span><br><span class="line">        g.fillRoundRect(xOffset, yOffset, TILE_SIZE, TILE_SIZE, <span class="number">14</span>, <span class="number">14</span>);</span><br><span class="line">        g.setColor(tile.getForeground());</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> size = value &lt; <span class="number">100</span> ? <span class="number">36</span> : value &lt; <span class="number">1000</span> ? <span class="number">32</span> : <span class="number">24</span>;</span><br><span class="line">        <span class="keyword">final</span> Font font = <span class="keyword">new</span> Font(FONT_NAME, Font.BOLD, size);</span><br><span class="line">        g.setFont(font);</span><br><span class="line"></span><br><span class="line">        String s = String.valueOf(value);</span><br><span class="line">        FontMetrics fm = getFontMetrics(font);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> w = fm.stringWidth(s);</span><br><span class="line">        <span class="keyword">int</span> h = -(<span class="keyword">int</span>) fm.getLineMetrics(s, g).getBaselineOffsets()[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (value != <span class="number">0</span>) &#123;</span><br><span class="line">            g.drawString(s, xOffset + (TILE_SIZE - w) / <span class="number">2</span>, yOffset + TILE_SIZE - (TILE_SIZE - h) / <span class="number">2</span> - <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (myWin || myLose) &#123;</span><br><span class="line">            g.setColor(<span class="keyword">new</span> Color(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">30</span>));</span><br><span class="line">            g.fillRect(<span class="number">0</span>, <span class="number">0</span>, getWidth(), getHeight());</span><br><span class="line">            g.setColor(<span class="keyword">new</span> Color(<span class="number">78</span>, <span class="number">139</span>, <span class="number">202</span>));</span><br><span class="line">            g.setFont(<span class="keyword">new</span> Font(FONT_NAME, Font.BOLD, <span class="number">48</span>));</span><br><span class="line">            <span class="keyword">if</span> (myWin) &#123;</span><br><span class="line">                g.drawString(<span class="string">"You Won!"</span>, <span class="number">68</span>, <span class="number">150</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (myLose) &#123;</span><br><span class="line">                g.drawString(<span class="string">"Game over!"</span>, <span class="number">50</span>, <span class="number">130</span>);</span><br><span class="line">                g.drawString(<span class="string">"You lose!"</span>, <span class="number">64</span>, <span class="number">200</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (myWin || myLose) &#123;</span><br><span class="line">                g.setFont(<span class="keyword">new</span> Font(FONT_NAME, Font.PLAIN, <span class="number">16</span>));</span><br><span class="line">                g.setColor(<span class="keyword">new</span> Color(<span class="number">128</span>, <span class="number">128</span>, <span class="number">128</span>, <span class="number">128</span>));</span><br><span class="line">                g.drawString(<span class="string">"Press ESC to play again"</span>, <span class="number">80</span>, getHeight() - <span class="number">40</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        g.setFont(<span class="keyword">new</span> Font(FONT_NAME, Font.PLAIN, <span class="number">18</span>));</span><br><span class="line">        g.drawString(<span class="string">"Score: "</span> + myScore, <span class="number">200</span>, <span class="number">365</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">offsetCoors</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> arg * (TILES_MARGIN + TILE_SIZE) + TILES_MARGIN;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        JFrame game = <span class="keyword">new</span> JFrame();</span><br><span class="line">        game.setTitle(<span class="string">"2048"</span>);</span><br><span class="line">        game.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);</span><br><span class="line">        game.setSize(<span class="number">340</span>, <span class="number">400</span>);</span><br><span class="line">        game.setResizable(<span class="keyword">false</span>);</span><br><span class="line">        game.add(<span class="keyword">new</span> Game2048());</span><br><span class="line">        game.setLocationRelativeTo(<span class="keyword">null</span>);</span><br><span class="line">        game.setVisible(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Music<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sun.audio.AudioPlayer;</span><br><span class="line"><span class="keyword">import</span> sun.audio.AudioStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileNotFoundException;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MusicDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"><span class="comment">// 创建音乐文件输入流对象</span></span><br><span class="line">        InputStream in = <span class="keyword">new</span> FileInputStream(<span class="string">"C:\\Users\\Ramble\\Desktop\\study\\wyl-2048\\src\\1.wav"</span>);</span><br><span class="line"><span class="comment">// 创建音频流对象</span></span><br><span class="line">        <span class="keyword">final</span> AudioStream audioStream = <span class="keyword">new</span> AudioStream(in);</span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line"><span class="comment">// 使用音频播放器播放声音</span></span><br><span class="line">            AudioPlayer.player.start(audioStream);</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止声音播放</span></span><br><span class="line">        AudioPlayer.player.stop(audioStream);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">playMusic</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">// 创建音乐文件输入流对象</span></span><br><span class="line">        InputStream in = <span class="keyword">new</span> FileInputStream(<span class="string">"C:\\Users\\Ramble\\Desktop\\study\\wyl-2048\\src\\3.wav"</span>);</span><br><span class="line"><span class="comment">// 创建音频流对象</span></span><br><span class="line">        <span class="keyword">final</span> AudioStream audioStream = <span class="keyword">new</span> AudioStream(in);</span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line"><span class="comment">// 使用音频播放器播放声音</span></span><br><span class="line">            AudioPlayer.player.start(audioStream);</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止声音播放</span></span><br><span class="line">        AudioPlayer.player.stop(audioStream);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SICP目录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/SICP目录/">SICP目录</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/SICP目录/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:24:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>计算机程序的构造和解释</p>
+<p>第1章 构造过程抽象<br>1.1 程序设计的基本元素<br>1.2 过程与它们所产生的计算<br>1.3 用高阶函数做抽象</p>
+<p>第2章 构造数据抽象<br>2.1 数据抽象导引<br>2.2 层次性数据和闭包性质<br>2.3 符号数据<br>    2.3.1 引进将任意符号作为数据的功能<br>    2.3.2 符号求导<br>2.4 抽象数据的多重表示<br>    2.4.1 复数的表示<br>2.5 带有通用型操作的系统</p>
+<p>第3章 模块化、对象和状态<br>3.1 赋值和局部状态<br>3.2 求值的环境模型<br>3.3 用变动数据做模拟<br>3.4 并发：时间是一个本质问题<br>3.5 流</p>
+<p>第4章 元语言抽象<br>4.1 元循环求值器<br>4.2 Scheme的变形——惰性求值<br>4.3 Scheme的变形——非确定性计算<br>4.4 逻辑程序设计</p>
+<p>第5章 寄存器机器里的计算<br>5.1 寄存器机器的设计<br>5.2 一个寄存器机器模拟器<br>5.3 存储分配和废料收集<br>5.4 显式控制的求值器<br>5.5 编译</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">SICP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Scala实现并行框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Scala实现并行框架/">Scala实现并行框架</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Scala实现并行框架/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接收一个未求值的A,返回一个并行结果(传名函数)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//从并行结果里抽取结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//组合两个并行计算的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Par分配到另一个独立的逻辑线程中运行</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//派生组合子的一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazyUnit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = fork(unit(a))</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">Par</span>[<span class="type">A</span>] </span>= <span class="type">ExecutorService</span> =&gt; <span class="type">Future</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](s: <span class="type">ExecutorService</span>)(a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Future</span>[<span class="type">A</span>] = a(s)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Par</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = (es: <span class="type">ExecutorService</span>) =&gt; <span class="type">UnitFuture</span>(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitFuture</span>[<span class="type">A</span>](<span class="params">get: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Future</span>[<span class="type">A</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isDone</span> </span>= <span class="literal">true</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>(timeout: <span class="type">Long</span>, units: <span class="type">TimeUnit</span>) = get</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isCancelled</span> </span>= <span class="literal">false</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(evenIfRunning: <span class="type">Boolean</span>) : <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>] =</span><br><span class="line">        (es: <span class="type">ExecutorService</span>) =&gt; &#123;</span><br><span class="line">            <span class="keyword">val</span> af = a(es)</span><br><span class="line">            <span class="keyword">val</span> bf = b(es)</span><br><span class="line">            <span class="type">UnitFuture</span>(f(af.get, bf.getb))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>] =</span><br><span class="line">        es =&gt; es.submit(<span class="keyword">new</span> <span class="type">Callable</span>[<span class="type">A</span>] &#123;</span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">call</span> </span>= a(es).get</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Scala</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java8查漏补缺" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Java8查漏补缺/">Java8查漏补缺</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Java8查漏补缺/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p>函数式接口里可以有继承自Object类的抽象方法.<br> 例:</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><p> 以上代码是合法的.</p>
+</li>
+<li><p>函数式接口的实例可以通过 lambda表达式, 方法引用 或者 构造方法引用 创建.</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyInterface myInterface = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">System.out.println(myInterface.getClass());</span><br><span class="line">System.out.println(myInterface.getClass().getSuperclass());</span><br><span class="line">System.out.println(myInterface.getClass().getInterfaces()[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+class sth.jdk8.Test2$$Lambda$2/1149319664
+class java.lang.Object
+interface sth.jdk8.MyInterface
+</code></pre><p> 可以看到这个函数式接口实例的父类是Object,它实现了接口MyInterface</p>
+<pre><code>通过方法引用创建函数式接口实例
+list.forEach(System.out::println);
+</code></pre></li>
+<li><p>方法引用的四种形式:<br>  类名::实例方法 所对应lambda表达式的第一个参数就是这个调用方法的对象</p>
+</li>
+<li><p>Function&lt;T, R&gt;接口<br> Represents a function that accepts one argument and produces a result.<br> 抽象方法:     R apply(T t);<br> 例:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, String&gt; function)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 默认方法: compose andThen<br> 静态方法: identity</p>
+<p> BiFunction&lt;T, U, R&gt;接口<br> 抽象方法: R apply(T t, U u);<br> 默认方法: <v> BiFunction&lt;T, U, V&gt; andThen(Function&lt;? super R, ? extends V&gt; after)</v></p>
+<p> 重要建议: equals方法 把常量放在前面,变量放在后面. 可以避免变量为null时引发的空指针异常</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Haskell实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/Haskell实现2048/">Haskell实现2048</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/Haskell实现2048/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Prelude <span class="keyword">hiding</span> (<span class="type">Left</span>, <span class="type">Right</span>)</span><br><span class="line"><span class="keyword">import</span> Data.Char (<span class="title">toLower</span>)</span><br><span class="line"><span class="keyword">import</span> Data.List</span><br><span class="line"><span class="keyword">import</span> System.IO</span><br><span class="line"><span class="keyword">import</span> System.Random</span><br><span class="line"><span class="keyword">import</span> Text.Printf</span><br><span class="line"><span class="keyword">import</span> System.Process</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Move</span> = <span class="type">Up</span> | <span class="type">Down</span> | <span class="type">Left</span> | <span class="type">Right</span></span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">Grid</span> = [[<span class="type">Int</span>]]</span></span><br><span class="line"></span><br><span class="line"><span class="title">start</span> :: <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">start</span> = <span class="keyword">do</span> grid'  &lt;- addTile $ replicate <span class="number">4</span> [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line">           addTile grid'</span><br><span class="line"></span><br><span class="line"><span class="title">merge</span> :: [<span class="type">Int</span>] -&gt; [<span class="type">Int</span>]</span><br><span class="line"><span class="title">merge</span> xs = merged ++ padding</span><br><span class="line">    <span class="keyword">where</span> padding = replicate (length xs - length merged) <span class="number">0</span></span><br><span class="line">          merged  = combine $ filter (/= <span class="number">0</span>) xs</span><br><span class="line">          combine (x:y:xs) | x == y = x * <span class="number">2</span> : combine xs</span><br><span class="line">                           | otherwise = x  : combine (y:xs)</span><br><span class="line">          combine x = x</span><br><span class="line"></span><br><span class="line"><span class="title">move</span> :: <span class="type">Move</span> -&gt; <span class="type">Grid</span> -&gt; <span class="type">Grid</span></span><br><span class="line"><span class="title">move</span> <span class="type">Left</span>  = map merge</span><br><span class="line"><span class="title">move</span> <span class="type">Right</span> = map (reverse . merge . reverse)</span><br><span class="line"><span class="title">move</span> <span class="type">Up</span>    = transpose . move <span class="type">Left</span>  . transpose</span><br><span class="line"><span class="title">move</span> <span class="type">Down</span>  = transpose . move <span class="type">Right</span> . transpose</span><br><span class="line"></span><br><span class="line"><span class="title">getZeroes</span> :: <span class="type">Grid</span> -&gt; [(<span class="type">Int</span>, <span class="type">Int</span>)]</span><br><span class="line"><span class="title">getZeroes</span> grid = filter (\(row, col) -&gt; (grid!!row)!!col == <span class="number">0</span>) coordinates</span><br><span class="line">    <span class="keyword">where</span> singleRow n = zip (replicate <span class="number">4</span> n) [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line">          coordinates = concatMap singleRow [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">setSquare</span> :: <span class="type">Grid</span> -&gt; (<span class="type">Int</span>, <span class="type">Int</span>) -&gt; <span class="type">Int</span> -&gt; <span class="type">Grid</span></span><br><span class="line"><span class="title">setSquare</span> grid (row, col) val = pre ++ [mid] ++ post</span><br><span class="line">    <span class="keyword">where</span> pre  = take row grid</span><br><span class="line">          mid  = take col (grid!!row) ++ [val] ++ drop (col + <span class="number">1</span>) (grid!!row)</span><br><span class="line">          post = drop (row + <span class="number">1</span>) grid</span><br><span class="line"></span><br><span class="line"><span class="title">isMoveLeft</span> :: <span class="type">Grid</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">isMoveLeft</span> grid = sum allChoices &gt; <span class="number">0</span></span><br><span class="line">    <span class="keyword">where</span> allChoices = map (length . getZeroes . flip move grid) directions</span><br><span class="line">          directions = [<span class="type">Left</span>, <span class="type">Right</span>, <span class="type">Up</span>, <span class="type">Down</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">printGrid</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">printGrid</span> grid = <span class="keyword">do</span></span><br><span class="line">    system <span class="string">"cls"</span> <span class="comment">-- clears the screen</span></span><br><span class="line">    mapM_ (putStrLn . showRow) grid</span><br><span class="line"></span><br><span class="line"><span class="title">showRow</span> :: [<span class="type">Int</span>] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">showRow</span> = concatMap (printf <span class="string">"%5d"</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">moves</span> :: [(<span class="type">Char</span>, <span class="type">Move</span>)]</span><br><span class="line"><span class="title">moves</span> = keys <span class="string">"wasd"</span> ++ keys <span class="string">"chtn"</span></span><br><span class="line">    <span class="keyword">where</span> keys chars = zip chars [<span class="type">Up</span>, <span class="type">Left</span>, <span class="type">Down</span>, <span class="type">Right</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">captureMove</span> :: <span class="type">IO</span> <span class="type">Move</span></span><br><span class="line"><span class="title">captureMove</span> = <span class="keyword">do</span></span><br><span class="line">    inp &lt;- getChar</span><br><span class="line">    <span class="keyword">case</span> lookup (toLower inp) moves <span class="keyword">of</span></span><br><span class="line">        <span class="type">Just</span> x  -&gt; return x</span><br><span class="line">        <span class="type">Nothing</span> -&gt; <span class="keyword">do</span> putStrLn <span class="string">"Use WASD or CHTN as input"</span></span><br><span class="line">                      captureMove</span><br><span class="line"></span><br><span class="line"><span class="title">check2048</span> :: <span class="type">Grid</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">check2048</span> grid = [] /= filter (== <span class="number">2048</span>) (concat grid)</span><br><span class="line">                </span><br><span class="line"><span class="title">addTile</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">addTile</span> grid = <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">let</span> candidates = getZeroes grid</span><br><span class="line">    pick &lt;- choose candidates</span><br><span class="line">    val  &lt;- choose [<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>]</span><br><span class="line">    <span class="keyword">let</span> new_grid = setSquare grid pick val</span><br><span class="line">    return new_grid</span><br><span class="line"></span><br><span class="line"><span class="title">choose</span> :: [a] -&gt; <span class="type">IO</span> a</span><br><span class="line"><span class="title">choose</span> xs = <span class="keyword">do</span></span><br><span class="line">    i &lt;- randomRIO (<span class="number">0</span>, length xs<span class="number">-1</span>)</span><br><span class="line">    return (xs !! i)</span><br><span class="line"></span><br><span class="line"><span class="title">newGrid</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">newGrid</span> grid = <span class="keyword">do</span></span><br><span class="line">    m &lt;- captureMove</span><br><span class="line">    <span class="keyword">let</span> new_grid = move m grid</span><br><span class="line">    return new_grid</span><br><span class="line"></span><br><span class="line"><span class="title">gameLoop</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">gameLoop</span> grid</span><br><span class="line">    | isMoveLeft grid = <span class="keyword">do</span></span><br><span class="line">        printGrid grid</span><br><span class="line">        <span class="keyword">if</span> check2048 grid</span><br><span class="line">        <span class="keyword">then</span> putStrLn <span class="string">"You won!"</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">do</span> new_grid &lt;- newGrid grid</span><br><span class="line">                <span class="keyword">if</span> grid /= new_grid</span><br><span class="line">                <span class="keyword">then</span> <span class="keyword">do</span> new &lt;- addTile new_grid</span><br><span class="line">                        gameLoop new</span><br><span class="line">                <span class="keyword">else</span> gameLoop grid</span><br><span class="line">    | otherwise = <span class="keyword">do</span></span><br><span class="line">        printGrid grid</span><br><span class="line">        putStrLn <span class="string">"Game over"</span></span><br><span class="line"></span><br><span class="line"><span class="title">main</span> :: <span class="type">IO</span> ()</span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    hSetBuffering stdin <span class="type">NoBuffering</span></span><br><span class="line">    grid &lt;- start</span><br><span class="line">    gameLoop grid</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Haskell</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2048</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Haskell里的Functor函子" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/Haskell里的Functor函子/">Haskell里的Functor函子</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/Haskell里的Functor函子/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <pre><code class="haskell"><span class="keyword">import</span> Data.List
+<span class="keyword">import</span> Data.Char
+<span class="title">main</span> = <span class="keyword">do</span> line &lt;- fmap (intersperse '-' . reverse . map toUpper) getLine
+          putStrLn line
+          main
+</code></pre>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Haskell</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Functor</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JavaScript教程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/JavaScript教程/">JavaScript教程</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/JavaScript教程/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>基本语法<br>    变量<br>        声明和赋值<br>            var a = 1;<br>            当只声明了变量,而没有赋值时 为 undefined</p>
+<pre><code>    变量没有类型,只有值有类型
+        var a = 42;
+        typeof a; // &quot;number&quot;
+
+        a = true;
+        typeof a; // &quot;boolean&quot;
+
+        typeof typeof 42; // &quot;string&quot;
+
+    变量提升
+        JavaScript引擎会先解析代码,获取所有被声明的变量.
+            console.log(a);
+            var a = 1;
+            //执行时相当于先声明了a,但是没有赋值,会打印出undefined
+
+标识符
+    第一个字符可以是任意Unicode字母,不能是数字, 包括 $ 和 _
+
+区块
+    对var来说,区块不构成单独的作用域
+    {
+        var a = 1;
+    }
+    a // 1
+
+逻辑控制
+    if else switch 三目运算符 while for do...while break continue 同 Java
+
+标签
+    通常和break,continue配合
+
+    top:
+        for (var i=0; i&lt;3; i++) {
+            for (var j=0; j&lt;3; j++) {
+                if (i===1 &amp;&amp; j===1) break top;
+            }
+        }
+    满足条件跳出双层循环. 如果不使用标签则只能跳出内层循环.
+</code></pre><p>数据类型<br>    number      整数和小数<br>    string<br>    boolean<br>    undefined<br>    null<br>    object<br>    symbol</p>
+<pre><code>typeof运算符
+    typeof 123 // &quot;number&quot;
+    typeof &quot;123&quot; // &quot;string&quot;
+    typeof false // &quot;boolean&quot;
+
+    函数 返回 function
+    function f() {}
+    typeof f // &quot;function&quot;
+
+    未定义变量 返回 undefined, 可以用来检测没有声明的变量
+    typeof undefined === &quot;undefined&quot;
+
+    typeof window // &quot;object&quot;
+    typeof {} // &quot;object&quot;
+    typeof [] // &quot;object&quot;
+
+    var o = {};
+    var a = [];
+
+    区分数组和对象
+    o instanceof Array //false
+    a instanceof Array //true
+
+
+    typeof null === &quot;object&quot; //这个是存在了20年的bug,应该返回null
+
+    检测null:
+        val a = null;
+        (!a &amp;&amp; typeof a === &quot;object&quot;) //true, null是假值, undefined也是假值
+
+    undefined == null //true
+
+    Number(null) //0
+    5 + null //5
+
+    Number(undefined) //NaN
+    5 + undefined // NaN
+
+    null表示空值
+    undefined表示未定义
+        1)变量声明了但没有赋值
+        2)调用函数时该提供的参数没有提供
+        3)对象没有该属性
+        4)函数没有返回值,默认返回 undefined
+
+
+布尔值
+    以下为false, 其他为true
+    undefined
+    null
+    false
+    0
+    NaN
+    &quot;&quot; 或 &apos;&apos;
+
+    空数组和空对象都是true
+
+数值
+    所有数值以64位浮点数形式存储,也就是说这个语言根本没有整数
+        1 === 1.0  true
+
+    浮点数不精确,所以
+        0.1 + 0.2 === 0.3  //false
+
+        0.3 / 0.1   //2.999999999
+
+        (0.3 - 0.2) === (0.2 - 0.1)  //false
+
+    64个二进制位: 第1位 符号位,
+                 第2位到第12位(共11位) 指数部分, 
+                 第13位到第64位(共52位) 小数部分.
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Ramda里的柯西化实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/Ramda里的柯西化实现/">Ramda里的柯西化实现</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/Ramda里的柯西化实现/" class="archive-article-date">
+  	<time datetime="2019-04-03T18:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>先说R.__ (两个下划线)<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> __ = &#123;<span class="string">'@@functional/placeholder'</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"></span><br><span class="line"> *      <span class="keyword">const</span> greet = R.replace(<span class="string">'&#123;name&#125;'</span>, R.__, <span class="string">'Hello, &#123;name&#125;!'</span>);</span><br><span class="line"> *      greet(<span class="string">'Alice'</span>); <span class="comment">//=&gt; 'Hello, Alice!'</span></span><br></pre></td></tr></table></figure></p>
+<p>R.__是一个含有@@functional/placeholder属性的对象, 那么它是怎么起到占位符作用的呢?</p>
+<p>看下这个函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_isPlaceholder</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">         <span class="keyword">typeof</span> a === <span class="string">'object'</span> &amp;&amp;</span><br><span class="line">         a[<span class="string">'@@functional/placeholder'</span>] === <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个函数的作用就是检查一个对象的@@functional/placeholder属性是否为true.</p>
+<p>第一个curry函数:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_curry1</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>.length === <span class="number">0</span> || _isPlaceholder(a)) &#123;</span><br><span class="line">      <span class="keyword">return</span> f1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">柯西</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/探索Ramda//" class="article-tag-list-link color3">探索Ramda</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -293,549 +1038,9 @@
 
 
   
-    <article id="post-lambda演算" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/lambda演算/">lambda演算入门</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/03/lambda演算/" class="archive-article-date">
-  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>来写一写lambda演算里的东西,主要是用代换模型人肉parse.</p>
-<h2 id="1-求值"><a href="#1-求值" class="headerlink" title="1. 求值"></a>1. 求值</h2><pre><code>一个&quot;λ&quot;一个&quot;.&quot;, 极简函数写法,
-比function,=&gt;,-&gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.
-例子:
-    (λx.(λy.x))a 求值结果为λy.a 
-    就是把a带进去,返回一个&quot;输入y返回a&quot;的函数.
-</code></pre><h2 id="2-布尔逻辑"><a href="#2-布尔逻辑" class="headerlink" title="2. 布尔逻辑"></a>2. 布尔逻辑</h2><pre><code>T 表示为：λx.λy.x      它接收两个参数x和y,返回x, 也就是说它返回前面的那个参数
-F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它返回后面的那个参数
-这样一来, if函数就是λbtf, 等价于λb.λt.λf.btf
-         if函数接收三个参数,分别是判断条件b,
-                                当b为True时: (λx.λy.x)(t)(f)  返回的语句t 
-                                和b为False时: (λx.λy.y)(t)(f) 返回的语句f
-
-         布尔逻辑运算符与或非分别是:
-         与: λab.IFabF  接收两个参数a和b, 如果a是True,那就返回前一个也就是b,与的结果和b的取值一样
-                                         如果a是False,那就返回后一个就是False
-         或: λab.IFaTb  接收两个参数a和b, 如果a是True,那就返回前一个也就是True
-                                         如果a是False,那就返回后一个就是b,或的结果和b的取值一样
-         非: λa.IFaFT   接收一个参数a, 如果a是True,那就返回前一个也就是False
-                                      如果a是False,那就返回后一个也就是True
-</code></pre><h2 id="3-数"><a href="#3-数" class="headerlink" title="3. 数"></a>3. 数</h2><pre><code>0=λf.λx.x
-1=λf.λx.fx
-2=λf.λx.f(fx)
-3=λf.λx.f(f(fx))
-后继函数S=λn.λf.λx.f((nf)x)
-加法: ADD = λab.(aS)b
-      举例: 0和0相加:  ((λf.λx.x)(λn.λf.λx.f((nf)x)))(λf.λx.x)
-                     = (λx.x)(λf.λx.x)
-                     = λf.λx.x
-                     = 0
-            1和2相加: (λf.λx.fx)(λn.λf.λx.f((nf)x))(λf.λx.f(fx))
-                     = (λn.λf.λx.f((nf)x))(λf.λx.f(fx))
-                     = λf.λx.f(((λf.λx.f(fx))f)x)
-                     = λf.λx.f((λx.f(fx))x)
-                     = λf.λx.f(f(fx))
-                     = 3
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">lambda演算</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ramda中的lens源码解读" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/ramda中的lens源码解读/">Ramda中的lens源码解读</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/03/ramda中的lens源码解读/" class="archive-article-date">
-  	<time datetime="2019-04-02T17:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>先上源码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig (s -&gt; a) -&gt; ((a, s) -&gt; s) -&gt; Lens s a</span><br><span class="line"> * @param &#123;<span class="built_in">Function</span>&#125; getter</span><br><span class="line"> * @param &#123;<span class="built_in">Function</span>&#125; setter</span><br><span class="line"> * @<span class="keyword">return</span> &#123;Lens&#125;</span><br><span class="line"> * @see R.view, R.set, R.over, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      <span class="keyword">const</span> xLens = R.lens(R.prop(<span class="string">'x'</span>), R.assoc(<span class="string">'x'</span>));</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);            <span class="comment">//=&gt; 1</span></span><br><span class="line"> *      R.set(xLens, <span class="number">4</span>, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);          <span class="comment">//=&gt; &#123;x: 4, y: 2&#125;</span></span><br><span class="line"> *      R.over(xLens, R.negate, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; &#123;x: -1, y: 2&#125;</span></span><br><span class="line"> *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">var lens = _curry2(function lens(getter, setter) &#123;</span></span><br><span class="line"><span class="regexp">  return function(toFunctorFn) &#123;</span></span><br><span class="line"><span class="regexp">    return function(target) &#123;</span></span><br><span class="line"><span class="regexp">      return map(</span></span><br><span class="line"><span class="regexp">        function(focus) &#123;</span></span><br><span class="line"><span class="regexp">          return setter(focus, target);</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        toFunctorFn(getter(target))</span></span><br><span class="line"><span class="regexp">      );</span></span><br><span class="line"><span class="regexp">    &#125;;</span></span><br><span class="line"><span class="regexp">  &#125;;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure></p>
-<p>不得不说这文档写的真棒,我好了.<br>使用代换模型人肉解析:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> xLens = R.lens(R.prop(<span class="string">'x'</span>), R.assoc(<span class="string">'x'</span>));</span><br><span class="line">当执行完这一行时,</span><br><span class="line">xLens = <span class="function"><span class="keyword">function</span>(<span class="params">toFunctorFn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> map(</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">focus</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> R.assoc(<span class="string">'x'</span>)(focus, target);</span><br><span class="line">        &#125;,</span><br><span class="line">        toFunctorFn(R.prop(<span class="string">'x'</span>)(target))</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
-<p>同时也看下view的代码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig Lens s a -&gt; s -&gt; a</span><br><span class="line"> * @param &#123;Lens&#125; lens</span><br><span class="line"> * @param &#123;*&#125; x</span><br><span class="line"> * @<span class="keyword">return</span> &#123;*&#125;</span><br><span class="line"> * @see R.prop, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      <span class="keyword">const</span> xLens = R.lensProp(<span class="string">'x'</span>);</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; 1</span></span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">4</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; 4</span></span><br><span class="line"> *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">var view = _curry2(function view(lens, x) &#123;</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ Using `Const` effectively ignores the setter function of the `lens`,</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ leaving the value returned by the getter function unmodified.</span></span><br><span class="line"><span class="regexp">  return lens(Const)(x).value;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// `Const` is a functor that effectively ignores the function given to `map`.</span></span><br><span class="line"><span class="keyword">var</span> Const = <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;<span class="attr">value</span>: x, <span class="string">'fantasy-land/map'</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>; &#125;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="string">``</span><span class="string">`JavaScript</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> R.view(xLens, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> function(toFunctorFn) &#123;</span></span><br><span class="line"><span class="string">    return function(target) &#123;</span></span><br><span class="line"><span class="string">      return map(</span></span><br><span class="line"><span class="string">        function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, target);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        toFunctorFn(R.prop('x')(target))</span></span><br><span class="line"><span class="string">      );</span></span><br><span class="line"><span class="string">    &#125;;</span></span><br><span class="line"><span class="string">  &#125;; (Const)(x).vale</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  map(function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        Const(R.prop('x')(&#123;x: 1, y: 2&#125;)))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  map(function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        Const(1))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    1</span></span><br></pre></td></tr></table></figure>
-<p>Ramda里面有很多地方用到了这个函数_dispatchable</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">lens</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/探索Ramda//" class="article-tag-list-link color3">探索Ramda</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Array/">Array</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/Array/" class="archive-article-date">
-  	<time datetime="2019-04-02T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li><a href="https://leetcode.com/problems/move-zeroes/" target="_blank" rel="noopener">283. Move Zeroes</a><br>遍历数组时用一个索引idx存非零元素往前填充的位置<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">moveZeros</span><span class="params">(<span class="keyword">int</span> nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> (num != <span class="number">0</span>) &#123;</span><br><span class="line">            nums[idx++] = num;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (idx &lt; nums.length) &#123;</span><br><span class="line">        nums[idx++] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>2.<a href="https://leetcode.com/problems/reshape-the-matrix/" target="_blank" rel="noopener">566. Reshape the Matrix</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Array</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Tree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Tree/">Tree</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/Tree/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>说起树,首先想到的就是递归,递归,还有递归…<br>树的算法里确实有很多漂亮的递归,感觉比Scheme里面的递归还要迷人(主要是指迷惑的迷)</p>
-<h2 id="1-树的高度"><a href="#1-树的高度" class="headerlink" title="1. 树的高度"></a>1. 树的高度</h2><p><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">104. Maximum Depth of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(maxDepth(root.left), maxDepth(root.right)) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>算法很优雅,但是并不能一眼看穿,来人肉单步执行一下吧<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">3</span></span><br><span class="line">   / \</span><br><span class="line">  <span class="number">9</span>  <span class="number">20</span></span><br><span class="line">    /  \</span><br><span class="line">   <span class="number">15</span>   <span class="number">7</span></span><br><span class="line"></span><br><span class="line">Math.max(maxDepth(<span class="number">9</span>), maxDepth(<span class="number">20</span>)) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="number">15</span>), maxDepth(<span class="number">7</span>)) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(<span class="number">0</span>, <span class="number">0</span>) + <span class="number">1</span>, Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, Math.max(<span class="number">1</span>, <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, <span class="number">2</span>) + <span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="2-平衡树"><a href="#2-平衡树" class="headerlink" title="2. 平衡树"></a>2. 平衡树</h2><p><a href="https://leetcode.com/problems/balanced-binary-tree" target="_blank" rel="noopener">110. Balanced Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> result = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBalanced</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    maxDepth(root);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = maxDepth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = maxDepth(root.right);</span><br><span class="line">    <span class="keyword">if</span> (Math.abs(l - r) &gt; <span class="number">1</span>)</span><br><span class="line">        result = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>利用最大高度,每次递归求的时候看下左子树和右子树的高度差有没有超过1</p>
-<h2 id="3-两节点的最长路径"><a href="#3-两节点的最长路径" class="headerlink" title="3. 两节点的最长路径"></a>3. 两节点的最长路径</h2><p><a href="https://leetcode.com/problems/diameter-of-binary-tree" target="_blank" rel="noopener">543. Diameter of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">diameterOfBinaryTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    depth(root);</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">depth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = depth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = depth(root.right);</span><br><span class="line">    max = Math.max(max, l + r);</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>也是利用求最大高度的, 每次算一下左边和右边的距离, 存一个最大值.</p>
-<h2 id="4-翻转树"><a href="#4-翻转树" class="headerlink" title="4. 翻转树"></a>4. 翻转树</h2><p><a href="https://leetcode.com/problems/invert-binary-tree" target="_blank" rel="noopener">226. Invert Binary Tree</a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">invertTree</span><span class="params">(TreeNode)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    TreeNode left = root.left;</span><br><span class="line">    root.left = invertTree(root.right);</span><br><span class="line">    root.right = invertTree(left);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>人肉单步执行:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">     <span class="number">4</span></span><br><span class="line">   /   \</span><br><span class="line">  <span class="number">2</span>     <span class="number">7</span></span><br><span class="line"> / \   / \</span><br><span class="line"><span class="number">1</span>   <span class="number">3</span> <span class="number">6</span>   <span class="number">9</span></span><br><span class="line"></span><br><span class="line">invertTree(<span class="number">4</span>)</span><br><span class="line">    root = <span class="number">4</span>,</span><br><span class="line">    left = <span class="number">2</span>,</span><br><span class="line">    root.left = invertTree(<span class="number">7</span>)</span><br><span class="line">                    left = <span class="number">6</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">9</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">6</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">    root.right = invertTree(<span class="number">2</span>)</span><br><span class="line">                    left = <span class="number">1</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">3</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">1</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure></p>
-<p>交换值,本来是一个比较常见的操作:<br>int temp = a;<br>a = b;<br>b = temp;<br>但是要让这个操作应用到树的每一个左右节点时,就让人犯了难.<br>看上面的演算就知道要临场想出来难度有多大.<br>让我想到了以前背的四阶魔方最后一个L公式之后可能出现的中间两个错位现象,当时我们把它叫做牙齿公式.<br>15步的超长公式,很酷炫同时也很难记住.<br>我当时把这个公式用订书机钉在了数学笔记本上,每次翻笔记的时候都会顺带复习一遍.<br>但是难度大+用得少,不可避免的会遗忘.</p>
-<h2 id="5-合并树"><a href="#5-合并树" class="headerlink" title="5.合并树"></a>5.合并树</h2><p><a href="https://leetcode.com/problems/merge-two-binary-trees" target="_blank" rel="noopener">617. Merge Two Binary Trees</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">mergeTrees</span><span class="params">(TreeNode t1, TreeNode t2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span> &amp;&amp; t2 == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span>) <span class="keyword">return</span> t2;</span><br><span class="line">    <span class="keyword">if</span> (t2 == <span class="keyword">null</span>) <span class="keyword">return</span> t1;</span><br><span class="line">    TreeNode root = <span class="keyword">new</span> TreeNode(t1.val + t2.val);</span><br><span class="line">    root.left = mergeTrees(t1.left, t2.left);</span><br><span class="line">    root.right = mergeTrees(t1.right, t2.right);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>精准而优雅,嗯…<br>新建了一个二叉树,而不是一个合并到另一个上.</p>
-<h2 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h2>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Tree</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-汉诺塔问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/汉诺塔问题/">汉诺塔问题</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/汉诺塔问题/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>看&lt;&lt;七周七Web框架&gt;&gt;的时候里面提到了这个问题,突然想看看怎么解决它.<br>当A有两个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C<br>当A有三个盘子,则:<br>    1 -&gt; C, 2 -&gt; B, 1 -&gt; B, 3 -&gt; C, 1 -&gt; A, 2 -&gt; C, 1 -&gt; C<br>当A有四个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C, 3 -&gt; B, 1 -&gt; A, 2 -&gt; B, 1 -&gt; B, 4 -&gt; C 然后就是三个盘子的问题</p>
-<p>Java实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Hanoi().hanoi(<span class="number">5</span>, <span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b, <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            hanoi(n - <span class="number">1</span>, a, c, b);</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">            hanoi(n - <span class="number">1</span>, b, a, c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b)</span> </span>&#123;</span><br><span class="line">        count++;</span><br><span class="line">        System.out.println(<span class="string">"第"</span> + count + <span class="string">"次: "</span> + n + <span class="string">"号盘子从"</span> + a + <span class="string">"移动到"</span> + b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-1018. Binary Prefix Divisible By 5" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/1018. Binary Prefix Divisible By 5/">1018. Binary Prefix Divisible By 5</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/1018. Binary Prefix Divisible By 5/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:01:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="1018-Binary-Prefix-Divisible-By-5"><a href="#1018-Binary-Prefix-Divisible-By-5" class="headerlink" title="1018. Binary Prefix Divisible By 5"></a><a href="https://leetcode.com/problems/binary-prefix-divisible-by-5/" target="_blank" rel="noopener">1018. Binary Prefix Divisible By 5</a></h1><h3 id="我想写对个东西怎么就这么难"><a href="#我想写对个东西怎么就这么难" class="headerlink" title="我想写对个东西怎么就这么难 -_-"></a>我想写对个东西怎么就这么难 -_-</h3><hr>
-<ol>
-<li>最开始的初始暴力想法: 把每个位置对应的数转化为题目中要求的数, 然后看是否能被5整除.<br> 简单的写了个双重循环后开始脑壳疼, 数组头部的边界条件不太好写啊, 不要然从后往前遍历.<br> 过于复杂了,看看别人的思路吧.</li>
-<li>这个规则是数组元素往二进制里面加, 思路就是就用左移并且把数组元素是0或1考虑进来.</li>
-<li> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">int</span> acc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : A) &#123;</span><br><span class="line">    acc = (acc &lt;&lt; <span class="number">1</span>) + i;</span><br><span class="line">    res.add(acc % <span class="number">5</span> == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res;</span><br></pre></td></tr></table></figure>
-<p> 按照别人的python解法仿照写的java代码,给的几个Example都没问题,点击Submit,失败.<br> 这种写法的确是符合正常思路,但是题目中给的数组长度是1到30000,而java的int只有2^31,<br> 所以int溢出了.<br> python还是爽啊,写代码跟着思路走就行,你只管岁月静好,自有动态类型替你负重前行.<br> 不过倔强的java程序员不会就此认输,悄悄地把取模移了上去: </p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">int</span> acc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : A) &#123;</span><br><span class="line">    acc = (acc * <span class="number">2</span> + i) % <span class="number">5</span>;</span><br><span class="line">    res.add(acc == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res;</span><br></pre></td></tr></table></figure>
-<p> 为什么敢移上去呢?就因为int装不下吗?并不:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">证明 (n * <span class="number">2</span> + <span class="number">1</span>) % <span class="number">5</span> 等于 ((n % <span class="number">5</span>) * <span class="number">2</span> + <span class="number">1</span>) % <span class="number">5</span></span><br><span class="line">因为</span><br><span class="line">    (a + b) % p = (a % p + b % p) % p</span><br><span class="line">    (a * b) % p = (a % p * b % p) % p</span><br><span class="line">    a % p == a % p % p</span><br><span class="line">所以</span><br><span class="line">    左边 = ((n * <span class="number">2</span>) % <span class="number">5</span> + <span class="number">1</span> % <span class="number">5</span>) % <span class="number">5</span></span><br><span class="line">        = ((((n % <span class="number">5</span>) * <span class="number">2</span>) % <span class="number">5</span>) + <span class="number">1</span>) % <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    右边 = 左边</span><br></pre></td></tr></table></figure>
-<p> 嗯…不知道这儿又可以引发多少对两种语言的思考.</p>
-</li>
-<li><p>写java的过程中同时又踩了其他的坑—–运算符优先级:<br> 乘除取模 &gt; 加减 &gt; 移位 &gt; 按位或<br> 所以 </p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">acc &lt;&lt; <span class="number">1</span> + a 问题很大</span><br><span class="line">acc &lt;&lt; <span class="number">1</span> | a 还ok</span><br><span class="line">acc &lt;&lt; <span class="number">1</span> | a % <span class="number">5</span> 问题很大</span><br></pre></td></tr></table></figure>
-</code></pre><p> 多写括号可破:</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((acc &lt;&lt; <span class="number">1</span>) | a) % <span class="number">5</span></span><br></pre></td></tr></table></figure>
-</code></pre></li>
-<li><p>从移位来考虑应当是 acc &lt;&lt; 1 | a<br> 从二进制转十进制的阶数来考虑是 acc * 2 + 1<br> 两种写法杂糅在一起感觉有些奇怪</p>
-</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">二进制操作</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/LeetCode-Weekly-Contest//" class="article-tag-list-link color4">LeetCode Weekly Contest</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -926,7 +1131,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -942,6 +1147,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
@@ -950,19 +1163,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -970,7 +1171,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
+                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -978,7 +1187,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
+                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -986,7 +1195,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">lens</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Web</a>
               </li>
              
               <li class="article-tag-list-item">

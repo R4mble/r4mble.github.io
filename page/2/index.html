@@ -145,6 +145,83 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JavaScript里的Monad" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/JavaScript里的Monad/">JavaScript里的Monad</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/JavaScript里的Monad/" class="archive-article-date">
+  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> f = <span class="function"><span class="params">x</span> =&gt;</span> x + <span class="string">'b'</span>;</span><br><span class="line"><span class="keyword">const</span> a = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">const</span> b = f(a);</span><br><span class="line"><span class="built_in">console</span>.log(b);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Just</span>(<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = val</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Just.prototype.map = <span class="function"><span class="keyword">function</span> (<span class="params">f</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Just(f(<span class="keyword">this</span>.value))</span><br><span class="line">&#125;;</span><br><span class="line">Just.of = <span class="function"><span class="keyword">function</span>(<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Just(val)</span><br><span class="line">&#125;;</span><br><span class="line">Just.prototype.ap = <span class="function"><span class="keyword">function</span> (<span class="params">container</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> container.map(<span class="keyword">this</span>.value);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> fa = <span class="keyword">new</span> Just(a);</span><br><span class="line"><span class="comment">//map over, fmap :: (a -&gt; b) -&gt; fa -&gt; fb, a到b的映射接受a的Functor后返回b的Functor</span></span><br><span class="line"><span class="keyword">const</span> fb = fa.map(f);</span><br><span class="line"><span class="built_in">console</span>.log(fb);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Applicative Functor   f (a -&gt; b) -&gt; f a -&gt; f b, a到b映射的容器接受a的容器返回b的容器</span></span><br><span class="line"><span class="keyword">const</span> fplus2 = Just.of(<span class="function"><span class="params">x</span> =&gt;</span> x + <span class="number">2</span>);</span><br><span class="line"><span class="built_in">console</span>.log(fplus2.ap(Just.of(<span class="number">3</span>)));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Nothing</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">Nothing.prototype.map = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> nothing = <span class="keyword">new</span> Nothing;</span><br><span class="line"></span><br><span class="line">Just.prototype.flat = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.value;</span><br><span class="line">&#125;;</span><br><span class="line">Just.prototype.flatMap = <span class="function"><span class="keyword">function</span>(<span class="params">f</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.map(f).flat();</span><br><span class="line">&#125;;</span><br><span class="line">Nothing.prototype.flatMap = Nothing.prototype.map;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Monad让我们可以把一个容器中的值传入一个接收值的函数中,并返回同样的容器.</span></span><br><span class="line"><span class="keyword">var</span> monad = Just.of(<span class="literal">undefined</span>)</span><br><span class="line">                .flatMap(<span class="function"><span class="params">x</span> =&gt;</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (x)</span><br><span class="line">                        <span class="keyword">return</span> Just.of(x.value)</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        <span class="keyword">return</span> nothing</span><br><span class="line">                &#125;)</span><br><span class="line">                .map(<span class="function"><span class="params">x</span> =&gt;</span> x + <span class="number">1</span>)</span><br><span class="line">                .map(<span class="function"><span class="params">x</span> =&gt;</span> <span class="number">2</span> / x);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(monad);</span><br><span class="line"><span class="built_in">console</span>.log(Just.of(<span class="literal">undefined</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函子是一个普通对象,它实现了map函数,在遍历每个对象值的时候生成一个新的对象</span></span><br><span class="line"><span class="comment">// 函子是持有值的容器</span></span><br><span class="line"><span class="keyword">const</span> Container = <span class="function"><span class="keyword">function</span>(<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = val</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Container.of = <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Container(value)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Container.prototype.map = <span class="function"><span class="keyword">function</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Container.of(fn(<span class="keyword">this</span>.value))</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> double = <span class="function">(<span class="params">x</span>) =&gt;</span> <span class="number">2</span> * x;</span><br><span class="line">Container.of(<span class="number">3</span>).map(double);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//MayBe函子</span></span><br><span class="line"><span class="keyword">const</span> MayBe = <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = val</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">MayBe.of = <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MayBe(val)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">MayBe.prototype.isNothing = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">this</span>.value === <span class="literal">null</span> || <span class="keyword">this</span>.value === <span class="literal">undefined</span>)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">MayBe.prototype.map = <span class="function"><span class="keyword">function</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.isNothing() ? MayBe.of(<span class="literal">null</span>) : MayBe.of(fn(<span class="keyword">this</span>.value))</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//MayBe用例</span></span><br><span class="line">MayBe.of(<span class="string">"string"</span>).map(<span class="function"><span class="params">x</span> =&gt;</span> x.toUpperCase());</span><br><span class="line">MayBe.of(<span class="string">"null"</span>).map(<span class="function"><span class="params">x</span> =&gt;</span> x.toUpperCase());</span><br><span class="line"></span><br><span class="line">MayBe.of(<span class="string">"George"</span>)</span><br><span class="line">    .map(<span class="function"><span class="params">x</span> =&gt;</span> x.toUpperCase())</span><br><span class="line">    .map(<span class="function"><span class="params">x</span> =&gt;</span> <span class="string">"Mr. "</span> + x);</span><br><span class="line"></span><br><span class="line"><span class="comment">//第二个map函数仍然会被调用</span></span><br><span class="line">MayBe.of(<span class="string">"George"</span>)</span><br><span class="line">    .map(<span class="function"><span class="params">x</span> =&gt;</span> <span class="literal">null</span>)</span><br><span class="line">    .map(<span class="function"><span class="params">x</span> =&gt;</span> <span class="string">"Mr. "</span> + x);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Either函子</span></span><br><span class="line"><span class="keyword">const</span> Nothing = <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = val</span><br><span class="line">&#125;;</span><br><span class="line">Nothing.of = <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Nothing(val)</span><br><span class="line">&#125;;</span><br><span class="line">Nothing.prototype.map = <span class="function"><span class="keyword">function</span> (<span class="params">f</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> Some = <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = val;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Some.of = <span class="function"><span class="keyword">function</span> (<span class="params">val</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Some(val)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Some.prototype.map = <span class="function"><span class="keyword">function</span> (<span class="params">fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Some.of(fn(<span class="keyword">this</span>.value))</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Either = &#123;</span><br><span class="line">    Some: Some,</span><br><span class="line">    Nothing: Nothing</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Monad</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/JavaScript里的Monad/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java里的for-in" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1158,105 +1235,9 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 
 
   
-    <article id="post-Spring-MVC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spring-MVC/">Spring MVC</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Spring-MVC/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>DispatcherServlet</p>
-<pre><code>1.用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.
-
-2.DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该
-    Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.
-    这些对象被封装到一个HandlerExecutionChain对象当中返回
-
-3.DispatcherServlet根据Handler选择HandlerAdapter,调用实际处理请求的方法.
-
-4.提取请求中的模型数据,执行Handler.在填充Handler入参过程中:
-    消息转换:   将json,xml等转换成一个对象,将对象转换为指定的响应消息
-    数据转换:   对请求消息进行数据转换,String转换为Integer,Double等
-    数据格式化:  如字符串转为格式化数字或格式化日期等
-    数据验证:   验证数据的有效性,验证结果存到BindingResult或Error中
-
-5.Handler执行完成之后,向DispatcherServlet返回一个ModelAndView对象,包含视图名
-    或视图名和模型
-
-6.根据ModelAndView选择一个合适的ViewResolver返回给DispatcherServlet
-
-7.ViewSolver结合Model和View来渲染视图
-
-8.将视图返回给客户端
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spring-MVC/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -1359,7 +1340,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1367,19 +1348,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1391,7 +1368,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1403,19 +1384,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
               </li>
              
               <li class="article-tag-list-item">

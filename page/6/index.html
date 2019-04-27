@@ -145,31 +145,50 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Ramda里的柯西化实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java8查漏补缺" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Ramda里的柯西化实现/">Ramda里的柯西化实现</a>
+      <a class="article-title" href="/2019/04/05/Java8查漏补缺/">Java8查漏补缺</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Ramda里的柯西化实现/" class="archive-article-date">
-  	<time datetime="2019-04-03T18:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/05/Java8查漏补缺/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>先说R.__ (两个下划线)<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> __ = &#123;<span class="string">'@@functional/placeholder'</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"></span><br><span class="line"> *      <span class="keyword">const</span> greet = R.replace(<span class="string">'&#123;name&#125;'</span>, R.__, <span class="string">'Hello, &#123;name&#125;!'</span>);</span><br><span class="line"> *      greet(<span class="string">'Alice'</span>); <span class="comment">//=&gt; 'Hello, Alice!'</span></span><br></pre></td></tr></table></figure></p>
-<p>R.__是一个含有@@functional/placeholder属性的对象, 那么它是怎么起到占位符作用的呢?</p>
-<p>看下这个函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_isPlaceholder</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">         <span class="keyword">typeof</span> a === <span class="string">'object'</span> &amp;&amp;</span><br><span class="line">         a[<span class="string">'@@functional/placeholder'</span>] === <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这个函数的作用就是检查一个对象的@@functional/placeholder属性是否为true.</p>
-<p>第一个curry函数:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_curry1</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>.length === <span class="number">0</span> || _isPlaceholder(a)) &#123;</span><br><span class="line">      <span class="keyword">return</span> f1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        <ol>
+<li><p>函数式接口里可以有继承自Object类的抽象方法.<br> 例:</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><p> 以上代码是合法的.</p>
+</li>
+<li><p>函数式接口的实例可以通过 lambda表达式, 方法引用 或者 构造方法引用 创建.</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyInterface myInterface = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">System.out.println(myInterface.getClass());</span><br><span class="line">System.out.println(myInterface.getClass().getSuperclass());</span><br><span class="line">System.out.println(myInterface.getClass().getInterfaces()[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+class sth.jdk8.Test2$$Lambda$2/1149319664
+class java.lang.Object
+interface sth.jdk8.MyInterface
+</code></pre><p> 可以看到这个函数式接口实例的父类是Object,它实现了接口MyInterface</p>
+<pre><code>通过方法引用创建函数式接口实例
+list.forEach(System.out::println);
+</code></pre></li>
+<li><p>方法引用的四种形式:<br>  类名::实例方法 所对应lambda表达式的第一个参数就是这个调用方法的对象</p>
+</li>
+<li><p>Function&lt;T, R&gt;接口<br> Represents a function that accepts one argument and produces a result.<br> 抽象方法:     R apply(T t);<br> 例:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, String&gt; function)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 默认方法: compose andThen<br> 静态方法: identity</p>
+<p> BiFunction&lt;T, U, R&gt;接口<br> 抽象方法: R apply(T t, U u);<br> 默认方法: <v> BiFunction&lt;T, U, V&gt; andThen(Function&lt;? super R, ? extends V&gt; after)</v></p>
+<p> 重要建议: equals方法 把常量放在前面,变量放在后面. 可以避免变量为null时引发的空指针异常</p>
+</li>
+</ol>
 
       
 
@@ -187,32 +206,17 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">柯西</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/探索Ramda//" class="article-tag-list-link color3">探索Ramda</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Ramda里的柯西化实现/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Java8查漏补缺/">展开全文 >></a>
         </p>
       
 
@@ -242,144 +246,137 @@
 
 
   
-    <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JavaScript教程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/类型系统/">类型系统入门</a>
+      <a class="article-title" href="/2019/04/04/JavaScript教程/">JavaScript教程</a>
     </h1>
   
 
         
-        <a href="/2019/04/03/类型系统/" class="archive-article-date">
-  	<time datetime="2019-04-03T07:50:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+        <a href="/2019/04/04/JavaScript教程/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>多态类型,子类型,依赖类型 三个正交分支</p>
-<p>递归由函数不动点实现</p>
-<p>p355 解答<br>无类型系统<br>    第3章 无类型算术表达式<br>        练习3.24 p38<br>            S1 = {true,false,0}<br>            Si+1 = Si^3 + Si*3 + 3<br>            解释: 不考虑类型合不合适.<br>            得: S3有59439个元素.</p>
-<pre><code>练习3.25 归纳证明 构造Sj Si Si+1
-</code></pre><p>简单类型<br>子类型化<br>递归类型<br>多态</p>
+        <p>基本语法<br>    变量<br>        声明和赋值<br>            var a = 1;<br>            当只声明了变量,而没有赋值时 为 undefined</p>
+<pre><code>    变量没有类型,只有值有类型
+        var a = 42;
+        typeof a; // &quot;number&quot;
 
-      
+        a = true;
+        typeof a; // &quot;boolean&quot;
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">类型系统</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        typeof typeof 42; // &quot;string&quot;
 
-      
+    变量提升
+        JavaScript引擎会先解析代码,获取所有被声明的变量.
+            console.log(a);
+            var a = 1;
+            //执行时相当于先声明了a,但是没有赋值,会打印出undefined
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/类型系统/">展开全文 >></a>
-        </p>
-      
+标识符
+    第一个字符可以是任意Unicode字母,不能是数字, 包括 $ 和 _
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+区块
+    对var来说,区块不构成单独的作用域
+    {
+        var a = 1;
+    }
+    a // 1
 
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+逻辑控制
+    if else switch 三目运算符 while for do...while break continue 同 Java
+
+标签
+    通常和break,continue配合
+
+    top:
+        for (var i=0; i&lt;3; i++) {
+            for (var j=0; j&lt;3; j++) {
+                if (i===1 &amp;&amp; j===1) break top;
+            }
+        }
+    满足条件跳出双层循环. 如果不使用标签则只能跳出内层循环.
+</code></pre><p>数据类型<br>    number      整数和小数<br>    string<br>    boolean<br>    undefined<br>    null<br>    object<br>    symbol</p>
+<pre><code>typeof运算符
+    typeof 123 // &quot;number&quot;
+    typeof &quot;123&quot; // &quot;string&quot;
+    typeof false // &quot;boolean&quot;
+
+    函数 返回 function
+    function f() {}
+    typeof f // &quot;function&quot;
+
+    未定义变量 返回 undefined, 可以用来检测没有声明的变量
+    typeof undefined === &quot;undefined&quot;
+
+    typeof window // &quot;object&quot;
+    typeof {} // &quot;object&quot;
+    typeof [] // &quot;object&quot;
+
+    var o = {};
+    var a = [];
+
+    区分数组和对象
+    o instanceof Array //false
+    a instanceof Array //true
 
 
+    typeof null === &quot;object&quot; //这个是存在了20年的bug,应该返回null
+
+    检测null:
+        val a = null;
+        (!a &amp;&amp; typeof a === &quot;object&quot;) //true, null是假值, undefined也是假值
+
+    undefined == null //true
+
+    Number(null) //0
+    5 + null //5
+
+    Number(undefined) //NaN
+    5 + undefined // NaN
+
+    null表示空值
+    undefined表示未定义
+        1)变量声明了但没有赋值
+        2)调用函数时该提供的参数没有提供
+        3)对象没有该属性
+        4)函数没有返回值,默认返回 undefined
 
 
-  
-    <article id="post-lambda演算" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/lambda演算/">lambda演算入门</a>
-    </h1>
-  
+布尔值
+    以下为false, 其他为true
+    undefined
+    null
+    false
+    0
+    NaN
+    &quot;&quot; 或 &apos;&apos;
 
-        
-        <a href="/2019/04/03/lambda演算/" class="archive-article-date">
-  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>来写一写lambda演算里的东西,主要是用代换模型人肉parse.</p>
-<h2 id="1-求值"><a href="#1-求值" class="headerlink" title="1. 求值"></a>1. 求值</h2><pre><code>一个&quot;λ&quot;一个&quot;.&quot;, 极简函数写法,
-比function,=&gt;,-&gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.
-例子:
-    (λx.(λy.x))a 求值结果为λy.a 
-    就是把a带进去,返回一个&quot;输入y返回a&quot;的函数.
-</code></pre><h2 id="2-布尔逻辑"><a href="#2-布尔逻辑" class="headerlink" title="2. 布尔逻辑"></a>2. 布尔逻辑</h2><pre><code>T 表示为：λx.λy.x      它接收两个参数x和y,返回x, 也就是说它返回前面的那个参数
-F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它返回后面的那个参数
-这样一来, if函数就是λbtf, 等价于λb.λt.λf.btf
-         if函数接收三个参数,分别是判断条件b,
-                                当b为True时: (λx.λy.x)(t)(f)  返回的语句t 
-                                和b为False时: (λx.λy.y)(t)(f) 返回的语句f
+    空数组和空对象都是true
 
-         布尔逻辑运算符与或非分别是:
-         与: λab.IFabF  接收两个参数a和b, 如果a是True,那就返回前一个也就是b,与的结果和b的取值一样
-                                         如果a是False,那就返回后一个就是False
-         或: λab.IFaTb  接收两个参数a和b, 如果a是True,那就返回前一个也就是True
-                                         如果a是False,那就返回后一个就是b,或的结果和b的取值一样
-         非: λa.IFaFT   接收一个参数a, 如果a是True,那就返回前一个也就是False
-                                      如果a是False,那就返回后一个也就是True
-</code></pre><h2 id="3-数"><a href="#3-数" class="headerlink" title="3. 数"></a>3. 数</h2><pre><code>0=λf.λx.x
-1=λf.λx.fx
-2=λf.λx.f(fx)
-3=λf.λx.f(f(fx))
-后继函数S=λn.λf.λx.f((nf)x)
-加法: ADD = λab.(aS)b
-      举例: 0和0相加:  ((λf.λx.x)(λn.λf.λx.f((nf)x)))(λf.λx.x)
-                     = (λx.x)(λf.λx.x)
-                     = λf.λx.x
-                     = 0
-            1和2相加: (λf.λx.fx)(λn.λf.λx.f((nf)x))(λf.λx.f(fx))
-                     = (λn.λf.λx.f((nf)x))(λf.λx.f(fx))
-                     = λf.λx.f(((λf.λx.f(fx))f)x)
-                     = λf.λx.f((λx.f(fx))x)
-                     = λf.λx.f(f(fx))
-                     = 3
+数值
+    所有数值以64位浮点数形式存储,也就是说这个语言根本没有整数
+        1 === 1.0  true
+
+    浮点数不精确,所以
+        0.1 + 0.2 === 0.3  //false
+
+        0.3 / 0.1   //2.999999999
+
+        (0.3 - 0.2) === (0.2 - 0.1)  //false
+
+    64个二进制位: 第1位 符号位,
+                 第2位到第12位(共11位) 指数部分, 
+                 第13位到第64位(共52位) 小数部分.
 </code></pre>
       
 
@@ -393,11 +390,7 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">lambda演算</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
         		</li>
       		
 		</ul>
@@ -407,7 +400,7 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/lambda演算/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/04/JavaScript教程/">展开全文 >></a>
         </p>
       
 
@@ -437,27 +430,27 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
 
 
   
-    <article id="post-Ramda搜索关键字得到图片列表并展示" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Haskell实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">Ramda搜索关键字得到图片列表并展示</a>
+      <a class="article-title" href="/2019/04/04/Haskell实现2048/">Haskell实现2048</a>
     </h1>
   
 
         
-        <a href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/" class="archive-article-date">
-  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+        <a href="/2019/04/04/Haskell实现2048/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">requirejs.config(&#123;</span><br><span class="line">    paths: &#123;</span><br><span class="line">        ramda: <span class="string">'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.13.0/ramda.min'</span>,</span><br><span class="line">        jquery: <span class="string">'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>([</span><br><span class="line">    <span class="string">'ramda'</span>,</span><br><span class="line">    <span class="string">'jquery'</span>,</span><br><span class="line">],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">_, $</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> Impure = &#123;</span><br><span class="line">            getJSON: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">callback, url</span>) </span>&#123;</span><br><span class="line">                $.getJSON(url, callback);</span><br><span class="line">            &#125;),</span><br><span class="line"></span><br><span class="line">            setHtml: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">sel, html</span>) </span>&#123;</span><br><span class="line">                $(sel).html(html)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> img = <span class="function"><span class="keyword">function</span> (<span class="params">url</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> $(<span class="string">'&lt;img /&gt;'</span>, &#123; <span class="attr">src</span>: url&#125;);</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> trace = _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">tag, x</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(tag, x);</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> url = <span class="function"><span class="keyword">function</span> (<span class="params">term</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'https://api.flickr.com/services/feeds/photos_public.gne?tags='</span> + term + <span class="string">'&amp;format=json&amp;jsoncallback=?'</span>;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> mediaUrl = _.compose(_.prop(<span class="string">'m'</span>), _.prop(<span class="string">'media'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let srcs = _.compose(_.map(mediaUrl), _.prop('items'));</span></span><br><span class="line">        <span class="comment">// let images = _.compose(_.map(img), srcs);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//上面2行有两个map, 循环了两边.  优化写法:</span></span><br><span class="line">        <span class="keyword">let</span> mediaToImg = _.compose(img, mediaUrl);</span><br><span class="line">        <span class="keyword">let</span> images = _.compose(_.map(mediaToImg), _.prop(<span class="string">'items'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> renderImages = _.compose(Impure.setHtml(<span class="string">"body"</span>), images);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> app = _.compose(Impure.getJSON(renderImages), url);</span><br><span class="line"></span><br><span class="line">        app(<span class="string">"star"</span>);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+        <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Prelude <span class="keyword">hiding</span> (<span class="type">Left</span>, <span class="type">Right</span>)</span><br><span class="line"><span class="keyword">import</span> Data.Char (<span class="title">toLower</span>)</span><br><span class="line"><span class="keyword">import</span> Data.List</span><br><span class="line"><span class="keyword">import</span> System.IO</span><br><span class="line"><span class="keyword">import</span> System.Random</span><br><span class="line"><span class="keyword">import</span> Text.Printf</span><br><span class="line"><span class="keyword">import</span> System.Process</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Move</span> = <span class="type">Up</span> | <span class="type">Down</span> | <span class="type">Left</span> | <span class="type">Right</span></span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">Grid</span> = [[<span class="type">Int</span>]]</span></span><br><span class="line"></span><br><span class="line"><span class="title">start</span> :: <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">start</span> = <span class="keyword">do</span> grid'  &lt;- addTile $ replicate <span class="number">4</span> [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line">           addTile grid'</span><br><span class="line"></span><br><span class="line"><span class="title">merge</span> :: [<span class="type">Int</span>] -&gt; [<span class="type">Int</span>]</span><br><span class="line"><span class="title">merge</span> xs = merged ++ padding</span><br><span class="line">    <span class="keyword">where</span> padding = replicate (length xs - length merged) <span class="number">0</span></span><br><span class="line">          merged  = combine $ filter (/= <span class="number">0</span>) xs</span><br><span class="line">          combine (x:y:xs) | x == y = x * <span class="number">2</span> : combine xs</span><br><span class="line">                           | otherwise = x  : combine (y:xs)</span><br><span class="line">          combine x = x</span><br><span class="line"></span><br><span class="line"><span class="title">move</span> :: <span class="type">Move</span> -&gt; <span class="type">Grid</span> -&gt; <span class="type">Grid</span></span><br><span class="line"><span class="title">move</span> <span class="type">Left</span>  = map merge</span><br><span class="line"><span class="title">move</span> <span class="type">Right</span> = map (reverse . merge . reverse)</span><br><span class="line"><span class="title">move</span> <span class="type">Up</span>    = transpose . move <span class="type">Left</span>  . transpose</span><br><span class="line"><span class="title">move</span> <span class="type">Down</span>  = transpose . move <span class="type">Right</span> . transpose</span><br><span class="line"></span><br><span class="line"><span class="title">getZeroes</span> :: <span class="type">Grid</span> -&gt; [(<span class="type">Int</span>, <span class="type">Int</span>)]</span><br><span class="line"><span class="title">getZeroes</span> grid = filter (\(row, col) -&gt; (grid!!row)!!col == <span class="number">0</span>) coordinates</span><br><span class="line">    <span class="keyword">where</span> singleRow n = zip (replicate <span class="number">4</span> n) [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line">          coordinates = concatMap singleRow [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">setSquare</span> :: <span class="type">Grid</span> -&gt; (<span class="type">Int</span>, <span class="type">Int</span>) -&gt; <span class="type">Int</span> -&gt; <span class="type">Grid</span></span><br><span class="line"><span class="title">setSquare</span> grid (row, col) val = pre ++ [mid] ++ post</span><br><span class="line">    <span class="keyword">where</span> pre  = take row grid</span><br><span class="line">          mid  = take col (grid!!row) ++ [val] ++ drop (col + <span class="number">1</span>) (grid!!row)</span><br><span class="line">          post = drop (row + <span class="number">1</span>) grid</span><br><span class="line"></span><br><span class="line"><span class="title">isMoveLeft</span> :: <span class="type">Grid</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">isMoveLeft</span> grid = sum allChoices &gt; <span class="number">0</span></span><br><span class="line">    <span class="keyword">where</span> allChoices = map (length . getZeroes . flip move grid) directions</span><br><span class="line">          directions = [<span class="type">Left</span>, <span class="type">Right</span>, <span class="type">Up</span>, <span class="type">Down</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">printGrid</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">printGrid</span> grid = <span class="keyword">do</span></span><br><span class="line">    system <span class="string">"cls"</span> <span class="comment">-- clears the screen</span></span><br><span class="line">    mapM_ (putStrLn . showRow) grid</span><br><span class="line"></span><br><span class="line"><span class="title">showRow</span> :: [<span class="type">Int</span>] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">showRow</span> = concatMap (printf <span class="string">"%5d"</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">moves</span> :: [(<span class="type">Char</span>, <span class="type">Move</span>)]</span><br><span class="line"><span class="title">moves</span> = keys <span class="string">"wasd"</span> ++ keys <span class="string">"chtn"</span></span><br><span class="line">    <span class="keyword">where</span> keys chars = zip chars [<span class="type">Up</span>, <span class="type">Left</span>, <span class="type">Down</span>, <span class="type">Right</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">captureMove</span> :: <span class="type">IO</span> <span class="type">Move</span></span><br><span class="line"><span class="title">captureMove</span> = <span class="keyword">do</span></span><br><span class="line">    inp &lt;- getChar</span><br><span class="line">    <span class="keyword">case</span> lookup (toLower inp) moves <span class="keyword">of</span></span><br><span class="line">        <span class="type">Just</span> x  -&gt; return x</span><br><span class="line">        <span class="type">Nothing</span> -&gt; <span class="keyword">do</span> putStrLn <span class="string">"Use WASD or CHTN as input"</span></span><br><span class="line">                      captureMove</span><br><span class="line"></span><br><span class="line"><span class="title">check2048</span> :: <span class="type">Grid</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">check2048</span> grid = [] /= filter (== <span class="number">2048</span>) (concat grid)</span><br><span class="line">                </span><br><span class="line"><span class="title">addTile</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">addTile</span> grid = <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">let</span> candidates = getZeroes grid</span><br><span class="line">    pick &lt;- choose candidates</span><br><span class="line">    val  &lt;- choose [<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>]</span><br><span class="line">    <span class="keyword">let</span> new_grid = setSquare grid pick val</span><br><span class="line">    return new_grid</span><br><span class="line"></span><br><span class="line"><span class="title">choose</span> :: [a] -&gt; <span class="type">IO</span> a</span><br><span class="line"><span class="title">choose</span> xs = <span class="keyword">do</span></span><br><span class="line">    i &lt;- randomRIO (<span class="number">0</span>, length xs<span class="number">-1</span>)</span><br><span class="line">    return (xs !! i)</span><br><span class="line"></span><br><span class="line"><span class="title">newGrid</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">newGrid</span> grid = <span class="keyword">do</span></span><br><span class="line">    m &lt;- captureMove</span><br><span class="line">    <span class="keyword">let</span> new_grid = move m grid</span><br><span class="line">    return new_grid</span><br><span class="line"></span><br><span class="line"><span class="title">gameLoop</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">gameLoop</span> grid</span><br><span class="line">    | isMoveLeft grid = <span class="keyword">do</span></span><br><span class="line">        printGrid grid</span><br><span class="line">        <span class="keyword">if</span> check2048 grid</span><br><span class="line">        <span class="keyword">then</span> putStrLn <span class="string">"You won!"</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">do</span> new_grid &lt;- newGrid grid</span><br><span class="line">                <span class="keyword">if</span> grid /= new_grid</span><br><span class="line">                <span class="keyword">then</span> <span class="keyword">do</span> new &lt;- addTile new_grid</span><br><span class="line">                        gameLoop new</span><br><span class="line">                <span class="keyword">else</span> gameLoop grid</span><br><span class="line">    | otherwise = <span class="keyword">do</span></span><br><span class="line">        printGrid grid</span><br><span class="line">        putStrLn <span class="string">"Game over"</span></span><br><span class="line"></span><br><span class="line"><span class="title">main</span> :: <span class="type">IO</span> ()</span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    hSetBuffering stdin <span class="type">NoBuffering</span></span><br><span class="line">    grid &lt;- start</span><br><span class="line">    gameLoop grid</span><br></pre></td></tr></table></figure>
       
 
       
@@ -470,15 +463,15 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Haskell</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2048</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
         		</li>
       		
 		</ul>
@@ -488,7 +481,94 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/04/Haskell实现2048/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Haskell里的Functor函子" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/Haskell里的Functor函子/">Haskell里的Functor函子</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/Haskell里的Functor函子/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <pre><code class="haskell"><span class="keyword">import</span> Data.List
+<span class="keyword">import</span> Data.Char
+<span class="title">main</span> = <span class="keyword">do</span> line &lt;- fmap (intersperse '-' . reverse . map toUpper) getLine
+          putStrLn line
+          main
+</code></pre>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Haskell</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Functor</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/04/Haskell里的Functor函子/">展开全文 >></a>
         </p>
       
 
@@ -520,7 +600,7 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -619,7 +699,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,6 +708,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -643,10 +731,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
@@ -655,11 +739,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
+                <a href="javascript:void(0)" class="js-tag color5">SICP</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -671,23 +763,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">SICP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -695,11 +771,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -707,7 +787,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
               </li>
             
             <div class="clearfix"></div>

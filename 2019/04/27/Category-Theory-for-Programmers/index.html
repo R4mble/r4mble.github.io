@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Category Theory for Programmers | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Category: The Essence of Composition简介:      A category consists of objects and arrows  that go between them. 范畴与组合互为本质:     The essence of a category is composition.     The essence of composition is">
+  <meta name="description" content="Category: The Essence of Composition简介: A category consists of objects and arrows  that go between them.    范畴与组合互为本质:        The essence of a category is composition.  The essence of composition is a">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Category Theory for Programmers">
 <meta property="og:url" content="http://yoursite.com/2019/04/27/Category-Theory-for-Programmers/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="Category: The Essence of Composition简介:      A category consists of objects and arrows  that go between them. 范畴与组合互为本质:     The essence of a category is composition.     The essence of composition is">
+<meta property="og:description" content="Category: The Essence of Composition简介: A category consists of objects and arrows  that go between them.    范畴与组合互为本质:        The essence of a category is composition.  The essence of composition is a">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-27T14:25:21.739Z">
+<meta property="og:updated_time" content="2019-04-27T19:20:17.058Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Category Theory for Programmers">
-<meta name="twitter:description" content="Category: The Essence of Composition简介:      A category consists of objects and arrows  that go between them. 范畴与组合互为本质:     The essence of a category is composition.     The essence of composition is">
+<meta name="twitter:description" content="Category: The Essence of Composition简介: A category consists of objects and arrows  that go between them.    范畴与组合互为本质:        The essence of a category is composition.  The essence of composition is a">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -164,21 +164,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Category-The-Essence-of-Composition"><a href="#Category-The-Essence-of-Composition" class="headerlink" title="Category: The Essence of Composition"></a>Category: The Essence of Composition</h1><pre><code>简介: 
-    A category consists of objects and arrows  that go between them.
-范畴与组合互为本质:
-    The essence of a category is composition.
-    The essence of composition is a category.
-组合的性质:
-    1. Associativity
+        <h1 id="Category-The-Essence-of-Composition"><a href="#Category-The-Essence-of-Composition" class="headerlink" title="Category: The Essence of Composition"></a>Category: The Essence of Composition</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><blockquote>
+<p>A category consists of objects and arrows  that go between them.<br>    范畴与组合互为本质:<br>        The essence of a category is composition.</p>
+</blockquote>
+<pre><code>The essence of composition is a category.
+</code></pre><hr>
+<h2 id="组合的性质"><a href="#组合的性质" class="headerlink" title="组合的性质:"></a>组合的性质:</h2><pre><code>    1. Associativity
         (伏笔:  Associativity is pretty obvious when dealing with functions, 
                 but it may be not as obvious in other categories.)
     2. Identity
         我的理解是在有些时候,为了函数的组合不得不生造这么一个`函数`
 
 组合是编程的本质
-
-Challenges 
+</code></pre><hr>
+<pre><code>Challenges 
   实现identity和compose
 </code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Function</span>&lt;<span class="title">T</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">R <span class="title">apply</span><span class="params">(T t)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> &lt;V&gt; <span class="function">Function&lt;V, R&gt; <span class="title">compose</span><span class="params">(Function&lt;? <span class="keyword">super</span> V, ? extends T&gt; before)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(before);</span><br><span class="line">        <span class="keyword">return</span> (V v) -&gt; apply(before.apply(v));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &lt;T&gt; <span class="function">Function&lt;T, T&gt; <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> t -&gt; t;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <pre><code>测试

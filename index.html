@@ -145,30 +145,16 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spring源码" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-周会" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/14/Spring源码/">Spring源码</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/14/Spring源码/" class="archive-article-date">
-  	<time datetime="2019-05-14T15:51:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-14</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Spring注解:<br>    AnnotationConfigApplicationContext extends GenericApplicationContext<br>                                       implements AnnotationConfigRegistry </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//根据参数类型可以知道，其实可以传入多个annotatedClasses，但是这种情况出现的比较少</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AnnotationConfigApplicationContext</span><span class="params">(Class&lt;?&gt;... annotatedClasses)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//调用无参构造函数，会先调用父类GenericApplicationContext的构造函数</span></span><br><span class="line">		<span class="comment">//父类的构造函数里面就是初始化DefaultListableBeanFactory，并且赋值给beanFactory</span></span><br><span class="line">		<span class="comment">//本类的构造函数里面，初始化了一个读取器：AnnotatedBeanDefinitionReader read，一个扫描器ClassPathBeanDefinitionScanner scanner</span></span><br><span class="line">		<span class="comment">//scanner的用处不是很大，它仅仅是在我们外部手动调用 .scan 等方法才有用，常规方式是不会用到scanner对象的</span></span><br><span class="line">		<span class="keyword">this</span>();</span><br><span class="line">		<span class="comment">//把传入的类进行注册，这里有两个情况，</span></span><br><span class="line">		<span class="comment">//传入传统的配置类</span></span><br><span class="line">		<span class="comment">//传入bean（虽然一般没有人会这么做</span></span><br><span class="line">		<span class="comment">//看到后面会知道spring把传统的带上@Configuration的配置类称之为FULL配置类，不带@Configuration的称之为Lite配置类</span></span><br><span class="line">		<span class="comment">//但是我们这里先把带上@Configuration的配置类称之为传统配置类，不带的称之为普通bean</span></span><br><span class="line">		register(annotatedClasses);</span><br><span class="line">		<span class="comment">//刷新</span></span><br><span class="line">		refresh();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="../images/AnnotationConfigApplicationContext.png" alt="AnnotationConfigApplicationContext"><br><img src="../images/DefaultListableBeanFactory.png" alt="AnnotationConfigApplicationContext"></p>
+        <p>聊天软件 websocket<br>    前端<br>    消息类型(图片,表情,缩略图,视频,语音), 会话管理, 消息队列 agent</p>
+<pre><code>客服管理 队列
 
+从es中获取会话记录
+</code></pre>
       
 
       
@@ -176,22 +162,11 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/14/Spring源码/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/周会/">展开全文 >></a>
         </p>
       
 
@@ -221,40 +196,32 @@
 
 
   
-    <article id="post-Java语法糖" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-缓存进化史" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/14/Java语法糖/">Java语法糖</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/14/Java语法糖/" class="archive-article-date">
-  	<time datetime="2019-05-13T17:35:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-14</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Switch对String的支持"><a href="#Switch对String的支持" class="headerlink" title="Switch对String的支持"></a>Switch对String的支持</h1><p>语法糖:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="string">"world"</span>;</span><br><span class="line"><span class="keyword">switch</span> (str) &#123;</span><br><span class="line"><span class="keyword">case</span> <span class="string">"hello"</span>:</span><br><span class="line">    System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="string">"world"</span>:</span><br><span class="line">    System.out.println(<span class="string">"world"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>实际上:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="string">"world"</span>;</span><br><span class="line">String s;</span><br><span class="line"><span class="keyword">switch</span>((s = str).hashCode())</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="number">99162322</span>:</span><br><span class="line">    <span class="keyword">if</span>(s.equals(<span class="string">"hello"</span>))</span><br><span class="line">        System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="number">113318802</span>:</span><br><span class="line">    <span class="keyword">if</span>(s.equals(<span class="string">"world"</span>))</span><br><span class="line">        System.out.println(<span class="string">"world"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>先比较hashCode，再使用equals进行安全检查，防止哈希碰撞</p>
-<h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><p>Code sharing方式处理泛型.为每个泛型类型创建唯一的字节码表示,并且将该泛型类型的实例<br>都映射到这个惟一的字节码表示上.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;String, String&gt;();  </span><br><span class="line">map.put(<span class="string">"name"</span>, <span class="string">"hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"wechat"</span>, <span class="string">"Hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"blog"</span>, <span class="string">"www.hollischuang.com"</span>);</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map map = <span class="keyword">new</span> HashMap();  </span><br><span class="line">map.put(<span class="string">"name"</span>, <span class="string">"hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"wechat"</span>, <span class="string">"Hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"blog"</span>, <span class="string">"www.hollischuang.com"</span>);</span><br></pre></td></tr></table></figure>
-<p>类型擦除的主要过程如下：<br>1.将所有的泛型参数用其最左边界（最顶级的父类型）类型替换。<br>2.移除所有的类型参数。</p>
-<h1 id="变长参数"><a href="#变长参数" class="headerlink" title="变长参数"></a>变长参数</h1><p>可变参数在被使用的时候，会创建一个数组，把参数值全部放到这个数组当中，然后再把这个数组作为参数传递到被调用的方法中。</p>
-<h1 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h1><p>使用enmu来定义一个枚举类型的时候，编译器会自动帮我们创建一个final类型的类继承Enum类，所以枚举类型不能被继承。<br>条件编译</p>
-<h1 id="自动拆装箱"><a href="#自动拆装箱" class="headerlink" title="自动拆装箱"></a>自动拆装箱</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//语法糖</span></span><br><span class="line">Integer i = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n = i;</span><br><span class="line"><span class="comment">//实际上</span></span><br><span class="line">Integer i = Integer.valueOf(<span class="number">10</span>);</span><br><span class="line"><span class="keyword">int</span> n = i.intValue();</span><br></pre></td></tr></table></figure>
-<p>装箱过程是通过调用包装器的valueOf方法实现的，而拆箱过程是通过调用包装器的 xxxValue方法实现的。</p>
-<h1 id="条件编译"><a href="#条件编译" class="headerlink" title="条件编译"></a>条件编译</h1><p>根据if判断条件的真假，编译器直接把分支为false的代码块消除。</p>
-<h1 id="数值字面量"><a href="#数值字面量" class="headerlink" title="数值字面量"></a>数值字面量</h1><p>在java 7中，数值字面量，不管是整数还是浮点数，都允许在数字之间插入任意多个下划线。这些下划线不会对字面量的数值产生影响，目的就是方便阅读。</p>
-<h1 id="for-each"><a href="#for-each" class="headerlink" title="for-each"></a>for-each</h1><p>使用了普通的for循环和迭代器<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">for</span> (String s : strList) &#123;</span><br><span class="line">     System.out.println(s);</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span>(Iterator iterator = strList.iterator(); iterator.hasNext(); System.out.println(s))</span><br><span class="line">     s = (String)iterator.next();</span><br></pre></td></tr></table></figure></p>
+        <ol>
+<li>数据同步加Redis<br> 通过消息队列进行数据同步到Redis,用Java去取缓存.<br> 优点: 分布式缓存,数据更新快.<br> 缺点: 依赖Redis稳定性.</li>
+</ol>
+<p>2-3. Java Map到Guava cache<br>    进程内缓存作为一级缓存,Redis作为二级缓存.<br>    优点: 不受外部系统影响.<br>    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.</p>
+<ol start="4">
+<li><p>Guava Cache刷新<br> 设置写后刷新时间,进行刷新.</p>
+</li>
+<li><p>外部缓存异步刷新.</p>
+</li>
+</ol>
+<p>HashMap<br>    无法数据淘汰,内存会无限制增长.<br>    不需要淘汰机制时,使用HashMap做缓存.<br>LRUHashMap<br>    FIFO: 队列, 命中率不行.<br>    LRU: 最近最少使用算法, 每次访问数据放在队尾, 淘汰数据时直接淘汰队首. 不能保证热点数据存留.<br>    LFU: 最近最少频率使用, 利用额外的空间记录每个数据的使用频率,对频率最低的进行淘汰.</p>
+<pre><code>实现LRUMap: 继承LinkedHashMap,重写removeEldestEntry方法.
+缺点: 锁竞争严重,不支持过期时间,不支持自动刷新.
+</code></pre><p>Guava Cache<br>    分段锁: 锁太少竞争依然激烈, 锁太多会出现随机淘汰.根据一定的算法进行分段<br>    过期时间: expireAfterWrite 写后多久过期<br>             expireAfterAccess 读后多久过期<br>    虚引用: 两个引用队列, 记录被回收的引用，其中每个队列记录了每个被回收的Entry的hash，这样回收了之后通过这个队列中的hash值就能把以前的             Entry进行删除。<br>    删除监听器: 获取数据被淘汰的原因: 被用户删除, 被用户替代, 过期, 驱逐收集, 由于大小被淘汰.</p>
+<p>Caffeine<br>    W-TinyLfu(LFU+LRU算法变种)<br>    LFU只要数据访问模式中的概率分布随时间保持不变,命中率就非常高. 但难以淘汰某些过去访问量高,但现在访问量低的数据.<br>    基于时间周期进行衰减,使用额外空间记录数据访问频率.</p>
+<pre><code>频率记录
+    Count-Min Sketch记录访问频率, 布隆过滤器的变种.
 
+异步读写
+    使用RingBuffer
+</code></pre>
       
 
       
@@ -262,22 +229,11 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/14/Java语法糖/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/缓存进化史/">展开全文 >></a>
         </p>
       
 
@@ -307,46 +263,14 @@
 
 
   
-    <article id="post-golang初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-函数式算法设计" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/07/golang初探/">golang初探</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/07/golang初探/" class="archive-article-date">
-  	<time datetime="2019-05-07T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-07</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="如何掌握一门编程语言"><a href="#如何掌握一门编程语言" class="headerlink" title="如何掌握一门编程语言?"></a>如何掌握一门编程语言?</h1><ul>
-<li>它的值是怎么定义的？<ul>
-<li>值有哪些类型？</li>
-<li>值的类型转换怎么做？</li>
-</ul>
-</li>
-<li>它的函数是怎么定义的？<ul>
-<li>函数能否作为值？</li>
-<li>支持默认参数吗？</li>
-<li>支持命名参数吗？</li>
-<li>函数的返回值可以有多个吗？</li>
-<li>匿名函数怎么表达？</li>
-</ul>
-</li>
-<li>它的流程控制是什么样的？<ul>
-<li>有没有for,while,switch？</li>
-</ul>
-</li>
-<li>它的list和map怎么使用？    </li>
-</ul>
+        <ol>
+<li>最小未出现数<br> 描述: 计算不在有限自然数集合X的最小自然数.</li>
+</ol>
 
       
 
@@ -359,7 +283,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/07/golang初探/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/函数式算法设计/">展开全文 >></a>
         </p>
       
 
@@ -389,27 +313,63 @@
 
 
   
-    <article id="post-Essentials-of-Programming-Languages" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-wsimage" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/04/Essentials-of-Programming-Languages/">Essentials of Programming Languages</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/04/Essentials-of-Programming-Languages/" class="archive-article-date">
-  	<time datetime="2019-05-03T19:42:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-04</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Inductive-Sets-of-Data"><a href="#Inductive-Sets-of-Data" class="headerlink" title="Inductive Sets of Data"></a>Inductive Sets of Data</h1><h1 id="Data-Abstraction"><a href="#Data-Abstraction" class="headerlink" title="Data Abstraction"></a>Data Abstraction</h1><h1 id="Expressions"><a href="#Expressions" class="headerlink" title="Expressions"></a>Expressions</h1><h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><h1 id="Continuation-Passing-Interpreters"><a href="#Continuation-Passing-Interpreters" class="headerlink" title="Continuation-Passing Interpreters"></a>Continuation-Passing Interpreters</h1><h1 id="Continuation-Passing-Style"><a href="#Continuation-Passing-Style" class="headerlink" title="Continuation-Passing Style"></a>Continuation-Passing Style</h1><h1 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h1><h1 id="Modules"><a href="#Modules" class="headerlink" title="Modules"></a>Modules</h1><h1 id="Objects-and-Classes"><a href="#Objects-and-Classes" class="headerlink" title="Objects and Classes"></a>Objects and Classes</h1>
+        <html>
+    <h1>Drop Image Here</h1>
+    <script>
+        var wsUrl = "ws://echo.websocket.org/echo";
+        var ws = new WebSocket(wsUrl);
+        ws.onopen = function() {
+            console.log("open");
+        }
+
+        ws.onmessage = function(e) {
+            var blob = e.data;
+            console.log("message: " + blob.size + " bytes");
+            if (window.webkitURL) {
+                URL = webkitURL;
+            }
+
+            var uri = URL.createObjectURL(blob);
+            var img = document.createElement("img");
+            img.src = uri;
+            document.body.appendChild(img);
+        }
+
+        document.ondrop = function(e) {
+            document.body.style.backgroundColor = "#fff";
+            try {
+                e.preventDefault();
+                handleFileDrop(e.dataTransfer.files[0]);
+                return false;
+            } catch(err) {
+                console.log(err);
+            }
+        }
+
+        document.ondragover = function(e) {
+            e.preventDefault();
+            document.body.style.backgroundColor = "#6fff41";
+        }
+        
+        document.ondragleave = function() {
+            document.body.style.backgroundColor = "#fff";
+        }
+
+        function handleFileDrop(file) {
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file);
+            reader.onload = function() {
+                console.log("sending: " + file.name);
+                ws.send(reader.result)
+            }
+        }
+    </script>
+</html>
       
 
       
@@ -421,7 +381,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/04/Essentials-of-Programming-Languages/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/wsimage/">展开全文 >></a>
         </p>
       
 
@@ -453,7 +413,7 @@
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -581,7 +541,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -589,11 +549,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -601,15 +557,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -621,15 +581,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -641,7 +601,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -649,15 +609,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">

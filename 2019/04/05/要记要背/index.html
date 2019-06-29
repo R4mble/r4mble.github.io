@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="不要太过强调理解的重要性. 理解当然很重要,但是理解了,并不能说明就掌握了,会了,下一次要用的时候就能想起来,能用上了.作为理科生,也有很多要记要背的东西,理解之后要记忆背诵,记住之后加深理解,二者相辅相成.如何去掉地里的荒草? 除荒草+种庄稼, 只除荒草不中庄稼,荒草很快就会疯长. 只种庄稼不除荒草,庄稼竞争不过荒草.思而不学则殆. 1.java中==和equals的区别    public b">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-04T18:42:13.769Z">
+<meta property="og:updated_time" content="2019-06-01T12:52:54.197Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="要记要背">
 <meta name="twitter:description" content="不要太过强调理解的重要性. 理解当然很重要,但是理解了,并不能说明就掌握了,会了,下一次要用的时候就能想起来,能用上了.作为理科生,也有很多要记要背的东西,理解之后要记忆背诵,记住之后加深理解,二者相辅相成.如何去掉地里的荒草? 除荒草+种庄稼, 只除荒草不中庄稼,荒草很快就会疯长. 只种庄稼不除荒草,庄稼竞争不过荒草.思而不学则殆. 1.java中==和equals的区别    public b">
@@ -244,7 +244,7 @@
         当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
         SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
 </code></pre><p>5.volatile<br>    缓存一致性协议: 保证了每个缓存中使用的共享变量的副本是一致的<br>        当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，<br>        会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，<br>        发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。</p>
-<pre><code>并发编程的三个问题
+<pre><code>JMM: 并发编程的三个问题
     原子性问题
         一个操作或者多个操作,要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。
     可见性问题
@@ -282,6 +282,7 @@ Java对这三个问题的解决方案
 volatile关键字的两层语义
     保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。
     禁止进行指令重排序。
+    (不保证原子性)
 
         当程序执行到volatile变量的读操作或者写操作时，在其前面的操作的更改肯定全部已经进行，
         且结果已经对后面的操作可见；在其后面的操作肯定还没有进行；
@@ -302,7 +303,7 @@ volatile的原理和实现机制
 使用volatile关键字的场景
     对变量的写操作不依赖于当前值     该变量没有包含在具有其他变量的不变式中
         可以被写入 volatile 变量的这些有效值独立于任何程序的状态，包括变量的当前状态。
-</code></pre><p>5.1 Java内存模型(JMM)</p>
+</code></pre><p>5.1 Java内存结构</p>
 <pre><code>Java内存区域
     线程共享
         方法区
@@ -609,27 +610,17 @@ HTTPS协议的主要作用可以分为两种：一种是建立一个信息安全
 SSL Secure Sockets Layer
 
 HTTPS和HTTP的区别主要如下：
-
 　　1、https协议需要到ca申请证书，一般免费证书较少，因而需要一定费用。
-
 　　2、http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议。
-
 　　3、http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。
-
 　　4、http的连接很简单，是无状态的；HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。
 
-客户端在使用HTTPS方式与Web服务器通信时有以下几个步骤，如图所示。
-
+客户端在使用HTTPS方式与Web服务器通信时有以下几个步骤
 　　（1）客户使用https的URL访问Web服务器，要求与Web服务器建立SSL连接。
-
 　　（2）Web服务器收到客户端请求后，会将网站的证书信息（证书中包含公钥）传送一份给客户端。
-
 　　（3）客户端的浏览器与Web服务器开始协商SSL连接的安全等级，也就是信息加密的等级。
-
 　　（4）客户端的浏览器根据双方同意的安全等级，建立会话密钥，然后利用网站的公钥将会话密钥加密，并传送给网站。
-
 　　（5）Web服务器利用自己的私钥解密出会话密钥。
-
 　　（6）Web服务器利用会话密钥加密与客户端之间的通信。
 </code></pre><p>15.</p>
 <p>多线程区:</p>
@@ -667,68 +658,8 @@ HTTPS和HTTP的区别主要如下：
         2）tabAt和casTabAt对应的unsafe操作实现了volatile语义
 </code></pre><p>算法区:<br>    1.最小区间：k个有序的数组，找到最小区间使k个数组中每个数组至少有一个数在区间中</p>
 <pre><code>2.快排
-
-    public static void quicksort(int[] arr) {
-        quicksort(arr, 0, arr.length - 1);
-    }
-
-    private static void quicksort(int[] arr, int low, int high) {
-        if (low &lt; high) {
-            int pivot = partition(arr, low, high);
-            quicksort(arr, low, pivot - 1);
-            quicksort(arr, pivot + 1, high);
-        }
-    }
-
-    private static int partition(int[] arr, int low, int high) {
-        int pivot = arr[low];
-        while (low &lt; high) {
-            while (low &lt; high &amp;&amp; pivot &lt;= arr[high]) {
-                high--;
-            }
-            arr[low] = arr[high];
-            while (low &lt; high &amp;&amp; arr[low] &lt;= pivot) {
-                low++;
-            }
-            arr[high] = arr[low];
-        }
-        arr[low] = pivot;
-        return low;
-    }
-
-3.TOP k
-    1.快排思路
-        private static int partition(int[] arr, int low, int high) {
-            int pivot = arr[low];
-            while (low &lt; high) {
-                while (low &lt; high &amp;&amp; pivot &gt;= arr[high]) {
-                    high--;
-                }
-                arr[low] = arr[high];
-                while (low &lt; high &amp;&amp; pivot &lt;= arr[low]) {
-                    low++;
-                }
-                arr[high] = arr[low];
-            }
-            arr[low] = pivot;
-            return low;
-        }
-
-        public static int topK(int[] arr, int k) {
-            int low = 0;
-            int high = arr.length - 1;
-            int index = partition(arr, low, high);
-            while (index != k) {
-                if (index &gt; k) {
-                    high = index - 1;
-                    partition(arr, low, high);
-                } else {
-                    low = index + 1;
-                    partition(arr, low, high);
-                }
-            }
-        }
-</code></pre><p>linux区<br>    常用命令<br>        删除指定日期之前的文件<br>            find /data1/yulei/user_mq/logs -mtime +7 -type f | xargs rm -rf</p>
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quicksort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">            quicksort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quicksort</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">                <span class="keyword">int</span> pivot = partition(arr, low, high);</span><br><span class="line">                quicksort(arr, low, pivot - <span class="number">1</span>);</span><br><span class="line">                quicksort(arr, pivot + <span class="number">1</span>, high);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">            <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[high]) &#123;</span><br><span class="line">                    high--;</span><br><span class="line">                &#125;</span><br><span class="line">                arr[low] = arr[high];</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[low] &lt;= pivot) &#123;</span><br><span class="line">                    low++;</span><br><span class="line">                &#125;</span><br><span class="line">                arr[high] = arr[low];</span><br><span class="line">            &#125;</span><br><span class="line">            arr[low] = pivot;</span><br><span class="line">            <span class="keyword">return</span> low;</span><br><span class="line">        &#125;</span><br><span class="line"> ```   </span><br><span class="line">    <span class="number">3</span>.TOP k</span><br><span class="line">        <span class="number">1</span>.快排思路</span><br><span class="line">```java</span><br><span class="line">            <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">                    <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &gt;= arr[high]) &#123;</span><br><span class="line">                        high--;</span><br><span class="line">                    &#125;</span><br><span class="line">                    arr[low] = arr[high];</span><br><span class="line">                    <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[low]) &#123;</span><br><span class="line">                        low++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    arr[high] = arr[low];</span><br><span class="line">                &#125;</span><br><span class="line">                arr[low] = pivot;</span><br><span class="line">                <span class="keyword">return</span> low;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">topK</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">int</span> low = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">int</span> high = arr.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">int</span> index = partition(arr, low, high);</span><br><span class="line">                <span class="keyword">while</span> (index != k) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (index &gt; k) &#123;</span><br><span class="line">                        high = index - <span class="number">1</span>;</span><br><span class="line">                        partition(arr, low, high);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        low = index + <span class="number">1</span>;</span><br><span class="line">                        partition(arr, low, high);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+<p>linux区<br>    常用命令<br>        删除指定日期之前的文件<br>            find /data1/yulei/user_mq/logs -mtime +7 -type f | xargs rm -rf</p>
 <p>Redis区<br>     Redis是一个Key-value存储系统。它支持存储的value类型很多，包括String（字符串）、链表(list)、set（集合）、zset（有序集合） hash。<br>     Redis支持各种不同方式的排序。可以把周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件。</p>
 <pre><code>缓存穿透
     缓存系统按照KEY去查询VALUE,当KEY对应的VALUE一定不存在的时候并对KEY并发请求量很大的时候，就会对后端造成很大的压力。
@@ -1037,7 +968,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1045,11 +976,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1057,15 +984,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1077,15 +1008,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1097,7 +1028,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1105,15 +1036,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">

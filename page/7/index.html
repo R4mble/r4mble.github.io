@@ -145,32 +145,310 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-SICP目录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java语法糖" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/SICP目录/">计算机程序的构造和解释</a>
+      <a class="article-title" href="/2019/05/14/Java语法糖/">Java语法糖</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/SICP目录/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:24:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/05/14/Java语法糖/" class="archive-article-date">
+  	<time datetime="2019-05-13T17:35:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>计算机程序的构造和解释</p>
-<p>第1章 构造过程抽象<br>1.1 程序设计的基本元素<br>1.2 过程与它们所产生的计算<br>1.3 用高阶函数做抽象</p>
-<p>第2章 构造数据抽象<br>2.1 数据抽象导引<br>2.2 层次性数据和闭包性质<br>2.3 符号数据<br>    2.3.1 引进将任意符号作为数据的功能<br>    2.3.2 符号求导<br>2.4 抽象数据的多重表示<br>    2.4.1 复数的表示<br>2.5 带有通用型操作的系统</p>
-<p>第3章 模块化、对象和状态<br>3.1 赋值和局部状态<br>3.2 求值的环境模型<br>3.3 用变动数据做模拟<br>3.4 并发：时间是一个本质问题<br>3.5 流</p>
-<p>第4章 元语言抽象<br>4.1 元循环求值器<br>4.2 Scheme的变形——惰性求值<br>4.3 Scheme的变形——非确定性计算<br>4.4 逻辑程序设计</p>
-<p>第5章 寄存器机器里的计算<br>5.1 寄存器机器的设计<br>5.2 一个寄存器机器模拟器<br>5.3 存储分配和废料收集<br>5.4 显式控制的求值器<br>5.5 编译</p>
+        <h1 id="Switch对String的支持"><a href="#Switch对String的支持" class="headerlink" title="Switch对String的支持"></a>Switch对String的支持</h1><p>语法糖:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="string">"world"</span>;</span><br><span class="line"><span class="keyword">switch</span> (str) &#123;</span><br><span class="line"><span class="keyword">case</span> <span class="string">"hello"</span>:</span><br><span class="line">    System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="string">"world"</span>:</span><br><span class="line">    System.out.println(<span class="string">"world"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>实际上:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="string">"world"</span>;</span><br><span class="line">String s;</span><br><span class="line"><span class="keyword">switch</span>((s = str).hashCode())</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="number">99162322</span>:</span><br><span class="line">    <span class="keyword">if</span>(s.equals(<span class="string">"hello"</span>))</span><br><span class="line">        System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="number">113318802</span>:</span><br><span class="line">    <span class="keyword">if</span>(s.equals(<span class="string">"world"</span>))</span><br><span class="line">        System.out.println(<span class="string">"world"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>先比较hashCode，再使用equals进行安全检查，防止哈希碰撞</p>
+<h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><p>Code sharing方式处理泛型.为每个泛型类型创建唯一的字节码表示,并且将该泛型类型的实例<br>都映射到这个惟一的字节码表示上.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;String, String&gt;();  </span><br><span class="line">map.put(<span class="string">"name"</span>, <span class="string">"hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"wechat"</span>, <span class="string">"Hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"blog"</span>, <span class="string">"www.hollischuang.com"</span>);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map map = <span class="keyword">new</span> HashMap();  </span><br><span class="line">map.put(<span class="string">"name"</span>, <span class="string">"hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"wechat"</span>, <span class="string">"Hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"blog"</span>, <span class="string">"www.hollischuang.com"</span>);</span><br></pre></td></tr></table></figure>
+<p>类型擦除的主要过程如下：<br>1.将所有的泛型参数用其最左边界（最顶级的父类型）类型替换。<br>2.移除所有的类型参数。</p>
+<h1 id="变长参数"><a href="#变长参数" class="headerlink" title="变长参数"></a>变长参数</h1><p>可变参数在被使用的时候，会创建一个数组，把参数值全部放到这个数组当中，然后再把这个数组作为参数传递到被调用的方法中。</p>
+<h1 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h1><p>使用enmu来定义一个枚举类型的时候，编译器会自动帮我们创建一个final类型的类继承Enum类，所以枚举类型不能被继承。<br>条件编译</p>
+<h1 id="自动拆装箱"><a href="#自动拆装箱" class="headerlink" title="自动拆装箱"></a>自动拆装箱</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//语法糖</span></span><br><span class="line">Integer i = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n = i;</span><br><span class="line"><span class="comment">//实际上</span></span><br><span class="line">Integer i = Integer.valueOf(<span class="number">10</span>);</span><br><span class="line"><span class="keyword">int</span> n = i.intValue();</span><br></pre></td></tr></table></figure>
+<p>装箱过程是通过调用包装器的valueOf方法实现的，而拆箱过程是通过调用包装器的 xxxValue方法实现的。</p>
+<h1 id="条件编译"><a href="#条件编译" class="headerlink" title="条件编译"></a>条件编译</h1><p>根据if判断条件的真假，编译器直接把分支为false的代码块消除。</p>
+<h1 id="数值字面量"><a href="#数值字面量" class="headerlink" title="数值字面量"></a>数值字面量</h1><p>在java 7中，数值字面量，不管是整数还是浮点数，都允许在数字之间插入任意多个下划线。这些下划线不会对字面量的数值产生影响，目的就是方便阅读。</p>
+<h1 id="for-each"><a href="#for-each" class="headerlink" title="for-each"></a>for-each</h1><p>使用了普通的for循环和迭代器<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">for</span> (String s : strList) &#123;</span><br><span class="line">     System.out.println(s);</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span>(Iterator iterator = strList.iterator(); iterator.hasNext(); System.out.println(s))</span><br><span class="line">     s = (String)iterator.next();</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/14/Java语法糖/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-golang初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/07/golang初探/">golang初探</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/07/golang初探/" class="archive-article-date">
+  	<time datetime="2019-05-07T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="如何掌握一门编程语言"><a href="#如何掌握一门编程语言" class="headerlink" title="如何掌握一门编程语言?"></a>如何掌握一门编程语言?</h1><ul>
+<li>它的值是怎么定义的？<ul>
+<li>值有哪些类型？</li>
+<li>值的类型转换怎么做？</li>
+</ul>
+</li>
+<li>它的函数是怎么定义的？<ul>
+<li>函数能否作为值？</li>
+<li>支持默认参数吗？</li>
+<li>支持命名参数吗？</li>
+<li>函数的返回值可以有多个吗？</li>
+<li>匿名函数怎么表达？</li>
+</ul>
+</li>
+<li>它的流程控制是什么样的？<ul>
+<li>有没有for,while,switch？</li>
+</ul>
+</li>
+<li>它的list和map怎么使用？    </li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/07/golang初探/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Essentials-of-Programming-Languages" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/04/Essentials-of-Programming-Languages/">Essentials of Programming Languages</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/04/Essentials-of-Programming-Languages/" class="archive-article-date">
+  	<time datetime="2019-05-03T19:42:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Inductive-Sets-of-Data"><a href="#Inductive-Sets-of-Data" class="headerlink" title="Inductive Sets of Data"></a>Inductive Sets of Data</h1><h1 id="Data-Abstraction"><a href="#Data-Abstraction" class="headerlink" title="Data Abstraction"></a>Data Abstraction</h1><h1 id="Expressions"><a href="#Expressions" class="headerlink" title="Expressions"></a>Expressions</h1><h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><h1 id="Continuation-Passing-Interpreters"><a href="#Continuation-Passing-Interpreters" class="headerlink" title="Continuation-Passing Interpreters"></a>Continuation-Passing Interpreters</h1><h1 id="Continuation-Passing-Style"><a href="#Continuation-Passing-Style" class="headerlink" title="Continuation-Passing Style"></a>Continuation-Passing Style</h1><h1 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h1><h1 id="Modules"><a href="#Modules" class="headerlink" title="Modules"></a>Modules</h1><h1 id="Objects-and-Classes"><a href="#Objects-and-Classes" class="headerlink" title="Objects and Classes"></a>Objects and Classes</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/04/Essentials-of-Programming-Languages/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-计算的本质" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/30/计算的本质/">计算的本质</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/30/计算的本质/" class="archive-article-date">
+  	<time datetime="2019-04-30T05:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Ruby基础"><a href="#Ruby基础" class="headerlink" title="Ruby基础"></a>Ruby基础</h1><h2 id="值"><a href="#值" class="headerlink" title="值"></a>值</h2><blockquote>
+<p>面向表达式的语言,每一段有效代码执行后都要产生一个值</p>
+</blockquote>
+<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><ul>
+<li>布尔Boolean, 数值number,字符串string</li>
+<li>符号: 表示一个名字,一个轻量级,不可变的值,作为字符串的简单化,非内存密集化的替身. :symbol</li>
+<li>特殊值nil<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2></li>
+<li>数组字面量: 逗号分隔外加方括号 例: numbers = [‘zero’, ‘two’]</li>
+<li>范围range: 例: ages = 18..30</li>
+<li>散列hash: 例: fruit = {‘a’ =&gt; ‘apple’, ‘b’ =&gt; ‘banana’}</li>
+<li>proc: 未经求值的Ruby代码,匿名函数或lambda函数.例:multiply = -&gt; x, y {x * y}<h2 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h2></li>
+<li>if,case,while 都有end<h2 id="对象和方法"><a href="#对象和方法" class="headerlink" title="对象和方法"></a>对象和方法</h2></li>
+<li>每个值都是一个对象</li>
+<li>o = Object.new</li>
+<li>方法结束要有end<h2 id="类和模块"><a href="#类和模块" class="headerlink" title="类和模块"></a>类和模块</h2></li>
+<li>类结束要有end</li>
+<li>继承: class MultiplyingCalculator &lt; Calculator</li>
+<li>子类中的方法可以通过 super 关键字调用超类的同名方法</li>
+<li>共享方法定义的方式是在模块（module）中声明它们，这样它们就能被任意类包括进去<h2 id="其它特性"><a href="#其它特性" class="headerlink" title="其它特性"></a>其它特性</h2></li>
+<li>赋值声明局部变量</li>
+<li>数组给多个变量同时赋值 width, height, depth = [1000, 2250, 250]</li>
+<li>字符串插值 &gt;&gt; “hello #{‘dlrow’.reverse}” =&gt; “hello world”</li>
+<li>检查对象 inspect方法</li>
+<li>打印字符串 puts</li>
+<li>可变参数方法 * <ul>
+<li>在发送消息的时候， * 运算符还可以把每一个数组元素当作单个参数处理</li>
+<li>并行赋值</li>
+</ul>
+</li>
+<li>代码块 <ul>
+<li>方法可以带一个隐式代码块参数 </li>
+<li>yield关键字表示对代码块中那段代码的调用</li>
+<li>代码块可以带参数 { |n| puts “#{n}: hello” }</li>
+</ul>
+</li>
+<li>枚举类型<ul>
+<li>(1..10).select(&amp;:even?) =&gt; [2, 4, 6, 8, 10]</li>
+<li>flat_map, inject </li>
+</ul>
+</li>
+<li>结构体<ul>
+<li>class Point &lt; Struct.new(:x, :y)  自动生成x,y属性和getter setter</li>
+<li>比较两个结构体的属性是否相等</li>
+</ul>
+</li>
+<li>给内置对象扩展方法    </li>
+<li>定义常量 <ul>
+<li>任何以大写字母开头的变量都是常量</li>
+</ul>
+</li>
+<li>删除常量<br>  一个顶层常量可以通过给 Object 发送消息 remove_const<br>  来删除，同时还要把常量名作为符号（symbol）对象传进去<br>  Object.send(:remove_const, :NUMBERS)</li>
+</ul>
+<hr>
+<h1 id="程序和机器"><a href="#程序和机器" class="headerlink" title="程序和机器"></a>程序和机器</h1><p>detect：（find的别名函数） 返回列表中第一个符合条件的元素</p>
 
       
 
@@ -194,262 +472,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/SICP目录/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Scala实现并行框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Scala实现并行框架/">Scala实现并行框架</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Scala实现并行框架/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接收一个未求值的A,返回一个并行结果(传名函数)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//从并行结果里抽取结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//组合两个并行计算的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Par分配到另一个独立的逻辑线程中运行</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//派生组合子的一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazyUnit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = fork(unit(a))</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">Par</span>[<span class="type">A</span>] </span>= <span class="type">ExecutorService</span> =&gt; <span class="type">Future</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](s: <span class="type">ExecutorService</span>)(a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Future</span>[<span class="type">A</span>] = a(s)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Par</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = (es: <span class="type">ExecutorService</span>) =&gt; <span class="type">UnitFuture</span>(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitFuture</span>[<span class="type">A</span>](<span class="params">get: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Future</span>[<span class="type">A</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isDone</span> </span>= <span class="literal">true</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>(timeout: <span class="type">Long</span>, units: <span class="type">TimeUnit</span>) = get</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isCancelled</span> </span>= <span class="literal">false</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(evenIfRunning: <span class="type">Boolean</span>) : <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>] =</span><br><span class="line">        (es: <span class="type">ExecutorService</span>) =&gt; &#123;</span><br><span class="line">            <span class="keyword">val</span> af = a(es)</span><br><span class="line">            <span class="keyword">val</span> bf = b(es)</span><br><span class="line">            <span class="type">UnitFuture</span>(f(af.get, bf.getb))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>] =</span><br><span class="line">        es =&gt; es.submit(<span class="keyword">new</span> <span class="type">Callable</span>[<span class="type">A</span>] &#123;</span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">call</span> </span>= a(es).get</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Scala实现并行框架/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java8查漏补缺" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Java8查漏补缺/">Java8查漏补缺</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Java8查漏补缺/" class="archive-article-date">
-  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li><p>函数式接口里可以有继承自Object类的抽象方法.<br> 例:</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</code></pre><p> 以上代码是合法的.</p>
-</li>
-<li><p>函数式接口的实例可以通过 lambda表达式, 方法引用 或者 构造方法引用 创建.</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyInterface myInterface = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">System.out.println(myInterface.getClass());</span><br><span class="line">System.out.println(myInterface.getClass().getSuperclass());</span><br><span class="line">System.out.println(myInterface.getClass().getInterfaces()[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
-
-class sth.jdk8.Test2$$Lambda$2/1149319664
-class java.lang.Object
-interface sth.jdk8.MyInterface
-</code></pre><p> 可以看到这个函数式接口实例的父类是Object,它实现了接口MyInterface</p>
-<pre><code>通过方法引用创建函数式接口实例
-list.forEach(System.out::println);
-</code></pre></li>
-<li><p>方法引用的四种形式:<br>  类名::实例方法 所对应lambda表达式的第一个参数就是这个调用方法的对象</p>
-</li>
-<li><p>Function&lt;T, R&gt;接口<br> Represents a function that accepts one argument and produces a result.<br> 抽象方法:     R apply(T t);<br> 例:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, String&gt; function)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> 默认方法: compose andThen<br> 静态方法: identity</p>
-<p> BiFunction&lt;T, U, R&gt;接口<br> 抽象方法: R apply(T t, U u);<br> 默认方法: <v> BiFunction&lt;T, U, V&gt; andThen(Function&lt;? super R, ? extends V&gt; after)</v></p>
-<p> 重要建议: equals方法 把常量放在前面,变量放在后面. 可以避免变量为null时引发的空指针异常</p>
-</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Java8查漏补缺/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Haskell实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Haskell实现2048/">Haskell实现2048</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/Haskell实现2048/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Prelude <span class="keyword">hiding</span> (<span class="type">Left</span>, <span class="type">Right</span>)</span><br><span class="line"><span class="keyword">import</span> Data.Char (<span class="title">toLower</span>)</span><br><span class="line"><span class="keyword">import</span> Data.List</span><br><span class="line"><span class="keyword">import</span> System.IO</span><br><span class="line"><span class="keyword">import</span> System.Random</span><br><span class="line"><span class="keyword">import</span> Text.Printf</span><br><span class="line"><span class="keyword">import</span> System.Process</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Move</span> = <span class="type">Up</span> | <span class="type">Down</span> | <span class="type">Left</span> | <span class="type">Right</span></span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">Grid</span> = [[<span class="type">Int</span>]]</span></span><br><span class="line"></span><br><span class="line"><span class="title">start</span> :: <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">start</span> = <span class="keyword">do</span> grid'  &lt;- addTile $ replicate <span class="number">4</span> [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line">           addTile grid'</span><br><span class="line"></span><br><span class="line"><span class="title">merge</span> :: [<span class="type">Int</span>] -&gt; [<span class="type">Int</span>]</span><br><span class="line"><span class="title">merge</span> xs = merged ++ padding</span><br><span class="line">    <span class="keyword">where</span> padding = replicate (length xs - length merged) <span class="number">0</span></span><br><span class="line">          merged  = combine $ filter (/= <span class="number">0</span>) xs</span><br><span class="line">          combine (x:y:xs) | x == y = x * <span class="number">2</span> : combine xs</span><br><span class="line">                           | otherwise = x  : combine (y:xs)</span><br><span class="line">          combine x = x</span><br><span class="line"></span><br><span class="line"><span class="title">move</span> :: <span class="type">Move</span> -&gt; <span class="type">Grid</span> -&gt; <span class="type">Grid</span></span><br><span class="line"><span class="title">move</span> <span class="type">Left</span>  = map merge</span><br><span class="line"><span class="title">move</span> <span class="type">Right</span> = map (reverse . merge . reverse)</span><br><span class="line"><span class="title">move</span> <span class="type">Up</span>    = transpose . move <span class="type">Left</span>  . transpose</span><br><span class="line"><span class="title">move</span> <span class="type">Down</span>  = transpose . move <span class="type">Right</span> . transpose</span><br><span class="line"></span><br><span class="line"><span class="title">getZeroes</span> :: <span class="type">Grid</span> -&gt; [(<span class="type">Int</span>, <span class="type">Int</span>)]</span><br><span class="line"><span class="title">getZeroes</span> grid = filter (\(row, col) -&gt; (grid!!row)!!col == <span class="number">0</span>) coordinates</span><br><span class="line">    <span class="keyword">where</span> singleRow n = zip (replicate <span class="number">4</span> n) [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line">          coordinates = concatMap singleRow [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">setSquare</span> :: <span class="type">Grid</span> -&gt; (<span class="type">Int</span>, <span class="type">Int</span>) -&gt; <span class="type">Int</span> -&gt; <span class="type">Grid</span></span><br><span class="line"><span class="title">setSquare</span> grid (row, col) val = pre ++ [mid] ++ post</span><br><span class="line">    <span class="keyword">where</span> pre  = take row grid</span><br><span class="line">          mid  = take col (grid!!row) ++ [val] ++ drop (col + <span class="number">1</span>) (grid!!row)</span><br><span class="line">          post = drop (row + <span class="number">1</span>) grid</span><br><span class="line"></span><br><span class="line"><span class="title">isMoveLeft</span> :: <span class="type">Grid</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">isMoveLeft</span> grid = sum allChoices &gt; <span class="number">0</span></span><br><span class="line">    <span class="keyword">where</span> allChoices = map (length . getZeroes . flip move grid) directions</span><br><span class="line">          directions = [<span class="type">Left</span>, <span class="type">Right</span>, <span class="type">Up</span>, <span class="type">Down</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">printGrid</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">printGrid</span> grid = <span class="keyword">do</span></span><br><span class="line">    system <span class="string">"cls"</span> <span class="comment">-- clears the screen</span></span><br><span class="line">    mapM_ (putStrLn . showRow) grid</span><br><span class="line"></span><br><span class="line"><span class="title">showRow</span> :: [<span class="type">Int</span>] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">showRow</span> = concatMap (printf <span class="string">"%5d"</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">moves</span> :: [(<span class="type">Char</span>, <span class="type">Move</span>)]</span><br><span class="line"><span class="title">moves</span> = keys <span class="string">"wasd"</span> ++ keys <span class="string">"chtn"</span></span><br><span class="line">    <span class="keyword">where</span> keys chars = zip chars [<span class="type">Up</span>, <span class="type">Left</span>, <span class="type">Down</span>, <span class="type">Right</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">captureMove</span> :: <span class="type">IO</span> <span class="type">Move</span></span><br><span class="line"><span class="title">captureMove</span> = <span class="keyword">do</span></span><br><span class="line">    inp &lt;- getChar</span><br><span class="line">    <span class="keyword">case</span> lookup (toLower inp) moves <span class="keyword">of</span></span><br><span class="line">        <span class="type">Just</span> x  -&gt; return x</span><br><span class="line">        <span class="type">Nothing</span> -&gt; <span class="keyword">do</span> putStrLn <span class="string">"Use WASD or CHTN as input"</span></span><br><span class="line">                      captureMove</span><br><span class="line"></span><br><span class="line"><span class="title">check2048</span> :: <span class="type">Grid</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">check2048</span> grid = [] /= filter (== <span class="number">2048</span>) (concat grid)</span><br><span class="line">                </span><br><span class="line"><span class="title">addTile</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">addTile</span> grid = <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">let</span> candidates = getZeroes grid</span><br><span class="line">    pick &lt;- choose candidates</span><br><span class="line">    val  &lt;- choose [<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>]</span><br><span class="line">    <span class="keyword">let</span> new_grid = setSquare grid pick val</span><br><span class="line">    return new_grid</span><br><span class="line"></span><br><span class="line"><span class="title">choose</span> :: [a] -&gt; <span class="type">IO</span> a</span><br><span class="line"><span class="title">choose</span> xs = <span class="keyword">do</span></span><br><span class="line">    i &lt;- randomRIO (<span class="number">0</span>, length xs<span class="number">-1</span>)</span><br><span class="line">    return (xs !! i)</span><br><span class="line"></span><br><span class="line"><span class="title">newGrid</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">newGrid</span> grid = <span class="keyword">do</span></span><br><span class="line">    m &lt;- captureMove</span><br><span class="line">    <span class="keyword">let</span> new_grid = move m grid</span><br><span class="line">    return new_grid</span><br><span class="line"></span><br><span class="line"><span class="title">gameLoop</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">gameLoop</span> grid</span><br><span class="line">    | isMoveLeft grid = <span class="keyword">do</span></span><br><span class="line">        printGrid grid</span><br><span class="line">        <span class="keyword">if</span> check2048 grid</span><br><span class="line">        <span class="keyword">then</span> putStrLn <span class="string">"You won!"</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">do</span> new_grid &lt;- newGrid grid</span><br><span class="line">                <span class="keyword">if</span> grid /= new_grid</span><br><span class="line">                <span class="keyword">then</span> <span class="keyword">do</span> new &lt;- addTile new_grid</span><br><span class="line">                        gameLoop new</span><br><span class="line">                <span class="keyword">else</span> gameLoop grid</span><br><span class="line">    | otherwise = <span class="keyword">do</span></span><br><span class="line">        printGrid grid</span><br><span class="line">        putStrLn <span class="string">"Game over"</span></span><br><span class="line"></span><br><span class="line"><span class="title">main</span> :: <span class="type">IO</span> ()</span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    hSetBuffering stdin <span class="type">NoBuffering</span></span><br><span class="line">    grid &lt;- start</span><br><span class="line">    gameLoop grid</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Haskell</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2048</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Haskell实现2048/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/30/计算的本质/">展开全文 >></a>
         </p>
       
 
@@ -481,7 +504,7 @@ list.forEach(System.out::println);
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
     </nav>
   
 
@@ -609,7 +632,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -617,11 +640,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -629,15 +648,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -649,15 +672,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -669,7 +692,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -677,15 +700,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">

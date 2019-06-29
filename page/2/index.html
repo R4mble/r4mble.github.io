@@ -145,295 +145,305 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-计算的本质" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-websocketdemo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/30/计算的本质/">计算的本质</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/30/计算的本质/" class="archive-article-date">
-  	<time datetime="2019-04-30T05:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-30</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Ruby基础"><a href="#Ruby基础" class="headerlink" title="Ruby基础"></a>Ruby基础</h1><h2 id="值"><a href="#值" class="headerlink" title="值"></a>值</h2><blockquote>
-<p>面向表达式的语言,每一段有效代码执行后都要产生一个值</p>
+        <html>
+    <div id="output"></div>
+
+    <script>
+        function setup() {
+            output = document.getElementById("output")
+            ws = new WebSocket("ws://echo.websocket.org/echo")
+
+            ws.onopen = function(e) {
+                log("Connected")
+                sendMessage("Hello")
+            }
+
+            ws.onclose = function(e) {
+                log("Disconnected: " + e.reason);
+            }
+
+            ws.onerror = function(e) {
+                log("Error");
+            }
+
+            ws.onmessage = function(e) {
+                log("Message received: " + e.data);
+                ws.close();
+            }
+        }
+
+        function sendMessage(msg) {
+            ws.send(msg);
+            log("Message sent")
+        }
+
+        function log(s) {
+            var p = document.createElement("p");
+            p.style.wordWrap = "break-word";
+            p.textContent = s;
+            output.appendChild(p);
+            
+            console.log(s)
+        }
+
+        setup();
+    </script>
+</html>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/30/websocketdemo/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-TestJsonObject" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <html>
+    <head><meta name="generator" content="Hexo 3.8.0">
+            <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+
+    <body>
+
+    </body>
+
+
+    <script>
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/person/1",
+            success: function(data) {
+                console.log(data)
+                console.log(data.id)
+            }
+        })
+    </script>
+</html>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/30/TestJsonObject/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Spring Cloud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Spring Cloud<br>    Spring Cloud Config<br>        配置管理工具包<br>    Spring Cloud Netflix<br>        包含Netflix OSS的基础组件:<br>            Eureka: 云端服务管理,基于REST<br>            Hystrix: 断路器,容错机制,降级机制<br>            Zuul: 动态路由,监控,安全,过滤<br>            Ribbon: 云端负载均衡<br>            Feign: REST客户端</p>
+<p>Ribbon<br>    负载均衡器:<br>        功能:<br>            维护服务器的IP,DNS名称等<br>            根据特定的逻辑在服务器列表中循环<br>        子模块:<br>            Rule: 逻辑组件,决定从服务器列表中返回哪个服务器实例.<br>                默认使用RoundRobinRule,轮询服务器列表.<br>                AvailabilityFilteringRule: 忽略无法连接的服务器,忽略并发数过高的服务器.<br>                WeightedResponseTimeRule: 根据服务器的响应时间,设置权重值.<br>                ZoneAvoidanceRule: 根据区域(机架,机房),可用服务器为基础选择服务器.<br>                BestAvailableRule: 忽略短路的服务器,选择并发数较低的服务器.<br>                RandomRule: 随机选.<br>                RetryRule: 如果使用RoundRobinRule选择的服务器无法连接,重新选择服务器.</p>
+<pre><code>Ping: 使用定时器来确保服务器网络可以连接.每隔一段时间Ping服务器,判断是否存活.
+
+
+ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,也可以
+            动态指定,通过动态指定时会有后台的线程来刷新该列表.
+</code></pre><p>Feign   调用REST服务<br>    使用JDK的动态代理,生成的代理类将请求的信息封装,交给feign.Client接口发送请求,该接口的默认实现类<br>    最终使用java.net.HttpURLConnection来发送HTTP请求.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/30/Spring Cloud/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Redis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><hr>
+<blockquote>
+<p> 用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.</p>
 </blockquote>
-<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><ul>
-<li>布尔Boolean, 数值number,字符串string</li>
-<li>符号: 表示一个名字,一个轻量级,不可变的值,作为字符串的简单化,非内存密集化的替身. :symbol</li>
-<li>特殊值nil<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2></li>
-<li>数组字面量: 逗号分隔外加方括号 例: numbers = [‘zero’, ‘two’]</li>
-<li>范围range: 例: ages = 18..30</li>
-<li>散列hash: 例: fruit = {‘a’ =&gt; ‘apple’, ‘b’ =&gt; ‘banana’}</li>
-<li>proc: 未经求值的Ruby代码,匿名函数或lambda函数.例:multiply = -&gt; x, y {x * y}<h2 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h2></li>
-<li>if,case,while 都有end<h2 id="对象和方法"><a href="#对象和方法" class="headerlink" title="对象和方法"></a>对象和方法</h2></li>
-<li>每个值都是一个对象</li>
-<li>o = Object.new</li>
-<li>方法结束要有end<h2 id="类和模块"><a href="#类和模块" class="headerlink" title="类和模块"></a>类和模块</h2></li>
-<li>类结束要有end</li>
-<li>继承: class MultiplyingCalculator &lt; Calculator</li>
-<li>子类中的方法可以通过 super 关键字调用超类的同名方法</li>
-<li>共享方法定义的方式是在模块（module）中声明它们，这样它们就能被任意类包括进去<h2 id="其它特性"><a href="#其它特性" class="headerlink" title="其它特性"></a>其它特性</h2></li>
-<li>赋值声明局部变量</li>
-<li>数组给多个变量同时赋值 width, height, depth = [1000, 2250, 250]</li>
-<li>字符串插值 &gt;&gt; “hello #{‘dlrow’.reverse}” =&gt; “hello world”</li>
-<li>检查对象 inspect方法</li>
-<li>打印字符串 puts</li>
-<li>可变参数方法 * <ul>
-<li>在发送消息的时候， * 运算符还可以把每一个数组元素当作单个参数处理</li>
-<li>并行赋值</li>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ul>
+<li><h4 id="字符串-string"><a href="#字符串-string" class="headerlink" title="字符串(string)"></a>字符串(string)</h4><pre><code> 常规操作:
+ ​     SET name &quot;Tom&quot;
+ ​     GET name
+ ​     APPEND name &quot;Jack&quot;
+     EXISTS name
+     DEL name
+批量操作:
+     MGET name1 name2 name3
+     MSET name1 tom name2 jerry name3 jack
+ 设置过期:
+     EXPIRE name 5        #5s后过期
+     SETEX name 5 &quot;tom&quot;  #5s后过期
+ 计数:
+ ​    SET counter 1000
+ ​    INCR counter 
+ ​    DECR counter
+    INCRBY counter 5
+
+ SETNX name &quot;jerry&quot;        #如果name不存在,则创建.
+</code></pre></li>
 </ul>
+<pre><code>&gt; 动态字符串,采用预分配冗余空间的方式来减少内存的频繁分配.字符串
+    长度小于1M时,加倍扩容,大于1M时每次扩1M.最大长度为512M.
+</code></pre><ul>
+<li><h4 id="列表-list"><a href="#列表-list" class="headerlink" title="列表(list)"></a>列表(list)</h4><p>  ​    LPUSH lists redis mongodb golang<br>  ​    RPUSH lists mysql postgre<br>  ​    LPOP lists<br>  ​    RPOP lists<br>  ​    LRANGE lists 0 10</p>
+<blockquote>
+<p>数据量较少时会使用一块连续的内存存储,压缩列表ziplist将元素连续存储.</p>
+<pre><code>数据量较多时使用quicklist. 
+Redis将链表和ziplist结合组成quicklist,多个ziplist使用双向
+指针串起来使用.
+</code></pre></blockquote>
 </li>
-<li>代码块 <ul>
-<li>方法可以带一个隐式代码块参数 </li>
-<li>yield关键字表示对代码块中那段代码的调用</li>
-<li>代码块可以带参数 { |n| puts “#{n}: hello” }</li>
-</ul>
+<li><h4 id="散列-hash"><a href="#散列-hash" class="headerlink" title="散列(hash)"></a>散列(hash)</h4><p>  ​    HMSET car name “volvo” color “black” price 20<br>  ​    HMGET car name<br>  ​    HEXISTS car name<br>  ​    HDEL car price</p>
+<blockquote>
+<p>数组 + 链表的二维结构, 第一维数组位置碰撞后,使用链表将元素串接起来.</p>
+<pre><code>与Java的HashMap的不同点: 
+    Redis字典只能是字符串;
+    Redis采用渐进式rehash策略,HashMap采用一次性全部rehash.
+        Redis不堵塞服务,实现了高性能.
+</code></pre></blockquote>
+<pre><code>渐进式rehash: 在rehash的同时保留新旧两个hash结构,查询时会同时查询两个
+hash结构,然后在
+
+HashMap的rehash: 
+</code></pre></li>
+<li><h4 id="集合-set"><a href="#集合-set" class="headerlink" title="集合(set)"></a>集合(set)</h4><p>  ​    SADD letters a<br>  ​    SADD letters a b c<br>  ​    SREM letters c d<br>  ​    SMEMBERS letters<br>  ​    SADD setA 1 2 3<br>  ​    SDIFF setA setB</p>
 </li>
-<li>枚举类型<ul>
-<li>(1..10).select(&amp;:even?) =&gt; [2, 4, 6, 8, 10]</li>
-<li>flat_map, inject </li>
-</ul>
+<li><h4 id="有序集合-zset"><a href="#有序集合-zset" class="headerlink" title="有序集合(zset)"></a>有序集合(zset)</h4><p>  ​    ZADD tutorials 1 redis 2 mongodb 3 mysql<br>  ​    ZRANGE tutorials 0 10 WITHSOCRES</p>
 </li>
-<li>结构体<ul>
-<li>class Point &lt; Struct.new(:x, :y)  自动生成x,y属性和getter setter</li>
-<li>比较两个结构体的属性是否相等</li>
+<li><h4 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h4>比特位组成的数组</li>
+<li><h4 id="hyperLoglog"><a href="#hyperLoglog" class="headerlink" title="hyperLoglog"></a>hyperLoglog</h4></li>
+<li><h4 id="地理空间-geospatial"><a href="#地理空间-geospatial" class="headerlink" title="地理空间(geospatial)."></a>地理空间(geospatial).</h4></li>
 </ul>
-</li>
-<li>给内置对象扩展方法    </li>
-<li>定义常量 <ul>
-<li>任何以大写字母开头的变量都是常量</li>
+<h3 id="事务-transaction"><a href="#事务-transaction" class="headerlink" title="事务(transaction)"></a>事务(transaction)</h3><pre><code>MULTI
+INCR likes
+INCR visitors
+EXEC
+</code></pre><h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><pre><code>LPUSH mylist 4 3 2 6 9
+SORT mylist
+LPUSH mylistalpha a d i e p
+SORT mylistalpha ALPHA
+</code></pre><h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><pre><code>SET session uuid11
+EXPIRE session 20 
+TTL session
+</code></pre><h3 id="管道命令-Piplining"><a href="#管道命令-Piplining" class="headerlink" title="管道命令(Piplining)"></a>管道命令(Piplining)</h3><h3 id="发布-订阅"><a href="#发布-订阅" class="headerlink" title="发布/订阅"></a>发布/订阅</h3><pre><code>SUBSCRIBE redisChat
+PUBLISH redisChat &quot;Learn redis&quot;
+</code></pre><h3 id="复制-replication"><a href="#复制-replication" class="headerlink" title="复制(replication)"></a>复制(replication)</h3><h3 id="Lua脚本-Lua-scripting"><a href="#Lua脚本-Lua-scripting" class="headerlink" title="Lua脚本(Lua scripting)"></a>Lua脚本(Lua scripting)</h3><h3 id="LRU驱动事件-LRU-eviction"><a href="#LRU驱动事件-LRU-eviction" class="headerlink" title="LRU驱动事件(LRU eviction)"></a>LRU驱动事件(LRU eviction)</h3><h3 id="磁盘持久化-persistence"><a href="#磁盘持久化-persistence" class="headerlink" title="磁盘持久化(persistence)"></a>磁盘持久化(persistence)</h3><ul>
+<li><h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><h5 id="默认的持久化方式-将服务器某个时间点上的数据库状态-非空数据库以及相关键值-保存到一个经过压缩的二进制文件中-dump-rdb"><a href="#默认的持久化方式-将服务器某个时间点上的数据库状态-非空数据库以及相关键值-保存到一个经过压缩的二进制文件中-dump-rdb" class="headerlink" title="默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)"></a>默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)</h5><h5 id="手动持久化命令"><a href="#手动持久化命令" class="headerlink" title="手动持久化命令:"></a>手动持久化命令:</h5></li>
 </ul>
-</li>
-<li>删除常量<br>  一个顶层常量可以通过给 Object 发送消息 remove_const<br>  来删除，同时还要把常量名作为符号（symbol）对象传进去<br>  Object.send(:remove_const, :NUMBERS)</li>
-</ul>
-<hr>
-<h1 id="程序和机器"><a href="#程序和机器" class="headerlink" title="程序和机器"></a>程序和机器</h1><p>detect：（find的别名函数） 返回列表中第一个符合条件的元素</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/30/计算的本质/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-编程的数学原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/28/编程的数学原理/">编程的数学原理</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/28/编程的数学原理/" class="archive-article-date">
-  	<time datetime="2019-04-28T04:32:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="群-group"><a href="#群-group" class="headerlink" title="群(group)"></a>群(group)</h1><p>群是一个集合G与其上定义的某种二元关系运算.</p>
 <ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
-<li>消去公理: 对任何a ∈ G, 都存在一个逆元a<sup>-1</sup>使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e</li>
-</ol>
-<p>例子: 整数加法群, 整数模5加法群</p>
-<h1 id="幺半群-monoid"><a href="#幺半群-monoid" class="headerlink" title="幺半群(monoid)"></a>幺半群(monoid)</h1><p>幺半群是一个集合S和其上定义的二元运算</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
-</ol>
-<p>例子: 字符串的拼接, 列表的连接</p>
-<h1 id="半群-semigroup"><a href="#半群-semigroup" class="headerlink" title="半群(semigroup)"></a>半群(semigroup)</h1><p>半群是一个集合S和其上定义的二元运算</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-</ol>
-<p>例子: 全体正整数构成的加法半群, 乘法半群; 全体偶数构成的加法半群, 乘法半群</p>
-<h2 id="群的性质"><a href="#群的性质" class="headerlink" title="群的性质"></a>群的性质</h2><blockquote>
-<p>群的单位元是惟一的<br>群中的任意元素a,都存在且仅存在一个逆元使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e<br>有限群的每个元素都有有限的阶<br>    对群的一个元a,能够满足a<sup>m</sup> = e的最小整数m叫做a的阶<br>    如果m不存在,则称a的阶是无限的.</p>
-</blockquote>
-<p>存在从某个集合A到另一个集合B的映射f<br>a和b是A中的两个元, f(a)和f(b)是它们在B中的像<br>考虑在A上的二元封闭运算产生的元a · b,在映射下在B中的像f(a · b)<br>如果对B上的二元封闭运算总有<br>    f(a) · f(b) = f(a · b)</p>
-<p>则称f是从A到B的同态映射<br>如果f是满射(即B中所有元素都在A中有原像),则称为同态满射<br>例:奇偶判定函数odd: Z -&gt; Bool,接受一个整数,如果是奇数返回True,否则返回False<br>    布尔集合{True,False  }在逻辑或运算下构成一个群</p>
-<p> 如果f不仅是满射,还是单射,那么它就是一一映射.称f是从A到B的同构映射,简称同构,记做A ≌ B<br>    例: a=2,f(a)=4<br>        b=3,f(b)=9<br>        ab=6,f(ab)=f(a)f(b)=36</p>
-<h2 id="范畴Category"><a href="#范畴Category" class="headerlink" title="范畴Category"></a>范畴Category</h2><p>一个范畴C包括一组对象（Object），记为A,B,C,…，和一组箭头<br>（Arrow），记为f,g,h,…。它们之上定义了以下四种操作：</p>
-<ul>
-<li>成为源和目标</li>
-<li>id</li>
-<li>组合<br>两条公理:</li>
-<li>结合</li>
-<li>单位元<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">Monoid</span> <span class="type">String</span> <span class="keyword">where</span></span></span><br><span class="line">    e = <span class="string">""</span></span><br><span class="line">    (*) = (++)</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>字符串幺半群(S, ++, “”)<br>    r ++ (s ++ t) = (r ++ s) ++ t<br>    “” ++ s = s = s ++ “”<br>字符集幺半群(C, ∪, {})<br>自然数幺半群(N, +, 0)</p>
-<p>S到C的态射: 把串中用到的字符组成一个字符集 S -&gt; C  φ: s -&gt; {c | c ∈ s}<br>    φ(s ++ r) = φ(s) ∪ φ(r)<br>    φ(“”) = {}<br>C到N的态射: 集合的大小映射为自然数,空集的大小映射为0 C −→ N  ψ : c → |c|<br>    ψ(s) ∪ ψ(r) = ψ(s + r)<br>    {} = ψ(0)</p>
-<p>S -&gt; C -&gt; N<br>幺半群范畴Mon,对象是幺半群,箭头是态射,恒等箭头是从一个幺半群到它自己的态射</p>
-<p>只有一个对象的幺半群范畴:<br>    对象是字符串幺半群(S, ++, “”), 箭头是前缀映射,单位元是空串””</p>
-<p>预序 preset</p>
-<ul>
-<li>自反性 任何集合中的元素a都有a ≤ a；</li>
-<li>传递性 若a ≤ b且b ≤ c，则a ≤ c；<br>在预序基础上满足 </li>
-<li>反对称性 若a ≤ b且b ≤ a，则a = b；<br>称为偏序 poset</li>
-</ul>
-<p>偏序集例子: 族谱, {x,y,z}的所有子集在包含关系下</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/28/编程的数学原理/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-范畴论-贺伟" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/28/范畴论-贺伟/">范畴论 贺伟</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/28/范畴论-贺伟/" class="archive-article-date">
-  	<time datetime="2019-04-27T18:23:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><ul>
-<li>obC 范畴C的全体对象</li>
-<li>C(A,B) 对象A到B的态射集</li>
-<li>MorC 范畴C的全体态射</li>
-<li>dom(f) 态射f的定义域</li>
-<li>cod(f) 态射f的值域</li>
-<li>$1_A$ 对象A到自身的单位态射</li>
-<li>$1_C$ 范畴C到自身的单位函子</li>
-</ul>
-<h1 id="范畴与函子"><a href="#范畴与函子" class="headerlink" title="范畴与函子"></a>范畴与函子</h1><h2 id="范畴的定义"><a href="#范畴的定义" class="headerlink" title="范畴的定义"></a>范畴的定义</h2><ol>
-<li>一族对象obC</li>
-<li></li>
+<li>SAVE: 阻塞Redis服务器进程</li>
+<li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.</li>
 </ol>
 <ul>
-<li>(a) 复合运算律</li>
-<li>(b) 结合律</li>
-<li>(c) 单位态射：每一个对象A,存在一个态射$1_A ∈ C(A,A)$使得对任意的f ∈ C(A,B)及g ∈ C(C,A),有<br>$f1_A = f,   1_Ag = g$</li>
+<li><h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
 </ul>
-<hr>
-<h3 id="对偶原理-duality-principle"><a href="#对偶原理-duality-principle" class="headerlink" title="对偶原理(duality principle)"></a>对偶原理(duality principle)</h3><pre><code>态射反向，称为对偶。
-</code></pre><h3 id="B上的切片范畴-slice-category-over-B-C-B"><a href="#B上的切片范畴-slice-category-over-B-C-B" class="headerlink" title="B上的切片范畴(slice category over B) C/B"></a>B上的切片范畴(slice category over B) C/B</h3><pre><code>任意两个以B为值域的态射,
-</code></pre><h2 id="函子"><a href="#函子" class="headerlink" title="函子"></a>函子</h2><h2 id="自然变换"><a href="#自然变换" class="headerlink" title="自然变换"></a>自然变换</h2><h2 id="单态射与满态射"><a href="#单态射与满态射" class="headerlink" title="单态射与满态射"></a>单态射与满态射</h2><h2 id="子对象与商对象"><a href="#子对象与商对象" class="headerlink" title="子对象与商对象"></a>子对象与商对象</h2><h2 id="Yoneda引理与可表达函子"><a href="#Yoneda引理与可表达函子" class="headerlink" title="Yoneda引理与可表达函子"></a>Yoneda引理与可表达函子</h2><h2 id="射影对象与单射对象"><a href="#射影对象与单射对象" class="headerlink" title="射影对象与单射对象"></a>射影对象与单射对象</h2>
+<h3 id="Redis哨兵-Sentinel"><a href="#Redis哨兵-Sentinel" class="headerlink" title="Redis哨兵(Sentinel)"></a>Redis哨兵(Sentinel)</h3><h3 id="自动分区-Cluster"><a href="#自动分区-Cluster" class="headerlink" title="自动分区(Cluster)"></a>自动分区(Cluster)</h3>
       
 
       
@@ -441,95 +451,11 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/28/范畴论-贺伟/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/Redis/">展开全文 >></a>
         </p>
       
 
@@ -561,7 +487,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -689,7 +615,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -697,11 +623,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -709,15 +631,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -729,15 +655,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -749,7 +675,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -757,15 +683,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">

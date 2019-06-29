@@ -145,46 +145,12 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Category-Theory-for-Programmers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-React" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Category-Theory-for-Programmers/">Category Theory for Programmers</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/27/Category-Theory-for-Programmers/" class="archive-article-date">
-  	<time datetime="2019-04-27T10:02:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Category-The-Essence-of-Composition"><a href="#Category-The-Essence-of-Composition" class="headerlink" title="Category: The Essence of Composition"></a>Category: The Essence of Composition</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><blockquote>
-<p>A category consists of objects and arrows  that go between them.<br>    范畴与组合互为本质:<br>        The essence of a category is composition.</p>
-</blockquote>
-<pre><code>The essence of composition is a category.
-</code></pre><hr>
-<h2 id="组合的性质"><a href="#组合的性质" class="headerlink" title="组合的性质:"></a>组合的性质:</h2><pre><code>    1. Associativity
-        (伏笔:  Associativity is pretty obvious when dealing with functions, 
-                but it may be not as obvious in other categories.)
-    2. Identity
-
-组合是编程的本质
-</code></pre><hr>
-<pre><code>Challenges 
-  实现identity和compose
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Function</span>&lt;<span class="title">T</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">R <span class="title">apply</span><span class="params">(T t)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> &lt;V&gt; <span class="function">Function&lt;V, R&gt; <span class="title">compose</span><span class="params">(Function&lt;? <span class="keyword">super</span> V, ? extends T&gt; before)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(before);</span><br><span class="line">        <span class="keyword">return</span> (V v) -&gt; apply(before.apply(v));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &lt;T&gt; <span class="function">Function&lt;T, T&gt; <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> t -&gt; t;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>测试
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IdentityTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(id).compose(f2).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute2</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(f2).compose(id).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="keyword">new</span> IdentityTest().compute(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        <span class="keyword">int</span> res2 = <span class="keyword">new</span> IdentityTest().compute2(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        System.out.println(res);</span><br><span class="line">        System.out.println(res2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>用JavaScript来实现<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> identity = <span class="function"><span class="params">x</span> =&gt;</span> x</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> x =&gt; f(g(x))</span><br></pre></td></tr></table></figure></p>
-<p>测试<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add5 = <span class="function"><span class="params">x</span> =&gt;</span> x + <span class="number">5</span></span><br><span class="line"><span class="keyword">const</span> multi2 = <span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(compose(identity, compose(add5, multi2))(<span class="number">5</span>))</span><br><span class="line"><span class="built_in">console</span>.log(compose(add5, compose(identity, multi2))(<span class="number">5</span>))</span><br></pre></td></tr></table></figure></p>
-<h1 id="Types-and-Functions"><a href="#Types-and-Functions" class="headerlink" title="Types and Functions"></a>Types and Functions</h1><h1 id="Categories-Great-and-Small"><a href="#Categories-Great-and-Small" class="headerlink" title="Categories Great and Small"></a>Categories Great and Small</h1><h1 id="Kleisli-Categories"><a href="#Kleisli-Categories" class="headerlink" title="Kleisli Categories"></a>Kleisli Categories</h1><h1 id="Products-and-Coproducts"><a href="#Products-and-Coproducts" class="headerlink" title="Products and Coproducts"></a>Products and Coproducts</h1><h1 id="Simple-Algebraic-Data-Types"><a href="#Simple-Algebraic-Data-Types" class="headerlink" title="Simple Algebraic Data Types"></a>Simple Algebraic Data Types</h1><h1 id="Functors"><a href="#Functors" class="headerlink" title="Functors"></a>Functors</h1><h1 id="Functoriality"><a href="#Functoriality" class="headerlink" title="Functoriality"></a>Functoriality</h1><h1 id="Function-Types"><a href="#Function-Types" class="headerlink" title="Function Types"></a>Function Types</h1><h1 id="Natural-Transformations"><a href="#Natural-Transformations" class="headerlink" title="Natural Transformations"></a>Natural Transformations</h1><h1 id="Declarative-Programming"><a href="#Declarative-Programming" class="headerlink" title="Declarative Programming"></a>Declarative Programming</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Free-Monoids"><a href="#Free-Monoids" class="headerlink" title="Free Monoids"></a>Free Monoids</h1><h1 id="Representable-Functors"><a href="#Representable-Functors" class="headerlink" title="Representable Functors"></a>Representable Functors</h1><h1 id="The-Yoneda-Lemma"><a href="#The-Yoneda-Lemma" class="headerlink" title="The Yoneda Lemma"></a>The Yoneda Lemma</h1><h1 id="Yoneda-Embedding"><a href="#Yoneda-Embedding" class="headerlink" title="Yoneda Embedding"></a>Yoneda Embedding</h1><h1 id="Morphisms"><a href="#Morphisms" class="headerlink" title="Morphisms"></a>Morphisms</h1><h1 id="Adjunctions"><a href="#Adjunctions" class="headerlink" title="Adjunctions"></a>Adjunctions</h1><h1 id="Free-Forgetful-Adjunctions"><a href="#Free-Forgetful-Adjunctions" class="headerlink" title="Free/Forgetful Adjunctions"></a>Free/Forgetful Adjunctions</h1><h1 id="Monads-Programmer’s-Definition"><a href="#Monads-Programmer’s-Definition" class="headerlink" title="Monads: Programmer’s Definition"></a>Monads: Programmer’s Definition</h1><h1 id="Monads-and-Effects"><a href="#Monads-and-Effects" class="headerlink" title="Monads and Effects"></a>Monads and Effects</h1>
+        
       
 
       
@@ -192,22 +158,11 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Category-Theory-for-Programmers/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/React/">展开全文 >></a>
         </p>
       
 
@@ -237,27 +192,27 @@
 
 
   
-    <article id="post-算法4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-PostgreSQL Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/算法4/">算法4</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/算法4/" class="archive-article-date">
-  	<time datetime="2019-04-24T07:49:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2>
+        <h1 id="PostgreSQL-面向对象的数据库管理系统"><a href="#PostgreSQL-面向对象的数据库管理系统" class="headerlink" title="PostgreSQL: 面向对象的数据库管理系统."></a>PostgreSQL: 面向对象的数据库管理系统.</h1><ul>
+<li>multi-version concurrency control (MVCC), Oracle中的快照隔离</li>
+<li>面向对象, 可以添加自定义函数.</li>
+<li>可拓展, 可以自定义数据类型,索引类型. </li>
+</ul>
+<p>PostgreSQL与MySQL的对比:</p>
+<ol>
+<li>MySQL多表连接查询只支持Nest Loop,不支持hash join和sort merge join,子查询性能较低,不支持sequence</li>
+<li>性能优化工具和度量信息不足, 异步复制,无法通过主从做到数据零丢失</li>
+<li>在线操作功能弱.</li>
+</ol>
+<p>数据类型:<br>基本数据类型: Integer, Numeric, String, Boolean, 二进制bytea,<br>字符型: varchar(n), char(n), text<br>位串类型: bit(n), bit varying(n)<br>枚举类型: enum<br>网络地址类型: cidr, inet, macaddr<br>结构型: Data/Time, Array, Range, UUID<br>文档型: JSON, XML, K-V<br>几何型: 点, 线, 圈, 多边形<br>定制型: 组合, 定制类型</p>
+<p>数据完整性:<br>UNIQUE, NOT NULL<br>主键<br>外键<br>排除约束<br>Explicit Locks, Advisory Locks</p>
+<p>select 连接两列合并为一列：SELECT  first_name  || ‘ ‘ ||  last_name AS full_name, email  FROM  customer;<br> order by时升序NULL在最后，降序NULL在最前。<br> DISTINCT bcolor, fcolor 这样使用distinct时会把这两列作为整体进行去重。<br> select distinct on (bcolor) bcolor, fcolor from t1 order by bcolor ,fcolor;   先按照bcolor, fcolor对行进行排序，每一组重复的bcolor中选取第一个所在的行。<br> limit n offset m 跳过m个，选取n个。 注意m数量不要太大。<br>  fetch是postgresql对sql标准的实现，和limit offset功能相同。 OFFSET start { ROW | ROWS } FETCH { FIRST | NEXT } [ row_count ] { ROW | ROWS } ONLY<br> where in 既可以接列表，也可以接一个子查询。<br> like匹配符： % 匹配任意个字符， _ 匹配单个字符<br> 和null做 = 比较，永远为false， 因此使用 is null 和 is not null</p>
+<p>找到表a中有的b中没有的行: basket_a a LEFT JOIN basket_b b ON a.fruit = b.fruit WHERE b.id IS NULL;<br> 找到表a和表b中各自独特的行： basket_a a FULL JOIN basket_b b ON a.fruit = b.fruit WHERE a.id IS NULL OR b.id IS NULL;<br>join 等价于 inner join<br>self-join 查询有层级体系的数据，同一张表中比较行。<br>json与jsonb：<br>  json是对输入文本的完整拷贝，保留输入的空格，重复键和顺序。处理函数必须在每个执行上重新解析。存储快，读取慢。<br>  jsonb是解析输入后保存的二进制，在解析时会删除不必要的空格和重复键，顺序也会不同，使用时不用再次解析。支持索引。存储慢，读取快。</p>
+
       
 
       
@@ -265,22 +220,11 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/算法4/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/PostgreSQL Notes/">展开全文 >></a>
         </p>
       
 
@@ -310,62 +254,22 @@
 
 
   
-    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Nodejs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><pre><code>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.
-</code></pre><h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><pre><code>类从加载到卸载的生命周期7个阶段: 
-    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)
-    解析可以在初始化之后开始.
-
-5种必须对类进行初始化的情况:
-    1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
-    2. 使用reflect包方法对类进行反射调用时.
-    3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
-    4. 虚拟机启动时用户指定要执行的主类
-    5. 动态语言支持
-
-不会触发初始化的引用--被动引用:
-    1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
-    2. 通过数组定义来引用类,不会触发类的初始化
-        package org.fenixsoft.classloading
-            SuperClass[] sca = new SuperClass[10];
-        类org.fenixsoft.classloading.SuperClass不会被初始化.
-        但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
-            创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
-            数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
-    3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
-
-对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.
-</code></pre><h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><pre><code>加载
-    1. 通过一个类的全限定名来获取定义此类的二进制字节流
-    2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
-    3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
-验证
-
-准备
-
-解析
-
-初始化
-</code></pre><h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2>
+        <p>Nodejs适合I/O密集型应用,而不适合计算密集型应用.</p>
+<p>全局变量:<br>    process:<br>        process.argv 命令行参数数组,第一个元素是node,第二个是脚本名称,之后是运行参数<br>        process.stdout<br>        process.stdin<br>        process.nextTick(callback) 为事件循环设置一项任务,Node.js会在下次事件循环调响应<br>                                                      时调用callback.<br>                    目的: 缩短事件的执行时间<br>        process.platform<br>        process.pid<br>        process.execPath<br>        process.memoryUsage()    </p>
+<pre><code>util:
+    util.inherits 
+event:
+    EventEmitter.on(event, listener)
+    EventEmitter.emit(event, [args])
+    EventEmitter.once(event, listener) 单次监听器,触发后解除.
+    EventEmitter.removeListener(event, listener)
+    EventEmitter.removeAllListener(event)
+</code></pre>
       
 
       
@@ -373,22 +277,11 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/Nodejs/">展开全文 >></a>
         </p>
       
 
@@ -418,30 +311,34 @@
 
 
   
-    <article id="post-动态规划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-MyBatis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/08/动态规划/">动态规划</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/08/动态规划/" class="archive-article-date">
-  	<time datetime="2019-04-08T07:20:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-08</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="斐波那契数列"><a href="#斐波那契数列" class="headerlink" title="斐波那契数列"></a>斐波那契数列</h1><h2 id="70-Climbing-Stairs"><a href="#70-Climbing-Stairs" class="headerlink" title="70. Climbing Stairs"></a><a href="https://leetcode.com/problems/climbing-stairs" target="_blank" rel="noopener">70. Climbing Stairs</a></h2><p>主要的难点在于想清楚: 走到第 i 个楼梯的方法数为走到第 i-1 和第 i-2 个楼梯的方法数之和<br>第i-1个楼梯到第i个楼梯只有这一种方法,<br>第i-2个楼梯到第i个楼梯要么直接走2个台阶上去, 一步一步走上去的那种方法已经被算在了前一种方法里.<br>即: dp[i] = dp[i-1] + dp[i-2]<br>可以比较容易地写出下面这种递归的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> climbStairs(n - <span class="number">1</span>) + climbStairs(n - <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>不过这个是树形递归的方法, 有很多重复计算.(在LeetCode里面跑会超时)<br>迭代的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">1</span>, pre2 = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>; i&lt;n; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = pre1 + pre2;</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="198-House-Robber"><a href="#198-House-Robber" class="headerlink" title="198. House Robber"></a><a href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">198. House Robber</a></h2><p>要想清楚: 抢到第 i 个住户时的最大抢劫量为 抢到第i-2个用户的钱加上第i个用户的钱<br>                                       抢到第i-1个用户的钱<br>                                这二者的最大值.<br>即: dp[i] = max(dp[i-2] + nums[i], dp[i-1])<br>容易写出下面的递归写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.length == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums.length == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(nums[<span class="number">0</span>], nums[<span class="number">1</span>]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(rob(Arrays.copyOf(nums, nums.length - <span class="number">2</span>)) + nums[nums.length - <span class="number">1</span>],</span><br><span class="line">                rob(Arrays.copyOf(nums, nums.length - <span class="number">1</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>和上面的一样,也会超时.<br>迭代的写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">0</span>, pre2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = Math.max(pre1 + nums[i], pre2);</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        <p>MyBatis整体架构：<br>    基础支持层：数据源模块（连接池功能，检测连接状态），事务管理模块，缓存模块（一级、二级缓存，运行在同一个JVM），<br>              Binding模块（将用户自定义的Mapper接口与映射配置文件关联起来），反射模块（封装java原生的反射，提供优化，缓存了类的元数据，提高反射性能），<br>              类型转换模块（别名机制，JDBC类型和Java类型的转换），日志模块（集成第三方日志模块），<br>              资源加载模块（对类加载器进行封装，确定类加载器的使用顺序，提供了加载类文件和其他资源文件的功能），<br>              解析器模块（对XPath进行封装，为解析config文件提供支持；为处理动态SQL语句中的占位符提供支持）。</p>
+<pre><code>核心处理层：配置解析（加载mybatis-config.xml、*Mapper.xml和Mapper接口中的注解信息，解析后形成相应的对象保存到Configuration对象中，利用该对象创建SqlSessionFactory），           参数映射，SQL解析，SQL执行（Executor维护一级、二级缓存，提供事务管理的相关操作，将数据库相关操作委托给StatementHandler完成。StatementHandler通过
+          ParameterHandler完成SQL语句的实参绑定，然后通过java.sql.Statement对象执行SQL语句并得到结果集ResultSet，最后通过ResultSetHandler完成结果集映射，得到结果并返回），结果集映射，插件（拦截SQL语句进行重写）。
+
+接口层：SqlSession
+</code></pre><p>解析器模块：<br>    XML解析方式：<br>        DOM(Document Object Model)<br>            树形结构解析，将整个XML文档读入内存构建DOM树：文档节点、元素节点、属性节点、文本节点、注释节点。<br>            易于编程、节点间导航和修改数据，资源消耗大。<br>        SAX(Simple API for XML)<br>            基于事件模型解析，推模式。解析到某类型节点时会触发注册在该类型节点上的回调函数。<br>            流式处理，需要自己维护节点之间的关系。<br>        StAX(Streaming API for XML)<br>            拉模式，应用程序通过调用解析器推进解析进程。<br>            两套API：基于指针的，效率高但抽象程度低；基于迭代器的，应用程序把XML文档当做一系列事件对象来<br>                    处理，效率低但抽象程度高。</p>
+<pre><code>MyBatis在初始化过程中使用DOM解析方式。XPath是一种查询XML文档的语言。
+</code></pre><p>Java基本类型有默认值，在动态SQL部分属性判断总不为空，因此在实体类中使用包装类型。<br>Java中的byte[]对应数据库中的BOLB、LONGVARBINARY等<br>insert标签包含flushCache属性，默认为true，语句被调用时清空一、二级缓存。<br>给参数配置@Param注解后，MyBatis自动将参数封装为Map类型，@Param注解值作为Map中的key。</p>
+<p>动态SQL：<br>    标签：<br>        if：用在where语句中，通过判断参数值来决定是否使用某个查询条件；用在update语句中判断是否更新<br>            某一个字段；用在insert语句中判断是否插入某个字段的值。<br>        choose(when、otherwise)：实现if…else逻辑<br>        trim(where、set)：<br>            where: 如果该标签有返回值，就插入一个where，如果where后面的字符串是以and和or开头，则将它们剔除。<br>            set： 如果该标签有返回值，就插入一个set，如果set后面的字符串是以逗号结尾，则将逗号剔除。<br>                如果set元素中没有内容，set后面连着where，会产生SQL错误，因此需要在set标签最后加上id = #{id}<br>            trim:<br>                prefix: 当trim元素包含内容时，给内容增加prefix指定的前缀<br>                suffix: 当trim元素包含内容时，给内容增加suffix指定的前缀<br>                prefixOverrides: 当trim元素包含内容时，会把内容中匹配的前缀字符串去掉<br>                suffixOverrides: 当trim元素包含内容时，会把内容中匹配的后缀字符串去掉<br>        foreach：${} 配合 in 的方式不能防止sql注入。可以用#{} 配合 foreach<br>                collection: 要迭代循环的属性<br>                item：变量名<br>                index：索引属性名，List中为当前索引值，Map中为key<br>                open：整个循环内容开头的字符串<br>                close：整个循环内容结尾的字符串<br>                separator：每次循环的分隔符</p>
+<pre><code>        collection的属性设置：
+            只有一个数组参数或者集合参数
+        批量插入
+
+bind： 防止sql注入。创建变量并绑定到上下文中。
+</code></pre><p>${} 与 #{}</p>
+<p>#{}：解析为一个JDBC预编译语句的参数标记符，参数占位符。<br>${}: 仅仅为String替换，在动态SQL解析阶段进行变量替换。</p>
+<p>高级查询<br>    高级结果映射</p>
+<pre><code>存储过程
+
+枚举或其他对象
+</code></pre><p>缓存配置<br>    一级缓存    </p>
+<pre><code>二级缓存
+</code></pre><p>@SpringBootTest 注解必须要加<br>路径前面的/不能省略<br>@RequestBody 在实体类上加上 @JsonRootName(value = “user”)<br>这么写json {“user”:{“email”:”<a href="mailto:sanshi.30@qq.com" target="_blank" rel="noopener">sanshi.30@qq.com</a>“,”username”:”Ramble”,”password”:”1234567”}}</p>
 
       
 
@@ -450,33 +347,11 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/08/动态规划/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/MyBatis/">展开全文 >></a>
         </p>
       
 
@@ -508,7 +383,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 
@@ -636,7 +511,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -644,11 +519,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -656,15 +527,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -676,15 +551,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -696,7 +571,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -704,15 +579,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">

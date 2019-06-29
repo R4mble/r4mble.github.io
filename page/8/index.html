@@ -145,410 +145,74 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Haskell里的Functor函子" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-编程的数学原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Haskell里的Functor函子/">Haskell里的Functor函子</a>
+      <a class="article-title" href="/2019/04/28/编程的数学原理/">编程的数学原理</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Haskell里的Functor函子/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/28/编程的数学原理/" class="archive-article-date">
+  	<time datetime="2019-04-28T04:32:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code class="haskell"><span class="keyword">import</span> Data.List
-<span class="keyword">import</span> Data.Char
-<span class="title">main</span> = <span class="keyword">do</span> line &lt;- fmap (intersperse '-' . reverse . map toUpper) getLine
-          putStrLn line
-          main
-</code></pre>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Haskell</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Functor</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Haskell里的Functor函子/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JavaScript教程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/JavaScript教程/">JavaScript教程</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/JavaScript教程/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>基本语法<br>    变量<br>        声明和赋值<br>            var a = 1;<br>            当只声明了变量,而没有赋值时 为 undefined</p>
-<pre><code>    变量没有类型,只有值有类型
-        var a = 42;
-        typeof a; // &quot;number&quot;
-
-        a = true;
-        typeof a; // &quot;boolean&quot;
-
-        typeof typeof 42; // &quot;string&quot;
-
-    变量提升
-        JavaScript引擎会先解析代码,获取所有被声明的变量.
-            console.log(a);
-            var a = 1;
-            //执行时相当于先声明了a,但是没有赋值,会打印出undefined
-
-标识符
-    第一个字符可以是任意Unicode字母,不能是数字, 包括 $ 和 _
-
-区块
-    对var来说,区块不构成单独的作用域
-    {
-        var a = 1;
-    }
-    a // 1
-
-逻辑控制
-    if else switch 三目运算符 while for do...while break continue 同 Java
-
-标签
-    通常和break,continue配合
-
-    top:
-        for (var i=0; i&lt;3; i++) {
-            for (var j=0; j&lt;3; j++) {
-                if (i===1 &amp;&amp; j===1) break top;
-            }
-        }
-    满足条件跳出双层循环. 如果不使用标签则只能跳出内层循环.
-</code></pre><p>数据类型<br>    number      整数和小数<br>    string<br>    boolean<br>    undefined<br>    null<br>    object<br>    symbol</p>
-<pre><code>typeof运算符
-    typeof 123 // &quot;number&quot;
-    typeof &quot;123&quot; // &quot;string&quot;
-    typeof false // &quot;boolean&quot;
-
-    函数 返回 function
-    function f() {}
-    typeof f // &quot;function&quot;
-
-    未定义变量 返回 undefined, 可以用来检测没有声明的变量
-    typeof undefined === &quot;undefined&quot;
-
-    typeof window // &quot;object&quot;
-    typeof {} // &quot;object&quot;
-    typeof [] // &quot;object&quot;
-
-    var o = {};
-    var a = [];
-
-    区分数组和对象
-    o instanceof Array //false
-    a instanceof Array //true
-
-
-    typeof null === &quot;object&quot; //这个是存在了20年的bug,应该返回null
-
-    检测null:
-        val a = null;
-        (!a &amp;&amp; typeof a === &quot;object&quot;) //true, null是假值, undefined也是假值
-
-    undefined == null //true
-
-    Number(null) //0
-    5 + null //5
-
-    Number(undefined) //NaN
-    5 + undefined // NaN
-
-    null表示空值
-    undefined表示未定义
-        1)变量声明了但没有赋值
-        2)调用函数时该提供的参数没有提供
-        3)对象没有该属性
-        4)函数没有返回值,默认返回 undefined
-
-
-布尔值
-    以下为false, 其他为true
-    undefined
-    null
-    false
-    0
-    NaN
-    &quot;&quot; 或 &apos;&apos;
-
-    空数组和空对象都是true
-
-数值
-    所有数值以64位浮点数形式存储,也就是说这个语言根本没有整数
-        1 === 1.0  true
-
-    浮点数不精确,所以
-        0.1 + 0.2 === 0.3  //false
-
-        0.3 / 0.1   //2.999999999
-
-        (0.3 - 0.2) === (0.2 - 0.1)  //false
-
-    64个二进制位: 第1位 符号位,
-                 第2位到第12位(共11位) 指数部分, 
-                 第13位到第64位(共52位) 小数部分.
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/JavaScript教程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Ramda里的柯西化实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Ramda里的柯西化实现/">Ramda里的柯西化实现</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/Ramda里的柯西化实现/" class="archive-article-date">
-  	<time datetime="2019-04-03T18:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>先说R.__ (两个下划线)<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> __ = &#123;<span class="string">'@@functional/placeholder'</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"></span><br><span class="line"> *      <span class="keyword">const</span> greet = R.replace(<span class="string">'&#123;name&#125;'</span>, R.__, <span class="string">'Hello, &#123;name&#125;!'</span>);</span><br><span class="line"> *      greet(<span class="string">'Alice'</span>); <span class="comment">//=&gt; 'Hello, Alice!'</span></span><br></pre></td></tr></table></figure></p>
-<p>R.__是一个含有@@functional/placeholder属性的对象, 那么它是怎么起到占位符作用的呢?</p>
-<p>看下这个函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_isPlaceholder</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">         <span class="keyword">typeof</span> a === <span class="string">'object'</span> &amp;&amp;</span><br><span class="line">         a[<span class="string">'@@functional/placeholder'</span>] === <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这个函数的作用就是检查一个对象的@@functional/placeholder属性是否为true.</p>
-<p>第一个curry函数:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_curry1</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>.length === <span class="number">0</span> || _isPlaceholder(a)) &#123;</span><br><span class="line">      <span class="keyword">return</span> f1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">柯西</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/探索Ramda//" class="article-tag-list-link color3">探索Ramda</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Ramda里的柯西化实现/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/类型系统/">类型和程序设计语言</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/03/类型系统/" class="archive-article-date">
-  	<time datetime="2019-04-03T07:50:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>多态类型,子类型,依赖类型 三个正交分支</p>
-<p>递归由函数不动点实现</p>
-<p>p355 解答</p>
-<h1 id="无类型系统"><a href="#无类型系统" class="headerlink" title="无类型系统"></a>无类型系统</h1><h2 id="无类型算术表达式"><a href="#无类型算术表达式" class="headerlink" title="无类型算术表达式"></a>无类型算术表达式</h2><p>练习3.24 p38<br>    S1 = {true,false,0}<br>    Si+1 = Si^3 + Si*3 + 3<br>    解释: 不考虑类型合不合适.<br>    得: S3有59439个元素.</p>
-<p>练习3.25 归纳证明 构造Sj Si Si+1</p>
-<h4 id="3-4-语义形式"><a href="#3-4-语义形式" class="headerlink" title="3.4 语义形式"></a>3.4 语义形式</h4><ul>
-<li>操作语义<ul>
-<li>小步语义 结构操作语义<br>定义一个简单的抽象机器来说明一个程序语言的行为.<br>用语言的项作为机器状态,对每个状态,要么通过对项做一步简化给出下一个状态,<pre><code>要么声明机器已停止.
-</code></pre></li>
-<li>大步语义 自然语义<br>  抽象机器的一个单个转换就可以将项求值为最终值.                                   </li>
-</ul>
+        <h1 id="群-group"><a href="#群-group" class="headerlink" title="群(group)"></a>群(group)</h1><p>群是一个集合G与其上定义的某种二元关系运算.</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
+<li>消去公理: 对任何a ∈ G, 都存在一个逆元a<sup>-1</sup>使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e</li>
+</ol>
+<p>例子: 整数加法群, 整数模5加法群</p>
+<h1 id="幺半群-monoid"><a href="#幺半群-monoid" class="headerlink" title="幺半群(monoid)"></a>幺半群(monoid)</h1><p>幺半群是一个集合S和其上定义的二元运算</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
+</ol>
+<p>例子: 字符串的拼接, 列表的连接</p>
+<h1 id="半群-semigroup"><a href="#半群-semigroup" class="headerlink" title="半群(semigroup)"></a>半群(semigroup)</h1><p>半群是一个集合S和其上定义的二元运算</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+</ol>
+<p>例子: 全体正整数构成的加法半群, 乘法半群; 全体偶数构成的加法半群, 乘法半群</p>
+<h2 id="群的性质"><a href="#群的性质" class="headerlink" title="群的性质"></a>群的性质</h2><blockquote>
+<p>群的单位元是惟一的<br>群中的任意元素a,都存在且仅存在一个逆元使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e<br>有限群的每个元素都有有限的阶<br>    对群的一个元a,能够满足a<sup>m</sup> = e的最小整数m叫做a的阶<br>    如果m不存在,则称a的阶是无限的.</p>
+</blockquote>
+<p>存在从某个集合A到另一个集合B的映射f<br>a和b是A中的两个元, f(a)和f(b)是它们在B中的像<br>考虑在A上的二元封闭运算产生的元a · b,在映射下在B中的像f(a · b)<br>如果对B上的二元封闭运算总有<br>    f(a) · f(b) = f(a · b)</p>
+<p>则称f是从A到B的同态映射<br>如果f是满射(即B中所有元素都在A中有原像),则称为同态满射<br>例:奇偶判定函数odd: Z -&gt; Bool,接受一个整数,如果是奇数返回True,否则返回False<br>    布尔集合{True,False  }在逻辑或运算下构成一个群</p>
+<p> 如果f不仅是满射,还是单射,那么它就是一一映射.称f是从A到B的同构映射,简称同构,记做A ≌ B<br>    例: a=2,f(a)=4<br>        b=3,f(b)=9<br>        ab=6,f(ab)=f(a)f(b)=36</p>
+<h2 id="范畴Category"><a href="#范畴Category" class="headerlink" title="范畴Category"></a>范畴Category</h2><p>一个范畴C包括一组对象（Object），记为A,B,C,…，和一组箭头<br>（Arrow），记为f,g,h,…。它们之上定义了以下四种操作：</p>
+<ul>
+<li>成为源和目标</li>
+<li>id</li>
+<li>组合<br>两条公理:</li>
+<li>结合</li>
+<li>单位元<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">Monoid</span> <span class="type">String</span> <span class="keyword">where</span></span></span><br><span class="line">    e = <span class="string">""</span></span><br><span class="line">    (*) = (++)</span><br></pre></td></tr></table></figure>
 </li>
-<li>指称语义<br>  一个项的语义不仅是机器状态的序列,而且是某个数学对象,如一个数或一个函数.<br>  一个语言的指称语义是由一个语义域的集合和将项映射到域中元素的解释函数所组成.</li>
-<li>公理语义<br>  用规则本身作为语言的定义.一个项的语义就是关于这个项我们能证明的东西.</li>
 </ul>
-<h2 id="无类型lambda演算"><a href="#无类型lambda演算" class="headerlink" title="无类型lambda演算"></a>无类型lambda演算</h2><h2 id="项的无名称表示"><a href="#项的无名称表示" class="headerlink" title="项的无名称表示"></a>项的无名称表示</h2><h1 id="简单类型"><a href="#简单类型" class="headerlink" title="简单类型"></a>简单类型</h1><h2 id="类型算术表达式"><a href="#类型算术表达式" class="headerlink" title="类型算术表达式"></a>类型算术表达式</h2><h2 id="简单类型的lambda演算"><a href="#简单类型的lambda演算" class="headerlink" title="简单类型的lambda演算"></a>简单类型的lambda演算</h2><h2 id="简单扩展"><a href="#简单扩展" class="headerlink" title="简单扩展"></a>简单扩展</h2><h1 id="子类型化"><a href="#子类型化" class="headerlink" title="子类型化"></a>子类型化</h1><h2 id="子类型"><a href="#子类型" class="headerlink" title="子类型"></a>子类型</h2><h2 id="子类型元理论"><a href="#子类型元理论" class="headerlink" title="子类型元理论"></a>子类型元理论</h2><h1 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h1><h2 id="递归类型-1"><a href="#递归类型-1" class="headerlink" title="递归类型"></a>递归类型</h2><h2 id="递归类型元理论"><a href="#递归类型元理论" class="headerlink" title="递归类型元理论"></a>递归类型元理论</h2><h1 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h1><h2 id="类型重构"><a href="#类型重构" class="headerlink" title="类型重构"></a>类型重构</h2><h2 id="全程类型"><a href="#全程类型" class="headerlink" title="全程类型"></a>全程类型</h2><h2 id="存在类型"><a href="#存在类型" class="headerlink" title="存在类型"></a>存在类型</h2><h1 id="高阶系统"><a href="#高阶系统" class="headerlink" title="高阶系统"></a>高阶系统</h1><h2 id="高阶多态"><a href="#高阶多态" class="headerlink" title="高阶多态"></a>高阶多态</h2><h2 id="高阶子类型化"><a href="#高阶子类型化" class="headerlink" title="高阶子类型化"></a>高阶子类型化</h2>
+<p>字符串幺半群(S, ++, “”)<br>    r ++ (s ++ t) = (r ++ s) ++ t<br>    “” ++ s = s = s ++ “”<br>字符集幺半群(C, ∪, {})<br>自然数幺半群(N, +, 0)</p>
+<p>S到C的态射: 把串中用到的字符组成一个字符集 S -&gt; C  φ: s -&gt; {c | c ∈ s}<br>    φ(s ++ r) = φ(s) ∪ φ(r)<br>    φ(“”) = {}<br>C到N的态射: 集合的大小映射为自然数,空集的大小映射为0 C −→ N  ψ : c → |c|<br>    ψ(s) ∪ ψ(r) = ψ(s + r)<br>    {} = ψ(0)</p>
+<p>S -&gt; C -&gt; N<br>幺半群范畴Mon,对象是幺半群,箭头是态射,恒等箭头是从一个幺半群到它自己的态射</p>
+<p>只有一个对象的幺半群范畴:<br>    对象是字符串幺半群(S, ++, “”), 箭头是前缀映射,单位元是空串””</p>
+<p>预序 preset</p>
+<ul>
+<li>自反性 任何集合中的元素a都有a ≤ a；</li>
+<li>传递性 若a ≤ b且b ≤ c，则a ≤ c；<br>在预序基础上满足 </li>
+<li>反对称性 若a ≤ b且b ≤ a，则a = b；<br>称为偏序 poset</li>
+</ul>
+<p>偏序集例子: 族谱, {x,y,z}的所有子集在包含关系下</p>
+
       
 
       
@@ -563,9 +227,99 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
-      		 
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/28/编程的数学原理/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-范畴论-贺伟" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/28/范畴论-贺伟/">范畴论 贺伟</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/28/范畴论-贺伟/" class="archive-article-date">
+  	<time datetime="2019-04-27T18:23:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><ul>
+<li>obC 范畴C的全体对象</li>
+<li>C(A,B) 对象A到B的态射集</li>
+<li>MorC 范畴C的全体态射</li>
+<li>dom(f) 态射f的定义域</li>
+<li>cod(f) 态射f的值域</li>
+<li>$1_A$ 对象A到自身的单位态射</li>
+<li>$1_C$ 范畴C到自身的单位函子</li>
+</ul>
+<h1 id="范畴与函子"><a href="#范畴与函子" class="headerlink" title="范畴与函子"></a>范畴与函子</h1><h2 id="范畴的定义"><a href="#范畴的定义" class="headerlink" title="范畴的定义"></a>范畴的定义</h2><ol>
+<li>一族对象obC</li>
+<li></li>
+</ol>
+<ul>
+<li>(a) 复合运算律</li>
+<li>(b) 结合律</li>
+<li>(c) 单位态射：每一个对象A,存在一个态射$1_A ∈ C(A,A)$使得对任意的f ∈ C(A,B)及g ∈ C(C,A),有<br>$f1_A = f,   1_Ag = g$</li>
+</ul>
+<hr>
+<h3 id="对偶原理-duality-principle"><a href="#对偶原理-duality-principle" class="headerlink" title="对偶原理(duality principle)"></a>对偶原理(duality principle)</h3><pre><code>态射反向，称为对偶。
+</code></pre><h3 id="B上的切片范畴-slice-category-over-B-C-B"><a href="#B上的切片范畴-slice-category-over-B-C-B" class="headerlink" title="B上的切片范畴(slice category over B) C/B"></a>B上的切片范畴(slice category over B) C/B</h3><pre><code>任意两个以B为值域的态射,
+</code></pre><h2 id="函子"><a href="#函子" class="headerlink" title="函子"></a>函子</h2><h2 id="自然变换"><a href="#自然变换" class="headerlink" title="自然变换"></a>自然变换</h2><h2 id="单态射与满态射"><a href="#单态射与满态射" class="headerlink" title="单态射与满态射"></a>单态射与满态射</h2><h2 id="子对象与商对象"><a href="#子对象与商对象" class="headerlink" title="子对象与商对象"></a>子对象与商对象</h2><h2 id="Yoneda引理与可表达函子"><a href="#Yoneda引理与可表达函子" class="headerlink" title="Yoneda引理与可表达函子"></a>Yoneda引理与可表达函子</h2><h2 id="射影对象与单射对象"><a href="#射影对象与单射对象" class="headerlink" title="射影对象与单射对象"></a>射影对象与单射对象</h2>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">类型系统</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -575,7 +329,172 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/类型系统/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/28/范畴论-贺伟/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Category-Theory-for-Programmers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Category-Theory-for-Programmers/">Category Theory for Programmers</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Category-Theory-for-Programmers/" class="archive-article-date">
+  	<time datetime="2019-04-27T10:02:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Category-The-Essence-of-Composition"><a href="#Category-The-Essence-of-Composition" class="headerlink" title="Category: The Essence of Composition"></a>Category: The Essence of Composition</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><blockquote>
+<p>A category consists of objects and arrows  that go between them.<br>    范畴与组合互为本质:<br>        The essence of a category is composition.</p>
+</blockquote>
+<pre><code>The essence of composition is a category.
+</code></pre><hr>
+<h2 id="组合的性质"><a href="#组合的性质" class="headerlink" title="组合的性质:"></a>组合的性质:</h2><pre><code>    1. Associativity
+        (伏笔:  Associativity is pretty obvious when dealing with functions, 
+                but it may be not as obvious in other categories.)
+    2. Identity
+
+组合是编程的本质
+</code></pre><hr>
+<pre><code>Challenges 
+  实现identity和compose
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Function</span>&lt;<span class="title">T</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">R <span class="title">apply</span><span class="params">(T t)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> &lt;V&gt; <span class="function">Function&lt;V, R&gt; <span class="title">compose</span><span class="params">(Function&lt;? <span class="keyword">super</span> V, ? extends T&gt; before)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(before);</span><br><span class="line">        <span class="keyword">return</span> (V v) -&gt; apply(before.apply(v));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &lt;T&gt; <span class="function">Function&lt;T, T&gt; <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> t -&gt; t;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>测试
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IdentityTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(id).compose(f2).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute2</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(f2).compose(id).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="keyword">new</span> IdentityTest().compute(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        <span class="keyword">int</span> res2 = <span class="keyword">new</span> IdentityTest().compute2(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        System.out.println(res);</span><br><span class="line">        System.out.println(res2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用JavaScript来实现<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> identity = <span class="function"><span class="params">x</span> =&gt;</span> x</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> x =&gt; f(g(x))</span><br></pre></td></tr></table></figure></p>
+<p>测试<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add5 = <span class="function"><span class="params">x</span> =&gt;</span> x + <span class="number">5</span></span><br><span class="line"><span class="keyword">const</span> multi2 = <span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(compose(identity, compose(add5, multi2))(<span class="number">5</span>))</span><br><span class="line"><span class="built_in">console</span>.log(compose(add5, compose(identity, multi2))(<span class="number">5</span>))</span><br></pre></td></tr></table></figure></p>
+<h1 id="Types-and-Functions"><a href="#Types-and-Functions" class="headerlink" title="Types and Functions"></a>Types and Functions</h1><h1 id="Categories-Great-and-Small"><a href="#Categories-Great-and-Small" class="headerlink" title="Categories Great and Small"></a>Categories Great and Small</h1><h1 id="Kleisli-Categories"><a href="#Kleisli-Categories" class="headerlink" title="Kleisli Categories"></a>Kleisli Categories</h1><h1 id="Products-and-Coproducts"><a href="#Products-and-Coproducts" class="headerlink" title="Products and Coproducts"></a>Products and Coproducts</h1><h1 id="Simple-Algebraic-Data-Types"><a href="#Simple-Algebraic-Data-Types" class="headerlink" title="Simple Algebraic Data Types"></a>Simple Algebraic Data Types</h1><h1 id="Functors"><a href="#Functors" class="headerlink" title="Functors"></a>Functors</h1><h1 id="Functoriality"><a href="#Functoriality" class="headerlink" title="Functoriality"></a>Functoriality</h1><h1 id="Function-Types"><a href="#Function-Types" class="headerlink" title="Function Types"></a>Function Types</h1><h1 id="Natural-Transformations"><a href="#Natural-Transformations" class="headerlink" title="Natural Transformations"></a>Natural Transformations</h1><h1 id="Declarative-Programming"><a href="#Declarative-Programming" class="headerlink" title="Declarative Programming"></a>Declarative Programming</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Free-Monoids"><a href="#Free-Monoids" class="headerlink" title="Free Monoids"></a>Free Monoids</h1><h1 id="Representable-Functors"><a href="#Representable-Functors" class="headerlink" title="Representable Functors"></a>Representable Functors</h1><h1 id="The-Yoneda-Lemma"><a href="#The-Yoneda-Lemma" class="headerlink" title="The Yoneda Lemma"></a>The Yoneda Lemma</h1><h1 id="Yoneda-Embedding"><a href="#Yoneda-Embedding" class="headerlink" title="Yoneda Embedding"></a>Yoneda Embedding</h1><h1 id="Morphisms"><a href="#Morphisms" class="headerlink" title="Morphisms"></a>Morphisms</h1><h1 id="Adjunctions"><a href="#Adjunctions" class="headerlink" title="Adjunctions"></a>Adjunctions</h1><h1 id="Free-Forgetful-Adjunctions"><a href="#Free-Forgetful-Adjunctions" class="headerlink" title="Free/Forgetful Adjunctions"></a>Free/Forgetful Adjunctions</h1><h1 id="Monads-Programmer’s-Definition"><a href="#Monads-Programmer’s-Definition" class="headerlink" title="Monads: Programmer’s Definition"></a>Monads: Programmer’s Definition</h1><h1 id="Monads-and-Effects"><a href="#Monads-and-Effects" class="headerlink" title="Monads and Effects"></a>Monads and Effects</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Category-Theory-for-Programmers/">展开全文 >></a>
         </p>
       
 
@@ -607,7 +526,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
     </nav>
   
 
@@ -735,7 +654,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -743,11 +662,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -755,15 +670,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
+                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -775,15 +694,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -795,7 +714,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -803,15 +722,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">

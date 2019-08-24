@@ -58,6 +58,8 @@
 			
 				<li><a href="/">击空明兮溯流光</a></li>
 	        
+				<li><a href="/categories">目录</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -68,10 +70,6 @@
             
     			
     			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
-    			
-            
-    			
-    			<a q-on="click: openSlider(e, 'categories')" href="javascript:void(0)">目录</a>
     			
             
 		</nav>
@@ -112,6 +110,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -132,7 +132,9 @@
 				<ul style="width: 50%">
 				
 				
-					<li style="width: 100%"><a href="/">击空明兮溯流光</a></li>
+					<li style="width: 50%"><a href="/">击空明兮溯流光</a></li>
+		        
+					<li style="width: 50%"><a href="/categories">目录</a></li>
 		        
 				</ul>
 			</nav>
@@ -149,32 +151,48 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux性能优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-范畴论-贺伟" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux性能优化/">Linux性能优化</a>
+      <a class="article-title" href="/2019/04/28/范畴论-贺伟/">范畴论 贺伟</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Linux性能优化/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/04/28/范畴论-贺伟/" class="archive-article-date">
+  	<time datetime="2019-04-27T18:23:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>计算CPU每秒定时中断的次数:<br>cat /proc/interrupts | grep timer; sleep 10; cat /proc/interrupts | grep timer<br>    结果:<br>          CPU0        CPU1<br>    LOC: 2142174276 2150800894<br>    LOC: 2142179825 2150806783<br>CPU0: (2142179825 - 2142174276) / 10 = 555次中断 / 秒<br>CPU1: (2150806783 - 2150800894) / 10 = 589次中断 / 秒</p>
-<p>(我的腾讯云: 357次中断 / 秒)</p>
-<p>虚拟内存统计: vmstat [-n] [-s] [delay [count]]<br>    参数说明:<br>            delay: vmstat采样的间隔时间<br>            count: 采样次数<br>            -s: 更详细的信息<br>    功能: 正在运行的进程个数, CPU的使用情况, CPU接收的中断个数, 调度器执行的上下文切换次数<br>    模式: 采样模式和平均模式. 不指定参数则运行于平均模式,显示从系统启动以来所有统计数据的均值.<br>          指定延迟后, 第一个采样仍是系统启动以来的均值,之后按延迟秒数采样系统并显示.<br>    直接运行vmstat的结果:<br>procs ———–memory———- —swap– —–io—- -system– ——cpu—–<br> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st<br> 1  0      0 198800  68680 488468    0    0     2     7    0    0  0  0 99  0  0<br>    结果说明<br>        r: 当前可运行的进程数, 已经准备好. 理想的话, 可运行进程数应与可用CPU的数量相等<br>        b: 等待IO完成的被阻塞进程数<br>        forks: 创建新进程的次数<br>        in: 系统发生中断的次数<br>        cs: 系统发生上下文切换的次数<br>        us: 用户进程消耗总CPU时间的百分比<br>        sy: 系统代码消耗的总CPU时间百分比<br>        wa: 等待IO消耗的CPU时间百分比<br>        id: 系统空闲的消耗总CPU时间百分比</p>
-<pre><code>把结果输出到文件: vmstat 1 | tee /tmp/output
-</code></pre><p>把占用CPU最多的进程按降序排列: top [d delay] [C] [H] [i] [n iter] [b]<br>        (默认每3秒更新一次)<br>    两种模式选项: 命令行模式, 运行时模式<br>    参数说明: i 不显示未使用任何cpu的进程<br>             H 显示应用程序所有的单个线程</p>
-
+        <h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><ul>
+<li>obC 范畴C的全体对象</li>
+<li>C(A,B) 对象A到B的态射集</li>
+<li>MorC 范畴C的全体态射</li>
+<li>dom(f) 态射f的定义域</li>
+<li>cod(f) 态射f的值域</li>
+<li>$1_A$ 对象A到自身的单位态射</li>
+<li>$1_C$ 范畴C到自身的单位函子</li>
+</ul>
+<h1 id="范畴与函子"><a href="#范畴与函子" class="headerlink" title="范畴与函子"></a>范畴与函子</h1><h2 id="范畴的定义"><a href="#范畴的定义" class="headerlink" title="范畴的定义"></a>范畴的定义</h2><ol>
+<li>一族对象obC</li>
+<li></li>
+</ol>
+<ul>
+<li>(a) 复合运算律</li>
+<li>(b) 结合律</li>
+<li>(c) 单位态射：每一个对象A,存在一个态射$1_A ∈ C(A,A)$使得对任意的f ∈ C(A,B)及g ∈ C(C,A),有<br>$f1_A = f,   1_Ag = g$</li>
+</ul>
+<hr>
+<h3 id="对偶原理-duality-principle"><a href="#对偶原理-duality-principle" class="headerlink" title="对偶原理(duality principle)"></a>对偶原理(duality principle)</h3><pre><code>态射反向，称为对偶。
+</code></pre><h3 id="B上的切片范畴-slice-category-over-B-C-B"><a href="#B上的切片范畴-slice-category-over-B-C-B" class="headerlink" title="B上的切片范畴(slice category over B) C/B"></a>B上的切片范畴(slice category over B) C/B</h3><pre><code>任意两个以B为值域的态射,
+</code></pre><h2 id="函子"><a href="#函子" class="headerlink" title="函子"></a>函子</h2><h2 id="自然变换"><a href="#自然变换" class="headerlink" title="自然变换"></a>自然变换</h2><h2 id="单态射与满态射"><a href="#单态射与满态射" class="headerlink" title="单态射与满态射"></a>单态射与满态射</h2><h2 id="子对象与商对象"><a href="#子对象与商对象" class="headerlink" title="子对象与商对象"></a>子对象与商对象</h2><h2 id="Yoneda引理与可表达函子"><a href="#Yoneda引理与可表达函子" class="headerlink" title="Yoneda引理与可表达函子"></a>Yoneda引理与可表达函子</h2><h2 id="射影对象与单射对象"><a href="#射影对象与单射对象" class="headerlink" title="射影对象与单射对象"></a>射影对象与单射对象</h2>
       
 
       
@@ -187,28 +205,17 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux性能优化/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/28/范畴论-贺伟/">展开全文 >></a>
         </p>
       
 
@@ -238,52 +245,187 @@
 
 
   
-    <article id="post-HashMap&amp;ConcurrentHashMap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Elasticsearch" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/HashMap&ConcurrentHashMap/">HashMap</a>
+      <a class="article-title" href="/2019/04/27/Elasticsearch/">Elasticsearch</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/HashMap&ConcurrentHashMap/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/04/27/Elasticsearch/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>HashMap<br>   数组加链表<br>     初始容量 16            必须是2的n次方<br>     负载因子 0.75          容量达到0.75时进行扩容resize(), 16 <em> 0.75 = 12, 存入第12个值时HashMap会执行扩容<br>     树形化阈值 8           链表长度大于等于8时转化为红黑树.<br>     解除树形化阈值 6<br>     树形化的另一条件 Map数组长度阈值 64    当数组长度小于这个值时, 就算树形化阈值达标, 链表也不会转化为红黑树, 而是优先扩容数组resize()<br>     内部数组 Node&lt;K,V&gt;[] table;<br>     数组扩容阈值  总容量 </em> 负载因子,  扩容为总容量的两倍.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Node节点</span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> hash;</span><br><span class="line">    <span class="keyword">final</span> K key;</span><br><span class="line">    V value;</span><br><span class="line">    Node&lt;K,V&gt; next; <span class="comment">//下一个节点</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩容</span></span><br><span class="line"><span class="keyword">if</span> (++size &gt; threshold)</span><br><span class="line">    resize();</span><br><span class="line"></span><br><span class="line"><span class="comment">// hash算法</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h;</span><br><span class="line">    <span class="keyword">return</span> (key == <span class="keyword">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对hash值的模运算, 数组长度减一后与hash值按位与.</span></span><br><span class="line"><span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// onlyIfAbsent: 如果为true, 不修改已存在的value</span></span><br><span class="line"><span class="comment">// evict: 如果为false, 表处于创建模式, 用于子类LinkedHashMap</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent, <span class="keyword">boolean</span> evict)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 内部数组</span></span><br><span class="line">    HashMap.Node&lt;K,V&gt;[] tab;</span><br><span class="line">    <span class="comment">// hash对应的索引位中的首节点</span></span><br><span class="line">    HashMap.Node&lt;k,V&gt; p;</span><br><span class="line">    <span class="comment">// n: 内部数组长度, i: hash对应的索引位</span></span><br><span class="line">    <span class="keyword">int</span> n, i;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 首次put时, 内部数组为空, 扩充数组.</span></span><br><span class="line">    <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line">        n = (tab = resize()).length;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据hash值计算数组索引, 获取该索引位置的首节点, 如果为null, 添加一个新的节点</span></span><br><span class="line">    <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>) </span><br><span class="line">        tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        HashMap.Node&lt;K,V&gt; e; K k;</span><br><span class="line">        <span class="comment">// 如果首节点的key和要存入的key相同, 那么直接覆盖value的值</span></span><br><span class="line">        <span class="keyword">if</span> (p.hash == hash &amp;&amp; ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line">            e = p;</span><br><span class="line">        <span class="comment">// 如果首节点是红黑树节点, 将键值对添加到红黑树</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p <span class="keyword">instanceof</span> HashMap.TreeeNode) </span><br><span class="line">            e = (HashMap.TreeNode&lt;K,V&gt;p).putTreeVal(<span class="keyword">this</span>, tab, hash, key, value);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> binCount = <span class="number">0</span>; ++binCount) &#123;</span><br><span class="line">                <span class="comment">// 到达链表末尾, 添加新节点, 如果长度足够, 尝试转换为树结构</span></span><br><span class="line">                <span class="keyword">if</span> ((e = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    p.next = newNode(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line">                    <span class="keyword">if</span> (binCount &gt;= TREEIFY_THRESHOLD - <span class="number">1</span>)</span><br><span class="line">                        treeifyBin(tab, hash);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 检查链表中是否已经包含key</span></span><br><span class="line">                <span class="keyword">if</span> (e.hash == hash &amp;&amp; ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                p = e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 覆盖value</span></span><br><span class="line">        <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123;</span><br><span class="line">            V oldValue = e.value;</span><br><span class="line">            <span class="keyword">if</span> (!onlyIfAbsent || oldValue == <span class="keyword">null</span>) </span><br><span class="line">                e.value = value;</span><br><span class="line">            afterNodeAccess(e);</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 快速失败机制</span></span><br><span class="line">    ++modCount;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 扩容</span></span><br><span class="line">    <span class="keyword">if</span> (++size &gt; threshold) </span><br><span class="line">        resize();</span><br><span class="line">    afterNodeInsertion(evict);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>Node是单向链表节点, Entry是双向链表节点, TreeNode是红黑树节点.
-HashMap是基于拉链法实现的一个散列表, 内部由数组和链表和红黑树实现.
+        <h1 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h1><p>全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.</p>
+<p>分片机制, 复制机制.</p>
+<blockquote>
+<p>Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.</p>
+</blockquote>
+<p>Elasticsearch内置了对分布式集群和分布式索引的管理.</p>
+<p>Lucene倒排索引<br>    根据属性的值来查找记录.<br>    表现为: 一个关键词,它的频度,位置.</p>
+<pre><code>1. 取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点.
+2. 建立倒排索引. 关键词所在的文章号,关键词的位置, 频度
+3. 实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针.
+4. 压缩算法. 关键词压缩: &lt;前缀长度,后缀&gt;. 数字压缩:只保存与上一个值的差值.
+5. 查询单词时,Lucene对词典二元查找
+</code></pre><p>Lucene的评分机制, 查询DSL, 底层索引控制.</p>
+<p>Elasticsearch术语<br>    索引词(term): 能够被索引的精确值.<br>    文本(text): 普通的非结构化文字, 会被分析成一个个的索引词.<br>    分析(analysis): 将文本转换为索引词的过程.<br>    集群(cluster)<br>    节点(node)<br>    路由(routing): 存储文档时通过散列值进行选择分片.<br>    分片(shard): 单个Lucene实例. 索引是指向主分片和副本分片的逻辑空间,索引可以<br>        分解为多个分片,Elasticsearch会自动管理集群中的所有分片.<br>    主分片(primary shard): 默认一个索引有5个主分片.<br>    副本分片(replica shard): 每一个分片有零个或多个副本.<br>        当主分片失败时,可以从副本中选择一个作为主分片.<br>        并行操作提高性能和吞吐量.<br>    索引(index) 具有相同结构的文档集合<br>    类型(type) 类型是索引的逻辑分区.<br>    文档(document) JSON格式的字符串,像关系数据库中的一行.<br>    映射(mapping) 像关系数据库的表结构,每一个索引都有一个映射,定义了索引中的每一个字段类型,以及一个索引范围内的设置.<br>    字段(field) 像关系数据库中的列.每个字段对应一个类型: 整数,字符串,对象等.<br>    来源字段(source field) 原文档被存储在_source这个字段中.<br>    主键(ID) </p>
+<p>API约定<br>    多索引参数<br>        同时查询多个索引中的数据, 通配符 <em> : test</em>表示查询所有以test开头的索引. -test表示排除test<br>    日期筛选<br>        &lt;static_name{date_math_expr{date_format|time_zone}}&gt;<br>        static_name: 索引名称<br>        date_math_expr: 动态日期计算表达式<br>        date_format: 日期格式<br>        time_zone: 时区,默认UTC<br>    通用参数<br>        pretty<br>        human</p>
+<p>POST改变对象的当前状态, PUT创建一个对象.        </p>
+<p>Elasticsearch从5.X引入text和keyword，keyword适用于不分词字段，搜索时只能完全匹配.<br>               6.X彻底移除string, “index”的值只能是boolean变量.</p>
+<p>创建库:<br>    PUT <a href="http://127.0.0.1:9200/secisland" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland</a><br>查看库状态:<br>    GET <a href="http://127.0.0.1:9200/_cat/indices?v" target="_blank" rel="noopener">http://127.0.0.1:9200/_cat/indices?v</a><br>插入数据:<br>    PUT <a href="http://127.0.0.1:9200/secisland/secilog/1" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1</a><br>    参数:<br>        {<br>            “computer”: “x1 carbon”,<br>            “message” : “for coding”<br>        }<br>修改文档:<br>    POST <a href="http://127.0.0.1:9200/secisland/secilog/1/_update" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/_update</a><br>    参数:<br>        {<br>            “doc”: {<br>                “computer”: “x1 carbon”,<br>                “message”: “lenovo”<br>            }<br>        }<br>查询文档:<br>    GET  <a href="http://127.0.0.1:9200/secisland/secilog/1/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/</a><br>删除文档:<br>    DELETE <a href="http://127.0.0.1:9200/secisland/secilog/1/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/</a><br>删除库:<br>    DELETE <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a></p>
+<p>索引<br>    创建索引<br>        PUT <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a><br>        参数:<br>            {<br>                “settings”: {<br>                    “index”: {“number_of_shards”: 3, “number_of_replicas”: 2}<br>                }<br>            }<br>        修改副本数量<br>            PUT <a href="http://127.0.0.1:9200/secisland/_settings/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/_settings/</a><br>            参数:<br>             {<br>                “number_of_replicas”: 1<br>             }</p>
+<pre><code>创建自定义字段类型:
+    PUT http://127.0.0.1:9200/secisland
+    参数:
+        {
+            &quot;settings&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2},
+            &quot;mappings&quot;: {
+                &quot;secilog&quot;: 
+                    {
+                        &quot;properties&quot;: 
+                            {
+                                &quot;logType&quot;: 
+                                    {
+                                       &quot;type&quot;: &quot;text&quot;, 
+                                       &quot;index&quot;: &quot;not_analyzed&quot;
+                                    }
+                            }
+                    }
+                }
+        }
+</code></pre><p>映射<br>    增加映射:<br>        PUT <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a><br>        参数:<br>        {<br>            “mappings”: {<br>                “log”: {<br>                    “properties”: {<br>                        “message”: {“type”: “text”}<br>                    }<br>                }<br>            }<br>        }</p>
+<pre><code>    添加索引名为secisland, 文档类型为log, 其中包含字段message, 字段类型是字符串.
 
-  容量以2的次方扩充,可以使用位运算代替模运算.
-   x / 2^n 相当于把x右移n位, 得到x / 2^n的商, 被移掉的n位就是 x % 2^n,
-    即x / 2^n 的余数.
+    PUT http://127.0.0.1:9200/secisland/_mapping/user
+    {
+        &quot;properties&quot;: {
+            &quot;name&quot;: {&quot;type&quot;: &quot;keyword&quot;}
+        }
+    }
+    向已存在的索引secisland添加文档类型为user, 包含字段name, 字段类型是keyword 
 
-  x &amp; (2^n -1),  2^n的二进制就是1后面跟n个0, (2^n - 1) 就是0后面跟n个1,
-  x和(2^n - 1) 按位与, 就相当于取x的二进制的后n位.
-    测试了一下, 跑10亿次快0.3秒.
+
+多个索引设置映射
+    PUT http://127.0.0.1:9200/{index}/_mapping/{type}
+    {body}
+
+获取映射
+    GET http://127.0.0.1:9200/secisland/_mapping/secilog
+
+获取字段映射
+    GET http://127.0.0.1:9200/secisland/_mapping/secilog/field/description
+
+    只返回字段为description的内容.
+</code></pre><p>索引别名:<br>    类似数据库中的视图.</p>
+<pre><code>为索引添加别名
+    PUT http://127.0.0.1:9200/_alias
+    {
+        &quot;actions&quot;: {&quot;add&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
+    }
+
+删除别名
+    PUT http://127.0.0.1:9200/_alias
+    {
+        &quot;actions&quot;: {&quot;remove&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
+    }
+
+创建过滤索引别名
+    PUT http://127.0.0.1:9200/_alias
+    {
+        &quot;actions&quot;: {
+            &quot;add&quot;: {
+                &quot;index&quot;: &quot;test1&quot;, &quot;alias&quot;: &quot;alias2&quot;,
+                &quot;filter&quot;: {&quot;term&quot;: {&quot;user&quot;: &quot;ramble&quot;}}
+            }
+        }
+    }
 
 
-hashCode()方法返回32位整数. hash()方法对hashCode的高16位和低16位进行异或,
-    试图减少hash冲突.
+新建文档(不需要先创建索引)
+PUT http://127.0.0.1:9200/blog/article/2 
+{
+    &quot;title&quot;: &quot;SB ES&quot;,
+    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
+    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
+}
 
-红黑树的平均查找长度是log(n), 长度为8时平均查找长度为log(8)=3, 
-链表的平均查找长度是n/2, 长度为8时平均查找长度为8/2=4.
-使用6和8作为平衡点, 防止链表和数频繁转换.
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// resize()数组扩容</span></span><br><span class="line"><span class="keyword">final</span> HashMap.Node&lt;K,V&gt;[] resize() &#123;</span><br><span class="line">    HashMap.Node&lt;K,V&gt; oldTab = table;</span><br><span class="line">    <span class="keyword">int</span> oldCap = (oldTab == <span class="keyword">null</span>) ? <span class="number">0</span> : oldTab.length;</span><br><span class="line">    <span class="keyword">int</span> oldThr = threshold;</span><br><span class="line">    itn newCap, newThr = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (oldCap &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (oldCap &gt;= MAXIMUM_CAPACITY) &#123;</span><br><span class="line">            threshold = Integer.MAX_VALUE;</span><br><span class="line">            <span class="keyword">return</span> oldTab;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> ((newCap = oldCap &lt;&lt; <span class="number">1</span>) &lt; )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>ConcurrentHashMap<br>    分段锁.<br>    跨段方法: size()和containsValue()<br>        需要锁定整个表, 按顺序锁定所有段, 操作完毕后, 按顺序释放所有段的锁.</p>
-<pre><code>由Segment数组结构和HashEntry数组结构组成, Segment是一种可重入锁ReentrantLock,
-一个ConcurrentHashMap包含一个Setment数组, 一个Setment里包含一个HashEntry数组,
-每个HashEntry是一个链表结构的元素, 每个Segment守护一个HashEntry里的元素, 当对HashEntry
-里的数据进行修改时, 必须先获得它的Setment锁.
+返回结果
+{
+    &quot;_index&quot;: &quot;blog&quot;,
+    &quot;_type&quot;: &quot;article&quot;,
+    &quot;_id&quot;: &quot;2&quot;,
+    &quot;_version&quot;: 1,
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;_shards&quot;: {
+        &quot;total&quot;: 2,
+        &quot;successful&quot;: 1,
+        &quot;failed&quot;: 0
+    },
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1
+}
+再执行一次的话, _version, _seq_no会加一, result会变成updated
+
+不指定id, ES会自动生成唯一标识符.(改用了POST方法,因为是更改而不是创建)
+POST http://127.0.0.1:9200/blog/article
+{
+    &quot;title&quot;: &quot;SB ES&quot;,
+    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
+    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
+}
+返回结果
+{
+    &quot;_index&quot;: &quot;blog&quot;,
+    &quot;_type&quot;: &quot;article&quot;,
+    &quot;_id&quot;: &quot;_qm_l2sBFUlcgb1-d5N2&quot;,
+    &quot;_version&quot;: 1,
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;_shards&quot;: {
+        &quot;total&quot;: 2,
+        &quot;successful&quot;: 1,
+        &quot;failed&quot;: 0
+    },
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1
+}
+
+检索文档
+    GET http://127.0.0.1:9200/blog/article/2 
+更新文档
+    POST http://127.0.0.1:9200/blog/article/1/_update
+    {
+        &quot;script&quot;: &quot;ctx._source.content = \&quot;new content\&quot;&quot;
+    }
+    只修改了content字段和version.
+
+    要更新索引中的文档, ES先获取文档,从_source属性获得数据,删除旧的
+    文件,更改_source属性,然后把它作为新的文档来索引.
+    信息一旦在Lucene的倒排索引中存储,就不能再被更改,ES通过一个带_update
+    参数的脚本来实现它.
+
+
+    如果文档中没有该字段,使用upsert来提供该字段的默认值.
+    POST http://127.0.0.1:9200/blog/article/1/_update
+    {
+        &quot;script&quot;: {
+            &quot;source&quot;: &quot;ctx._source.counter += params.count&quot;,
+            &quot;lang&quot;: &quot;painless&quot;,
+            &quot;params&quot;: {
+                &quot;count&quot;: 4
+            }
+        },
+        &quot;upsert&quot;: {&quot;counter&quot;: 0}
+    }
 </code></pre>
       
 
@@ -297,28 +439,91 @@ hashCode()方法返回32位整数. hash()方法对hashCode的高16位和低16位
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">HashMap</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Elasticsearch/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Docker/">Docker</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Docker/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>利用Linux内核提供的namespace和CGroups为应用进程构架起沙箱和资源限制.<br>在沙箱容器中,应用拥有自己的设备文件,进程间通信环境,根文件系统,进程空间,<br>用户账户空间和网络资源空间.<br>进程级资源隔离, 秒级启动.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/HashMap//" class="article-tag-list-link color3">HashMap</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
 	</div>
 
+      
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/HashMap&ConcurrentHashMap/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Docker/">展开全文 >></a>
         </p>
       
 
@@ -348,30 +553,27 @@ hashCode()方法返回32位整数. hash()方法对hashCode的高16位和低16位
 
 
   
-    <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/30/linux/">linux</a>
+      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
     </h1>
   
 
         
-        <a href="/2019/05/30/linux/" class="archive-article-date">
-  	<time datetime="2019-05-30T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h1><p>平均负载是指单位时间内,系统处于可运行状态和不可中断状态的平均进程数.即平均活跃进程数.</p>
-<p>内核架构<br>    Linux内核上下层通信方式</p>
-<p>常用命令:</p>
-
+        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
       
 
       
@@ -379,73 +581,22 @@ hashCode()方法返回32位整数. hash()方法对hashCode的高16位和低16位
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/30/linux/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-撸个ioc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/30/撸个ioc/">撸个ioc</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/30/撸个ioc/" class="archive-article-date">
-  	<time datetime="2019-05-30T03:43:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/30/撸个ioc/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
         </p>
       
 
@@ -477,7 +628,7 @@ hashCode()方法返回32位整数. hash()方法对hashCode的高16位和低16位
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
     </nav>
   
 
@@ -554,25 +705,17 @@ MathJax.Hub.Queue(function() {
       
       
     
-      
-      
-      
-    
     
 
     <ul style="width: 70%">
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
-      
-        
-      
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'categories')"><a href="javascript:void(0)" q-class="active:categories">目录</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
       
         
     </ul>

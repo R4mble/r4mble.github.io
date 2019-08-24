@@ -58,6 +58,8 @@
 			
 				<li><a href="/">击空明兮溯流光</a></li>
 	        
+				<li><a href="/categories">目录</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -68,10 +70,6 @@
             
     			
     			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
-    			
-            
-    			
-    			<a q-on="click: openSlider(e, 'categories')" href="javascript:void(0)">目录</a>
     			
             
 		</nav>
@@ -112,6 +110,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -132,7 +132,9 @@
 				<ul style="width: 50%">
 				
 				
-					<li style="width: 100%"><a href="/">击空明兮溯流光</a></li>
+					<li style="width: 50%"><a href="/">击空明兮溯流光</a></li>
+		        
+					<li style="width: 50%"><a href="/categories">目录</a></li>
 		        
 				</ul>
 			</nav>
@@ -149,71 +151,15 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-phaser/first/index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-加密算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
-</head>
-<body>
+        <p>对称加密算法: DES AES<br>非对称加密算法: RSA(数字签名,身份认证)</p>
+<p>分组密码: 加密时将明文分成固定长度的组(网络加密)<br>流密码: 又称序列密码, 每次加密一位或者一个字节的明文. RC4</p>
+<p>Base64算法: 解决电子邮件只能传输ASCII码字符问题</p>
 
-<script>
-    // http://phaser.io/tutorials/making-your-first-phaser-3-game-chinese/part4
-    var config = {
-        type: Phaser.AUTO,  //自动尝试使用WebGL，如果浏览器或设备不支持，它将回退为Canvas
-        width: 800,
-        height: 600,
-        physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: {y: 300},
-                debug: false
-            }
-        },
-        scene: {
-            preload: preload,
-            create: create,
-            update: update
-        }
-    };
-
-    var game = new Phaser.Game(config);
-
-    function preload () {
-        this.load.image('sky', 'assets/sky.png');
-        this.load.image('ground', 'assets/platform.png');
-        this.load.image('star', 'assets/star.png');
-        this.load.image('bomb', 'assets/bomb.png');
-        this.load.spritesheet('dude', 'assets/dude.png',
-            { frameWidth: 32, frameHeight: 48 });
-    }
-
-    var platforms;
-    function create () {
-        // 位置点在800, 600的一半
-        this.add.image(400, 300, 'sky')
-        platforms = this.physics.add.staticGroup();
-        platforms.create(400, 568, 'ground')
-                 .setScale(2)
-                 .refreshBody();
-        platforms.create(600, 400, 'ground');
-        platforms.create(50, 250, 'ground');
-        platforms.create(750, 220, 'ground');                         
-
-        this.add.image(400, 300, 'star')
-    }
-
-    function update() {
-
-    }
-</script>
-
-</body>
-</html>
       
 
       
@@ -225,7 +171,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/phaser/first/index/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/加密算法/">展开全文 >></a>
         </p>
       
 
@@ -255,70 +201,18 @@
 
 
   
-    <article id="post-phaser/first/demo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-红黑树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
-</head>
-<body>
-
-    <script>
-    var config = {
-        type: Phaser.AUTO,
-        width: 800,
-        height: 600,
-        physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: { y: 200 }
-            }
-        },
-        scene: {
-            preload: preload,
-            create: create
-        }
-    };
-
-    var game = new Phaser.Game(config);
-
-    function preload ()
-    {
-        this.load.setBaseURL('http://labs.phaser.io');
-
-        this.load.image('sky', 'assets/skies/space3.png');
-        this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-        this.load.image('red', 'assets/particles/red.png');
-    }
-
-    function create ()
-    {
-        this.add.image(400, 300, 'sky');
-
-        var particles = this.add.particles('red');
-
-        var emitter = particles.createEmitter({
-            speed: 100,
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        });
-
-        var logo = this.physics.add.image(400, 100, 'logo');
-
-        logo.setVelocity(100, 200);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
-
-        emitter.startFollow(logo);
-    }
-    </script>
-
-</body>
-</html>
+        <p>自平衡二叉查找树, 应用: TreeSet, TreeMap, HashMap</p>
+<p>每个节点比左子节点大, 比右子节点小.</p>
+<p>规则:<br>    根节点是黑色, 每个叶子节点都是黑色的空节点(NIL节点),<br>    每个红字节点的两个子节点都是黑色.<br>    从任一节点到其每个叶子所有路径都包含相同数目的黑色节点.</p>
+<p>保证了: 红黑树从根节点到叶子节点的最长路径不会超过最短路径的2倍.</p>
+<p>插入或删除节点时要做调整: 变色和旋转</p>
+<p>条件: 节点P的两个左右孩子N,S. N为黑(N可能为Nil), 由于N子树某节点被删除,黑高减少了1.</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">blacken</span> <span class="type">Nil</span> = <span class="type">Nil</span></span><br></pre></td></tr></table></figure>
       
 
       
@@ -330,7 +224,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/phaser/first/demo/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/红黑树/">展开全文 >></a>
         </p>
       
 
@@ -360,12 +254,26 @@
 
 
   
-    <article id="post-linux_c/json_parser/example" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        {"status":200,"message":"OK","result":{"myTicketTotal":0,"myTicketClaim":0,"myTicketHandle":0,"myTicketComplete":0,"needMeDo":0,"needMeHandle":0,"needMeClaim":0}}
+        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
+<p>ArrayBlockingQueue</p>
+<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
+<pre><code>    功能命令
+
+    传输层协议
+
+MQTT
+
+STOMP
+
+XMPP
+
+JMS
+</code></pre>
       
 
       
@@ -377,7 +285,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/linux_c/json_parser/example/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/分布式消息队列实践/">展开全文 >></a>
         </p>
       
 
@@ -407,55 +315,13 @@
 
 
   
-    <article id="post-JavaScript/websocketdemo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-堆" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <html>
-    <div id="output"></div>
+        <p>堆是完全二叉树, 使用数组表示. 从数组下标1开始放置.<br>节点i的子节点在 2i 和 2i+1 处. 父节点在 i/2 处, 根除外.</p>
 
-    <script>
-        function setup() {
-            output = document.getElementById("output")
-            ws = new WebSocket("ws://echo.websocket.org/echo")
-
-            ws.onopen = function(e) {
-                log("Connected")
-                sendMessage("Hello")
-            }
-
-            ws.onclose = function(e) {
-                log("Disconnected: " + e.reason);
-            }
-
-            ws.onerror = function(e) {
-                log("Error");
-            }
-
-            ws.onmessage = function(e) {
-                log("Message received: " + e.data);
-                ws.close();
-            }
-        }
-
-        function sendMessage(msg) {
-            ws.send(msg);
-            log("Message sent")
-        }
-
-        function log(s) {
-            var p = document.createElement("p");
-            p.style.wordWrap = "break-word";
-            p.textContent = s;
-            output.appendChild(p);
-            
-            console.log(s)
-        }
-
-        setup();
-    </script>
-</html>
       
 
       
@@ -467,7 +333,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/JavaScript/websocketdemo/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/堆/">展开全文 >></a>
         </p>
       
 
@@ -499,7 +365,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -576,25 +442,17 @@ MathJax.Hub.Queue(function() {
       
       
     
-      
-      
-      
-    
     
 
     <ul style="width: 70%">
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
-      
-        
-      
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'categories')"><a href="javascript:void(0)" q-class="active:categories">目录</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
       
         
     </ul>

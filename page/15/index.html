@@ -58,6 +58,8 @@
 			
 				<li><a href="/">击空明兮溯流光</a></li>
 	        
+				<li><a href="/categories">目录</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -68,10 +70,6 @@
             
     			
     			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
-    			
-            
-    			
-    			<a q-on="click: openSlider(e, 'categories')" href="javascript:void(0)">目录</a>
     			
             
 		</nav>
@@ -112,6 +110,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -132,7 +132,9 @@
 				<ul style="width: 50%">
 				
 				
-					<li style="width: 100%"><a href="/">击空明兮溯流光</a></li>
+					<li style="width: 50%"><a href="/">击空明兮溯流光</a></li>
+		        
+					<li style="width: 50%"><a href="/categories">目录</a></li>
 		        
 				</ul>
 			</nav>
@@ -149,27 +151,651 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-算法4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java里的for-in" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/算法4/">算法4</a>
+      <a class="article-title" href="/2019/04/05/Java里的for-in/">Java里的for in</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/算法4/" class="archive-article-date">
-  	<time datetime="2019-04-24T07:49:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+        <a href="/2019/04/05/Java里的for-in/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:42:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2>
+         <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
+</blockquote>
+<blockquote>
+<p>答案: <code>没有</code></p>
+</blockquote>
+<p><i class="icon-reorder"></i>把for in 循环换成普通的for循环:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
+</blockquote>
+<blockquote>
+<p>答案: <code>是的</code></p>
+</blockquote>
+<blockquote>
+<p>由此可见: </p>
+<ul>
+<li><strong>for循环是值传导的,获取到的是原对象的拷贝.</strong></li>
+<li><strong>而数组索引就相当于指针,直接修改了内存中的值.</strong></li>
+</ul>
+</blockquote>
+<p>所以自然地:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck java"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Arrays.stream(ele).map(e -&gt; e.inner).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>当然是”fuck js”啦!</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Java里的for-in/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-要记要背" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/要记要背/">要记要背</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/要记要背/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:41:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>不要太过强调理解的重要性. 理解当然很重要,但是理解了,并不能说明就掌握了,会了,下一次要用的时候就能想起来,能用上了.<br>作为理科生,也有很多要记要背的东西,理解之后要记忆背诵,记住之后加深理解,二者相辅相成.<br>如何去掉地里的荒草? 除荒草+种庄稼, 只除荒草不中庄稼,荒草很快就会疯长. 只种庄稼不除荒草,庄稼竞争不过荒草.<br>思而不学则殆.</p>
+<p>1.java中==和equals的区别<br>    public boolean equals(Object obj) {<br>        return (this == obj);<br>    }</p>
+<pre><code>基本概念:
+    值类型是存储在内存中的堆栈（以后简称栈），而引用类型的变量在栈中仅仅是存储引用类型变量的地址，而其本身则存储在堆中。
+    ==操作比较的是两个变量的值是否相等，对于引用型变量表示的是两个变量在堆中存储的地址是否相同，即栈中的内容是否相同。
+    equals操作表示的两个变量是否是对同一个对象的引用，即堆中的内容是否相同。
+    ==比较的是2个对象的地址，而equals比较的是2个对象的内容。
+
+常见误区:
+    程序在运行的时候会创建一个字符串缓冲池当使用 s2 = &quot;Monday&quot; 这样的表达是创建字符串的时候，
+    程序首先会在这个String缓冲池中寻找相同值的对象，在第一个程序中，s1先被放到了池中，所以在s2被创建的时候，
+    程序找到了具有相同值的 s1
+    使用了 new 操作符，新的&quot;Monday&quot;Sting对象被创建在内存中。他们的值相同，但是位置不同.
+
+     String str1 = new String(&quot;hello&quot;);
+     String str2 = new String(&quot;hello&quot;);
+     String str3 = &quot;hello&quot;;
+     String str4 = &quot;hello&quot;;
+     System.out.println(str1==str2);//false  栈里面内容是否相等
+     System.out.println(str1.equals(str2));//true 堆里面内容是否相等
+
+    System.out.println(str1==str3);//false
+    System.out.println(str1.equals(str3));//true
+
+    System.out.println(str3==str4);//true
+    System.out.println(str3.equals(str4));//true
+
+拓展:
+    String的intern()方法检查字符串池里是否存在&quot;abc&quot;这么一个字符串，如果存在，就返回池里的字符串；如果不存在，
+    该方法会把&quot;abc&quot;添加到字符串池中，然后再返回它的引用。
+</code></pre><p>2.Java中final关键字<br>    修饰类<br>        这个类不能被继承<br>            final类中的成员变量可以根据需要设为final，但是要注意final类中的所有成员方法都会被隐式地指定为final方法。<br>    修饰方法<br>        把方法锁定，以防任何继承类修改它的含义  禁止该方法在子类中被覆盖<br>            类的private方法会隐式地被指定为final方法。<br>    修饰变量<br>         如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；<br>         如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。</p>
+<pre><code> 当用final作用于类的成员变量时，成员变量（注意是类的成员变量，局部变量只需要保证在使用之前被初始化赋值即可）
+ 必须在定义时或者构造器中进行初始化赋值，而且final变量一旦被初始化赋值之后，就不能再被赋值了
+
+ 当final变量是基本数据类型以及String类型时，如果在编译期间能知道它的确切值，则编译器会把它当做编译期常量使用。
+ 也就是说在用到该final变量的地方，相当于直接访问的这个常量，不需要在运行时确定。这种和C语言中的宏替换有点像
+
+引用变量被final修饰之后，虽然不能再指向其他对象，但是它指向的对象的内容是可变的。
+</code></pre><p>3.cookie和session的区别<br>    cookie机制采用的是在客户端保持状态的方案，<br>    而session机制采用的是在服务器端保持状态的方案</p>
+<pre><code>由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制
+来达到保存标识的目的，但实际上它还有其他选择。
+
+通过sessionId来区分不同的客户，session是以cookie或url重写为基础的，默认用cookie来实现，系统会创造一个JSESSIONID的输出cookie
+</code></pre><p>4.线程池ThreadPoolExecutor<br>    目的<br>        线程是稀缺资源，不能频繁的创建。<br>        解耦作用；线程的创建与执行完全分开，方便维护。<br>        应当将其放入一个池子中，可以给其他任务进行复用。<br>        提高线程的可管理性：线程池可以统一管理、分配、调优和监控<br>        降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗<br>        提高响应速度：任务到达时不需要等待线程创建就可以立即执行    </p>
+<pre><code>四个构造函数,其中的一些参数: 
+    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
+                            除非将allowCoreThreadTimeOut设置为true。
+
+    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
+                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
+
+    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
+
+    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
+                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
+
+    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
+                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
+
+    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
+
+    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
+                                        会调用RejectedExecutionHandler的rejectedExecution方法。
+
+线程池规则
+
+    下面都假设任务队列没有大小限制：
+
+        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
+
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
+
+    任务队列大小有限时
+
+        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
+        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
+</code></pre><p>5.1 Java内存结构</p>
+<pre><code>Java内存区域
+    线程共享
+        方法区
+            又称Non-Heap（非堆），主要用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，
+            根据Java 虚拟机规范的规定，当方法区无法满足内存分配需求时，将抛出OutOfMemoryError 异常。
+            在方法区中存在一个叫运行时常量池(Runtime Constant Pool）的区域，它主要用于存放编译器生成的各种字面量和符号引用，
+            这些内容将在类加载后存放到运行时常量池中，以便后续使用。
+        堆
+            在虚拟机启动时创建，是Java 虚拟机所管理的内存中最大的一块，主要用于存放对象实例，几乎所有的对象实例都在这里分配内存，
+            Java 堆是垃圾收集器管理的主要区域，因此很多时候也被称做GC 堆，如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，
+            将会抛出OutOfMemoryError 异常。
+
+    线程私有
+        虚拟机栈
+            与线程同时创建，总数与线程关联，代表Java方法执行的内存模型。每个方法执行时都会创建一个栈桢来存储方法的的变量表、
+            操作数栈、动态链接方法、返回值、返回地址等信息。每个方法从调用直结束就对于一个栈桢在虚拟机栈中的入栈和出栈过程
+        本地方法栈
+            与虚拟机用到的 Native 方法相关
+        程序计数器
+            一小块内存空间，主要代表当前线程所执行的字节码行号指示器。字节码解释器工作时，
+            通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。
+</code></pre><p>6.ThreadLocal<br>        ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。</p>
+<pre><code>首先，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，
+键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。
+
+　　 初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，
+并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。
+
+　　  然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。
+
+
+join的作用
+    调用某个线程的这个方法时，这个方法会挂起调用线程，直到被调用线程结束执行，调用线程才会继续执行。
+
+    join逻辑
+
+        Parent 调用 child.join()，child.join() 再调用 child.join(0) （此时 Parent 会获得 child 实例作为锁，其他线程可以进入 child.join() ，但不可以进入 child.join(0)， 
+        因为无法获取锁）。child.join(0) 会不断地检查 child 线程是否是 Active。
+
+        如果 child 线程是 Active，则循环调用 child.wait(0)（为了防止 Spurious wakeup, 需要将 wait(0) 放入 for 循环体中；此时 Parent 会释放 child 实例锁，
+        其他线程可以竞争锁并进入 child.join(0)。我们可以得知，可以有多个线程等待某个线程执行完毕）。
+
+        一旦 child 线程不为 Active （状态为 TERMINATED）, child.join(0) 会直接返回到 child.join(), 
+        child.join() 会直接返回到 Parent 父线程，Parent 父线程就可以继续运行下去了。
+
+
+1）实际的通过ThreadLocal创建的副本是存储在每个线程自己的threadLocals中的；
+
+　　  为何threadLocals的类型ThreadLocalMap的键值为ThreadLocal对象，因为每个线程中可有多个threadLocal变量，就像上面代码中的longLocal和stringLocal；
+
+　　  在进行get之前，必须先set，否则会报空指针异常；
+
+　　  如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法。
+
+
+最常见的ThreadLocal使用场景为 用来解决 数据库连接、Session管理等
+
+实现:
+    内部类
+        ThreadLocalMap
+            内部类
+                Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt;
+        public T get()
+</code></pre><p>7.HashMap<br>    数组和链表的结合</p>
+<pre><code>属性
+    modCount    用于快速失败，由于HashMap非线程安全，在对HashMap进行迭代时，
+                如果期间其他线程的参与导致HashMap的结构发生变化了（比如put，remove等操作），
+                需要抛出异常ConcurrentModificationException
+    threshold   capacity*loadFactory
+    initialCapacity
+    loadFactory
+方法
+    put
+        1.如果数组为空,进行数组填充.分配数组空间
+        2.如果key为null,存在table[0]或者table[0]的冲突链上
+        3.对key的hashcode进一步计算,确保散列均匀
+        4.获取在table中的实际位置
+        5.如果对应数据已存在,覆盖. 返回旧value
+            for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) {
+                Object k;
+                if (e.hash == hash &amp;&amp; ((k == e.key) == key) || key.equals(k)) {
+                    //替换
+                }
+            }
+
+            怎么判断是否已存在? 看新旧key值是否equals, 或者 key的地址一样且hash值一样.
+</code></pre><p>8.垃圾回收算法<br>    可达性分析<br>        通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，<br>        当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。</p>
+<pre><code>    GC Roots
+        1)虚拟机栈（栈帧中的本地变量表）中引用的对象
+        2）方法区中的类静态属性引用的对象。
+        3）方法区中的常量引用的对象
+        4）本地方法栈中JNI（通常说的Native方法）引用的对象
+
+标记清除法
+    标记阶段和清除阶段
+    可能产生的最大的问题就是空间碎片
+
+复制算法
+    将原有的内存空间分为两块相同的存储空间，每次只使用一块，在垃圾回收时，
+    将正在使用的内存块中存活对象复制到未使用的那一块内存空间中，之后清除正在使用的内存块中的所有对象，完成垃圾回收。
+
+ 标记压缩算法
+    在标记清除算法的基础上做了优化,将所有的存活对象压缩到内存空间的一端，之后，清理边界外所有的空间。
+
+
+通常新生代回收的频率很高，但是每次回收的时间都很短，而老年代回收的频率比较低，但是被消耗很多的时间
+
+为了支持高频率的新生代回收，虚拟机可能使用一种叫做卡表的数据结构，卡表为一个比特位集合，
+每一个比特位可以用来表示老年代的某一区域中的所有对象是否持有新生代对象的引用，
+新生代GC时，可以不用花大量时间扫描所有老年代对象，来确定每一个对象的引用关系，而可以先扫描卡表，只有当卡表的标记为1时，
+才需要扫描给定区域的老年代对象，而卡表为0的所在区域的老年代对象，一定不含有新生代对象的引用。
+
+分区算法
+    将整个堆空间划分为连续的不同小区间
+
+    相同的条件下，堆空间越大，一次GC所需的时间就越长，从而产生的停顿时间就越长。为了更好的控制GC产生的停顿时间，
+    将一块大的内存区域分割成多个小块，
+    根据目标的停顿时间，每次合理的回收若干个小区间，而不是整个堆空间，从而减少一个GC的停顿时间。
+</code></pre><p>11.进程间通信<br>    方式<br>        信号<br>            用于通知接收进程某个事件已经发生</p>
+<pre><code>    进程间的软件中断通知和处理机制(SIGKILL SIGSTOP SIGCONT)
+    接收处理
+        捕获
+        忽略
+        屏蔽
+
+管道
+    普通管道PIPE： 通常有两种限制,一是单工,只能单向传输;二是只能在父子或者兄弟进程间使用.
+    流管道s_pipe: 去除了第一种限制,为半双工，只能在父子或兄弟进程间使用，可以双向传输.
+    命名管道:name_pipe：去除了第二种限制,可以在许多并不相关的进程之间进行通讯.
+
+    进程间基于内存文件的通信机制
+    子进程从父进程继承文件描述符
+    缺省文件描述符
+    一种半双工的通信方式，数据只能单向流动，而且只能在具有亲缘关系的进程间使用。进程的亲缘关系通常是指父子进程关系。
+
+消息队列
+    操作系统维护的以字节序列为基本单位的间接通信机制
+    由消息的链表，存放在内核中并由消息队列标识符标识
+    消息队列克服了信号传递信息少、管道只能承载无格式字节流以及缓冲区大小受限等缺点。
+
+共享内存
+    把同一个物理内存区域映射到多个进程的内存地址空间的通信机制
+
+信号量
+    信号量是一个计数器，可以用来控制多个进程对共享资源的访问。它常作为一种锁机制，
+    防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程内不同线程之间的同步手段。
+
+套接字
+    可用于不同机器间的进程通信
+</code></pre><p>12.数据库索引<br>    平衡树  </p>
+<pre><code>聚集索引
+
+非聚集索引和聚集索引的区别在于， 通过聚集索引可以查到需要查找的数据， 
+而通过非聚集索引可以查到记录对应的主键值 ， 再使用主键的值通过聚集索引查找到需要的数据
+
+覆盖索引
+    不使用聚集索引就能查询出所需要的数据
+</code></pre><p>15.</p>
+<p>多线程区:</p>
+<pre><code>2. concurrenthashmap为何读不用加锁
+
+    jdk1.7
+        1）HashEntry中的key、hash、next 均为final 型，只能表头插入、删除结点
+        2）HashEntry类的value域被声明为volatile型
+        3）不允许用null作为键和值，当读线程读到某个HashEntry的 value域的值为null时，便知道产生了冲突——发生了重排序现象（put设置新value对象的字节码指令重排序），需要加锁后重新读入这个value值
+        4）volatile变量count协调读写线程之间的内存可见性，写操作后修改count，读操作先读count，根据happen-before传递性原则写操作的修改读操作能够看到
+    jdk1.8
+        1）Node的val和next均为volatile型
+        2）tabAt和casTabAt对应的unsafe操作实现了volatile语义
+</code></pre><p>算法区:<br>    1.最小区间：k个有序的数组，找到最小区间使k个数组中每个数组至少有一个数在区间中</p>
+<pre><code>2.快排
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quicksort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">            quicksort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quicksort</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">                <span class="keyword">int</span> pivot = partition(arr, low, high);</span><br><span class="line">                quicksort(arr, low, pivot - <span class="number">1</span>);</span><br><span class="line">                quicksort(arr, pivot + <span class="number">1</span>, high);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">            <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[high]) &#123;</span><br><span class="line">                    high--;</span><br><span class="line">                &#125;</span><br><span class="line">                arr[low] = arr[high];</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[low] &lt;= pivot) &#123;</span><br><span class="line">                    low++;</span><br><span class="line">                &#125;</span><br><span class="line">                arr[high] = arr[low];</span><br><span class="line">            &#125;</span><br><span class="line">            arr[low] = pivot;</span><br><span class="line">            <span class="keyword">return</span> low;</span><br><span class="line">        &#125;</span><br><span class="line"> ```   </span><br><span class="line">    <span class="number">3</span>.TOP k</span><br><span class="line">        <span class="number">1</span>.快排思路</span><br><span class="line">```java</span><br><span class="line">            <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">                    <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &gt;= arr[high]) &#123;</span><br><span class="line">                        high--;</span><br><span class="line">                    &#125;</span><br><span class="line">                    arr[low] = arr[high];</span><br><span class="line">                    <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[low]) &#123;</span><br><span class="line">                        low++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    arr[high] = arr[low];</span><br><span class="line">                &#125;</span><br><span class="line">                arr[low] = pivot;</span><br><span class="line">                <span class="keyword">return</span> low;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">topK</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">int</span> low = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">int</span> high = arr.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">int</span> index = partition(arr, low, high);</span><br><span class="line">                <span class="keyword">while</span> (index != k) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (index &gt; k) &#123;</span><br><span class="line">                        high = index - <span class="number">1</span>;</span><br><span class="line">                        partition(arr, low, high);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        low = index + <span class="number">1</span>;</span><br><span class="line">                        partition(arr, low, high);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+<p>linux区<br>    常用命令<br>        删除指定日期之前的文件<br>            find /data1/yulei/user_mq/logs -mtime +7 -type f | xargs rm -rf</p>
+<p>Redis区<br>     Redis是一个Key-value存储系统。它支持存储的value类型很多，包括String（字符串）、链表(list)、set（集合）、zset（有序集合） hash。<br>     Redis支持各种不同方式的排序。可以把周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件。</p>
+<pre><code>缓存穿透
+    缓存系统按照KEY去查询VALUE,当KEY对应的VALUE一定不存在的时候并对KEY并发请求量很大的时候，就会对后端造成很大的压力。
+
+    解决办法
+        布隆过滤器
+            将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。
+        缓存层缓存空值
+            如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。
+               存储层更新代码了，缓存层还是空值。（优化：后台设置时主动删除空值，并缓存把值进去）
+
+缓存雪崩（缓存失效）
+     如果缓存集中在一段时间内失效，发生大量的缓存穿透，所有的查询都落在数据库上，造成了缓存雪崩。
+
+     解决办法
+        1.在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。
+        2.可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存
+        3.不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀
+        4.做二级缓存，或者双缓存策略。A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期。
+
+热点key
+    将热点key对应value并缓存在客户端本地，并且设置一个失效时间。
+    对于每次读请求，将首先检查key是否存在于本地缓存中，如果存在则直接返回，如果不存在再去访问分布式缓存的机器。
+
+    将热点key分散为多个子key，然后存储到缓存集群的不同机器上，这些子key对应的value都和热点key是一样的。
+    当通过热点key去查询数据时，通过某种hash算法随机选择一个子key，然后再去访问缓存机器，将热点分散到了多个子key上。
+
+
+淘汰策略
+    noeviction: 不删除策略, 达到最大内存限制时, 如果需要更多内存, 直接返回错误信息。 大多数写命令都会导致占用更多的内存(有极少数会例外, 如 DEL )。
+    allkeys-lru: 所有key通用; 优先删除最近最少使用(less recently used ,LRU) 的 key。
+    volatile-lru: 只限于设置了 expire 的部分; 优先删除最近最少使用(less recently used ,LRU) 的 key。
+    allkeys-random: 所有key通用; 随机删除一部分 key。
+    volatile-random: 只限于设置了 expire 的部分; 随机删除一部分 key。
+    volatile-ttl: 只限于设置了 expire 的部分; 优先删除剩余时间(time to live,TTL) 短的key。
+
+    如果分为热数据与冷数据, 推荐使用 allkeys-lru 策略。 也就是, 其中一部分key经常被读写. 如果不确定具体的业务特征,
+     那么 allkeys-lru 是一个很好的选择。
+
+     如果需要循环读写所有的key, 或者各个key的访问频率差不多, 可以使用 allkeys-random 策略, 即读写所有元素的概率差不多。
+
+     假如要让 Redis 根据 TTL 来筛选需要删除的key, 请使用 volatile-ttl 策略。
+
+     volatile-lru 和 volatile-random 策略主要应用场景是: 既有缓存,又有持久key的实例中。
+      一般来说, 像这类场景, 应该使用两个单独的 Redis 实例。
+      值得一提的是, 设置 expire 会消耗额外的内存, 所以使用 allkeys-lru 策略, 可以更高效地利用内存, 因为这样就可以不再设置过期时间了。
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/要记要背/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-深入理解Java-Web" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/深入理解Java-Web/">深入理解Java Web</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/深入理解Java-Web/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:40:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Web请求过程<br>    HTTP 无状态的短连接.发起一个http请求就是建立一个socket通信的过程<br>        Request Header<br>            Accept-Charset<br>            Accept-Encoding<br>            Accept-Language<br>            Host<br>            User-Agent<br>            Connection: Keep-Alive<br>        Response Header<br>            Server<br>            Content-Type<br>            Content-Encoding<br>            Content-Language<br>            Content-Length<br>            Keep-Alive: timeout=5,max=120</p>
+<pre><code>    常见状态码
+        200     成功
+        302     临时跳转, 跳转的地址通过Location指定
+        304     文件未变化
+        400     客户端请求有语法错误, 不能被服务器识别
+        403     服务器收到请求, 但是拒绝提供服务
+        404     请求的资源不存在
+        500     服务器发生不可预期的错误
+
+    浏览器缓存
+        Pragma: no-cache
+        Cache-Control: no-cache
+
+    Expires
+
+    Last-Modified/Etag
+        浏览器在请求头中增加If-Modified-Since, 如果是最新的, 返回304
+
+DNS域名解析过程
+    1. 浏览器检查缓存有没有.
+    2. 操作系统缓存. hosts文件
+    3. LDNS
+    4. Root Server
+
+CDN工作机制
+</code></pre><p>java io<br>    Java IO类库<br>        传输数据的数据格式<br>            基于字节操作的IO接口:    InputStream OutputStream<br>            基于字符操作的IO接口:    Writer Reader<br>        传输数据的方式<br>            基于磁盘操作的IO接口:    File<br>            基于网络操作的IO接口:    Socket</p>
+<pre><code>    字符与字节的转化接口
+        InputStreamReader: 字节到字符的转化桥梁
+        OutStreamWriter:    字符到字节的编码过程
+
+磁盘IO工作机制
+    访问文件的方式
+        标准访问文件方式
+            read()
+                检查内核缓存,有的话直接返回, 没有的话从磁盘读取, 缓存在内核地址空间
+            write()
+                从用户地址复制到内核地址空间缓存, 什么时候写到磁盘由操作系统决定,
+                除非显示调用sync同步命令
+
+        直接IO方式
+            直接访问磁盘数据,不经过操作系统内核数据缓冲区.减少一次数据复制.
+            通常是在对数据的缓存管理由应用程序实现的数据库管理系统中.
+
+        同步访问文件方式
+
+        异步访问文件方式
+
+        内存映射的方式
+            将操作系统内存中的某一块区域与磁盘中的文件关联起来.
+</code></pre><p>java编码</p>
+<p>java编译原理:  将java源码编译成java字节码, .java-&gt;.class, 源代码-&gt;二进制数字<br>    模块<br>        词法分析器:  找出语法关键词 -&gt; 规范Token流<br>            Scanner: 具体读取和归类不同词法<br>            JavacParser: 规定了哪些词是符合java语言规范<br>        语法分析器:  检查关键词是否符合java语言规范 -&gt; 抽象语法树<br>        语义分析器:  将复杂的语法转化为简单的语法(foreach 注解) -&gt; 注解过后的语法树<br>        代码生成器:  生成字节码<br>    语法树结构<br>    工作流程详解<br>        词法分析<br>        语法分析<br>        符号表的构建<br>        annotation的处理<br>        标注和语法检查<br>        数据流分析<br>        类型转化<br>        语法<br>    实现内部类<br>    实现对异常的处理<br>    与其他编译器的比较</p>
+<p>class文件结构</p>
+<p>ClassLoader工作机制</p>
+<p>JVM体系结构和工作方式<br>    虚拟内存<br>        多个进程空间上共享物理内存, 逻辑上不能互相访问<br>        一个虚拟地址被映射到一段物理内存,文件或其他可以寻址的存储(Swap分区)<br>    内核空间和用户空间<br>        减少从内核空间到用户空间的数据复制方式:sendfile文件传输方式</p>
+<pre><code>Java中哪些组件需要使用内存
+    Java堆
+        堆的大小在JVM启动时一次向操作系统申请完成.
+        分配完成后堆的大小固定,内存不够时再重新申请.内存空闲时也不能将多余的空间交还.
+
+    线程
+        每个线程创建时JVM都会为它创建一个堆栈, 通常在256KB-756KB之间
+
+    类和类加载器
+        存储在永久代
+
+    NIO
+        基于通道和缓冲区来执行IO的新方式.
+        java.nio.ByteBuffer.allocateDirect()方法分配内存.使用本机内存而不是Java堆上内存.
+            每次分配内存会调用操作系统的os::malloc()函数.
+
+        ByteBuffer产生的数据如果和网络或者磁盘交互都在操作系统的内核空间发生,不需要
+        将数据复制到java内存中.(如果io频繁发送很小的数据,系统调用的开销会抵消掉不用复制的好处)
+
+        直接ByteBuffer对象会自动清理本机缓冲区,这个过程只能作为java堆gc的一部分来执行
+
+    JNI
+
+JVM内存结构
+    PC寄存器
+        一个数据结构,用于保存当前正常执行的程序的内存地址,记录哪个线程当前执行到哪条指令.
+    Java栈
+        每当创建一个线程时,JVM就会为这个线程创建一个对应的java栈,这个栈中又会含有多个帧栈.
+        每运行一个方法创建一个帧栈.帧栈含有内部变量,操作栈,方法返回值等信息
+        每当方法执行完成时,帧栈弹出帧栈的元素作为方法的返回值.
+    堆
+    方法区
+    本地方法区
+    运行时常量池
+</code></pre><p>JVM内存管理</p>
+<p>Servlet工作原理<br>    Servlet容器<br>        启动过程<br>            启动类: org.apache.catalina.startup.Tomcat,创建实例对象并调用start方法.<br>                通过该对象增加和修改Tomcat配置参数, 动态增加Context,Servlet等<br>            基于观察者模式: 所有容器继承Lifecycle接口,它管理容器的整个生命周期,所有<br>                容器的修改和状态的改变都由它去通知已经注册的观察者(Listener)</p>
+<pre><code>Tomcat启动时序图
+    Tomcat start
+        StandardServer start init
+            StandardService init
+                StandardEngine init
+                   Connector
+                    StandardServer start
+                        StandardService start
+                            StandardEngine start
+                                StandardHost init start
+                                    StandardContext init(ContextConfig作为观察者被通知)
+                                    StandardContext init(配置解析)
+                                    StandardContext startInternal
+                                        StandardService start
+                                            Connector init
+                                                Http11Protocol start
+                                                Http11Protocol init
+
+当Context容器初始化状态设为init时, 添加到Context容器的Listener将会被调用.
+ContextConfig继承了LifecycleListener接口, 它是在调用Tomcat.addWebapp时被加入到
+StandardContext容器中的.
+ContextConfig类会负责整个Web应用的配置文件的解析工作.
+
+ContextConfig的init方法
+    创建用于解析XML配置文件的contextDigester对象
+    读取默认的context.xml配置文件,如果存在则解析它
+    读取默认的Host配置文件,如果存在则解析它
+    读取默认的Context自身的配置文件,如果存在则解析它
+    设置Context的DocBase
+
+Context容器的startInternal方法
+    创建读取资源文件的对象
+    创建ClassLoader对象
+    设置应用的工作目录
+    启动相关的辅助类(如Logger,realm,resources)
+    修改启动状态, 通知感兴趣的观察者(Web应用的配置)
+    子容器的初始化
+    获取ServletContext并设置必要的参数
+    初始化&quot;load on startup&quot;的Servlet
+
+Web应用的初始化工作(在ContextConfig的configureStart方法中实现)
+    解析web.xml文件, 其中的各个配置项会被解析成相应的属性保存在WebXml对象中
+    将WebXml对象中的属性设置到Context容器中,包括创建Servlet对象,filter.listener等
+
+    将Servlet包装成Context容器中的StandardWrapper并作为子容器添加到Context中
+
+创建Servlet实例(Wrapper.loadServlet实现)
+    web.xml默认配置项(Tomcat启动时这两个Servlet就会被启动)
+        DefaultServlet
+        JspServlet
+    loadServlet方法获取servletClass,交给InstanceManager去创建一个基于
+    servletClass.class的对象
+    如果这个Servlet配置了jsp-file,那这个servletClass就是JspServlet
+
+初始化Servlet(StandardWrapper的initServlet方法)
+    initServlet
+        调用Servlet的init()方法,同时把包装了StandardWrapper对象
+        的StandardWrapperFacade做为ServletConfig传给Servlet.
+
+
+Servlet体系结构(握手型的交互式:两个模块为了交换数据准备一个交易场景)
+    StandardWrapper和StandardWrapperFacade都实现了ServletConfig接口.
+    StandardWrapperFacade传给Servlet,保证从StandardWrapper中拿到ServletConfig
+    所规定的数据,又不把ServletConfig不关心的数据暴露给Servlet
+
+    ServletContext ApplicationContext ApplicationContextFacade
+        保证ServletContext只能从从容器拿到它该拿的数据.
+</code></pre><p>Session与Cookie</p>
+<p>Tomcat系统架构与设计模式<br>    Tomcat<br>        Container容器<br>            Engine<br>                Host<br>                    Servlet容器<br>                        Context(对应一个Web工程)<br>                            Wrapper(Servlet包装类)</p>
+<p>Jetty工作原理解析</p>
+<p>Spring设计理念</p>
+<p>SpringMVC工作机制</p>
+<p>MyBatis系统架构</p>
+<p>Velocity工作原理</p>
+
       
 
       
@@ -184,6 +810,14 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Web</a>
+        		</li>
       		
 		</ul>
 	</div>
@@ -192,7 +826,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/算法4/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/深入理解Java-Web/">展开全文 >></a>
         </p>
       
 
@@ -222,233 +856,50 @@
 
 
   
-    <article id="post-Kubernetes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spring-MVC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/Kubernetes/">Kubernetes</a>
+      <a class="article-title" href="/2019/04/05/Spring-MVC/">Spring MVC</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/Kubernetes/" class="archive-article-date">
-  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+        <a href="/2019/04/05/Spring-MVC/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>一切以服务为中心, 一切围绕服务运转.<br>自动化.<br>一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发<br>调度流程,最终在选定的目标节点上启动相应数量的服务实例副本.</p>
-<p>核心组件:<br>    etcd: 保存整个集群的状态<br>    apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制<br>    controller manager: 维护集群的状态, 如故障检测,自动扩展,滚动更新等.<br>    scheduler: 负责资源调度,按照预定的调度策略将Pod调度到相应的机器上.<br>    kubelet: 负责维护容器的生命周期,也负责Volume(CVI)和网格(CNI)的管理.<br>    Container runtime: 负责镜像管理以及Pod和容器的真正运行(CRI)<br>    kube-proxy: 负责为Service提供cluster内部的服务发现和负载均衡.</p>
-<p>Add-ons:<br>    kube-dns: 负责为整个集群提供DNS服务<br>    Ingress Controller: 为服务提供外网入口.<br>    Heapster: 资源监控</p>
-<p>API对象: Kubernetes集群中的管理操作单元.<br>    三大类属性: 元数据metadata<br>                 标识API对象,至少包含:namespace,name和uid. 使用标签来标识和匹配不同的对象.<br>                                如env=dev来标识开发服务.<br>              规范spec<br>                 描述了用户期望的Kubernetes集群中的分布式系统达到的理想状态.如通过Replication Controller设置<br>                    期望的Pod副本数为3.<br>              状态status<br>                 描述了系统实际当前达到的状态,如当前实际Pod副本数为2</p>
-<p>Pod: Kubernetes集群中运行部署应用或服务的最小单元.一个Pod代表集群中运行的一个进程.<br>        支持多个容器在一个Pod中共享网络地址和文件系统,可以通过进程间通信和<br>        文件共享的方式完成服务.</p>
-<p>kubectl get nodes<br>    获取可用的节点.</p>
+        <p>DispatcherServlet</p>
+<pre><code>1.用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.
 
-      
+2.DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该
+    Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.
+    这些对象被封装到一个HandlerExecutionChain对象当中返回
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
+3.DispatcherServlet根据Handler选择HandlerAdapter,调用实际处理请求的方法.
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/Kubernetes/">展开全文 >></a>
-        </p>
-      
+4.提取请求中的模型数据,执行Handler.在填充Handler入参过程中:
+    消息转换:   将json,xml等转换成一个对象,将对象转换为指定的响应消息
+    数据转换:   对请求消息进行数据转换,String转换为Integer,Double等
+    数据格式化:  如字符串转为格式化数字或格式化日期等
+    数据验证:   验证数据的有效性,验证结果存到BindingResult或Error中
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+5.Handler执行完成之后,向DispatcherServlet返回一个ModelAndView对象,包含视图名
+    或视图名和模型
 
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+6.根据ModelAndView选择一个合适的ViewResolver返回给DispatcherServlet
 
+7.ViewSolver结合Model和View来渲染视图
 
-
-
-  
-    <article id="post-JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JWT/">JWT</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/JWT/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li><p>了解JWT相关知识</p>
-<pre><code>JWT组成: 
-    Header.Payload.Signature
-    头部.负载.签名
-
-头部:
-    {
-       &quot;alg&quot;: &quot;HS256&quot;,
-        &quot;typ&quot;: &quot;JWT&quot;
-    }
-    alg表示签名的算法，默认是HMAC SHA256, typ表示这个令牌的类型.
-
-负载:
-    iss (issuer)：签发人
-    exp (expiration time)：过期时间
-    sub (subject)：主题
-    aud (audience)：受众
-    nbf (Not Before)：生效时间
-    iat (Issued At)：签发时间
-    jti (JWT ID)：编号
-
-签名: 对前两部分的签名,防止数据篡改.
-    HMACSHA256(
-        base64UrlEncode(header) + &quot;.&quot; +
-        base64UrlEncode(payload),
-        secret)
-把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用&quot;点&quot;（.）分隔
-</code></pre></li>
-</ol>
-<p>Spring中使用JWT:</p>
-<pre><code>1. 编写由登录对象转为token和由token获取登录对象的方法.
-2. 继承OncePerRequestFilter,重写doFilterInternal方法,对每一次请求进行token检查.
-3. 使用@AuthenticationPrincipal注解, 根据前端传过来的header获取登录对象.
-</code></pre><ol start="2">
-<li>postgresql的具体使用:<pre><code>读取数组属性:
-    1. 定义ArrayTypeHandelr继承BaseTypeHandler,重写get,set方法
-    2. 指定mybatis的类型处理器包的位置为ArrayTypeHandelr所在包.
-    3. 定义数组属性所在类型的resultMap.
-</code></pre></li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JWT/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><pre><code>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.
-</code></pre><h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><pre><code>类从加载到卸载的生命周期7个阶段: 
-    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)
-    解析可以在初始化之后开始.
-
-5种必须对类进行初始化的情况:
-    1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
-    2. 使用reflect包方法对类进行反射调用时.
-    3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
-    4. 虚拟机启动时用户指定要执行的主类
-    5. 动态语言支持
-
-不会触发初始化的引用--被动引用:
-    1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
-    2. 通过数组定义来引用类,不会触发类的初始化
-        package org.fenixsoft.classloading
-            SuperClass[] sca = new SuperClass[10];
-        类org.fenixsoft.classloading.SuperClass不会被初始化.
-        但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
-            创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
-            数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
-    3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
-
-对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.
-</code></pre><h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><pre><code>加载
-    1. 通过一个类的全限定名来获取定义此类的二进制字节流
-    2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
-    3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
-验证
-
-准备
-
-解析
-
-初始化
-</code></pre><h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2>
+8.将视图返回给客户端
+</code></pre>
       
 
       
@@ -461,7 +912,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -471,7 +922,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Spring-MVC/">展开全文 >></a>
         </p>
       
 
@@ -503,7 +954,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
     </nav>
   
 
@@ -580,25 +1031,17 @@ MathJax.Hub.Queue(function() {
       
       
     
-      
-      
-      
-    
     
 
     <ul style="width: 70%">
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
-      
-        
-      
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'categories')"><a href="javascript:void(0)" q-class="active:categories">目录</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
       
         
     </ul>

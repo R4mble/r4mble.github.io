@@ -58,6 +58,8 @@
 			
 				<li><a href="/">击空明兮溯流光</a></li>
 	        
+				<li><a href="/categories">目录</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -68,10 +70,6 @@
             
     			
     			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
-    			
-            
-    			
-    			<a q-on="click: openSlider(e, 'categories')" href="javascript:void(0)">目录</a>
     			
             
 		</nav>
@@ -112,6 +110,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -132,7 +132,9 @@
 				<ul style="width: 50%">
 				
 				
-					<li style="width: 100%"><a href="/">击空明兮溯流光</a></li>
+					<li style="width: 50%"><a href="/">击空明兮溯流光</a></li>
+		        
+					<li style="width: 50%"><a href="/categories">目录</a></li>
 		        
 				</ul>
 			</nav>
@@ -149,30 +151,46 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spring源码" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Category-Theory-for-Programmers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/14/Spring源码/">Spring源码</a>
+      <a class="article-title" href="/2019/04/27/Category-Theory-for-Programmers/">Category Theory for Programmers</a>
     </h1>
   
 
         
-        <a href="/2019/05/14/Spring源码/" class="archive-article-date">
-  	<time datetime="2019-05-14T15:51:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-14</time>
+        <a href="/2019/04/27/Category-Theory-for-Programmers/" class="archive-article-date">
+  	<time datetime="2019-04-27T10:02:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Spring注解:<br>    AnnotationConfigApplicationContext extends GenericApplicationContext<br>                                       implements AnnotationConfigRegistry </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//根据参数类型可以知道，其实可以传入多个annotatedClasses，但是这种情况出现的比较少</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AnnotationConfigApplicationContext</span><span class="params">(Class&lt;?&gt;... annotatedClasses)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//调用无参构造函数，会先调用父类GenericApplicationContext的构造函数</span></span><br><span class="line">		<span class="comment">//父类的构造函数里面就是初始化DefaultListableBeanFactory，并且赋值给beanFactory</span></span><br><span class="line">		<span class="comment">//本类的构造函数里面，初始化了一个读取器：AnnotatedBeanDefinitionReader read，一个扫描器ClassPathBeanDefinitionScanner scanner</span></span><br><span class="line">		<span class="comment">//scanner的用处不是很大，它仅仅是在我们外部手动调用 .scan 等方法才有用，常规方式是不会用到scanner对象的</span></span><br><span class="line">		<span class="keyword">this</span>();</span><br><span class="line">		<span class="comment">//把传入的类进行注册，这里有两个情况，</span></span><br><span class="line">		<span class="comment">//传入传统的配置类</span></span><br><span class="line">		<span class="comment">//传入bean（虽然一般没有人会这么做</span></span><br><span class="line">		<span class="comment">//看到后面会知道spring把传统的带上@Configuration的配置类称之为FULL配置类，不带@Configuration的称之为Lite配置类</span></span><br><span class="line">		<span class="comment">//但是我们这里先把带上@Configuration的配置类称之为传统配置类，不带的称之为普通bean</span></span><br><span class="line">		register(annotatedClasses);</span><br><span class="line">		<span class="comment">//刷新</span></span><br><span class="line">		refresh();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="../images/AnnotationConfigApplicationContext.png" alt="AnnotationConfigApplicationContext"><br><img src="../images/DefaultListableBeanFactory.png" alt="AnnotationConfigApplicationContext"></p>
+        <h1 id="Category-The-Essence-of-Composition"><a href="#Category-The-Essence-of-Composition" class="headerlink" title="Category: The Essence of Composition"></a>Category: The Essence of Composition</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><blockquote>
+<p>A category consists of objects and arrows  that go between them.<br>    范畴与组合互为本质:<br>        The essence of a category is composition.</p>
+</blockquote>
+<pre><code>The essence of composition is a category.
+</code></pre><hr>
+<h2 id="组合的性质"><a href="#组合的性质" class="headerlink" title="组合的性质:"></a>组合的性质:</h2><pre><code>    1. Associativity
+        (伏笔:  Associativity is pretty obvious when dealing with functions, 
+                but it may be not as obvious in other categories.)
+    2. Identity
 
+组合是编程的本质
+</code></pre><hr>
+<pre><code>Challenges 
+  实现identity和compose
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Function</span>&lt;<span class="title">T</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">R <span class="title">apply</span><span class="params">(T t)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> &lt;V&gt; <span class="function">Function&lt;V, R&gt; <span class="title">compose</span><span class="params">(Function&lt;? <span class="keyword">super</span> V, ? extends T&gt; before)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(before);</span><br><span class="line">        <span class="keyword">return</span> (V v) -&gt; apply(before.apply(v));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &lt;T&gt; <span class="function">Function&lt;T, T&gt; <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> t -&gt; t;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>测试
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IdentityTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(id).compose(f2).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute2</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(f2).compose(id).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="keyword">new</span> IdentityTest().compute(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        <span class="keyword">int</span> res2 = <span class="keyword">new</span> IdentityTest().compute2(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        System.out.println(res);</span><br><span class="line">        System.out.println(res2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用JavaScript来实现<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> identity = <span class="function"><span class="params">x</span> =&gt;</span> x</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> x =&gt; f(g(x))</span><br></pre></td></tr></table></figure></p>
+<p>测试<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add5 = <span class="function"><span class="params">x</span> =&gt;</span> x + <span class="number">5</span></span><br><span class="line"><span class="keyword">const</span> multi2 = <span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(compose(identity, compose(add5, multi2))(<span class="number">5</span>))</span><br><span class="line"><span class="built_in">console</span>.log(compose(add5, compose(identity, multi2))(<span class="number">5</span>))</span><br></pre></td></tr></table></figure></p>
+<h1 id="Types-and-Functions"><a href="#Types-and-Functions" class="headerlink" title="Types and Functions"></a>Types and Functions</h1><h1 id="Categories-Great-and-Small"><a href="#Categories-Great-and-Small" class="headerlink" title="Categories Great and Small"></a>Categories Great and Small</h1><h1 id="Kleisli-Categories"><a href="#Kleisli-Categories" class="headerlink" title="Kleisli Categories"></a>Kleisli Categories</h1><h1 id="Products-and-Coproducts"><a href="#Products-and-Coproducts" class="headerlink" title="Products and Coproducts"></a>Products and Coproducts</h1><h1 id="Simple-Algebraic-Data-Types"><a href="#Simple-Algebraic-Data-Types" class="headerlink" title="Simple Algebraic Data Types"></a>Simple Algebraic Data Types</h1><h1 id="Functors"><a href="#Functors" class="headerlink" title="Functors"></a>Functors</h1><h1 id="Functoriality"><a href="#Functoriality" class="headerlink" title="Functoriality"></a>Functoriality</h1><h1 id="Function-Types"><a href="#Function-Types" class="headerlink" title="Function Types"></a>Function Types</h1><h1 id="Natural-Transformations"><a href="#Natural-Transformations" class="headerlink" title="Natural Transformations"></a>Natural Transformations</h1><h1 id="Declarative-Programming"><a href="#Declarative-Programming" class="headerlink" title="Declarative Programming"></a>Declarative Programming</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Free-Monoids"><a href="#Free-Monoids" class="headerlink" title="Free Monoids"></a>Free Monoids</h1><h1 id="Representable-Functors"><a href="#Representable-Functors" class="headerlink" title="Representable Functors"></a>Representable Functors</h1><h1 id="The-Yoneda-Lemma"><a href="#The-Yoneda-Lemma" class="headerlink" title="The Yoneda Lemma"></a>The Yoneda Lemma</h1><h1 id="Yoneda-Embedding"><a href="#Yoneda-Embedding" class="headerlink" title="Yoneda Embedding"></a>Yoneda Embedding</h1><h1 id="Morphisms"><a href="#Morphisms" class="headerlink" title="Morphisms"></a>Morphisms</h1><h1 id="Adjunctions"><a href="#Adjunctions" class="headerlink" title="Adjunctions"></a>Adjunctions</h1><h1 id="Free-Forgetful-Adjunctions"><a href="#Free-Forgetful-Adjunctions" class="headerlink" title="Free/Forgetful Adjunctions"></a>Free/Forgetful Adjunctions</h1><h1 id="Monads-Programmer’s-Definition"><a href="#Monads-Programmer’s-Definition" class="headerlink" title="Monads: Programmer’s Definition"></a>Monads: Programmer’s Definition</h1><h1 id="Monads-and-Effects"><a href="#Monads-and-Effects" class="headerlink" title="Monads and Effects"></a>Monads and Effects</h1>
       
 
       
@@ -185,7 +203,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -195,7 +213,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/14/Spring源码/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Category-Theory-for-Programmers/">展开全文 >></a>
         </p>
       
 
@@ -225,40 +243,27 @@
 
 
   
-    <article id="post-Java语法糖" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-算法4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/14/Java语法糖/">Java语法糖</a>
+      <a class="article-title" href="/2019/04/24/算法4/">算法4</a>
     </h1>
   
 
         
-        <a href="/2019/05/14/Java语法糖/" class="archive-article-date">
-  	<time datetime="2019-05-13T17:35:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-14</time>
+        <a href="/2019/04/24/算法4/" class="archive-article-date">
+  	<time datetime="2019-04-24T07:49:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Switch对String的支持"><a href="#Switch对String的支持" class="headerlink" title="Switch对String的支持"></a>Switch对String的支持</h1><p>语法糖:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="string">"world"</span>;</span><br><span class="line"><span class="keyword">switch</span> (str) &#123;</span><br><span class="line"><span class="keyword">case</span> <span class="string">"hello"</span>:</span><br><span class="line">    System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="string">"world"</span>:</span><br><span class="line">    System.out.println(<span class="string">"world"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>实际上:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="string">"world"</span>;</span><br><span class="line">String s;</span><br><span class="line"><span class="keyword">switch</span>((s = str).hashCode())</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="number">99162322</span>:</span><br><span class="line">    <span class="keyword">if</span>(s.equals(<span class="string">"hello"</span>))</span><br><span class="line">        System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> <span class="number">113318802</span>:</span><br><span class="line">    <span class="keyword">if</span>(s.equals(<span class="string">"world"</span>))</span><br><span class="line">        System.out.println(<span class="string">"world"</span>);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>先比较hashCode，再使用equals进行安全检查，防止哈希碰撞</p>
-<h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><p>Code sharing方式处理泛型.为每个泛型类型创建唯一的字节码表示,并且将该泛型类型的实例<br>都映射到这个惟一的字节码表示上.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;String, String&gt;();  </span><br><span class="line">map.put(<span class="string">"name"</span>, <span class="string">"hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"wechat"</span>, <span class="string">"Hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"blog"</span>, <span class="string">"www.hollischuang.com"</span>);</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Map map = <span class="keyword">new</span> HashMap();  </span><br><span class="line">map.put(<span class="string">"name"</span>, <span class="string">"hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"wechat"</span>, <span class="string">"Hollis"</span>);  </span><br><span class="line">map.put(<span class="string">"blog"</span>, <span class="string">"www.hollischuang.com"</span>);</span><br></pre></td></tr></table></figure>
-<p>类型擦除的主要过程如下：<br>1.将所有的泛型参数用其最左边界（最顶级的父类型）类型替换。<br>2.移除所有的类型参数。</p>
-<h1 id="变长参数"><a href="#变长参数" class="headerlink" title="变长参数"></a>变长参数</h1><p>可变参数在被使用的时候，会创建一个数组，把参数值全部放到这个数组当中，然后再把这个数组作为参数传递到被调用的方法中。</p>
-<h1 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h1><p>使用enmu来定义一个枚举类型的时候，编译器会自动帮我们创建一个final类型的类继承Enum类，所以枚举类型不能被继承。<br>条件编译</p>
-<h1 id="自动拆装箱"><a href="#自动拆装箱" class="headerlink" title="自动拆装箱"></a>自动拆装箱</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//语法糖</span></span><br><span class="line">Integer i = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n = i;</span><br><span class="line"><span class="comment">//实际上</span></span><br><span class="line">Integer i = Integer.valueOf(<span class="number">10</span>);</span><br><span class="line"><span class="keyword">int</span> n = i.intValue();</span><br></pre></td></tr></table></figure>
-<p>装箱过程是通过调用包装器的valueOf方法实现的，而拆箱过程是通过调用包装器的 xxxValue方法实现的。</p>
-<h1 id="条件编译"><a href="#条件编译" class="headerlink" title="条件编译"></a>条件编译</h1><p>根据if判断条件的真假，编译器直接把分支为false的代码块消除。</p>
-<h1 id="数值字面量"><a href="#数值字面量" class="headerlink" title="数值字面量"></a>数值字面量</h1><p>在java 7中，数值字面量，不管是整数还是浮点数，都允许在数字之间插入任意多个下划线。这些下划线不会对字面量的数值产生影响，目的就是方便阅读。</p>
-<h1 id="for-each"><a href="#for-each" class="headerlink" title="for-each"></a>for-each</h1><p>使用了普通的for循环和迭代器<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">for</span> (String s : strList) &#123;</span><br><span class="line">     System.out.println(s);</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span>(Iterator iterator = strList.iterator(); iterator.hasNext(); System.out.println(s))</span><br><span class="line">     s = (String)iterator.next();</span><br></pre></td></tr></table></figure></p>
-
+        <h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2>
       
 
       
@@ -271,7 +276,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -281,7 +286,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/14/Java语法糖/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/算法4/">展开全文 >></a>
         </p>
       
 
@@ -311,46 +316,32 @@
 
 
   
-    <article id="post-golang初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/07/golang初探/">golang初探</a>
+      <a class="article-title" href="/2019/04/24/Kubernetes/">Kubernetes</a>
     </h1>
   
 
         
-        <a href="/2019/05/07/golang初探/" class="archive-article-date">
-  	<time datetime="2019-05-07T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-07</time>
+        <a href="/2019/04/24/Kubernetes/" class="archive-article-date">
+  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="如何掌握一门编程语言"><a href="#如何掌握一门编程语言" class="headerlink" title="如何掌握一门编程语言?"></a>如何掌握一门编程语言?</h1><ul>
-<li>它的值是怎么定义的？<ul>
-<li>值有哪些类型？</li>
-<li>值的类型转换怎么做？</li>
-</ul>
-</li>
-<li>它的函数是怎么定义的？<ul>
-<li>函数能否作为值？</li>
-<li>支持默认参数吗？</li>
-<li>支持命名参数吗？</li>
-<li>函数的返回值可以有多个吗？</li>
-<li>匿名函数怎么表达？</li>
-</ul>
-</li>
-<li>它的流程控制是什么样的？<ul>
-<li>有没有for,while,switch？</li>
-</ul>
-</li>
-<li>它的list和map怎么使用？    </li>
-</ul>
+        <p>一切以服务为中心, 一切围绕服务运转.<br>自动化.<br>一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发<br>调度流程,最终在选定的目标节点上启动相应数量的服务实例副本.</p>
+<p>核心组件:<br>    etcd: 保存整个集群的状态<br>    apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制<br>    controller manager: 维护集群的状态, 如故障检测,自动扩展,滚动更新等.<br>    scheduler: 负责资源调度,按照预定的调度策略将Pod调度到相应的机器上.<br>    kubelet: 负责维护容器的生命周期,也负责Volume(CVI)和网格(CNI)的管理.<br>    Container runtime: 负责镜像管理以及Pod和容器的真正运行(CRI)<br>    kube-proxy: 负责为Service提供cluster内部的服务发现和负载均衡.</p>
+<p>Add-ons:<br>    kube-dns: 负责为整个集群提供DNS服务<br>    Ingress Controller: 为服务提供外网入口.<br>    Heapster: 资源监控</p>
+<p>API对象: Kubernetes集群中的管理操作单元.<br>    三大类属性: 元数据metadata<br>                 标识API对象,至少包含:namespace,name和uid. 使用标签来标识和匹配不同的对象.<br>                                如env=dev来标识开发服务.<br>              规范spec<br>                 描述了用户期望的Kubernetes集群中的分布式系统达到的理想状态.如通过Replication Controller设置<br>                    期望的Pod副本数为3.<br>              状态status<br>                 描述了系统实际当前达到的状态,如当前实际Pod副本数为2</p>
+<p>Pod: Kubernetes集群中运行部署应用或服务的最小单元.一个Pod代表集群中运行的一个进程.<br>        支持多个容器在一个Pod中共享网络地址和文件系统,可以通过进程间通信和<br>        文件共享的方式完成服务.</p>
+<p>kubectl get nodes<br>    获取可用的节点.</p>
 
       
 
@@ -363,7 +354,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/07/golang初探/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/Kubernetes/">展开全文 >></a>
         </p>
       
 
@@ -393,27 +384,62 @@
 
 
   
-    <article id="post-Feign" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/07/Feign/">Feign</a>
+      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
     </h1>
   
 
         
-        <a href="/2019/05/07/Feign/" class="archive-article-date">
-  	<time datetime="2019-05-07T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-07</time>
+        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><pre><code>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.
+</code></pre><h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><pre><code>类从加载到卸载的生命周期7个阶段: 
+    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)
+    解析可以在初始化之后开始.
+
+5种必须对类进行初始化的情况:
+    1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
+    2. 使用reflect包方法对类进行反射调用时.
+    3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
+    4. 虚拟机启动时用户指定要执行的主类
+    5. 动态语言支持
+
+不会触发初始化的引用--被动引用:
+    1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
+    2. 通过数组定义来引用类,不会触发类的初始化
+        package org.fenixsoft.classloading
+            SuperClass[] sca = new SuperClass[10];
+        类org.fenixsoft.classloading.SuperClass不会被初始化.
+        但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
+            创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
+            数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
+    3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
+
+对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.
+</code></pre><h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><pre><code>加载
+    1. 通过一个类的全限定名来获取定义此类的二进制字节流
+    2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
+    3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
+验证
+
+准备
+
+解析
+
+初始化
+</code></pre><h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2>
       
 
       
@@ -426,7 +452,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
         		</li>
       		
 		</ul>
@@ -436,7 +462,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/07/Feign/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
         </p>
       
 
@@ -468,7 +494,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/11/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="extend next" rel="next" href="/page/13/">Next &raquo;</a>
     </nav>
   
 
@@ -545,25 +571,17 @@ MathJax.Hub.Queue(function() {
       
       
     
-      
-      
-      
-    
     
 
     <ul style="width: 70%">
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
-      
-        
-      
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'categories')"><a href="javascript:void(0)" q-class="active:categories">目录</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
       
         
     </ul>

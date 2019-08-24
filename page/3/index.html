@@ -56,9 +56,9 @@
 		<nav class="header-menu">
 			<ul>
 			
-				<li><a href="/">击空明兮溯流光</a></li>
+				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/categories">目录</a></li>
+				<li><a href="/categories">分类</a></li>
 	        
 			</ul>
 		</nav>
@@ -132,9 +132,9 @@
 				<ul style="width: 50%">
 				
 				
-					<li style="width: 50%"><a href="/">击空明兮溯流光</a></li>
+					<li style="width: 50%"><a href="/">主页</a></li>
 		        
-					<li style="width: 50%"><a href="/categories">目录</a></li>
+					<li style="width: 50%"><a href="/categories">分类</a></li>
 		        
 				</ul>
 			</nav>
@@ -151,177 +151,13 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-WebSocket" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-shadowsocks" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>相关技术<br>    向客户端广播或者推送消息: Server-Sent Event(SSE),提供自动重连,事件ID等功能.<br>    扩充HTTP的网络协议: SPDY, 压缩HTTP首标,多路复用,工作管道.<br>    Web实时通信: Web Real-Time Communication(WebRTC)浏览器之间实时通信,实时语音和视频聊天.</p>
-<p>WebSocket<br>    事件驱动,异步编程,支持二进制数据和文本数据.    </p>
-<pre><code>构造函数: URL和protocols
-    URL可以是ws或wss, 分别用于非加密和加密流量.wss使用SSL,就是HTTPS的安全机制来保证.
-    protocols可以是XMPP,SOAP,自定义协议等.客户端定义通信协议,服务器选择一种.
+        <p>selinux : Security-Enhanced Linux<br>    Linux 内核模块，也是 Linux 的一个安全子系统。<br>    主要作用就是最大限度地减小系统中服务进程可访问的资源</p>
 
-    客户发送带有协议名称的Sec-WebSocket-Protocol首标,服务器响应一个带有和客户请求相同的
-    协议名称的Sec-WebSockt-Protocol首标.
-
-WebSocket事件:
-    open, message, error, close
-
-二进制数据类型: ws.binaryType: Blob(多媒体文件,图像,视频,音频), ArrayBuffer(Uint8Array)
-
-WebSocket方法
-    send()
-        onopen之后,onclose之前.  当连接不可用时,抛出一个有关无效连接状态的异常.
-    close()
-        终止连接, 可选参数: code(数字型状态码), reason(文本字符串)
-
-WebSocket对象特性 
-    readyState
-        0: WebSocket.CONNECTING
-        1: WebSocket.OPEN
-        2: WebSocket.CLOSING
-        3: WebSocket.CLOSED
-    bufferedAmount
-        检查已进入队列,但尚未发送到服务器的字节数,不包括协议组帧开销或操作系统,网络硬件所进行的缓冲.
-        可以限制应用向服务器发送的速率,避免网络饱和.
-        关闭连接前也可以检查,看是否还有数据没有发送到服务器.
-    protocol
-        服务器选择的协议名,在握手完成之前为空.
-
-WebSocket初始握手
-    客户端:
-        GET /echo /HTTP/1.1
-        Host: echo.websocket.org
-        Origin: http://www.websocket.org
-        Sec-WebSocket-Key: ah43rfdidajureqf
-        Sec-WebSocket-Version: 13
-        Upgrade: websocket
-    服务器:
-        101 Switching Protocols
-        Connection: Upgrade
-        Date: Wed, 20 Jun 2012 03:23:13 GMT
-        Sec-WebSocket-Accepct: da+fdlfskjoewi
-        Server: Kaazing Gateway
-        Upgrade: WebSocket
-
-    计算响应键值
-        WebSocket服务器响应一个计算出来的键值,从客户端发送的Sec-WebSocket-Key首标中
-        取得键值,在Sec-WebSocket-Accepct首标中返回根据客户端预期计算的键值.
-
-消息格式
-</code></pre><p>消息和帧</p>
-<ol start="26">
-<li><p>Spring对WebSocket的支持<br>26.1 介绍<br>26.2 服务端的Spring WebSocket API</p>
-<pre><code>WebSocketHandler接口: WebSocket消息和生命周期事件处理器.
-    void afterConnectionEstablished(WebSocketSession session) throws Exception;
-        在WebSocket协定成功并且连接建立准备好使用时执行
-    void handleMessage(WebSocketSession session, WebSocketMessage&lt;?&gt; message) throws Exception;
-        在新消息到达时执行
-    void handleTransportError(WebSocketSession session, Throwable exception) throws Exception;
-        处理WebSocket消息传输下层错误  
-    void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception;            
-        连接关闭或者发生传输错误时执行.
-    boolean supportsPartialMessages();
-        WebSocketHandler是否处理部分消息.
-
-AbstractWebSocketHandler抽象类: 重写了handleMessage()方法,将三种message分配给三个新建的处理方法.
-                               重写了supportsPartialMessages()方法, 直接返回false
-                               其它的都是空实现.
-
-BinaryWebSocketHandler和TextWebSocketHandler:
-    继承自AbstractWebSocketHandler, 重写对方的消息处理方法, 关闭会话.                             
-
-WebSocketSession接口: WebSocket会话抽象,允许在WebSocket连接之上发送消息然后关闭它.
-    String getId();                          返回会话的独特标识符
-    URI getUri();                            返回建立WebSocket连接的URI
-    HttpHeaders getHandshakeHeaders();       返回握手请求中使用的Headers
-    Map&lt;String, Object&gt; getAttributes();     返回WebSocket会话属性
-    Principal getPrincipal();                返回包含已认证用户的姓名的Principal实例,如果用户未认证,返回null.
-    InetSocketAddress getLocalAddress();     返回请求被接受的地址
-    InetSocketAddress getRemoteAddress();    返回远程客户端的地址
-    String getAcceptedProtocol();            返回协定的子协议
-    void setTextMessageSizeLimit(int messageSizeLimit); 配置接收文本消息的最大值
-    int getTextMessageSizeLimit();           获取已配置的接收文本消息的最大值
-    void setBinaryMessageSizeLimit(int messageSizeLimit); 配置接收二进制消息的最大值
-    int getBinaryMessageSizeLimit();         获取已配置的接收二进制消息的最大值
-    List&lt;WebSocketExtension&gt; getExtensions(); 确定协定的拓展
-    void sendMessage(WebSocketMessage&lt;?&gt; message) throws IOException; 发送WebSocket消息.
-    boolean isOpen();                         返回连接是否依然开放
-    void close() throws IOException;          以1000的状态码关闭WebSocket连接(CloseStatus.NORMAL)
-    void close(CloseStatus status) throws IOException; 以给定的的状态码关闭WebSocket连接
-
-WebSocketMessage&lt;T&gt;接口: 可以在WebSocket连接上处理和发送的消息
-    T getPayload();             返回消息的负载
-    int getPayloadLength();     返回消息字节数
-    boolean isLast();           如果当前消息是客户端发送的完整的WebSocket消息的最后一部分,返回true.
-                                如果部分消息支持不可用或者未开启,返回false
-
-WebSocketConfigurer接口: 定义回调方法来配置WebSocket的请求处理.
-    void registerWebSocketHandlers(WebSocketHandlerRegistry registry);
-        注册WebSocketHandler
-
-WebSocketHandlerRegistry接口: 提供配置WebSocketHandler请求映射的方法.
-    WebSocketHandlerRegistration addHandler(WebSocketHandler webSocketHandler, String... paths);
-        在指定的URL路径上配置WebSocketHandler
-
-WebSocketHandlerRegistration接口: 提供配置WebSocket Handler的方法.
-    WebSocketHandlerRegistration addHandler(WebSocketHandler handler, String... paths);
-        添加共享相同配置(interceptors,SockJS,config)的handler.
-    WebSocketHandlerRegistration setHandshakeHandler(HandshakeHandler handshakeHandler);
-        配置HandshakeHandler
-    WebSocketHandlerRegistration addInterceptors(HandshakeInterceptor... interceptors);
-        配置握手请求的拦截器
-    WebSocketHandlerRegistration setAllowedOrigins(String... origins);
-        配置被允许的header值
-    SockJsServiceRegistration withSockJS();
-        开启SockJS fallback选项
-</code></pre><p>26.4 STOMP协议的介绍,配置,常用注解,测试</p>
-<pre><code>WebSocket子协议,定义可以发送的消息类型,格式和内容.面向文本的协议,但是消息负载可以是文本也可以是二进制.
-基于帧的协议,帧结构:
-    COMMAND
-    header1:value1
-    header2:value2
-
-    Body^@
-客户端可以使用SEND或者SUBSCRIBE命令来发送或者订阅消息,同时使用destination的header来描述消息的相关信息和
-接收地址.
-</code></pre></li>
-</ol>
-<pre><code>        Message&lt;T&gt;接口: 有headers和body的通用消息表示.
-            T getPayload();                 返回消息负载
-            MessageHeaders getHeaders();    返回消息headers
-        MessageSendingOperations接口: 发送消息到目标的操作.
-            void send(Message&lt;?&gt; message) throws MessagingException;
-                发送消息到默认目标
-            void send(D destination, Message&lt;?&gt; message) throws MessagingException;
-                发送消息到给定目标
-            void convertAndSend(Object payload) throws MessagingException;
-                转换后发送
-
-        常用注解:
-            @EnableWebSocketMessageBroker: 在WebSocket之上使用高级的消息子协议开启broker-backed消息
-            @MessageMapping: 映射Message到消息处理方法上.
-            @SendTo
-
-        常用接口和类:
-            WebSocketMessageBrokerConfigurer接口: 定义在WebSocket客户端使用STOMP消息处理的方法.
-                default void registerStompEndpoints(StompEndpointRegistry registry) {}
-                    注册STOMP端点到指定的URL
-
-            StompEndpointRegistry接口: 在WebSocket端点之上注册STOMP
-            StompWebSocketEndpointRegistration接口: 在WebSocket端点之上配置STOMP
-            SimpMessagingTemplate类: STOMP消息发送器
-
-STOMP
-    SEND帧:
-        SEND
-            destination:/queue/trade
-            content-type:application/json
-            content-length:44
-
-            {&quot;action&quot;:&quot;BUY&quot;,&quot;ticker&quot;:&quot;MMM&quot;,&quot;shares&quot;,44}^@
-</code></pre>
       
 
       
@@ -333,7 +169,7 @@ STOMP
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/WebSocket/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/shadowsocks/">展开全文 >></a>
         </p>
       
 
@@ -363,91 +199,174 @@ STOMP
 
 
   
-    <article id="post-volatile&amp;synchronized&amp;Reentrantlock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-网络协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/30/网络协议/">网络协议</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/30/网络协议/" class="archive-article-date">
+  	<time datetime="2019-07-30T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-30</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>5.volatile<br>    缓存一致性协议: 保证了每个缓存中使用的共享变量的副本是一致的<br>        当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，<br>        会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，<br>        发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。</p>
-<pre><code>JMM: 并发编程的三个问题
-    原子性问题
-        一个操作或者多个操作,要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。
-    可见性问题
-        当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。
-    有序性问题
-        指令重排序不会影响单个线程的执行，但是会影响到线程并发执行的正确性。
+        <p>网络协议<br>    TCP/IP协议簇: TCP,IP,UDP,ICMP,RIP,TELNET,FTP,SMTP,ARP,TFTP<br>    OSI模型: 应用层-&gt;表示层-&gt;会话层-&gt;传输层-&gt;网络层-&gt;数据链路层-&gt;物理层<br>    TCP/IP模型: 应用层-&gt;传输层-&gt;网络层-&gt;网络接口层</p>
+<pre><code>http协议
+HTTP请求由状态行、请求头、请求正文三部分组成：
+    状态行：包括请求方式Method、资源路径URL、协议版本Version；
+    请求头：包括一些访问的域名、用户代理、Cookie等信息；
+    请求正文：就是HTTP请求的数据。
 
-Java对这三个问题的解决方案
-    原子性
-        Java内存模型只保证了基本读取和赋值是原子性操作,如果要实现更大范围操作的原子性，可以通过synchronized和Lock来实现
-
-    可见性
-        Java提供了volatile关键字来保证可见性.当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主存，
-        当有其他线程需要读取时，它会去内存中读取新值。
-
-        而普通的共享变量不能保证可见性，因为普通共享变量被修改之后，什么时候被写入主存是不确定的，
-        当其他线程去读取时，此时内存中可能还是原来的旧值，因此无法保证可见性。
-
-        通过synchronized和Lock也能够保证可见性，synchronized和Lock能保证同一时刻只有一个线程获取锁然后执行同步代码，
-        并且在释放锁之前会将对变量的修改刷新到主存当中。因此可以保证可见性。
-
-    有序性
-        通过volatile关键字来保证一定的“有序性”.  可以通过synchronized和Lock来保证有序性
-
-        Java内存模型具备一些先天的“有序性”，即不需要通过任何手段就能够得到保证的有序性，这个通常也称为 happens-before 原则
-            程序次序规则：一个线程内，按照代码顺序，书写在前面的操作先行发生于书写在后面的操作
-            锁定规则：一个unLock操作先行发生于后面对同一个锁lock操作
-            volatile变量规则：对一个变量的写操作先行发生于后面对这个变量的读操作
-            传递规则：如果操作A先行发生于操作B，而操作B又先行发生于操作C，则可以得出操作A先行发生于操作C
-            线程启动规则：Thread对象的start()方法先行发生于此线程的每个一个动作
-            线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生
-            线程终结规则：线程中所有的操作都先行发生于线程的终止检测，我们可以通过Thread.join()方法结束、Thread.isAlive()的返回值手段检测到线程已经终止执行
-            对象终结规则：一个对象的初始化完成先行发生于他的finalize()方法的开始
-
-volatile关键字的两层语义
-    保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。
-    禁止进行指令重排序。
-    (不保证原子性)
-
-        当程序执行到volatile变量的读操作或者写操作时，在其前面的操作的更改肯定全部已经进行，
-        且结果已经对后面的操作可见；在其后面的操作肯定还没有进行；
-
-        在进行指令优化时，不能将在对volatile变量访问的语句放在其后面执行，
-        也不能把volatile变量后面的语句放到其前面执行。
-
-volatile的原理和实现机制
-    加入volatile关键字时，会多出一个lock前缀指令
-    lock前缀指令实际上相当于一个内存屏障（也成内存栅栏），内存屏障会提供3个功能：
-    　　1）它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；
-    　　2）它会强制将对缓存的修改操作立即写入主存；
-    　　3）如果是写操作，它会导致其他CPU中对应的缓存行无效。
-
-使用volatile关键字的场景
-    对变量的写操作不依赖于当前值     该变量没有包含在具有其他变量的不变式中
-        可以被写入 volatile 变量的这些有效值独立于任何程序的状态，包括变量的当前状态。
+HTTP响应由三部分组成：状态行、响应头、响应正文；
+    状态行：包括协议版本Version、状态码Status Code、回应短语；
+    响应头：包括搭建服务器的软件，发送响应的时间，回应数据的格式等信息；
+    响应正文：就是响应的具体数据。
 
 
+常见状态码的含义
+    200---OK/请求已经正常处理完毕
+    301---/请求永久重定向
+    302---/请求临时重定向
+    304---/请求被重定向到客户端本地缓存
+    400---/客户端请求存在语法错误
+    401---/客户端请求没有经过授权
+    403---/客户端的请求被服务器拒绝，一般为客户端没有访问权限
+    404---/客户端请求的URL在服务端不存在
+    500---/服务端永久错误
+    503---/服务端发生临时错误
+</code></pre><p>14.http和https<br>    HTTP协议以明文方式发送内容，不提供任何方式的数据加密，如果攻击者截取了Web浏览器和网站服务器之间的传输报文，<br>    就可以直接读懂其中的信息，因此，HTTP协议不适合传输一些敏感信息，比如：信用卡号、密码等支付信息。</p>
+<pre><code>安全套接字层超文本传输协议HTTPS，为了数据传输的安全，HTTPS在HTTP的基础上加入了SSL协议，SSL依靠证书来验证服务器的身份，
+并为浏览器和服务器之间的通信加密。
+HTTPS协议的主要作用可以分为两种：一种是建立一个信息安全通道，来保证数据传输的安全；另一种就是确认网站的真实性。
+SSL Secure Sockets Layer
 
-synchronized和reentrantlock异同
+HTTPS和HTTP的区别主要如下：
+　　1、https协议需要到ca申请证书，一般免费证书较少，因而需要一定费用。
+　　2、http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议。
+　　3、http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。
+　　4、http的连接很简单，是无状态的；HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。
 
-    相同点
-        都实现了多线程同步和内存可见性语义
-        都是可重入锁
-    不同点
-        实现机制不同 
-            synchronized通过java对象头锁标记和Monitor对象实现 
-            synchronized依赖jvm内存模型保证包含共享变量的多线程内存可见性
+客户端在使用HTTPS方式与Web服务器通信时有以下几个步骤
+　　（1）客户使用https的URL访问Web服务器，要求与Web服务器建立SSL连接。
+　　（2）Web服务器收到客户端请求后，会将网站的证书信息（证书中包含公钥）传送一份给客户端。
+　　（3）客户端的浏览器与Web服务器开始协商SSL连接的安全等级，也就是信息加密的等级。
+　　（4）客户端的浏览器根据双方同意的安全等级，建立会话密钥，然后利用网站的公钥将会话密钥加密，并传送给网站。
+　　（5）Web服务器利用自己的私钥解密出会话密钥。
+　　（6）Web服务器利用会话密钥加密与客户端之间的通信。
+</code></pre><p>TCP与UDP<br>    UDP<br>        User Datagram Protocol,用户数据报协议.<br>        主要作用：将网络数据压缩成数据包的形式。<br>        数据包：一个二进制数据的传输单位</p>
+<pre><code>    在发送端，UDP传送数据的速度仅仅是受应用程序生成数据的速度、计算机的能力和传输带宽的限制；
+    在接收端，UDP把每个消息段放在队列中，应用程序每次从队列中读一个消息段。
 
-            reentrantlock通过CAS、ASQ（AbstractQueuedSynchronizer）和locksupport（用于阻塞和解除阻塞）实现 
-            reentrantlock通过ASQ的volatile state保证包含共享变量的多线程内存可见性
+    优势：速度快(减少了TCP协议中提供数据包分组、组装和排序的过程需要的时间消耗)
+          较安全(被攻击者利用的漏洞就要少一些)
+    劣势: 无法得知其是否安全，完整到达
+    应用: DNS、TFTP、SNMP,在生活中音频、视频和普通数据都可以采用UDP协议来进行数据传输，比如腾讯QQ这些社交软件也多采用UDP。
 
-        使用方式不同 
-            synchronized可以修饰实例方法（锁住实例对象）、静态方法（锁住类对象）、代码块（显式指定锁对象）
-            reentrantlock显式调用trylock()/lock()方法，需要在finally块中释放锁
+TCP 
+    Transmission Control Protocol 传输控制协议
+    主要作用：把数据流分割成适当长度的报文段
+    优势：可靠性好
+        1.当TCP发出一个段后，它启动一个定时器，等待目的端确认收到这个报文段。如果不能及时收到一个确认，
+        将重发这个报文段。当TCP收到发自TCP连接另一端的数据，它将发送一个确认。TCP有延迟确认的功能，在此功能没有打开，
+        则是立即确认。功能打开，则由定时器触发确认时间点。
+        2.TCP将保持它首部和数据的检验和。这是一个端到端的检验和，目的是检测数据在传输过程中的任何变化。
+        如果收到段的检验和有差错，TCP将丢弃这个报文段和不确认收到此报文段（希望发端超时并重发）
+        3.既然TCP报文段作为IP数据报来传输，而IP数据报的到达可能会失序，因此TCP报文段的到达也可能会失序。
+        如果必要，TCP将对收到的数据进行重新排序，将收到的数据以正确的顺序交给应用层。
+        4.TCP的接收端必须丢弃重复的数据
+        5.量控制。TCP连接的每一方都有固定大小的缓冲空间。TCP的接收端只允许另一端发送接收端缓冲区所能接纳的数据。
+        这将防止较快主机致使较慢主机的缓冲区溢出。
 
-        功能丰富程度不同 
-            reentrantlock提供有限时间等候锁（设置过期时间）、可中断锁（lockInterruptibly）、condition（提供await、signal等方法）等丰富语义 
-            reentrantlock提供公平锁和非公平锁实现 synchronized不可设置等待时间、不可被中断（interrupted）            
+    劣势：速度慢，占用系统资源高，易被攻击
+
+    应用 HTTP、HTTPS、FTP等传输文件的协议，POP、SMTP等邮件传输的协议
+        浏览器，用的HTTP FlashFXP，用的FTP Outlook，用的POP、SMTP Putty，用的Telnet、SSH QQ文件传输 
+
+    三次握手(SYN=1表示请求连接)
+        Client      Server
+        1.   -------&gt; SYN=1 seq=J
+        2.   SYN=1,ACK=1,ack=J+1,seq=K  &lt;------                通过ack=J+1，Client知道Server是支持TCP的，且理解了自己要建立TCP连接的意图
+        3.  -------&gt;ACK=1,ack=K+1                              通过ack=K+1，Server知道Client是支持TCP的，且确实是要建立TCP连接
+
+        建立可靠的通信信道,双方确认自己与对方的发送与接收机能正常,确认双方都支持TCP，告知对方用TCP传输。
+
+                第一次握手：Client什么都不能确认；Server确认了对方发送正常
+                第二次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己接收正常，对方发送正常
+                第三次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己发送、接收正常，对方发送接收正常
+
+    四次挥手
+        Client      Server
+        1.  -----&gt;FIN M
+        2. ack M+1 &lt;---------
+        3.FIN N   &lt;--------
+        4.-------&gt;ACK=1 ack=K+1
+
+        一方发送FIN只表示自己发完了所有要发的数据，但还允许对方继续把没发完的数据发过来。
+
+    拥塞控制
+        拥塞控制是一个全局性的过程, 流量控制是点对点通信量的控制
+        拥塞原因
+            网络能够提供的资源不足以满足用户的需求，这些资源包括缓存空间、链路带宽容量和中间节点的处理能力。
+
+        流量控制
+            滑动窗口
+            接受方管理发送方发送数据的方式，用来防止接受方可用的数据缓存空间的溢出
+
+        重传
+        1、一旦收到确认，发送方关闭重发定时器并且将数据片的备份从重发队列中删除。发送方如果在规定的时间内没有收到数据确认，就重传该数据。
+        2、当TCP超时并重传时，它不一定要重传同样的报文段，相反，TCP允许进行重新分组而发送一个较大的报文段，这将有助于提高性能(当然，这个较大的报文段不能够超过接收方声明的MSS)。在协议中这是允许的，因为TCP是使用字节序号而不是报文段序号来进行识别它所要发送的数据和进行确认。
+        3、重发定时器
+        (1)  每一次一个包含数据的包被发送（包括重发），如果该定时器没有运行则启动它，使得它在RTO秒之后超时（按照当前的RTO值）。
+        (2)  当所有的发出数据都被确认之后，关闭该重发定时器。
+        (3)  当接收到一个ACK确认一个新的数据，重新启动该重发定时器，使得它在RTO秒之后超时（按照当前的RTO值）
+
+        核心算法
+            慢启动
+                先探测一下网络的拥塞程度，也就是由小到大逐渐增加拥塞窗口的大小 
+            拥塞避免
+                拥塞窗口缓慢增长，即每经过一个往返时间RTT就把发送方的拥塞窗口cwnd加1，而不是加倍，这样拥塞窗口按线性规律缓慢增长
+
+            无论是在慢开始阶段还是在拥塞避免阶段，只要发送方判断网络拥塞（没有收到确认，虽然没有收到确认可能是其他原因的分组丢失，
+            但是因为无法判定，所以都当作拥塞来处理），就把慢开始门限设置为出现拥塞时的发送窗口大小的一半，然后把拥塞窗口设置为1，执行慢开始算法 
+
+
+            快速重传
+                要求接收方在收到一个失序的报文端就立即发出重复确认（为的是使发送及早知道有报文段没有到达对方）
+                而不要等到自己发送数据时捎带确认
+
+                TCP协议保证数据可靠性的一个重要机制，其原理是在发送一个数据以后就开启一个计时器， 
+                在一定时间内如果没有得到发送数据报的ACK报文，那么就重新发送数据，直到发送成功为止。
+                一般来说，重传发生在超时之后，但是如果发送端接收到3个以上 
+                的重复ACK，就应该意识到，数据丢了，需要重新传递。这个机制不需要等到重传定时器溢出，所以叫做快重传
+
+            快速恢复
+                快速重传以后，因为走的不是慢启动而是拥塞避免算法，所以叫快速恢复算法 
+</code></pre><p>10.IP地址分类<br>    A: 0.0.0.0-127.255.255，其中段0和127不可用<br>         第一个字节为网络号，后三个字节为主机号。该类IP地址的最前面为“0”，所以地址的网络号取值于1~126之间。<br>     一般用于大型网络。<br>    B: 128.0.0.0-191.255.255.255<br>        前两个字节为网络号，后两个字节为主机号。该类IP地址的最前面为“10”，所以地址的网络号取值于128~191之间。<br>     一般用于中等规模网络。<br>    C: 192.0.0.0-223.255.255.255<br>             前三个字节为网络号，最后一个字节为主机号。该类IP地址的最前面为“110”，所以地址的网络号取值于192~223之间。<br>     一般用于小型网络。<br>    D: 224.0.0.0-239.255.255.255<br>        是多播地址。该类IP地址的最前面为“1110”，所以地址的网络号取值于224~239之间。一般用于多路广播用户<br>    E: 240.0.0.0-255.255.255.255，其中段255不可用<br>        是保留地址。该类IP地址的最前面为“1111”，所以地址的网络号取值于240~255之间。</p>
+<pre><code>   IP地址由四段组成，每个字段是一个字节，8位，最大值是255
+
+   IP地址对应于OSI参考模型的第三层网络层，工作在网络层的路由器根据目标IP和源IP来判断是否属于同一网段，如果是不同网段，则转发数据包。
+
+MAC地址
+    （Media Access Control，介质访问控制）地址，或称为物理地址，也叫硬件地址，用来定义网络设备的位置
+        MAC地址采用十六进制数表示，长度是6个字节（48位），分为前24位和后24位。
+
+        MAC地址对应于OSI参考模型的第二层数据链路层，工作在数据链路层的交换机维护着计算机MAC地址和自身端口的数据库，
+        交换机根据收到的数据帧中的“目的MAC地址”字段来转发数据帧。    
+
+
+    在数据通信时，IP地址专注于网络层，网络层设备（如路由器）根据IP地址，将数据包从一个网络传递转发到另外一个网络上；
+    而MAC地址专注于数据链路层，数据链路层设备（如交换机）根据MAC地址，将一个数据帧从一个节点传送到相同链路的另一个节点上。
+    IP和MAC地址这种映射关系由ARP（Address Resolution Protocol，地址解析协议）协议完成，ARP根据目的IP地址，找到中间节点的MAC地址，
+    通过中间节点传送，从而最终到达目的网络。
 </code></pre>
       
 
@@ -457,10 +376,21 @@ synchronized和reentrantlock异同
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/volatile&synchronized&Reentrantlock/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/07/30/网络协议/">展开全文 >></a>
         </p>
       
 
@@ -490,26 +420,58 @@ synchronized和reentrantlock异同
 
 
   
-    <article id="post-TCP粘包和拆包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java数据结构All in One" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/08/Java数据结构All in One/">Java数据结构</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/08/Java数据结构All in One/" class="archive-article-date">
+  	<time datetime="2019-07-08T03:43:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-08</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>TCP是没有界限的一串数据，它会根据TCP缓冲区的实际情况进行包的划分。<br>一个完整的包会被TCP拆分为多个包进行发送，多个小包也可能会被封装为一个<br>大的数据包发送， 这就是TCP粘包和拆包问题。</p>
-<p>发生的原因：<br>    1.应用程序write写入的字节大小大于套接口发送缓冲区大小。<br>    2.进行MSS大小的TCP分段<br>    3.以太网帧的payload大于MTU进行IP分片</p>
-<p>底层无法保证数据包不被拆分，只能通过上层应用协议栈设计来解决。<br>    解决方案：<br>        1.消息定长，如每个报文固定大小为200字节，不够的话空位补空格<br>        2.在包尾增加回车换行符进行分割，如FTP协议<br>        3.将消息分为消息头和消息体，消息头中包含表示消息总长度的字段。<br>            通常为消息头的第一个字段使用int32来表示消息的总长度。</p>
-<p>Netty解决TCP粘包问题<br>    LineBasedFrameDecoder:<br>        依次遍历ByteBuf中的可读字节，判断是否有\n或\r\n，如果有，就以此为结束标志，<br>        从可读索引到结束位置区间的字节就组成了一行。<br>        它是以换行符为结束标志的解码器，支持携带结束符或者不携带结束符两种解码方式，<br>        同时支持配置单行的最大长度。如果连续读到最大长度后仍然没有发现换行符，就会抛出<br>        异常，同时忽略之前读到的异常码流。</p>
-<pre><code>StringDecoder:
-    将接收到的对象转换成字符串，然后继续调用后面的Handler。
+        <p>ArrayList<br>    DEFAULT_CAPACITY<br>        默认容量: 10<br>    EMPTY_ELEMENTDATA<br>        共享空数组实例<br>    DEFAULTCAPACITY_EMPTY_ELEMENTDATA<br>        使用默认大小的空实例的共享空数组实例.<br>    elementData<br>        ArrayList的容量就是这个数组缓存的长度.<br>        任何elementData是DEFAULTCAPACITY_EMPTY_ELEMENTDATA的空ArrayList在第一个<br>        元素被添加时会被扩展到EMPTY_ELEMENTDATA.</p>
+<pre><code>modCount
+    这个列表被增加和删除的次数.
 
+size
+    ArrayList包含元素的个数
 
-LineBasedFrameDecoder + StringDecoder组合就是按行切换的文本解码器。
+trimToSize()
+    把列表的容量改为列表的当前大小.
+</code></pre><p>LinkedList</p>
+<p>HashMap</p>
+<p>HashSet</p>
+<p>TreeMap</p>
+<p>TreeSet</p>
+<p>HashTable<br>    使用synchronized保证线程安全.效率低下</p>
+<pre><code>get
 
-指定分隔符：
-DelimiterBasedFrameDecoder + StringDecoder
-定长：
-FixedLengthFrameDecoder + StringDecoder
-</code></pre>
+put
+
+remove
+</code></pre><p>LinkedBlockingQueue</p>
+<p>二叉查找树<br>    节点数据大于左子树所有数据, 小于右子树所有数据.</p>
+<pre><code>二分搜索, 链式结构, 项的插入和删除不必移动其他项.
+
+搜索:
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">search</span><span class="params">(T key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> recursiveSearch(tree, key).data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">BinaryTree&lt;T&gt; <span class="title">recursiveSearch</span><span class="params">(BinaryTree&lt;T&gt; root, T key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">int</span> c = key.compareTo(root.data);</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="keyword">if</span> (c &lt; <span class="number">0</span>) <span class="keyword">return</span> recursiveSearch(root.left, key);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> recursiveSearch(root.right, key); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>插入(非递归):
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(T item)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree.isEmpty()) &#123;</span><br><span class="line">        tree.makeRoot(data);</span><br><span class="line">        size++;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BinaryTree&lt;T&gt; root = tree;</span><br><span class="line">    <span class="keyword">boolean</span> done = <span class="keyword">false</span>;</span><br><span class="line">    BinaryTree&lt;T&gt; newNode = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span>(!done) &#123;</span><br><span class="line">        <span class="keyword">int</span> c = item.compareTo(root.data);</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> OrderViolationException();</span><br><span class="line">        <span class="keyword">if</span> (c &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (root.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">                newNode = <span class="keyword">new</span> BinaryTree&lt;T&gt;();</span><br><span class="line">                root.left = newNode;</span><br><span class="line">                done = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                root = root.left;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (root.right == <span class="keyword">null</span>) &#123;</span><br><span class="line">                newNode = <span class="keyword">new</span> BinaryTree&lt;T&gt;();</span><br><span class="line">                root.right = newNode;</span><br><span class="line">                done = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                root = root.right;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    newNode.data = item;</span><br><span class="line">    newNode.parent = root;</span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>删除:
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BinaryTree&lt;T&gt; <span class="title">findPredecessor</span><span class="params">(BinaryTree&lt;T&gt; node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AVL树<br>    高度平衡的二叉查找树, 保证最坏情况搜索,插入和删除运行时间为O(log n)</p>
+
       
 
       
@@ -521,7 +483,7 @@ FixedLengthFrameDecoder + StringDecoder
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/TCP粘包和拆包/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/07/08/Java数据结构All in One/">展开全文 >></a>
         </p>
       
 
@@ -551,12 +513,20 @@ FixedLengthFrameDecoder + StringDecoder
 
 
   
-    <article id="post-TCP&amp;UDP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spring Cloud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>Spring Cloud<br>    Spring Cloud Config<br>        配置管理工具包<br>    Spring Cloud Netflix<br>        包含Netflix OSS的基础组件:<br>            Eureka: 云端服务管理,基于REST<br>            Hystrix: 断路器,容错机制,降级机制<br>            Zuul: 动态路由,监控,安全,过滤<br>            Ribbon: 云端负载均衡<br>            Feign: REST客户端</p>
+<p>Ribbon<br>    负载均衡器:<br>        功能:<br>            维护服务器的IP,DNS名称等<br>            根据特定的逻辑在服务器列表中循环<br>        子模块:<br>            Rule: 逻辑组件,决定从服务器列表中返回哪个服务器实例.<br>                默认使用RoundRobinRule,轮询服务器列表.<br>                AvailabilityFilteringRule: 忽略无法连接的服务器,忽略并发数过高的服务器.<br>                WeightedResponseTimeRule: 根据服务器的响应时间,设置权重值.<br>                ZoneAvoidanceRule: 根据区域(机架,机房),可用服务器为基础选择服务器.<br>                BestAvailableRule: 忽略短路的服务器,选择并发数较低的服务器.<br>                RandomRule: 随机选.<br>                RetryRule: 如果使用RoundRobinRule选择的服务器无法连接,重新选择服务器.</p>
+<pre><code>Ping: 使用定时器来确保服务器网络可以连接.每隔一段时间Ping服务器,判断是否存活.
+
+
+ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,也可以
+            动态指定,通过动态指定时会有后台的线程来刷新该列表.
+</code></pre><p>Feign   调用REST服务<br>    使用JDK的动态代理,生成的代理类将请求的信息封装,交给feign.Client接口发送请求,该接口的默认实现类<br>    最终使用java.net.HttpURLConnection来发送HTTP请求.</p>
+
       
 
       
@@ -568,7 +538,7 @@ FixedLengthFrameDecoder + StringDecoder
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/TCP&UDP/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/30/Spring Cloud/">展开全文 >></a>
         </p>
       
 

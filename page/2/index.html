@@ -56,9 +56,9 @@
 		<nav class="header-menu">
 			<ul>
 			
-				<li><a href="/">击空明兮溯流光</a></li>
+				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/categories">目录</a></li>
+				<li><a href="/categories">分类</a></li>
 	        
 			</ul>
 		</nav>
@@ -132,9 +132,9 @@
 				<ul style="width: 50%">
 				
 				
-					<li style="width: 50%"><a href="/">击空明兮溯流光</a></li>
+					<li style="width: 50%"><a href="/">主页</a></li>
 		        
-					<li style="width: 50%"><a href="/categories">目录</a></li>
+					<li style="width: 50%"><a href="/categories">分类</a></li>
 		        
 				</ul>
 			</nav>
@@ -151,128 +151,176 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-加密算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-WebSocket" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>对称加密算法: DES AES<br>非对称加密算法: RSA(数字签名,身份认证)</p>
-<p>分组密码: 加密时将明文分成固定长度的组(网络加密)<br>流密码: 又称序列密码, 每次加密一位或者一个字节的明文. RC4</p>
-<p>Base64算法: 解决电子邮件只能传输ASCII码字符问题</p>
+        <p>相关技术<br>    向客户端广播或者推送消息: Server-Sent Event(SSE),提供自动重连,事件ID等功能.<br>    扩充HTTP的网络协议: SPDY, 压缩HTTP首标,多路复用,工作管道.<br>    Web实时通信: Web Real-Time Communication(WebRTC)浏览器之间实时通信,实时语音和视频聊天.</p>
+<p>WebSocket<br>    事件驱动,异步编程,支持二进制数据和文本数据.    </p>
+<pre><code>构造函数: URL和protocols
+    URL可以是ws或wss, 分别用于非加密和加密流量.wss使用SSL,就是HTTPS的安全机制来保证.
+    protocols可以是XMPP,SOAP,自定义协议等.客户端定义通信协议,服务器选择一种.
 
-      
+    客户发送带有协议名称的Sec-WebSocket-Protocol首标,服务器响应一个带有和客户请求相同的
+    协议名称的Sec-WebSockt-Protocol首标.
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
+WebSocket事件:
+    open, message, error, close
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/加密算法/">展开全文 >></a>
-        </p>
-      
+二进制数据类型: ws.binaryType: Blob(多媒体文件,图像,视频,音频), ArrayBuffer(Uint8Array)
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+WebSocket方法
+    send()
+        onopen之后,onclose之前.  当连接不可用时,抛出一个有关无效连接状态的异常.
+    close()
+        终止连接, 可选参数: code(数字型状态码), reason(文本字符串)
 
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+WebSocket对象特性 
+    readyState
+        0: WebSocket.CONNECTING
+        1: WebSocket.OPEN
+        2: WebSocket.CLOSING
+        3: WebSocket.CLOSED
+    bufferedAmount
+        检查已进入队列,但尚未发送到服务器的字节数,不包括协议组帧开销或操作系统,网络硬件所进行的缓冲.
+        可以限制应用向服务器发送的速率,避免网络饱和.
+        关闭连接前也可以检查,看是否还有数据没有发送到服务器.
+    protocol
+        服务器选择的协议名,在握手完成之前为空.
 
+WebSocket初始握手
+    客户端:
+        GET /echo /HTTP/1.1
+        Host: echo.websocket.org
+        Origin: http://www.websocket.org
+        Sec-WebSocket-Key: ah43rfdidajureqf
+        Sec-WebSocket-Version: 13
+        Upgrade: websocket
+    服务器:
+        101 Switching Protocols
+        Connection: Upgrade
+        Date: Wed, 20 Jun 2012 03:23:13 GMT
+        Sec-WebSocket-Accepct: da+fdlfskjoewi
+        Server: Kaazing Gateway
+        Upgrade: WebSocket
 
+    计算响应键值
+        WebSocket服务器响应一个计算出来的键值,从客户端发送的Sec-WebSocket-Key首标中
+        取得键值,在Sec-WebSocket-Accepct首标中返回根据客户端预期计算的键值.
 
+消息格式
+</code></pre><p>消息和帧</p>
+<ol start="26">
+<li><p>Spring对WebSocket的支持<br>26.1 介绍<br>26.2 服务端的Spring WebSocket API</p>
+<pre><code>WebSocketHandler接口: WebSocket消息和生命周期事件处理器.
+    void afterConnectionEstablished(WebSocketSession session) throws Exception;
+        在WebSocket协定成功并且连接建立准备好使用时执行
+    void handleMessage(WebSocketSession session, WebSocketMessage&lt;?&gt; message) throws Exception;
+        在新消息到达时执行
+    void handleTransportError(WebSocketSession session, Throwable exception) throws Exception;
+        处理WebSocket消息传输下层错误  
+    void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception;            
+        连接关闭或者发生传输错误时执行.
+    boolean supportsPartialMessages();
+        WebSocketHandler是否处理部分消息.
 
-  
-    <article id="post-红黑树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>自平衡二叉查找树, 应用: TreeSet, TreeMap, HashMap</p>
-<p>每个节点比左子节点大, 比右子节点小.</p>
-<p>规则:<br>    根节点是黑色, 每个叶子节点都是黑色的空节点(NIL节点),<br>    每个红字节点的两个子节点都是黑色.<br>    从任一节点到其每个叶子所有路径都包含相同数目的黑色节点.</p>
-<p>保证了: 红黑树从根节点到叶子节点的最长路径不会超过最短路径的2倍.</p>
-<p>插入或删除节点时要做调整: 变色和旋转</p>
-<p>条件: 节点P的两个左右孩子N,S. N为黑(N可能为Nil), 由于N子树某节点被删除,黑高减少了1.</p>
-<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">blacken</span> <span class="type">Nil</span> = <span class="type">Nil</span></span><br></pre></td></tr></table></figure>
-      
+AbstractWebSocketHandler抽象类: 重写了handleMessage()方法,将三种message分配给三个新建的处理方法.
+                               重写了supportsPartialMessages()方法, 直接返回false
+                               其它的都是空实现.
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
+BinaryWebSocketHandler和TextWebSocketHandler:
+    继承自AbstractWebSocketHandler, 重写对方的消息处理方法, 关闭会话.                             
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/红黑树/">展开全文 >></a>
-        </p>
-      
+WebSocketSession接口: WebSocket会话抽象,允许在WebSocket连接之上发送消息然后关闭它.
+    String getId();                          返回会话的独特标识符
+    URI getUri();                            返回建立WebSocket连接的URI
+    HttpHeaders getHandshakeHeaders();       返回握手请求中使用的Headers
+    Map&lt;String, Object&gt; getAttributes();     返回WebSocket会话属性
+    Principal getPrincipal();                返回包含已认证用户的姓名的Principal实例,如果用户未认证,返回null.
+    InetSocketAddress getLocalAddress();     返回请求被接受的地址
+    InetSocketAddress getRemoteAddress();    返回远程客户端的地址
+    String getAcceptedProtocol();            返回协定的子协议
+    void setTextMessageSizeLimit(int messageSizeLimit); 配置接收文本消息的最大值
+    int getTextMessageSizeLimit();           获取已配置的接收文本消息的最大值
+    void setBinaryMessageSizeLimit(int messageSizeLimit); 配置接收二进制消息的最大值
+    int getBinaryMessageSizeLimit();         获取已配置的接收二进制消息的最大值
+    List&lt;WebSocketExtension&gt; getExtensions(); 确定协定的拓展
+    void sendMessage(WebSocketMessage&lt;?&gt; message) throws IOException; 发送WebSocket消息.
+    boolean isOpen();                         返回连接是否依然开放
+    void close() throws IOException;          以1000的状态码关闭WebSocket连接(CloseStatus.NORMAL)
+    void close(CloseStatus status) throws IOException; 以给定的的状态码关闭WebSocket连接
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+WebSocketMessage&lt;T&gt;接口: 可以在WebSocket连接上处理和发送的消息
+    T getPayload();             返回消息的负载
+    int getPayloadLength();     返回消息字节数
+    boolean isLast();           如果当前消息是客户端发送的完整的WebSocket消息的最后一部分,返回true.
+                                如果部分消息支持不可用或者未开启,返回false
 
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+WebSocketConfigurer接口: 定义回调方法来配置WebSocket的请求处理.
+    void registerWebSocketHandlers(WebSocketHandlerRegistry registry);
+        注册WebSocketHandler
 
+WebSocketHandlerRegistry接口: 提供配置WebSocketHandler请求映射的方法.
+    WebSocketHandlerRegistration addHandler(WebSocketHandler webSocketHandler, String... paths);
+        在指定的URL路径上配置WebSocketHandler
 
+WebSocketHandlerRegistration接口: 提供配置WebSocket Handler的方法.
+    WebSocketHandlerRegistration addHandler(WebSocketHandler handler, String... paths);
+        添加共享相同配置(interceptors,SockJS,config)的handler.
+    WebSocketHandlerRegistration setHandshakeHandler(HandshakeHandler handshakeHandler);
+        配置HandshakeHandler
+    WebSocketHandlerRegistration addInterceptors(HandshakeInterceptor... interceptors);
+        配置握手请求的拦截器
+    WebSocketHandlerRegistration setAllowedOrigins(String... origins);
+        配置被允许的header值
+    SockJsServiceRegistration withSockJS();
+        开启SockJS fallback选项
+</code></pre><p>26.4 STOMP协议的介绍,配置,常用注解,测试</p>
+<pre><code>WebSocket子协议,定义可以发送的消息类型,格式和内容.面向文本的协议,但是消息负载可以是文本也可以是二进制.
+基于帧的协议,帧结构:
+    COMMAND
+    header1:value1
+    header2:value2
 
+    Body^@
+客户端可以使用SEND或者SUBSCRIBE命令来发送或者订阅消息,同时使用destination的header来描述消息的相关信息和
+接收地址.
+</code></pre></li>
+</ol>
+<pre><code>        Message&lt;T&gt;接口: 有headers和body的通用消息表示.
+            T getPayload();                 返回消息负载
+            MessageHeaders getHeaders();    返回消息headers
+        MessageSendingOperations接口: 发送消息到目标的操作.
+            void send(Message&lt;?&gt; message) throws MessagingException;
+                发送消息到默认目标
+            void send(D destination, Message&lt;?&gt; message) throws MessagingException;
+                发送消息到给定目标
+            void convertAndSend(Object payload) throws MessagingException;
+                转换后发送
 
-  
-    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
-<p>ArrayBlockingQueue</p>
-<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
-<pre><code>    功能命令
+        常用注解:
+            @EnableWebSocketMessageBroker: 在WebSocket之上使用高级的消息子协议开启broker-backed消息
+            @MessageMapping: 映射Message到消息处理方法上.
+            @SendTo
 
-    传输层协议
+        常用接口和类:
+            WebSocketMessageBrokerConfigurer接口: 定义在WebSocket客户端使用STOMP消息处理的方法.
+                default void registerStompEndpoints(StompEndpointRegistry registry) {}
+                    注册STOMP端点到指定的URL
 
-MQTT
+            StompEndpointRegistry接口: 在WebSocket端点之上注册STOMP
+            StompWebSocketEndpointRegistration接口: 在WebSocket端点之上配置STOMP
+            SimpMessagingTemplate类: STOMP消息发送器
 
 STOMP
+    SEND帧:
+        SEND
+            destination:/queue/trade
+            content-type:application/json
+            content-length:44
 
-XMPP
-
-JMS
+            {&quot;action&quot;:&quot;BUY&quot;,&quot;ticker&quot;:&quot;MMM&quot;,&quot;shares&quot;,44}^@
 </code></pre>
       
 
@@ -285,7 +333,7 @@ JMS
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/分布式消息队列实践/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/WebSocket/">展开全文 >></a>
         </p>
       
 
@@ -315,12 +363,154 @@ JMS
 
 
   
-    <article id="post-堆" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TCP粘包和拆包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>堆是完全二叉树, 使用数组表示. 从数组下标1开始放置.<br>节点i的子节点在 2i 和 2i+1 处. 父节点在 i/2 处, 根除外.</p>
+        <p>TCP是没有界限的一串数据，它会根据TCP缓冲区的实际情况进行包的划分。<br>一个完整的包会被TCP拆分为多个包进行发送，多个小包也可能会被封装为一个<br>大的数据包发送， 这就是TCP粘包和拆包问题。</p>
+<p>发生的原因：<br>    1.应用程序write写入的字节大小大于套接口发送缓冲区大小。<br>    2.进行MSS大小的TCP分段<br>    3.以太网帧的payload大于MTU进行IP分片</p>
+<p>底层无法保证数据包不被拆分，只能通过上层应用协议栈设计来解决。<br>    解决方案：<br>        1.消息定长，如每个报文固定大小为200字节，不够的话空位补空格<br>        2.在包尾增加回车换行符进行分割，如FTP协议<br>        3.将消息分为消息头和消息体，消息头中包含表示消息总长度的字段。<br>            通常为消息头的第一个字段使用int32来表示消息的总长度。</p>
+<p>Netty解决TCP粘包问题<br>    LineBasedFrameDecoder:<br>        依次遍历ByteBuf中的可读字节，判断是否有\n或\r\n，如果有，就以此为结束标志，<br>        从可读索引到结束位置区间的字节就组成了一行。<br>        它是以换行符为结束标志的解码器，支持携带结束符或者不携带结束符两种解码方式，<br>        同时支持配置单行的最大长度。如果连续读到最大长度后仍然没有发现换行符，就会抛出<br>        异常，同时忽略之前读到的异常码流。</p>
+<pre><code>StringDecoder:
+    将接收到的对象转换成字符串，然后继续调用后面的Handler。
+
+
+LineBasedFrameDecoder + StringDecoder组合就是按行切换的文本解码器。
+
+指定分隔符：
+DelimiterBasedFrameDecoder + StringDecoder
+定长：
+FixedLengthFrameDecoder + StringDecoder
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/24/TCP粘包和拆包/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-TCP&amp;UDP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/24/TCP&UDP/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Springboot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>@Autowired<br>    先根据类型找bean，如果对应类型的bean不唯一，则根据属性名称和bean的名称进行匹配。<br>    如果不确定其标注属性一定存在且允许为null，则可设置required属性为false<br>        @Autowired(required = false)<br>    可以用到方法或者方法参数上。</p>
+<pre><code>@Primary
+    多个同类型bean同时存在时，设置注入的优先级。
+
+@Qualifier
+    与@Autowired配合，通过类型和名称一起找到Bean。
+
+也可以放在构造器参数前面，注入参数。
+</code></pre><p>Bean的生命周期<br>    Bean定义</p>
+<pre><code>    1. 在@ComponentScan定义的扫描路径找带有@Component的类，资源定位。
+    2. 解析资源，保存Bean定义的信息到BeanDefinition的实例中。
+    3. 把Bean定义发布到Spring IoC容器中
+    4. 默认情况下，Spring继续完成Bean的实例化和依赖注入。
+Bean生命周期
+    @ComponentScan配置项lazyInit，默认为false，不进行延迟初始化。
+
+    接口BeanNameAware setBeanName方法
+    接口BeanFactoryAware setBeanFactory方法
+    接口ApplicationContextAware(需要容器实现ApplicationContext接口) setApplicationContext方法
+    BeanPostProcessor预初始化方法(针对全部Bean生效) postPorcessBeforeInitialization方法
+    @PostConstruct标注方法 自定义初始化方法
+    接口InitializingBean afterPropertiesSet方法
+    BeanPostProcessor后初始化方法(针对全部Bean生效) postPorcessAfterInitialization方法
+    生存期
+    @PreDestroy标注方法 自定义销毁方法
+    接口DisPosableBean destroy方法: 释放资源
+</code></pre><p>文件上传</p>
+<p>SessionCallback和RedisCallback接口<br>作用: 让RedisTemplate进行回调, 通过它们可以在同一条连接下执行<br>     多个Redis命令.避免RedisTemplate多次获取不同的连接</p>
+<pre><code> SessionCallback封装良好,应当优先使用.
+ RedisCallback比较底层,要处理的内容多,可读性差.
+
+SessionCallback&lt;T&gt;: 
+    &lt;K, V&gt; T execute(RedisOperations&lt;K, V&gt; operations) throws DataAccessException;
+        执行同一个session中的所有操作.
+</code></pre><p>ThreadPoolTaskExecutor类:</p>
 
       
 
@@ -333,7 +523,7 @@ JMS
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/24/堆/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/Springboot/">展开全文 >></a>
         </p>
       
 

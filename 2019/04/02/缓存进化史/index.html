@@ -6,18 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/8 | 三石的QQ空间</title>
+  <title>缓存进化史 | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="击空明兮溯流光">
-<meta property="og:type" content="website">
-<meta property="og:title" content="三石的QQ空间">
-<meta property="og:url" content="http://yoursite.com/archives/2019/08/page/4/index.html">
+  <meta name="description" content="数据同步加Redis 通过消息队列进行数据同步到Redis,用Java去取缓存. 优点: 分布式缓存,数据更新快. 缺点: 依赖Redis稳定性.  2-3. Java Map到Guava cache    进程内缓存作为一级缓存,Redis作为二级缓存.    优点: 不受外部系统影响.    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.  Guava Cache刷新 设置写后刷新时间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存进化史">
+<meta property="og:url" content="http://yoursite.com/2019/04/02/缓存进化史/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="击空明兮溯流光">
+<meta property="og:description" content="数据同步加Redis 通过消息队列进行数据同步到Redis,用Java去取缓存. 优点: 分布式缓存,数据更新快. 缺点: 依赖Redis稳定性.  2-3. Java Map到Guava cache    进程内缓存作为一级缓存,Redis作为二级缓存.    优点: 不受外部系统影响.    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.  Guava Cache刷新 设置写后刷新时间">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-24T18:19:17.615Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三石的QQ空间">
-<meta name="twitter:description" content="击空明兮溯流光">
+<meta name="twitter:title" content="缓存进化史">
+<meta name="twitter:description" content="数据同步加Redis 通过消息队列进行数据同步到Redis,用Java去取缓存. 优点: 分布式缓存,数据更新快. 缺点: 依赖Redis稳定性.  2-3. Java Map到Guava cache    进程内缓存作为一级缓存,Redis作为二级缓存.    优点: 不受外部系统影响.    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.  Guava Cache刷新 设置写后刷新时间">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -56,9 +57,9 @@
 		<nav class="header-menu">
 			<ul>
 			
-				<li><a href="/">击空明兮溯流光</a></li>
+				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/categories">目录</a></li>
+				<li><a href="/categories">分类</a></li>
 	        
 			</ul>
 		</nav>
@@ -132,9 +133,9 @@
 				<ul style="width: 50%">
 				
 				
-					<li style="width: 50%"><a href="/">击空明兮溯流光</a></li>
+					<li style="width: 50%"><a href="/">主页</a></li>
 		        
-					<li style="width: 50%"><a href="/categories">目录</a></li>
+					<li style="width: 50%"><a href="/categories">分类</a></li>
 		        
 				</ul>
 			</nav>
@@ -149,67 +150,206 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-缓存进化史" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      缓存进化史
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/缓存进化史/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>数据同步加Redis<br> 通过消息队列进行数据同步到Redis,用Java去取缓存.<br> 优点: 分布式缓存,数据更新快.<br> 缺点: 依赖Redis稳定性.</li>
+</ol>
+<p>2-3. Java Map到Guava cache<br>    进程内缓存作为一级缓存,Redis作为二级缓存.<br>    优点: 不受外部系统影响.<br>    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.</p>
+<ol start="4">
+<li><p>Guava Cache刷新<br> 设置写后刷新时间,进行刷新.</p>
+</li>
+<li><p>外部缓存异步刷新.</p>
+</li>
+</ol>
+<p>HashMap<br>    无法数据淘汰,内存会无限制增长.<br>    不需要淘汰机制时,使用HashMap做缓存.<br>LRUHashMap<br>    FIFO: 队列, 命中率不行.<br>    LRU: 最近最少使用算法, 每次访问数据放在队尾, 淘汰数据时直接淘汰队首. 不能保证热点数据存留.<br>    LFU: 最近最少频率使用, 利用额外的空间记录每个数据的使用频率,对频率最低的进行淘汰.</p>
+<pre><code>实现LRUMap: 继承LinkedHashMap,重写removeEldestEntry方法.
+缺点: 锁竞争严重,不支持过期时间,不支持自动刷新.
+</code></pre><p>Guava Cache<br>    分段锁: 锁太少竞争依然激烈, 锁太多会出现随机淘汰.根据一定的算法进行分段<br>    过期时间: expireAfterWrite 写后多久过期<br>             expireAfterAccess 读后多久过期<br>    虚引用: 两个引用队列, 记录被回收的引用，其中每个队列记录了每个被回收的Entry的hash，这样回收了之后通过这个队列中的hash值就能把以前的             Entry进行删除。<br>    删除监听器: 获取数据被淘汰的原因: 被用户删除, 被用户替代, 过期, 驱逐收集, 由于大小被淘汰.</p>
+<p>Caffeine<br>    W-TinyLfu(LFU+LRU算法变种)<br>    LFU只要数据访问模式中的概率分布随时间保持不变,命中率就非常高. 但难以淘汰某些过去访问量高,但现在访问量低的数据.<br>    基于时间周期进行衰减,使用额外空间记录数据访问频率.</p>
+<pre><code>频率记录
+    Count-Min Sketch记录访问频率, 布隆过滤器的变种.
+
+异步读写
+    使用RingBuffer
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/24/Springboot/" class="archive-article-date">
-  	<time datetime="2019-08-24T13:02:44.506Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-24</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/04/02/缓存进化史/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/24/shadowsocks/" class="archive-article-date">
-  	<time datetime="2019-08-24T13:02:44.482Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-24</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
 
+  
+<nav id="article-nav">
+  
+    <a href="/2019/04/02/红黑树/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          红黑树
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/04/02/分布式消息队列实践/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">分布式消息队列实践</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  <div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="缓存进化史" data-title="缓存进化史" data-url="http://yoursite.com/2019/04/02/缓存进化史/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
   
   
-    </div></section>
   
 
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2019/08/page/3/">&laquo; Prev</a><a class="page-number" href="/archives/2019/08/">1</a><a class="page-number" href="/archives/2019/08/page/2/">2</a><a class="page-number" href="/archives/2019/08/page/3/">3</a><span class="page-number current">4</span>
-    </nav>
+  
+
+  
+
   
 
 
@@ -233,8 +373,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

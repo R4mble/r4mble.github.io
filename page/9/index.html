@@ -145,27 +145,72 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-算法4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-MongoDB" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/算法4/">算法4</a>
+      <a class="article-title" href="/2019/06/29/MongoDB/">MongoDB</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/算法4/" class="archive-article-date">
-  	<time datetime="2019-04-24T07:49:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+        <a href="/2019/06/29/MongoDB/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2>
+        <p>查看数据库<br>    show dbs<br>查看数据表<br>    show tables</p>
+<p>集合<br>    创建集合<br>        db.createColleaction(name, options)<br>            name: 集合名称<br>            options:<br>                capped: 是否创建固定大小集合,当达到最大值时,自动覆盖最早的文档<br>                size: 固定集合字节大小<br>                antoIndexId: 是否自动在_id字段创建索引.默认为false<br>                max: 固定集合中包含文档的最大数量<br>            插入文档时,先检查size再检查max<br>    删除集合<br>        db.col.drop()</p>
+<pre><code>插入文档
+    db.col.insert(document)
+    例:
+        db.col.insert({
+            title: &apos;MongoDB 教程&apos;, 
+            tags: [&apos;mongodb&apos;, &apos;database&apos;, &apos;NoSQL&apos;],
+            likes: 100
+        })
+
+查看文档
+    db.col.find()
+
+更新文档
+    db.col.update(
+        &lt;query&gt;,
+        &lt;update&gt;,
+        {
+            upsert: &lt;boolean&gt;,
+            multi: &lt;boolean&gt;,
+            writeConcern: &lt;document&gt;
+        }
+    )
+
+    query : update的查询条件
+    update : update的对象和一些更新的操作符（如$,$inc...）
+    upsert : 可选，这个参数的意思是，如果不存在update的记录，是否插入,默认是false不插入
+    multi : 可选，mongodb 默认是false,只更新找到的第一条记录，如果这个参数为true,就把按条件查出来多条记录全部更新。
+    writeConcern :可选，抛出异常的级别。
+
+    例: 
+        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}})
+        要修改多条参数:
+        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}}, multi: true)
+
+查询文档:
+        db.col.find({likes: 100})
+    小于,大于: 
+        db.col.find({likes: {$lt:50}}) 
+        db.col.find({likes: {$gt:50}})
+    AND:
+        db.col.find({key1:value1, key2:value2})
+    OR:
+        db.col.find({$or: [{key1: value1}, {key2:value2}]})
+</code></pre>
       
 
       
@@ -178,192 +223,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/算法4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><pre><code>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.
-</code></pre><h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><pre><code>类从加载到卸载的生命周期7个阶段: 
-    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)
-    解析可以在初始化之后开始.
-
-5种必须对类进行初始化的情况:
-    1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
-    2. 使用reflect包方法对类进行反射调用时.
-    3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
-    4. 虚拟机启动时用户指定要执行的主类
-    5. 动态语言支持
-
-不会触发初始化的引用--被动引用:
-    1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
-    2. 通过数组定义来引用类,不会触发类的初始化
-        package org.fenixsoft.classloading
-            SuperClass[] sca = new SuperClass[10];
-        类org.fenixsoft.classloading.SuperClass不会被初始化.
-        但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
-            创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
-            数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
-    3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
-
-对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.
-</code></pre><h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><pre><code>加载
-    1. 通过一个类的全限定名来获取定义此类的二进制字节流
-    2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
-    3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
-验证
-
-准备
-
-解析
-
-初始化
-</code></pre><h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-动态规划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/08/动态规划/">动态规划</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/08/动态规划/" class="archive-article-date">
-  	<time datetime="2019-04-08T07:20:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="斐波那契数列"><a href="#斐波那契数列" class="headerlink" title="斐波那契数列"></a>斐波那契数列</h1><h2 id="70-Climbing-Stairs"><a href="#70-Climbing-Stairs" class="headerlink" title="70. Climbing Stairs"></a><a href="https://leetcode.com/problems/climbing-stairs" target="_blank" rel="noopener">70. Climbing Stairs</a></h2><p>主要的难点在于想清楚: 走到第 i 个楼梯的方法数为走到第 i-1 和第 i-2 个楼梯的方法数之和<br>第i-1个楼梯到第i个楼梯只有这一种方法,<br>第i-2个楼梯到第i个楼梯要么直接走2个台阶上去, 一步一步走上去的那种方法已经被算在了前一种方法里.<br>即: dp[i] = dp[i-1] + dp[i-2]<br>可以比较容易地写出下面这种递归的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> climbStairs(n - <span class="number">1</span>) + climbStairs(n - <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>不过这个是树形递归的方法, 有很多重复计算.(在LeetCode里面跑会超时)<br>迭代的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">1</span>, pre2 = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>; i&lt;n; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = pre1 + pre2;</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="198-House-Robber"><a href="#198-House-Robber" class="headerlink" title="198. House Robber"></a><a href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">198. House Robber</a></h2><p>要想清楚: 抢到第 i 个住户时的最大抢劫量为 抢到第i-2个用户的钱加上第i个用户的钱<br>                                       抢到第i-1个用户的钱<br>                                这二者的最大值.<br>即: dp[i] = max(dp[i-2] + nums[i], dp[i-1])<br>容易写出下面的递归写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.length == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums.length == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(nums[<span class="number">0</span>], nums[<span class="number">1</span>]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(rob(Arrays.copyOf(nums, nums.length - <span class="number">2</span>)) + nums[nums.length - <span class="number">1</span>],</span><br><span class="line">                rob(Arrays.copyOf(nums, nums.length - <span class="number">1</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>和上面的一样,也会超时.<br>迭代的写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">0</span>, pre2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = Math.max(pre1 + nums[i], pre2);</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">MongoDB</a>
         		</li>
       		
 		</ul>
@@ -375,7 +235,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
+        			<a href="/categories/MongoDB//" class="article-tag-list-link color3">MongoDB</a>
         		</li>
       		
 		</ul>
@@ -384,7 +244,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/08/动态规划/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/MongoDB/">展开全文 >></a>
         </p>
       
 
@@ -414,27 +274,152 @@
 
 
   
-    <article id="post-我缺少一些对人类的感情" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-每周总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/07/我缺少一些对人类的感情/">我缺少一些对人类的感情</a>
+      <a class="article-title" href="/2019/06/29/每周总结/">每周总结</a>
     </h1>
   
 
         
-        <a href="/2019/04/07/我缺少一些对人类的感情/" class="archive-article-date">
-  	<time datetime="2019-04-07T14:41:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-07</time>
+        <a href="/2019/06/29/每周总结/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=534540206&auto=1&height=66"></iframe><br>感觉听这首歌写代码挺专注的.</p>
+        <blockquote>
+<p>感觉每个周做一次总结还是挺不错的, 频率不会太频繁导致难以维护, 一个周的时间<br>  也足够做一些东西出来, 系统地学一些知识.</p>
+</blockquote>
+<h2 id="todos"><a href="#todos" class="headerlink" title="todos"></a>todos</h2><ul>
+<li><p>[] 英语: 单词, 听力</p>
+</li>
+<li><p>[] 算法: 数组, 字符串, 链表, 树, 动态规划</p>
+</li>
+<li><p>[] Web框架: Spring</p>
+</li>
+<li><p>[] 数据存储: Redis, Elasticsearch, Postgresql, MyBatis</p>
+</li>
+<li><p>[] 开发工具: Maven, Git, Linux, Kubernete</p>
+</li>
+<li><p>[] 编程语言: Java, Go, JavaScript</p>
+</li>
+<li><p>[] 网络协议: Http, TCP, WebScoket, Netty, gRPC</p>
+</li>
+<li><p>[] 消息队列: RabbitMQ</p>
+<h2 id="2019"><a href="#2019" class="headerlink" title="2019"></a>2019</h2><h3 id="6-24-6-29"><a href="#6-24-6-29" class="headerlink" title="6.24-6.29"></a>6.24-6.29</h3></li>
+<li><p>[x] 学习了Elasticsearch的相关知识</p>
+</li>
+<li><p>[x] 了解下angular</p>
+</li>
+<li><p>[] Leetcode Weekly contest</p>
+</li>
+<li><p>[] </p>
+<h4 id="6-29"><a href="#6-29" class="headerlink" title="6.29"></a>6.29</h4></li>
+<li>[] MyBatis缓存<h3 id="7-1-7-6"><a href="#7-1-7-6" class="headerlink" title="7.1-7.6"></a>7.1-7.6</h3></li>
+<li>[] Leetcode Weekly contest</li>
+<li>[] 20道算法题</li>
+<li>[] 200个单词</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+        <div class="article-pop-out tagcloud">
+          <i class="icon-tuding"></i>
+          <a class="article-tag-list-link color3">置顶</a>
+        </div>
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/每周总结/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Micrometer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/Micrometer/">Meter</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/Micrometer/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>记录 Java 应用性能指标</p>
+<p>计量器注册表 MeterRegistry<br>    创建和维护计量器.</p>
+<pre><code>基于内存的计量器注册表实现: 
+    SimpleMeterRegistry 不支持导出数据到监控系统
+
+可以组合多个计量器注册表的实现类
+    CompositeMeterRegistry 运行同时发布数据到多个监控系统
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompositeMeterRegistryExample</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CompositeMeterRegistry registry = <span class="keyword">new</span> CompositeMeterRegistry();</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry());</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry(<span class="keyword">new</span> MyConfig(), Clock.SYSTEM));</span><br><span class="line"> </span><br><span class="line">    Counter counter = registry.counter(<span class="string">"simple"</span>);</span><br><span class="line">    counter.increment();</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> <span class="keyword">implements</span> <span class="title">SimpleConfig</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">prefix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"my"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>静态的全局计量器注册表对象 
+    Metrics.globalRegistry 组合注册表
+</code></pre><pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalRegistryExample</span> </span>{
+
+  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
+    Metrics.addRegistry(<span class="keyword">new</span> SimpleMeterRegistry());
+    Counter counter = Metrics.counter(<span class="string">"simple"</span>);
+    counter.increment();
+  }
+}
+</code></pre>
+<p>计量器 Meter<br>    需要收集的性能指标数据.</p>
+<pre><code>计量器名称和标签
+    每个计量器在创建时都可以指定一系列标签。标签以名值对的形式出现。监控系统使用标签对数据进行过滤。除了每个计量器独有的标签之外，每个计量器注册表还可以添加通用标签。所有该注册表导出的数据都会带上这些通用标签。
+</code></pre><p>计数器 Counter<br>    单个只允许增加的值.    </p>
+<p>计量仪 Gauge<br>    单个变化的值. Gauge对象既可以从计量器注册表中创建,也可以使用<br>    Gauge.builder()构建.</p>
+<p>计时器 Timer<br>    记录事件的持续时间.</p>
+<p>集成SpringBoot</p>
 
       
 
@@ -448,17 +433,149 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">闲言碎语</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Meter</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Meter//" class="article-tag-list-link color1">Meter</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/07/我缺少一些对人类的感情/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Micrometer/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Linux epoll&amp;select&amp;poll" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/Linux epoll&select&poll/">Linux进程</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/Linux epoll&select&poll/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>阻塞blocking IO<br>非阻塞nonblocking IO<br>io多路复用技术 IO multiplexing<br>        select 和 poll<br>事件驱动 epoll</p>
+<p>epoll 多路复用IO接口select/poll的增强版本<br>        显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率.<br>        原因: 1.复用文件描述符集合来传递结果,而不用迫使开发者每次等待事件之前都必须重新准备要被侦听的文件描述符集合.<br>              2.获取事件时,无须遍历整个被侦听的描述符集合,只要遍历那些被内核IO事件异步唤醒而加入Ready队列的描述符集合.<br>              3.epoll除了提供select/poll那种IO事件的电平触发(Level Triggered),还提供了边沿触发(Edge Triggered),使得用户空间<br>                程序有可能缓存IO状态,减少epoll_wait/epoll_pwait的调用,提高应用程序效率.<br>              4.epoll没有文件描述符的上限,select/poll有限定数量.<br>              5.select/poll会轮询所有fd,有数据就处理,没数据就跳过.epoll只处理就绪的fd,它有一个就绪设备的队列,<br>                每次只轮询该队列的数据,然后进行处理.<br>              6.epoll使用mmap(文件/对象的内存映射,被映射到多个内存页上),同一块内存避免fd在操作过程中的拷贝问题.</p>
+<pre><code>epoll的两种工作方式
+        LT(电平触发 Level Triggered, 只要有数据可以读,不管怎样都会通知): 默认工作方式,同时支持block和no_block_socket. 
+                这种工作方式下,内核会通知你一个fd是否就绪,然后才可以对这个就绪的fd进行IO操作. 
+                即使没有任何操作,系统还是会继续提示fd已就绪,select/poll也是使用这种工作方式.
+
+        ET(边沿触发 Edge Triggered, 只有状态发生变化时才会通知): 高速工作方式,仅支持no_block_socket,当fd从未就绪变为就绪时,
+                内核会通知fd已就绪,并且不会再次通知,除非因为某些操作导致fd就绪状态发生变化. only once.
+                当一直不对这个fd进行IO操作,导致fd变为未就绪时,内核同样不会发送更多的通知. 这种方式出错率较高,需要检测程序.
+
+函数
+        int epoll_create(int size);
+                创建一个epoll实例,通知内核监听size个fd. 创建成功后会占用一个fd,使用完之后要close(),否则fd可能会被耗尽
+        int epoll_ctl(int epfd, int op, int fd, struct epoll_events* event);
+                注册每一个文件描述符,一旦某个文件描述符就绪,内核采用回调机制,迅速激活文件描述符
+        int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
+                返回一个代表就绪描述符数量的值. mmap内存映射技术,省掉文件描述符在系统调用时复制的开销
+
+Nginx使用了边缘触发:
+        ee.events = EPOLLIN|EPOLLOUT|EPOLLET
+</code></pre><p>select<br>        文件描述符集合1 文件描述符集合2 文件描述符集合3<br>        可读事件        可写事件        异常事件</p>
+<pre><code>创建三个关注事件的文件描述符,死循环,依次遍历所有的文件描述符集合,判断是否由可读,可写,异常事件,
+遍历完,如果有事件或超时,返回事件个数,否则阻塞一定时间.
+每次调用select,都需要把三个fd集合从用户态拷贝到内核态.
+
+文件描述符个数有限制: 1024, 数据结构: 位图.
+</code></pre><p>poll<br>        共用一个文件描述符集合,数据结构:链表,<br>        没有最大文件描述符数量的限制</p>
+<pre><code>select和poll一般不会丢失就绪的消息,使用水平触发. 将就绪的文件告诉进程后,如果进程没有对其进行IO操作,下次调用select()或poll()时
+将再次报告这些文件描述符.
+</code></pre><p>epoll<br>        epoll_ctl: 1.增加监听的fd到红黑树中<br>                   2.从红黑树中删除fd<br>                   3.修改已经注册的fd的监听事件</p>
+<pre><code>epoll_wait:如果就绪队列不为空或超时,结束循环,否则阻塞一段时间继续下一次循环,
+          如果就绪队列不为空,拷贝就绪文件描述符到用户空间,返回就绪个数.
+
+当设备就绪后,会通过注册的回调函数自动将就绪文件描述符加入就绪队列.
+
+    数据结构:红黑树
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/Linux epoll&select&poll/">展开全文 >></a>
         </p>
       
 
@@ -490,7 +607,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
     </nav>
   
 
@@ -610,15 +727,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
+                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -626,11 +739,31 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -646,7 +779,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -662,6 +827,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">React</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
@@ -670,7 +839,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">RP</a>
               </li>
              
               <li class="article-tag-list-item">

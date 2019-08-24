@@ -145,45 +145,327 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-MongoDB" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JavaScript/fp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>集合<br>    创建集合<br>        db.createColleaction(name, options)<br>            name: 集合名称<br>            options:<br>                capped: 是否创建固定大小集合,当达到最大值时,自动覆盖最早的文档<br>                size: 固定集合字节大小<br>                antoIndexId: 是否自动在_id字段创建索引.默认为false<br>                max: 固定集合中包含文档的最大数量<br>            插入文档时,先检查size再检查max<br>    删除集合<br>        db.col.drop()</p>
-<pre><code>插入文档
-    db.col.insert(document)
-    例:
-        db.col.insert({
-            title: &apos;MongoDB 教程&apos;, 
-            tags: [&apos;mongodb&apos;, &apos;database&apos;, &apos;NoSQL&apos;],
-            likes: 100
-        })
+        function Just(val) {
+    this.value = val
+}
+// map :: fa -> (a -> b) -> fb
+Just.prototype.map = function (f) {
+    return new Just(f(this.value))
+};
+Just.of = function(val) {
+    return new Just(val)
+};
+// ap :: f(a -> b) -> f a -> f b
+Just.prototype.ap = function (container) {
+    return container.map(this.value);
+};
+Just.prototype.flat = function() {
+    return this.value;
+};
+Just.prototype.flatMap = function(f) {
+    return this.map(f).flat();
+};
 
-查看文档
-    db.col.find()
+const f = x => x + 'b';
+const a = 2;
+const b = f(a);
+const fa = Just.of(a);
+const fb = fa.map(f);
+// console.log(fb);
 
-更新文档
-    db.col.update(
-        &lt;query&gt;,
-        &lt;update&gt;,
-        {
-            upsert: &lt;boolean&gt;,
-            multi: &lt;boolean&gt;,
-            writeConcern: &lt;document&gt;
+//Applicative Functor 
+const fplus2 = Just.of(x => x + 2);
+// console.log(fplus2.ap(Just.of(3)));
+
+function Nothing() {};
+Nothing.prototype.map = function() {
+    return this;
+}
+Nothing.prototype.flatMap = Nothing.prototype.map;
+
+const nothing = new Nothing;
+
+// Monad让我们可以把一个容器中的值传入一个接收值的函数中,并返回同样的容器.
+const monad = Just.of(2)
+                .flatMap(x => {
+                    if (x)
+                        // 装箱装箱再拆箱
+                        return Just.of(x)
+                    else
+                        return nothing
+                })
+                .map(x => x + 1)
+                .map(x => x * 2);
+
+// console.log(monad);
+
+//MayBe函子
+const MayBe = function (val) {
+    this.value = val
+};
+
+MayBe.of = function (val) {
+    return new MayBe(val)
+};
+
+MayBe.prototype.isNothing = function () {
+    return (this.value === null || this.value === undefined)
+};
+
+MayBe.prototype.map = function (fn) {
+    return this.isNothing() ? MayBe.of(null) : MayBe.of(fn(this.value))
+};
+
+//Either函子
+const Some = function (val) {
+    this.value = val;
+};
+
+Some.of = function (val) {
+    return new Some(val)
+};
+
+Some.prototype.map = function (fn) {
+    return Some.of(fn(this.value))
+};
+
+const Either = {
+    Some: Some,
+    Nothing: Nothing
+};
+
+
+var IO = function(f) {
+    this.unsafeIO = f
+}
+// value constructor
+IO.of = function(x) {
+    return new IO(() => x)
+}
+IO.prototype.map = function(f) {
+    return new IO(compose(f, this.unsafeIO))
+}
+
+const compose = (f, g) => x => f(g(x))
+const compose3 = (f, g, h) => x => f(g(h(x)))
+const prop = p => obj => obj[p]
+const head = lst => lst[0]
+const last = lst =>lst[lst.length - 1]
+const split = sp => word =>word.split(sp)
+const filter = fn => list => {
+    var idx = 0;
+    var len = list.length;
+    var result = [];
+    while (idx < len) {
+        if (fn(list[idx])) {
+            result[result.length] = list[idx];
         }
-    )
+        idx += 1;
+    }
+    return result;
+}
+const map = (f, funtor) => funtor.map(f)
+const maplst = f => lst => lst.map(f)
+const eq = k => v => k == v
 
-    query : update的查询条件
-    update : update的对象和一些更新的操作符（如$,$inc...）
-    upsert : 可选，这个参数的意思是，如果不存在update的记录，是否插入,默认是false不插入
-    multi : 可选，mongodb 默认是false,只更新找到的第一条记录，如果这个参数为true,就把按条件查出来多条记录全部更新。
-    writeConcern :可选，抛出异常的级别。
 
-    例: 
-        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}})
-        要修改多条参数:
-        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}}, multi: true)
+var io_window =  new IO(() => window);
+var width = io_window.map(win => win.innerWidth);
+console.log(width.unsafeIO());
+
+var url = io_window.map(prop('location'))
+                    .map(prop('href'));
+
+console.log(url.map(split('/')).unsafeIO())                    
+
+var $ = function(selector) {
+    return new IO(() => document.querySelectorAll(selector))
+}       
+var content = $('#myDiv').map(head).map(div => div.innerText)
+console.log(content.unsafeIO())
+
+var toPairs = compose(maplst(split('=')), split('&'))
+var params = compose3(toPairs, last, split('?'))
+
+var findParam = key => map(compose3(MayBe.of, 
+                                    filter(compose(eq(key), head)), 
+                                    params),
+                           url);
+
+var param = findParam('searchTerm').unsafeIO()                 
+console.log(param)
+
+
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/24/JavaScript/fp/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-加密算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>对称加密算法: DES AES<br>非对称加密算法: RSA(数字签名,身份认证)</p>
+<p>分组密码: 加密时将明文分成固定长度的组(网络加密)<br>流密码: 又称序列密码, 每次加密一位或者一个字节的明文. RC4</p>
+<p>Base64算法: 解决电子邮件只能传输ASCII码字符问题</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/24/加密算法/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-红黑树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>自平衡二叉查找树, 应用: TreeSet, TreeMap, HashMap</p>
+<p>每个节点比左子节点大, 比右子节点小.</p>
+<p>规则:<br>    根节点是黑色, 每个叶子节点都是黑色的空节点(NIL节点),<br>    每个红字节点的两个子节点都是黑色.<br>    从任一节点到其每个叶子所有路径都包含相同数目的黑色节点.</p>
+<p>保证了: 红黑树从根节点到叶子节点的最长路径不会超过最短路径的2倍.</p>
+<p>插入或删除节点时要做调整: 变色和旋转</p>
+<p>条件: 节点P的两个左右孩子N,S. N为黑(N可能为Nil), 由于N子树某节点被删除,黑高减少了1.</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">blacken</span> <span class="type">Nil</span> = <span class="type">Nil</span></span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/24/红黑树/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
+<p>ArrayBlockingQueue</p>
+<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
+<pre><code>    功能命令
+
+    传输层协议
+
+MQTT
+
+STOMP
+
+XMPP
+
+JMS
 </code></pre>
       
 
@@ -196,206 +478,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/30/MongoDB/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Kubernetes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>核心组件:<br>    etcd: 保存整个集群的状态<br>    apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制<br>    controller manager: 维护集群的状态, 如故障检测,自动扩展,滚动更新等.<br>    scheduler: 负责资源调度,按照预定的调度策略将Pod调度到相应的机器上.<br>    kubelet: 负责维护容器的生命周期,也负责Volume(CVI)和网格(CNI)的管理.<br>    Container runtime: 负责镜像管理以及Pod和容器的真正运行(CRI)<br>    kube-proxy: 负责为Service提供cluster内部的服务发现和负载均衡.</p>
-<p>Add-ons:<br>    kube-dns: 负责为整个集群提供DNS服务<br>    Ingress Controller: 为服务提供外网入口.<br>    Heapster: 资源监控</p>
-<p>API对象: Kubernetes集群中的管理操作单元.<br>    三大类属性: 元数据metadata<br>                 标识API对象,至少包含:namespace,name和uid. 使用标签来标识和匹配不同的对象.<br>                                如env=dev来标识开发服务.<br>              规范spec<br>                 描述了用户期望的Kubernetes集群中的分布式系统达到的理想状态.如通过Replication Controller设置<br>                    期望的Pod副本数为3.<br>              状态status<br>                 描述了系统实际当前达到的状态,如当前实际Pod副本数为2</p>
-<p>Pod: Kebernetes集群中运行部署应用或服务的最小单元.<br>        支持多个容器在一个Pod中共享网络地址和文件系统,可以通过进程间通信和<br>        文件共享的方式完成服务.</p>
-<p>kubectl get nodes<br>    获取可用的节点.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/30/Kubernetes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Kotlin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>is运算符<br>    检测一个表达式是否某类型的实例.如果是,在检测后可以直接当做该类型使用.<br>for循环<br>    普通的和索引遍历.<br>        for((k, v) in map) print(“$k -&gt; $v”)<br>when表达式<br>    模式匹配, 可以匹配具体的值, 也可以匹配类型.<br>in运算符<br>    检测某个数字是否在指定区间内.<br>        for (x in 9 downTo 0 step 3) print(x)<br>lambda表达式<br>    filter, sortedBy, map, forEach使用大括号<br>    list.filter{it &gt; 0}<br>类的创建<br>    不同指定实例类型, 不用new<br>DTO<br>    data class Customer(val name: String, val email: String)<br>    提供: getters, 对var还有setters<br>         equals(), hashCode(), toString(), copy()<br>默认参数<br>    fun foo(a: Int = 0, b: String = “”) {…}<br>访问map<br>    map[“key”]<br>延迟属性<br>    val p: String by lazy {}<br>扩展函数<br>    fun String.spaceToCamelCase() {…}<br>创建单例<br>    object Resource {<br>        val name = “Name”<br>    }</p>
-<p>if not null缩写<br>    val files = File(“Test”).listFiles()<br>    print(files?.size)</p>
-<p>if not null and else<br>    print(files?.size ?: “empty”)</p>
-<p>if null执行语句<br>    val email = values[“email”] ?: throw IllegalStateException(“Email is missing”)</p>
-<p>在可能会空的集合取第一个元素<br>    val mainEmail = emails.firstOrNull() ?: “”</p>
-<p>if not null执行代码<br>    value?.let {}</p>
-<p>可空布尔<br>    val b: Boolean? = …</p>
-<p>交换变量<br>    a = b.also {b = a}</p>
-<p>三个等号与两个等号<br>    数字装箱的 同一性 相等性</p>
-<p>基本类型<br>    在运行时表示为原生类型值,使用时像普通的类.<br>    较小类型不能隐式转换为较大的类型.</p>
-<p>密封类<br>    表示受限的类继承结构, 当一个值为有限集中的类型,不能有任何其他类型时.</p>
-<p>协程</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/30/Kotlin/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li><p>了解JWT相关知识</p>
-<pre><code>JWT组成: 
-    Header.Payload.Signature
-    头部.负载.签名
-
-头部:
-    {
-       &quot;alg&quot;: &quot;HS256&quot;,
-        &quot;typ&quot;: &quot;JWT&quot;
-    }
-    alg表示签名的算法，默认是HMAC SHA256, typ表示这个令牌的类型.
-
-负载:
-    iss (issuer)：签发人
-    exp (expiration time)：过期时间
-    sub (subject)：主题
-    aud (audience)：受众
-    nbf (Not Before)：生效时间
-    iat (Issued At)：签发时间
-    jti (JWT ID)：编号
-
-签名: 对前两部分的签名,防止数据篡改.
-    HMACSHA256(
-        base64UrlEncode(header) + &quot;.&quot; +
-        base64UrlEncode(payload),
-        secret)
-把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用&quot;点&quot;（.）分隔
-</code></pre></li>
-</ol>
-<p>Spring中使用JWT:</p>
-<pre><code>1. 编写由登录对象转为token和由token获取登录对象的方法.
-2. 继承OncePerRequestFilter,重写doFilterInternal方法,对每一次请求进行token检查.
-3. 使用@AuthenticationPrincipal注解, 根据前端传过来的header获取登录对象.
-</code></pre><ol start="2">
-<li>postgresql的具体使用:<pre><code>读取数组属性:
-    1. 定义ArrayTypeHandelr继承BaseTypeHandler,重写get,set方法
-    2. 指定mybatis的类型处理器包的位置为ArrayTypeHandelr所在包.
-    3. 定义数组属性所在类型的resultMap.
-</code></pre></li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/30/JWT/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/分布式消息队列实践/">展开全文 >></a>
         </p>
       
 
@@ -427,7 +510,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -547,15 +630,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
+                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -563,11 +642,31 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -583,7 +682,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,6 +730,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">React</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
@@ -607,7 +742,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">RP</a>
               </li>
              
               <li class="article-tag-list-item">

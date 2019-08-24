@@ -145,7 +145,265 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-websocketdemo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-phaser/first/index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+</head>
+<body>
+
+<script>
+    // http://phaser.io/tutorials/making-your-first-phaser-3-game-chinese/part4
+    var config = {
+        type: Phaser.AUTO,  //自动尝试使用WebGL，如果浏览器或设备不支持，它将回退为Canvas
+        width: 800,
+        height: 600,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: {y: 300},
+                debug: false
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config);
+
+    function preload () {
+        this.load.image('sky', 'assets/sky.png');
+        this.load.image('ground', 'assets/platform.png');
+        this.load.image('star', 'assets/star.png');
+        this.load.image('bomb', 'assets/bomb.png');
+        this.load.spritesheet('dude', 'assets/dude.png',
+            { frameWidth: 32, frameHeight: 48 });
+    }
+
+    var platforms;
+    function create () {
+        // 位置点在800, 600的一半
+        this.add.image(400, 300, 'sky')
+        platforms = this.physics.add.staticGroup();
+        platforms.create(400, 568, 'ground')
+                 .setScale(2)
+                 .refreshBody();
+        platforms.create(600, 400, 'ground');
+        platforms.create(50, 250, 'ground');
+        platforms.create(750, 220, 'ground');                         
+
+        this.add.image(400, 300, 'star')
+    }
+
+    function update() {
+
+    }
+</script>
+
+</body>
+</html>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/24/phaser/first/index/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-phaser/first/demo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+</head>
+<body>
+
+    <script>
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 200 }
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create
+        }
+    };
+
+    var game = new Phaser.Game(config);
+
+    function preload ()
+    {
+        this.load.setBaseURL('http://labs.phaser.io');
+
+        this.load.image('sky', 'assets/skies/space3.png');
+        this.load.image('logo', 'assets/sprites/phaser3-logo.png');
+        this.load.image('red', 'assets/particles/red.png');
+    }
+
+    function create ()
+    {
+        this.add.image(400, 300, 'sky');
+
+        var particles = this.add.particles('red');
+
+        var emitter = particles.createEmitter({
+            speed: 100,
+            scale: { start: 1, end: 0 },
+            blendMode: 'ADD'
+        });
+
+        var logo = this.physics.add.image(400, 100, 'logo');
+
+        logo.setVelocity(100, 200);
+        logo.setBounce(1, 1);
+        logo.setCollideWorldBounds(true);
+
+        emitter.startFollow(logo);
+    }
+    </script>
+
+</body>
+</html>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/24/phaser/first/demo/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-linux_c/json_parser/example" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        {"status":200,"message":"OK","result":{"myTicketTotal":0,"myTicketClaim":0,"myTicketHandle":0,"myTicketComplete":0,"needMeDo":0,"needMeHandle":0,"needMeClaim":0}}
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/24/linux_c/json_parser/example/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JavaScript/websocketdemo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
@@ -205,257 +463,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/30/websocketdemo/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-TestJsonObject" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <html>
-    <head><meta name="generator" content="Hexo 3.8.0">
-            <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
-    </head>
-
-    <body>
-
-    </body>
-
-
-    <script>
-        $.ajax({
-            type: "GET",
-            url: "http://localhost:8080/person/1",
-            success: function(data) {
-                console.log(data)
-                console.log(data.id)
-            }
-        })
-    </script>
-</html>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/30/TestJsonObject/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring Cloud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Spring Cloud<br>    Spring Cloud Config<br>        配置管理工具包<br>    Spring Cloud Netflix<br>        包含Netflix OSS的基础组件:<br>            Eureka: 云端服务管理,基于REST<br>            Hystrix: 断路器,容错机制,降级机制<br>            Zuul: 动态路由,监控,安全,过滤<br>            Ribbon: 云端负载均衡<br>            Feign: REST客户端</p>
-<p>Ribbon<br>    负载均衡器:<br>        功能:<br>            维护服务器的IP,DNS名称等<br>            根据特定的逻辑在服务器列表中循环<br>        子模块:<br>            Rule: 逻辑组件,决定从服务器列表中返回哪个服务器实例.<br>                默认使用RoundRobinRule,轮询服务器列表.<br>                AvailabilityFilteringRule: 忽略无法连接的服务器,忽略并发数过高的服务器.<br>                WeightedResponseTimeRule: 根据服务器的响应时间,设置权重值.<br>                ZoneAvoidanceRule: 根据区域(机架,机房),可用服务器为基础选择服务器.<br>                BestAvailableRule: 忽略短路的服务器,选择并发数较低的服务器.<br>                RandomRule: 随机选.<br>                RetryRule: 如果使用RoundRobinRule选择的服务器无法连接,重新选择服务器.</p>
-<pre><code>Ping: 使用定时器来确保服务器网络可以连接.每隔一段时间Ping服务器,判断是否存活.
-
-
-ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,也可以
-            动态指定,通过动态指定时会有后台的线程来刷新该列表.
-</code></pre><p>Feign   调用REST服务<br>    使用JDK的动态代理,生成的代理类将请求的信息封装,交给feign.Client接口发送请求,该接口的默认实现类<br>    最终使用java.net.HttpURLConnection来发送HTTP请求.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/30/Spring Cloud/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Redis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><hr>
-<blockquote>
-<p> 用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.</p>
-</blockquote>
-<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><ul>
-<li><h4 id="字符串-string"><a href="#字符串-string" class="headerlink" title="字符串(string)"></a>字符串(string)</h4><pre><code> 常规操作:
- ​     SET name &quot;Tom&quot;
- ​     GET name
- ​     APPEND name &quot;Jack&quot;
-     EXISTS name
-     DEL name
-批量操作:
-     MGET name1 name2 name3
-     MSET name1 tom name2 jerry name3 jack
- 设置过期:
-     EXPIRE name 5        #5s后过期
-     SETEX name 5 &quot;tom&quot;  #5s后过期
- 计数:
- ​    SET counter 1000
- ​    INCR counter 
- ​    DECR counter
-    INCRBY counter 5
-
- SETNX name &quot;jerry&quot;        #如果name不存在,则创建.
-</code></pre></li>
-</ul>
-<pre><code>&gt; 动态字符串,采用预分配冗余空间的方式来减少内存的频繁分配.字符串
-    长度小于1M时,加倍扩容,大于1M时每次扩1M.最大长度为512M.
-</code></pre><ul>
-<li><h4 id="列表-list"><a href="#列表-list" class="headerlink" title="列表(list)"></a>列表(list)</h4><p>  ​    LPUSH lists redis mongodb golang<br>  ​    RPUSH lists mysql postgre<br>  ​    LPOP lists<br>  ​    RPOP lists<br>  ​    LRANGE lists 0 10</p>
-<blockquote>
-<p>数据量较少时会使用一块连续的内存存储,压缩列表ziplist将元素连续存储.</p>
-<pre><code>数据量较多时使用quicklist. 
-Redis将链表和ziplist结合组成quicklist,多个ziplist使用双向
-指针串起来使用.
-</code></pre></blockquote>
-</li>
-<li><h4 id="散列-hash"><a href="#散列-hash" class="headerlink" title="散列(hash)"></a>散列(hash)</h4><p>  ​    HMSET car name “volvo” color “black” price 20<br>  ​    HMGET car name<br>  ​    HEXISTS car name<br>  ​    HDEL car price</p>
-<blockquote>
-<p>数组 + 链表的二维结构, 第一维数组位置碰撞后,使用链表将元素串接起来.</p>
-<pre><code>与Java的HashMap的不同点: 
-    Redis字典只能是字符串;
-    Redis采用渐进式rehash策略,HashMap采用一次性全部rehash.
-        Redis不堵塞服务,实现了高性能.
-</code></pre></blockquote>
-<pre><code>渐进式rehash: 在rehash的同时保留新旧两个hash结构,查询时会同时查询两个
-hash结构,然后在
-
-HashMap的rehash: 
-</code></pre></li>
-<li><h4 id="集合-set"><a href="#集合-set" class="headerlink" title="集合(set)"></a>集合(set)</h4><p>  ​    SADD letters a<br>  ​    SADD letters a b c<br>  ​    SREM letters c d<br>  ​    SMEMBERS letters<br>  ​    SADD setA 1 2 3<br>  ​    SDIFF setA setB</p>
-</li>
-<li><h4 id="有序集合-zset"><a href="#有序集合-zset" class="headerlink" title="有序集合(zset)"></a>有序集合(zset)</h4><p>  ​    ZADD tutorials 1 redis 2 mongodb 3 mysql<br>  ​    ZRANGE tutorials 0 10 WITHSOCRES</p>
-</li>
-<li><h4 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h4>比特位组成的数组</li>
-<li><h4 id="hyperLoglog"><a href="#hyperLoglog" class="headerlink" title="hyperLoglog"></a>hyperLoglog</h4></li>
-<li><h4 id="地理空间-geospatial"><a href="#地理空间-geospatial" class="headerlink" title="地理空间(geospatial)."></a>地理空间(geospatial).</h4></li>
-</ul>
-<h3 id="事务-transaction"><a href="#事务-transaction" class="headerlink" title="事务(transaction)"></a>事务(transaction)</h3><pre><code>MULTI
-INCR likes
-INCR visitors
-EXEC
-</code></pre><h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><pre><code>LPUSH mylist 4 3 2 6 9
-SORT mylist
-LPUSH mylistalpha a d i e p
-SORT mylistalpha ALPHA
-</code></pre><h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><pre><code>SET session uuid11
-EXPIRE session 20 
-TTL session
-</code></pre><h3 id="管道命令-Piplining"><a href="#管道命令-Piplining" class="headerlink" title="管道命令(Piplining)"></a>管道命令(Piplining)</h3><h3 id="发布-订阅"><a href="#发布-订阅" class="headerlink" title="发布/订阅"></a>发布/订阅</h3><pre><code>SUBSCRIBE redisChat
-PUBLISH redisChat &quot;Learn redis&quot;
-</code></pre><h3 id="复制-replication"><a href="#复制-replication" class="headerlink" title="复制(replication)"></a>复制(replication)</h3><h3 id="Lua脚本-Lua-scripting"><a href="#Lua脚本-Lua-scripting" class="headerlink" title="Lua脚本(Lua scripting)"></a>Lua脚本(Lua scripting)</h3><h3 id="LRU驱动事件-LRU-eviction"><a href="#LRU驱动事件-LRU-eviction" class="headerlink" title="LRU驱动事件(LRU eviction)"></a>LRU驱动事件(LRU eviction)</h3><h3 id="磁盘持久化-persistence"><a href="#磁盘持久化-persistence" class="headerlink" title="磁盘持久化(persistence)"></a>磁盘持久化(persistence)</h3><ul>
-<li><h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><h5 id="默认的持久化方式-将服务器某个时间点上的数据库状态-非空数据库以及相关键值-保存到一个经过压缩的二进制文件中-dump-rdb"><a href="#默认的持久化方式-将服务器某个时间点上的数据库状态-非空数据库以及相关键值-保存到一个经过压缩的二进制文件中-dump-rdb" class="headerlink" title="默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)"></a>默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)</h5><h5 id="手动持久化命令"><a href="#手动持久化命令" class="headerlink" title="手动持久化命令:"></a>手动持久化命令:</h5></li>
-</ul>
-<ol>
-<li>SAVE: 阻塞Redis服务器进程</li>
-<li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.</li>
-</ol>
-<ul>
-<li><h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
-</ul>
-<h3 id="Redis哨兵-Sentinel"><a href="#Redis哨兵-Sentinel" class="headerlink" title="Redis哨兵(Sentinel)"></a>Redis哨兵(Sentinel)</h3><h3 id="自动分区-Cluster"><a href="#自动分区-Cluster" class="headerlink" title="自动分区(Cluster)"></a>自动分区(Cluster)</h3>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/30/Redis/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/08/24/JavaScript/websocketdemo/">展开全文 >></a>
         </p>
       
 
@@ -487,7 +495,7 @@ PUBLISH redisChat &quot;Learn redis&quot;
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -607,15 +615,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
+                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -623,11 +627,31 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -643,7 +667,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -659,6 +715,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">React</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
@@ -667,7 +727,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">RP</a>
               </li>
              
               <li class="article-tag-list-item">

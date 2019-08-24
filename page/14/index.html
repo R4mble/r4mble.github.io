@@ -145,329 +145,188 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-JavaScript教程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Elasticsearch" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/JavaScript教程/">JavaScript教程</a>
+      <a class="article-title" href="/2019/04/27/Elasticsearch/">Elasticsearch</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/JavaScript教程/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/27/Elasticsearch/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>基本语法<br>    变量<br>        声明和赋值<br>            var a = 1;<br>            当只声明了变量,而没有赋值时 为 undefined</p>
-<pre><code>    变量没有类型,只有值有类型
-        var a = 42;
-        typeof a; // &quot;number&quot;
+        <h1 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h1><p>全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.</p>
+<p>分片机制, 复制机制.</p>
+<blockquote>
+<p>Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.</p>
+</blockquote>
+<p>Elasticsearch内置了对分布式集群和分布式索引的管理.</p>
+<p>Lucene倒排索引<br>    根据属性的值来查找记录.<br>    表现为: 一个关键词,它的频度,位置.</p>
+<pre><code>1. 取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点.
+2. 建立倒排索引. 关键词所在的文章号,关键词的位置, 频度
+3. 实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针.
+4. 压缩算法. 关键词压缩: &lt;前缀长度,后缀&gt;. 数字压缩:只保存与上一个值的差值.
+5. 查询单词时,Lucene对词典二元查找
+</code></pre><p>Lucene的评分机制, 查询DSL, 底层索引控制.</p>
+<p>Elasticsearch术语<br>    索引词(term): 能够被索引的精确值.<br>    文本(text): 普通的非结构化文字, 会被分析成一个个的索引词.<br>    分析(analysis): 将文本转换为索引词的过程.<br>    集群(cluster)<br>    节点(node)<br>    路由(routing): 存储文档时通过散列值进行选择分片.<br>    分片(shard): 单个Lucene实例. 索引是指向主分片和副本分片的逻辑空间,索引可以<br>        分解为多个分片,Elasticsearch会自动管理集群中的所有分片.<br>    主分片(primary shard): 默认一个索引有5个主分片.<br>    副本分片(replica shard): 每一个分片有零个或多个副本.<br>        当主分片失败时,可以从副本中选择一个作为主分片.<br>        并行操作提高性能和吞吐量.<br>    索引(index) 具有相同结构的文档集合<br>    类型(type) 类型是索引的逻辑分区.<br>    文档(document) JSON格式的字符串,像关系数据库中的一行.<br>    映射(mapping) 像关系数据库的表结构,每一个索引都有一个映射,定义了索引中的每一个字段类型,以及一个索引范围内的设置.<br>    字段(field) 像关系数据库中的列.每个字段对应一个类型: 整数,字符串,对象等.<br>    来源字段(source field) 原文档被存储在_source这个字段中.<br>    主键(ID) </p>
+<p>API约定<br>    多索引参数<br>        同时查询多个索引中的数据, 通配符 <em> : test</em>表示查询所有以test开头的索引. -test表示排除test<br>    日期筛选<br>        &lt;static_name{date_math_expr{date_format|time_zone}}&gt;<br>        static_name: 索引名称<br>        date_math_expr: 动态日期计算表达式<br>        date_format: 日期格式<br>        time_zone: 时区,默认UTC<br>    通用参数<br>        pretty<br>        human</p>
+<p>POST改变对象的当前状态, PUT创建一个对象.        </p>
+<p>Elasticsearch从5.X引入text和keyword，keyword适用于不分词字段，搜索时只能完全匹配.<br>               6.X彻底移除string, “index”的值只能是boolean变量.</p>
+<p>创建库:<br>    PUT <a href="http://127.0.0.1:9200/secisland" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland</a><br>查看库状态:<br>    GET <a href="http://127.0.0.1:9200/_cat/indices?v" target="_blank" rel="noopener">http://127.0.0.1:9200/_cat/indices?v</a><br>插入数据:<br>    PUT <a href="http://127.0.0.1:9200/secisland/secilog/1" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1</a><br>    参数:<br>        {<br>            “computer”: “x1 carbon”,<br>            “message” : “for coding”<br>        }<br>修改文档:<br>    POST <a href="http://127.0.0.1:9200/secisland/secilog/1/_update" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/_update</a><br>    参数:<br>        {<br>            “doc”: {<br>                “computer”: “x1 carbon”,<br>                “message”: “lenovo”<br>            }<br>        }<br>查询文档:<br>    GET  <a href="http://127.0.0.1:9200/secisland/secilog/1/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/</a><br>删除文档:<br>    DELETE <a href="http://127.0.0.1:9200/secisland/secilog/1/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/</a><br>删除库:<br>    DELETE <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a></p>
+<p>索引<br>    创建索引<br>        PUT <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a><br>        参数:<br>            {<br>                “settings”: {<br>                    “index”: {“number_of_shards”: 3, “number_of_replicas”: 2}<br>                }<br>            }<br>        修改副本数量<br>            PUT <a href="http://127.0.0.1:9200/secisland/_settings/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/_settings/</a><br>            参数:<br>             {<br>                “number_of_replicas”: 1<br>             }</p>
+<pre><code>创建自定义字段类型:
+    PUT http://127.0.0.1:9200/secisland
+    参数:
+        {
+            &quot;settings&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2},
+            &quot;mappings&quot;: {
+                &quot;secilog&quot;: 
+                    {
+                        &quot;properties&quot;: 
+                            {
+                                &quot;logType&quot;: 
+                                    {
+                                       &quot;type&quot;: &quot;text&quot;, 
+                                       &quot;index&quot;: &quot;not_analyzed&quot;
+                                    }
+                            }
+                    }
+                }
+        }
+</code></pre><p>映射<br>    增加映射:<br>        PUT <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a><br>        参数:<br>        {<br>            “mappings”: {<br>                “log”: {<br>                    “properties”: {<br>                        “message”: {“type”: “text”}<br>                    }<br>                }<br>            }<br>        }</p>
+<pre><code>    添加索引名为secisland, 文档类型为log, 其中包含字段message, 字段类型是字符串.
 
-        a = true;
-        typeof a; // &quot;boolean&quot;
-
-        typeof typeof 42; // &quot;string&quot;
-
-    变量提升
-        JavaScript引擎会先解析代码,获取所有被声明的变量.
-            console.log(a);
-            var a = 1;
-            //执行时相当于先声明了a,但是没有赋值,会打印出undefined
-
-标识符
-    第一个字符可以是任意Unicode字母,不能是数字, 包括 $ 和 _
-
-区块
-    对var来说,区块不构成单独的作用域
+    PUT http://127.0.0.1:9200/secisland/_mapping/user
     {
-        var a = 1;
+        &quot;properties&quot;: {
+            &quot;name&quot;: {&quot;type&quot;: &quot;keyword&quot;}
+        }
     }
-    a // 1
+    向已存在的索引secisland添加文档类型为user, 包含字段name, 字段类型是keyword 
 
-逻辑控制
-    if else switch 三目运算符 while for do...while break continue 同 Java
 
-标签
-    通常和break,continue配合
+多个索引设置映射
+    PUT http://127.0.0.1:9200/{index}/_mapping/{type}
+    {body}
 
-    top:
-        for (var i=0; i&lt;3; i++) {
-            for (var j=0; j&lt;3; j++) {
-                if (i===1 &amp;&amp; j===1) break top;
+获取映射
+    GET http://127.0.0.1:9200/secisland/_mapping/secilog
+
+获取字段映射
+    GET http://127.0.0.1:9200/secisland/_mapping/secilog/field/description
+
+    只返回字段为description的内容.
+</code></pre><p>索引别名:<br>    类似数据库中的视图.</p>
+<pre><code>为索引添加别名
+    PUT http://127.0.0.1:9200/_alias
+    {
+        &quot;actions&quot;: {&quot;add&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
+    }
+
+删除别名
+    PUT http://127.0.0.1:9200/_alias
+    {
+        &quot;actions&quot;: {&quot;remove&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
+    }
+
+创建过滤索引别名
+    PUT http://127.0.0.1:9200/_alias
+    {
+        &quot;actions&quot;: {
+            &quot;add&quot;: {
+                &quot;index&quot;: &quot;test1&quot;, &quot;alias&quot;: &quot;alias2&quot;,
+                &quot;filter&quot;: {&quot;term&quot;: {&quot;user&quot;: &quot;ramble&quot;}}
             }
         }
-    满足条件跳出双层循环. 如果不使用标签则只能跳出内层循环.
-</code></pre><p>数据类型<br>    number      整数和小数<br>    string<br>    boolean<br>    undefined<br>    null<br>    object<br>    symbol</p>
-<pre><code>typeof运算符
-    typeof 123 // &quot;number&quot;
-    typeof &quot;123&quot; // &quot;string&quot;
-    typeof false // &quot;boolean&quot;
-
-    函数 返回 function
-    function f() {}
-    typeof f // &quot;function&quot;
-
-    未定义变量 返回 undefined, 可以用来检测没有声明的变量
-    typeof undefined === &quot;undefined&quot;
-
-    typeof window // &quot;object&quot;
-    typeof {} // &quot;object&quot;
-    typeof [] // &quot;object&quot;
-
-    var o = {};
-    var a = [];
-
-    区分数组和对象
-    o instanceof Array //false
-    a instanceof Array //true
+    }
 
 
-    typeof null === &quot;object&quot; //这个是存在了20年的bug,应该返回null
+新建文档(不需要先创建索引)
+PUT http://127.0.0.1:9200/blog/article/2 
+{
+    &quot;title&quot;: &quot;SB ES&quot;,
+    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
+    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
+}
 
-    检测null:
-        val a = null;
-        (!a &amp;&amp; typeof a === &quot;object&quot;) //true, null是假值, undefined也是假值
+返回结果
+{
+    &quot;_index&quot;: &quot;blog&quot;,
+    &quot;_type&quot;: &quot;article&quot;,
+    &quot;_id&quot;: &quot;2&quot;,
+    &quot;_version&quot;: 1,
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;_shards&quot;: {
+        &quot;total&quot;: 2,
+        &quot;successful&quot;: 1,
+        &quot;failed&quot;: 0
+    },
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1
+}
+再执行一次的话, _version, _seq_no会加一, result会变成updated
 
-    undefined == null //true
+不指定id, ES会自动生成唯一标识符.(改用了POST方法,因为是更改而不是创建)
+POST http://127.0.0.1:9200/blog/article
+{
+    &quot;title&quot;: &quot;SB ES&quot;,
+    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
+    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
+}
+返回结果
+{
+    &quot;_index&quot;: &quot;blog&quot;,
+    &quot;_type&quot;: &quot;article&quot;,
+    &quot;_id&quot;: &quot;_qm_l2sBFUlcgb1-d5N2&quot;,
+    &quot;_version&quot;: 1,
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;_shards&quot;: {
+        &quot;total&quot;: 2,
+        &quot;successful&quot;: 1,
+        &quot;failed&quot;: 0
+    },
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1
+}
 
-    Number(null) //0
-    5 + null //5
+检索文档
+    GET http://127.0.0.1:9200/blog/article/2 
+更新文档
+    POST http://127.0.0.1:9200/blog/article/1/_update
+    {
+        &quot;script&quot;: &quot;ctx._source.content = \&quot;new content\&quot;&quot;
+    }
+    只修改了content字段和version.
 
-    Number(undefined) //NaN
-    5 + undefined // NaN
-
-    null表示空值
-    undefined表示未定义
-        1)变量声明了但没有赋值
-        2)调用函数时该提供的参数没有提供
-        3)对象没有该属性
-        4)函数没有返回值,默认返回 undefined
+    要更新索引中的文档, ES先获取文档,从_source属性获得数据,删除旧的
+    文件,更改_source属性,然后把它作为新的文档来索引.
+    信息一旦在Lucene的倒排索引中存储,就不能再被更改,ES通过一个带_update
+    参数的脚本来实现它.
 
 
-布尔值
-    以下为false, 其他为true
-    undefined
-    null
-    false
-    0
-    NaN
-    &quot;&quot; 或 &apos;&apos;
-
-    空数组和空对象都是true
-
-数值
-    所有数值以64位浮点数形式存储,也就是说这个语言根本没有整数
-        1 === 1.0  true
-
-    浮点数不精确,所以
-        0.1 + 0.2 === 0.3  //false
-
-        0.3 / 0.1   //2.999999999
-
-        (0.3 - 0.2) === (0.2 - 0.1)  //false
-
-    64个二进制位: 第1位 符号位,
-                 第2位到第12位(共11位) 指数部分, 
-                 第13位到第64位(共52位) 小数部分.
-</code></pre><p>函数作用域:<br>     其它类C语言,一对花括号封闭的代码块就是一个作用域, JavaScript的作用域<br>     是通过函数来定义的.<br>     静态作用域,词法作用域,作用域的嵌套关系可以在语法分析时确定,而不必等到<br>     运行时确定.</p>
-<p>闭包:<br>    由函数及其封闭的自由变量组成的集合体.<br>    特性: 当一个函数返回它内部定义的一个函数时,就产生了闭包,闭包不但包括被返回的函数,<br>          还包括这个函数的定义环境.</p>
-<pre><code>用途: 实现嵌套的回调函数
-        由于闭包,即使外层函数已经执行完毕,其作用域内申请的变量也不会释放,因为里层
-        的函数还有可能引用到这些变量.
-     隐藏对象的细节
+    如果文档中没有该字段,使用upsert来提供该字段的默认值.
+    POST http://127.0.0.1:9200/blog/article/1/_update
+    {
+        &quot;script&quot;: {
+            &quot;source&quot;: &quot;ctx._source.counter += params.count&quot;,
+            &quot;lang&quot;: &quot;painless&quot;,
+            &quot;params&quot;: {
+                &quot;count&quot;: 4
+            }
+        },
+        &quot;upsert&quot;: {&quot;counter&quot;: 0}
+    }
 </code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/JavaScript教程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Ramda里的柯西化实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Ramda里的柯西化实现/">Ramda里的柯西化实现</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/Ramda里的柯西化实现/" class="archive-article-date">
-  	<time datetime="2019-04-03T18:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>先说R.__ (两个下划线)<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> __ = &#123;<span class="string">'@@functional/placeholder'</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"></span><br><span class="line"> *      <span class="keyword">const</span> greet = R.replace(<span class="string">'&#123;name&#125;'</span>, R.__, <span class="string">'Hello, &#123;name&#125;!'</span>);</span><br><span class="line"> *      greet(<span class="string">'Alice'</span>); <span class="comment">//=&gt; 'Hello, Alice!'</span></span><br></pre></td></tr></table></figure></p>
-<p>R.__是一个含有@@functional/placeholder属性的对象, 那么它是怎么起到占位符作用的呢?</p>
-<p>看下这个函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_isPlaceholder</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">         <span class="keyword">typeof</span> a === <span class="string">'object'</span> &amp;&amp;</span><br><span class="line">         a[<span class="string">'@@functional/placeholder'</span>] === <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这个函数的作用就是检查一个对象的@@functional/placeholder属性是否为true.</p>
-<p>第一个curry函数:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_curry1</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>.length === <span class="number">0</span> || _isPlaceholder(a)) &#123;</span><br><span class="line">      <span class="keyword">return</span> f1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">柯西</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/探索Ramda//" class="article-tag-list-link color3">探索Ramda</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Ramda里的柯西化实现/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/类型系统/">类型和程序设计语言</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/03/类型系统/" class="archive-article-date">
-  	<time datetime="2019-04-03T07:50:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>多态类型,子类型,依赖类型 三个正交分支</p>
-<p>递归由函数不动点实现</p>
-<p>p355 解答</p>
-<h1 id="无类型系统"><a href="#无类型系统" class="headerlink" title="无类型系统"></a>无类型系统</h1><h2 id="无类型算术表达式"><a href="#无类型算术表达式" class="headerlink" title="无类型算术表达式"></a>无类型算术表达式</h2><p>练习3.24 p38<br>    S1 = {true,false,0}<br>    Si+1 = Si^3 + Si*3 + 3<br>    解释: 不考虑类型合不合适.<br>    得: S3有59439个元素.</p>
-<p>练习3.25 归纳证明 构造Sj Si Si+1</p>
-<h4 id="3-4-语义形式"><a href="#3-4-语义形式" class="headerlink" title="3.4 语义形式"></a>3.4 语义形式</h4><ul>
-<li>操作语义<ul>
-<li>小步语义 结构操作语义<br>定义一个简单的抽象机器来说明一个程序语言的行为.<br>用语言的项作为机器状态,对每个状态,要么通过对项做一步简化给出下一个状态,<pre><code>要么声明机器已停止.
-</code></pre></li>
-<li>大步语义 自然语义<br>  抽象机器的一个单个转换就可以将项求值为最终值.                                   </li>
-</ul>
-</li>
-<li>指称语义<br>  一个项的语义不仅是机器状态的序列,而且是某个数学对象,如一个数或一个函数.<br>  一个语言的指称语义是由一个语义域的集合和将项映射到域中元素的解释函数所组成.</li>
-<li>公理语义<br>  用规则本身作为语言的定义.一个项的语义就是关于这个项我们能证明的东西.</li>
-</ul>
-<h2 id="无类型lambda演算"><a href="#无类型lambda演算" class="headerlink" title="无类型lambda演算"></a>无类型lambda演算</h2><h2 id="项的无名称表示"><a href="#项的无名称表示" class="headerlink" title="项的无名称表示"></a>项的无名称表示</h2><h1 id="简单类型"><a href="#简单类型" class="headerlink" title="简单类型"></a>简单类型</h1><h2 id="类型算术表达式"><a href="#类型算术表达式" class="headerlink" title="类型算术表达式"></a>类型算术表达式</h2><h2 id="简单类型的lambda演算"><a href="#简单类型的lambda演算" class="headerlink" title="简单类型的lambda演算"></a>简单类型的lambda演算</h2><h2 id="简单扩展"><a href="#简单扩展" class="headerlink" title="简单扩展"></a>简单扩展</h2><h1 id="子类型化"><a href="#子类型化" class="headerlink" title="子类型化"></a>子类型化</h1><h2 id="子类型"><a href="#子类型" class="headerlink" title="子类型"></a>子类型</h2><h2 id="子类型元理论"><a href="#子类型元理论" class="headerlink" title="子类型元理论"></a>子类型元理论</h2><h1 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h1><h2 id="递归类型-1"><a href="#递归类型-1" class="headerlink" title="递归类型"></a>递归类型</h2><h2 id="递归类型元理论"><a href="#递归类型元理论" class="headerlink" title="递归类型元理论"></a>递归类型元理论</h2><h1 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h1><h2 id="类型重构"><a href="#类型重构" class="headerlink" title="类型重构"></a>类型重构</h2><h2 id="全程类型"><a href="#全程类型" class="headerlink" title="全程类型"></a>全程类型</h2><h2 id="存在类型"><a href="#存在类型" class="headerlink" title="存在类型"></a>存在类型</h2><h1 id="高阶系统"><a href="#高阶系统" class="headerlink" title="高阶系统"></a>高阶系统</h1><h2 id="高阶多态"><a href="#高阶多态" class="headerlink" title="高阶多态"></a>高阶多态</h2><h2 id="高阶子类型化"><a href="#高阶子类型化" class="headerlink" title="高阶子类型化"></a>高阶子类型化</h2>
       
 
       
@@ -482,10 +341,6 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">类型系统</a>
-        		</li>
       		
 		</ul>
 	</div>
@@ -494,7 +349,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/类型系统/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Elasticsearch/">展开全文 >></a>
         </p>
       
 
@@ -524,27 +379,28 @@
 
 
   
-    <article id="post-Ramda搜索关键字得到图片列表并展示" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">Ramda搜索关键字得到图片列表并展示</a>
+      <a class="article-title" href="/2019/04/27/Docker/">Docker</a>
     </h1>
   
 
         
-        <a href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/" class="archive-article-date">
-  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+        <a href="/2019/04/27/Docker/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">requirejs.config(&#123;</span><br><span class="line">    paths: &#123;</span><br><span class="line">        ramda: <span class="string">'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.13.0/ramda.min'</span>,</span><br><span class="line">        jquery: <span class="string">'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>([</span><br><span class="line">    <span class="string">'ramda'</span>,</span><br><span class="line">    <span class="string">'jquery'</span>,</span><br><span class="line">],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">_, $</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> Impure = &#123;</span><br><span class="line">            getJSON: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">callback, url</span>) </span>&#123;</span><br><span class="line">                $.getJSON(url, callback);</span><br><span class="line">            &#125;),</span><br><span class="line"></span><br><span class="line">            setHtml: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">sel, html</span>) </span>&#123;</span><br><span class="line">                $(sel).html(html)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> img = <span class="function"><span class="keyword">function</span> (<span class="params">url</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> $(<span class="string">'&lt;img /&gt;'</span>, &#123; <span class="attr">src</span>: url&#125;);</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> trace = _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">tag, x</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(tag, x);</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> url = <span class="function"><span class="keyword">function</span> (<span class="params">term</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'https://api.flickr.com/services/feeds/photos_public.gne?tags='</span> + term + <span class="string">'&amp;format=json&amp;jsoncallback=?'</span>;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> mediaUrl = _.compose(_.prop(<span class="string">'m'</span>), _.prop(<span class="string">'media'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let srcs = _.compose(_.map(mediaUrl), _.prop('items'));</span></span><br><span class="line">        <span class="comment">// let images = _.compose(_.map(img), srcs);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//上面2行有两个map, 循环了两边.  优化写法:</span></span><br><span class="line">        <span class="keyword">let</span> mediaToImg = _.compose(img, mediaUrl);</span><br><span class="line">        <span class="keyword">let</span> images = _.compose(_.map(mediaToImg), _.prop(<span class="string">'items'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> renderImages = _.compose(Impure.setHtml(<span class="string">"body"</span>), images);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> app = _.compose(Impure.getJSON(renderImages), url);</span><br><span class="line"></span><br><span class="line">        app(<span class="string">"star"</span>);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+        <p>利用Linux内核提供的namespace和CGroups为应用进程构架起沙箱和资源限制.<br>在沙箱容器中,应用拥有自己的设备文件,进程间通信环境,根文件系统,进程空间,<br>用户账户空间和网络资源空间.<br>进程级资源隔离, 秒级启动.</p>
+
       
 
       
@@ -557,15 +413,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -575,7 +423,172 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Docker/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Category-Theory-for-Programmers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Category-Theory-for-Programmers/">Category Theory for Programmers</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Category-Theory-for-Programmers/" class="archive-article-date">
+  	<time datetime="2019-04-27T10:02:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Category-The-Essence-of-Composition"><a href="#Category-The-Essence-of-Composition" class="headerlink" title="Category: The Essence of Composition"></a>Category: The Essence of Composition</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><blockquote>
+<p>A category consists of objects and arrows  that go between them.<br>    范畴与组合互为本质:<br>        The essence of a category is composition.</p>
+</blockquote>
+<pre><code>The essence of composition is a category.
+</code></pre><hr>
+<h2 id="组合的性质"><a href="#组合的性质" class="headerlink" title="组合的性质:"></a>组合的性质:</h2><pre><code>    1. Associativity
+        (伏笔:  Associativity is pretty obvious when dealing with functions, 
+                but it may be not as obvious in other categories.)
+    2. Identity
+
+组合是编程的本质
+</code></pre><hr>
+<pre><code>Challenges 
+  实现identity和compose
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Function</span>&lt;<span class="title">T</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">R <span class="title">apply</span><span class="params">(T t)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> &lt;V&gt; <span class="function">Function&lt;V, R&gt; <span class="title">compose</span><span class="params">(Function&lt;? <span class="keyword">super</span> V, ? extends T&gt; before)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(before);</span><br><span class="line">        <span class="keyword">return</span> (V v) -&gt; apply(before.apply(v));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &lt;T&gt; <span class="function">Function&lt;T, T&gt; <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> t -&gt; t;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>测试
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IdentityTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(id).compose(f2).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute2</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(f2).compose(id).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="keyword">new</span> IdentityTest().compute(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        <span class="keyword">int</span> res2 = <span class="keyword">new</span> IdentityTest().compute2(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        System.out.println(res);</span><br><span class="line">        System.out.println(res2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用JavaScript来实现<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> identity = <span class="function"><span class="params">x</span> =&gt;</span> x</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> x =&gt; f(g(x))</span><br></pre></td></tr></table></figure></p>
+<p>测试<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add5 = <span class="function"><span class="params">x</span> =&gt;</span> x + <span class="number">5</span></span><br><span class="line"><span class="keyword">const</span> multi2 = <span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(compose(identity, compose(add5, multi2))(<span class="number">5</span>))</span><br><span class="line"><span class="built_in">console</span>.log(compose(add5, compose(identity, multi2))(<span class="number">5</span>))</span><br></pre></td></tr></table></figure></p>
+<h1 id="Types-and-Functions"><a href="#Types-and-Functions" class="headerlink" title="Types and Functions"></a>Types and Functions</h1><h1 id="Categories-Great-and-Small"><a href="#Categories-Great-and-Small" class="headerlink" title="Categories Great and Small"></a>Categories Great and Small</h1><h1 id="Kleisli-Categories"><a href="#Kleisli-Categories" class="headerlink" title="Kleisli Categories"></a>Kleisli Categories</h1><h1 id="Products-and-Coproducts"><a href="#Products-and-Coproducts" class="headerlink" title="Products and Coproducts"></a>Products and Coproducts</h1><h1 id="Simple-Algebraic-Data-Types"><a href="#Simple-Algebraic-Data-Types" class="headerlink" title="Simple Algebraic Data Types"></a>Simple Algebraic Data Types</h1><h1 id="Functors"><a href="#Functors" class="headerlink" title="Functors"></a>Functors</h1><h1 id="Functoriality"><a href="#Functoriality" class="headerlink" title="Functoriality"></a>Functoriality</h1><h1 id="Function-Types"><a href="#Function-Types" class="headerlink" title="Function Types"></a>Function Types</h1><h1 id="Natural-Transformations"><a href="#Natural-Transformations" class="headerlink" title="Natural Transformations"></a>Natural Transformations</h1><h1 id="Declarative-Programming"><a href="#Declarative-Programming" class="headerlink" title="Declarative Programming"></a>Declarative Programming</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Free-Monoids"><a href="#Free-Monoids" class="headerlink" title="Free Monoids"></a>Free Monoids</h1><h1 id="Representable-Functors"><a href="#Representable-Functors" class="headerlink" title="Representable Functors"></a>Representable Functors</h1><h1 id="The-Yoneda-Lemma"><a href="#The-Yoneda-Lemma" class="headerlink" title="The Yoneda Lemma"></a>The Yoneda Lemma</h1><h1 id="Yoneda-Embedding"><a href="#Yoneda-Embedding" class="headerlink" title="Yoneda Embedding"></a>Yoneda Embedding</h1><h1 id="Morphisms"><a href="#Morphisms" class="headerlink" title="Morphisms"></a>Morphisms</h1><h1 id="Adjunctions"><a href="#Adjunctions" class="headerlink" title="Adjunctions"></a>Adjunctions</h1><h1 id="Free-Forgetful-Adjunctions"><a href="#Free-Forgetful-Adjunctions" class="headerlink" title="Free/Forgetful Adjunctions"></a>Free/Forgetful Adjunctions</h1><h1 id="Monads-Programmer’s-Definition"><a href="#Monads-Programmer’s-Definition" class="headerlink" title="Monads: Programmer’s Definition"></a>Monads: Programmer’s Definition</h1><h1 id="Monads-and-Effects"><a href="#Monads-and-Effects" class="headerlink" title="Monads and Effects"></a>Monads and Effects</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Category-Theory-for-Programmers/">展开全文 >></a>
         </p>
       
 
@@ -607,7 +620,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/">24</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 
@@ -727,15 +740,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
+                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -743,11 +752,31 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -763,7 +792,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -779,6 +840,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">React</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
@@ -787,7 +852,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">RP</a>
               </li>
              
               <li class="article-tag-list-item">

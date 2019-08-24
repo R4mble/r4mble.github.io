@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Netty in action | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Netty   异步和事件驱动 ChannelHandler 体现了关注点分离的设计原则,并简化业务逻辑的迭代开发的要求.                每一个方法覆盖到hook在活动周期适当的点.      覆盖channelRead因为需要处理所有接收到的数据       覆盖exceptionCaught可以应对任何Throwable的子类型,      这种情况记录并关闭所有可能处于未知状">
+  <meta name="description" content="Netty   异步和事件驱动 Netty核心组件:         Bootstrap 和 ServerBootstrap             提供了一个用于应用程序网络层配置的容器              Bootstrap                 连接远程主机,有1个EventLoopGroup              ServerBootstrap 绑定本地端口">
 <meta name="keywords" content="读书笔记,Netty">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Netty in action">
 <meta property="og:url" content="http://yoursite.com/2019/04/05/Netty-in-action/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="Netty   异步和事件驱动 ChannelHandler 体现了关注点分离的设计原则,并简化业务逻辑的迭代开发的要求.                每一个方法覆盖到hook在活动周期适当的点.      覆盖channelRead因为需要处理所有接收到的数据       覆盖exceptionCaught可以应对任何Throwable的子类型,      这种情况记录并关闭所有可能处于未知状">
+<meta property="og:description" content="Netty   异步和事件驱动 Netty核心组件:         Bootstrap 和 ServerBootstrap             提供了一个用于应用程序网络层配置的容器              Bootstrap                 连接远程主机,有1个EventLoopGroup              ServerBootstrap 绑定本地端口">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-08T06:58:33.896Z">
+<meta property="og:updated_time" content="2019-08-03T01:45:50.425Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Netty in action">
-<meta name="twitter:description" content="Netty   异步和事件驱动 ChannelHandler 体现了关注点分离的设计原则,并简化业务逻辑的迭代开发的要求.                每一个方法覆盖到hook在活动周期适当的点.      覆盖channelRead因为需要处理所有接收到的数据       覆盖exceptionCaught可以应对任何Throwable的子类型,      这种情况记录并关闭所有可能处于未知状">
+<meta name="twitter:description" content="Netty   异步和事件驱动 Netty核心组件:         Bootstrap 和 ServerBootstrap             提供了一个用于应用程序网络层配置的容器              Bootstrap                 连接远程主机,有1个EventLoopGroup              ServerBootstrap 绑定本地端口">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -166,46 +166,56 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>Netty   异步和事件驱动</p>
-<p>ChannelHandler 体现了关注点分离的设计原则,并简化业务逻辑的迭代开发的要求.<br>                每一个方法覆盖到hook在活动周期适当的点.</p>
-<pre><code>     覆盖channelRead因为需要处理所有接收到的数据
-
-     覆盖exceptionCaught可以应对任何Throwable的子类型,
-     这种情况记录并关闭所有可能处于未知状态的连接.
-
-每一个Channel都有一个关联的ChannelPipeline,它代表了ChannelHandler实例
-的链.适配器处理的实现是将一个处理方法转发到链中的下一个处理器.
-因此提供至少一个实现exceptionCaught的ChannelHandler
-
-ChannelHandler给不同类型的事件调用
-应用程序实现或扩展ChannelHandler挂接到事件生命周期和提供自定义应用逻辑
-</code></pre><p>引导服务器<br>    监听和接收进来的连接请求<br>    配置Channel来通知一个关于入站消息的EchoServerHandler实例</p>
-<pre><code>Netty总览
-    了解Netty的架构模型,核心组件包括:
+<pre><code>Netty核心组件:
         Bootstrap 和 ServerBootstrap
             提供了一个用于应用程序网络层配置的容器
 
-            ServerBootstrap
+            Bootstrap
+                连接远程主机,有1个EventLoopGroup
+
+            ServerBootstrap 绑定本地端口
                 在服务器监听一个端口轮询客户端的Bootstrap或DatagramChannel是否
                     连接服务器.   调用Bootstrap类的connect方法,也可以先bind()
                     再connect(),之后使用的Channel包含在bind()返回的ChannelFuture中
-
                 一个ServerBootstrap有2个Channel集合.(EventLoopGroup)
                     1.包含一个单例ServerChannel,代表持有一个绑定了本地端口的socket
                     2.包含所有创建的Channel,处理服务器所接收到的客户端进来的连接.
 
         Channel
+            代表了一个用于连接到实体如硬件设备,文件,网络套接字或程序组件,能够执行一个或多个不同的IO操作的开放连接.
             底层网络传输API必须提供给应用I/O操作的接口.如读/写/绑定等.
             定义了与socket丰富交互的操作集:bind,close,config,connect,
                 isActive,isOpen,isWritable,read,write.
 
         ChannelHandler
-            支持很多协议,提供用于数据处理的容器.   应用程序的核心
+            支持很多协议,提供用于数据处理的容器. 应用程序的核心
             由特定事件触发
             ChannelInboundHandler
                 数据从远程主机到用户应用程序
-
             ChannelOutboundHandler
                 数据从用户应用程序到远程主机
+            体现了关注点分离的设计原则,并简化业务逻辑的迭代开发的要求.
+                    每一个方法覆盖到hook在活动周期适当的点.
+                    覆盖channelRead0因为需要处理所有接收到的数据
+                    覆盖exceptionCaught可以应对任何Throwable的子类型,
+                    这种情况记录并关闭所有可能处于未知状态的连接.
+            每一个Channel都有一个关联的ChannelPipeline,它代表了ChannelHandler实例
+            的链.适配器处理的实现是将一个处理方法转发到链中的下一个处理器.
+            因此提供至少一个实现exceptionCaught的ChannelHandler
+            ChannelHandler给不同类型的事件调用应用程序实现或扩展ChannelHandler挂接到事件生命周期和提供自定义应用逻辑
+
+        Callback 回调   回调事件由接口ChannelHandler的实现来处理
+            // 一旦一个新的连接建立, channelActive方法就会被调用
+            public class ConnectHandler extends ChannelInboundHandlerAdapter {
+                @Override
+                public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                    System.out.println(&quot;Client &quot; + ctx.channel().remoteAddress() + &quot; connected&quot;);
+                }
+            }
+
+        ChannelFuture
+            Netty所有的I/O操作都是异步的,当操作完成时可以被通知.
+            一个未来执行操作结果的占位符.
 
         ChannelPipeline
             提供一个容器给ChannelHandler链并提供一个API用于管理沿着链入站
@@ -223,20 +233,18 @@ ChannelHandler给不同类型的事件调用
             一个EventLoopGroup可以含有多于一个的EventLoop和提供了一种迭代用于
             检索清单中的下一个.
 
-        ChannelFuture
-            Netty所有的I/O操作都是异步的,当操作完成时可以被通知.
-            一个未来执行操作结果的占位符.
 
-Channel Event 和 I/O
-    Netty 非阻塞,事件驱动的网络框架
-        使用多线程处理I/O事件.
-        Netty的设计保证程序处理事件不会有同步. 不需要在Channel之间共享ChannelHandler实例
+        Channel Event 和 I/O
+            Netty 非阻塞,事件驱动的网络框架
+                使用多线程处理I/O事件.
+                Netty的设计保证程序处理事件不会有同步. 不需要在Channel之间共享ChannelHandler实例
 
-        一个EventLoopGroup有一个或多个EventLoop,一个EventLoop作为一个线程给Channel执行工作
+                一个EventLoopGroup有一个或多个EventLoop,一个EventLoop作为一个线程给Channel执行工作
 
-        当创建一个Channel,Netty通过一个单独的EventLoop实例来注册该Channel的通道的使用寿命.
-        所有Channel的I/O始终用相同的线程来执行,所以不需要同步Netty的I/O操作.
-</code></pre>
+                当创建一个Channel,Netty通过一个单独的EventLoop实例来注册该Channel的通道的使用寿命.
+                所有Channel的I/O始终用相同的线程来执行,所以不需要同步Netty的I/O操作.
+</code></pre><p>引导服务器<br>    监听和接收进来的连接请求<br>    配置Channel来通知一个关于入站消息的EchoServerHandler实例</p>
+
       
 
       
@@ -323,11 +331,11 @@ Channel Event 和 I/O
   
 <nav id="article-nav">
   
-    <a href="/2019/04/05/Redis-in-action/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/04/05/Spark实战/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Redis in action
+          Spark实战
         
       </div>
     </a>
@@ -505,15 +513,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
+                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -521,11 +525,31 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">2048</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -541,7 +565,39 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -557,6 +613,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">React</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Spark</a>
               </li>
              
@@ -565,7 +625,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">RP</a>
               </li>
              
               <li class="article-tag-list-item">

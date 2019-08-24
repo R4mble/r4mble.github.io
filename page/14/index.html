@@ -151,51 +151,47 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Notes/Java里的for-in" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Elm" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Notes/Java里的for-in/">Java里的for in</a>
+      <a class="article-title" href="/2019/04/05/Elm/">Elm</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Notes/Java里的for-in/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:42:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/Elm/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-         <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
-</blockquote>
-<blockquote>
-<p>答案: <code>没有</code></p>
-</blockquote>
-<p><i class="icon-reorder"></i>把for in 循环换成普通的for循环:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
-</blockquote>
-<blockquote>
-<p>答案: <code>是的</code></p>
-</blockquote>
-<blockquote>
-<p>由此可见: </p>
-<ul>
-<li><strong>for循环是值传导的,获取到的是原对象的拷贝.</strong></li>
-<li><strong>而数组索引就相当于指针,直接修改了内存中的值.</strong></li>
-</ul>
-</blockquote>
-<p>所以自然地:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck java"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Arrays.stream(ele).map(e -&gt; e.inner).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-<p>当然是”fuck js”啦!</p>
+        <p>终端工具:<br>    elm repl<br>        交互. 编译代码到JS, 使用Node.js运行</p>
+<pre><code>elm reactor
+    运行elm项目
+
+elm make
+    构建elm项目
+        elm make Main.elm --output=main.html
+        elm make Main.elm --output=mian.js
+</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">  &lt;title&gt;Main&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">  &lt;link rel="stylesheet" href="whatever-you-want.css"&gt;</span></span><br><span class="line"><span class="regexp">  &lt;script src="main.js"&gt;&lt;/</span>script&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">  &lt;div id="elm"&gt;&lt;/</span>div&gt;</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">  <span class="keyword">var</span> app = Elm.Main.init(&#123;</span><br><span class="line">    node: <span class="built_in">document</span>.getElementById(<span class="string">'elm'</span>)</span><br><span class="line">  &#125;);</span><br><span class="line">  &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br><span class="line"><span class="regexp">```                </span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    elm install</span></span><br><span class="line"><span class="regexp">        安装依赖.</span></span><br><span class="line"><span class="regexp">            elm install elm/</span>json</span><br><span class="line"></span><br><span class="line">语言基础:</span><br><span class="line">    值:</span><br><span class="line">        字符串拼接: ++</span><br><span class="line">        浮点数除法: <span class="regexp">/       9 /</span> <span class="number">2</span> == <span class="number">4.5</span></span><br><span class="line">        整数除法: <span class="comment">//       9 // 2 == 4</span></span><br><span class="line">    函数:</span><br><span class="line">        isNegative n = n &lt; <span class="number">0</span></span><br><span class="line">    匿名函数:</span><br><span class="line">        \n -&gt; n &lt; <span class="number">0</span></span><br><span class="line">    数据结构:</span><br><span class="line">        List, Tuples, Records</span><br><span class="line">        Record更新: &#123; model | content = newContent &#125;</span><br><span class="line"></span><br><span class="line">Elm架构:</span><br><span class="line">    Model:  应用状态</span><br><span class="line">    Update: 更新状态</span><br><span class="line">    View:   展示状态</span><br><span class="line"></span><br><span class="line"><span class="string">``</span><span class="string">`elm</span></span><br><span class="line"><span class="string">import Html exposing (..)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- MODEL</span></span><br><span class="line"><span class="string">type alias Model = &#123; ... &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- UPDATE   a set of messages that we will get from the UI</span></span><br><span class="line"><span class="string">type Msg = Reset | ...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">update : Msg -&gt; Model -&gt; Model</span></span><br><span class="line"><span class="string">update msg model =</span></span><br><span class="line"><span class="string">  case msg of</span></span><br><span class="line"><span class="string">    Reset -&gt; ...</span></span><br><span class="line"><span class="string">    ...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- VIEW</span></span><br><span class="line"><span class="string">view : Model -&gt; Html Msg</span></span><br><span class="line"><span class="string">view model =</span></span><br><span class="line"><span class="string">  ...</span></span><br></pre></td></tr></table></figure>
+<p>用户输入: Buttons, Text Fields, Check Boxes, Radio Buttons.</p>
+<pre><code>             Html
+Elm         -----&gt;
+</code></pre><p>Browser.sandbox         Runtime System — DOM<br>                &lt;—–<br>                  Msg</p>
+<pre><code>             Html
+            Cmd/Sub
+Elm         -----&gt;                 --- HTTP
+</code></pre><p>Browser.element         Runtime System — DOM<br>                &lt;—–                 — Randomness<br>                  Msg                  — Current Time</p>
+<p>command the runtime system to make an HTTP request or<br>    generate a random number.<br>subscribe to the current time.</p>
+<p>Json处理:<br>    单个属性读取:<br>        nameDecoder = field “name” string<br>    嵌套属性读取:<br>        gifDecoder = field “data” (field “image_url” string)<br>    多个属性读取:<br>        type alias Person = {name : String, age : Int}<br>        personDecoder = map2 Person (field “name” string) (field “age” int)</p>
+<p> 与JavaScript的互操作<br>    Flags<br>    Ports</p>
+<p>页面跳转:<br>    Browser.application</p>
 
       
 
@@ -209,7 +205,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Elm</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
         		</li>
       		
 		</ul>
@@ -219,7 +219,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Notes/Java里的for-in/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Elm/">展开全文 >></a>
         </p>
       
 
@@ -249,326 +249,33 @@
 
 
   
-    <article id="post-Notes/要记要背" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Caffeine Cache" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Notes/要记要背/">要记要背</a>
+      <a class="article-title" href="/2019/04/05/Caffeine Cache/">Caffeine Cache</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Notes/要记要背/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:41:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/Caffeine Cache/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>不要太过强调理解的重要性. 理解当然很重要,但是理解了,并不能说明就掌握了,会了,下一次要用的时候就能想起来,能用上了.<br>作为理科生,也有很多要记要背的东西,理解之后要记忆背诵,记住之后加深理解,二者相辅相成.<br>如何去掉地里的荒草? 除荒草+种庄稼, 只除荒草不中庄稼,荒草很快就会疯长. 只种庄稼不除荒草,庄稼竞争不过荒草.<br>思而不学则殆.</p>
-<p>1.java中==和equals的区别<br>    public boolean equals(Object obj) {<br>        return (this == obj);<br>    }</p>
-<pre><code>基本概念:
-    值类型是存储在内存中的堆栈（以后简称栈），而引用类型的变量在栈中仅仅是存储引用类型变量的地址，而其本身则存储在堆中。
-    ==操作比较的是两个变量的值是否相等，对于引用型变量表示的是两个变量在堆中存储的地址是否相同，即栈中的内容是否相同。
-    equals操作表示的两个变量是否是对同一个对象的引用，即堆中的内容是否相同。
-    ==比较的是2个对象的地址，而equals比较的是2个对象的内容。
+        <p>Cache接口: 定义通用缓存操作的接口<br>    获取缓存的名字<br>    获取底层的缓存提供者</p>
+<p>CacheManager接口: spring的核心缓存管理服务提供接口<br>    获取给定名字的缓存<br>    获取此缓存管理器的所有缓存名字集合</p>
+<p>ApplicationListener接口: 事件监听器, 观察者模式.<br>    void onApplicationEvent(E event); 处理事件</p>
+<p>ContextRefreshedEvent类: 当ApplicationContext初始化或者刷新时该事件触发</p>
+<p>CacheRefreshNotifier类:<br>    利用PostgreSQL的Notify/Listen机制,配合触发器函数notify_data_change(), 监听表数据的增删改,对缓存进行同步刷新</p>
+<p>注解:<br>    @EnableCaching: 开启缓存管理<br>    @Cacheable: 执行方法的结果可以被缓存<br>    @CacheEvict: 方法会触发清除缓存操作</p>
 
-常见误区:
-    程序在运行的时候会创建一个字符串缓冲池当使用 s2 = &quot;Monday&quot; 这样的表达是创建字符串的时候，
-    程序首先会在这个String缓冲池中寻找相同值的对象，在第一个程序中，s1先被放到了池中，所以在s2被创建的时候，
-    程序找到了具有相同值的 s1
-    使用了 new 操作符，新的&quot;Monday&quot;Sting对象被创建在内存中。他们的值相同，但是位置不同.
-
-     String str1 = new String(&quot;hello&quot;);
-     String str2 = new String(&quot;hello&quot;);
-     String str3 = &quot;hello&quot;;
-     String str4 = &quot;hello&quot;;
-     System.out.println(str1==str2);//false  栈里面内容是否相等
-     System.out.println(str1.equals(str2));//true 堆里面内容是否相等
-
-    System.out.println(str1==str3);//false
-    System.out.println(str1.equals(str3));//true
-
-    System.out.println(str3==str4);//true
-    System.out.println(str3.equals(str4));//true
-
-拓展:
-    String的intern()方法检查字符串池里是否存在&quot;abc&quot;这么一个字符串，如果存在，就返回池里的字符串；如果不存在，
-    该方法会把&quot;abc&quot;添加到字符串池中，然后再返回它的引用。
-</code></pre><p>2.Java中final关键字<br>    修饰类<br>        这个类不能被继承<br>            final类中的成员变量可以根据需要设为final，但是要注意final类中的所有成员方法都会被隐式地指定为final方法。<br>    修饰方法<br>        把方法锁定，以防任何继承类修改它的含义  禁止该方法在子类中被覆盖<br>            类的private方法会隐式地被指定为final方法。<br>    修饰变量<br>         如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；<br>         如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。</p>
-<pre><code> 当用final作用于类的成员变量时，成员变量（注意是类的成员变量，局部变量只需要保证在使用之前被初始化赋值即可）
- 必须在定义时或者构造器中进行初始化赋值，而且final变量一旦被初始化赋值之后，就不能再被赋值了
-
- 当final变量是基本数据类型以及String类型时，如果在编译期间能知道它的确切值，则编译器会把它当做编译期常量使用。
- 也就是说在用到该final变量的地方，相当于直接访问的这个常量，不需要在运行时确定。这种和C语言中的宏替换有点像
-
-引用变量被final修饰之后，虽然不能再指向其他对象，但是它指向的对象的内容是可变的。
-</code></pre><p>3.cookie和session的区别<br>    cookie机制采用的是在客户端保持状态的方案，<br>    而session机制采用的是在服务器端保持状态的方案</p>
-<pre><code>由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制
-来达到保存标识的目的，但实际上它还有其他选择。
-
-通过sessionId来区分不同的客户，session是以cookie或url重写为基础的，默认用cookie来实现，系统会创造一个JSESSIONID的输出cookie
-</code></pre><p>4.线程池ThreadPoolExecutor<br>    目的<br>        线程是稀缺资源，不能频繁的创建。<br>        解耦作用；线程的创建与执行完全分开，方便维护。<br>        应当将其放入一个池子中，可以给其他任务进行复用。<br>        提高线程的可管理性：线程池可以统一管理、分配、调优和监控<br>        降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗<br>        提高响应速度：任务到达时不需要等待线程创建就可以立即执行    </p>
-<pre><code>四个构造函数,其中的一些参数: 
-    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
-                            除非将allowCoreThreadTimeOut设置为true。
-
-    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
-                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
-
-    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
-
-    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
-                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
-
-    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
-                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
-
-    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
-
-    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
-                                        会调用RejectedExecutionHandler的rejectedExecution方法。
-
-线程池规则
-
-    下面都假设任务队列没有大小限制：
-
-        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
-        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
-        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
-
-        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
-        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
-
-    任务队列大小有限时
-
-        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
-        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
-</code></pre><p>5.1 Java内存结构</p>
-<pre><code>Java内存区域
-    线程共享
-        方法区
-            又称Non-Heap（非堆），主要用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，
-            根据Java 虚拟机规范的规定，当方法区无法满足内存分配需求时，将抛出OutOfMemoryError 异常。
-            在方法区中存在一个叫运行时常量池(Runtime Constant Pool）的区域，它主要用于存放编译器生成的各种字面量和符号引用，
-            这些内容将在类加载后存放到运行时常量池中，以便后续使用。
-        堆
-            在虚拟机启动时创建，是Java 虚拟机所管理的内存中最大的一块，主要用于存放对象实例，几乎所有的对象实例都在这里分配内存，
-            Java 堆是垃圾收集器管理的主要区域，因此很多时候也被称做GC 堆，如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，
-            将会抛出OutOfMemoryError 异常。
-
-    线程私有
-        虚拟机栈
-            与线程同时创建，总数与线程关联，代表Java方法执行的内存模型。每个方法执行时都会创建一个栈桢来存储方法的的变量表、
-            操作数栈、动态链接方法、返回值、返回地址等信息。每个方法从调用直结束就对于一个栈桢在虚拟机栈中的入栈和出栈过程
-        本地方法栈
-            与虚拟机用到的 Native 方法相关
-        程序计数器
-            一小块内存空间，主要代表当前线程所执行的字节码行号指示器。字节码解释器工作时，
-            通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。
-</code></pre><p>6.ThreadLocal<br>        ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。</p>
-<pre><code>首先，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，
-键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。
-
-　　 初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，
-并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。
-
-　　  然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。
-
-
-join的作用
-    调用某个线程的这个方法时，这个方法会挂起调用线程，直到被调用线程结束执行，调用线程才会继续执行。
-
-    join逻辑
-
-        Parent 调用 child.join()，child.join() 再调用 child.join(0) （此时 Parent 会获得 child 实例作为锁，其他线程可以进入 child.join() ，但不可以进入 child.join(0)， 
-        因为无法获取锁）。child.join(0) 会不断地检查 child 线程是否是 Active。
-
-        如果 child 线程是 Active，则循环调用 child.wait(0)（为了防止 Spurious wakeup, 需要将 wait(0) 放入 for 循环体中；此时 Parent 会释放 child 实例锁，
-        其他线程可以竞争锁并进入 child.join(0)。我们可以得知，可以有多个线程等待某个线程执行完毕）。
-
-        一旦 child 线程不为 Active （状态为 TERMINATED）, child.join(0) 会直接返回到 child.join(), 
-        child.join() 会直接返回到 Parent 父线程，Parent 父线程就可以继续运行下去了。
-
-
-1）实际的通过ThreadLocal创建的副本是存储在每个线程自己的threadLocals中的；
-
-　　  为何threadLocals的类型ThreadLocalMap的键值为ThreadLocal对象，因为每个线程中可有多个threadLocal变量，就像上面代码中的longLocal和stringLocal；
-
-　　  在进行get之前，必须先set，否则会报空指针异常；
-
-　　  如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法。
-
-
-最常见的ThreadLocal使用场景为 用来解决 数据库连接、Session管理等
-
-实现:
-    内部类
-        ThreadLocalMap
-            内部类
-                Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt;
-        public T get()
-</code></pre><p>7.HashMap<br>    数组和链表的结合</p>
-<pre><code>属性
-    modCount    用于快速失败，由于HashMap非线程安全，在对HashMap进行迭代时，
-                如果期间其他线程的参与导致HashMap的结构发生变化了（比如put，remove等操作），
-                需要抛出异常ConcurrentModificationException
-    threshold   capacity*loadFactory
-    initialCapacity
-    loadFactory
-方法
-    put
-        1.如果数组为空,进行数组填充.分配数组空间
-        2.如果key为null,存在table[0]或者table[0]的冲突链上
-        3.对key的hashcode进一步计算,确保散列均匀
-        4.获取在table中的实际位置
-        5.如果对应数据已存在,覆盖. 返回旧value
-            for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) {
-                Object k;
-                if (e.hash == hash &amp;&amp; ((k == e.key) == key) || key.equals(k)) {
-                    //替换
-                }
-            }
-
-            怎么判断是否已存在? 看新旧key值是否equals, 或者 key的地址一样且hash值一样.
-</code></pre><p>8.垃圾回收算法<br>    可达性分析<br>        通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，<br>        当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。</p>
-<pre><code>    GC Roots
-        1)虚拟机栈（栈帧中的本地变量表）中引用的对象
-        2）方法区中的类静态属性引用的对象。
-        3）方法区中的常量引用的对象
-        4）本地方法栈中JNI（通常说的Native方法）引用的对象
-
-标记清除法
-    标记阶段和清除阶段
-    可能产生的最大的问题就是空间碎片
-
-复制算法
-    将原有的内存空间分为两块相同的存储空间，每次只使用一块，在垃圾回收时，
-    将正在使用的内存块中存活对象复制到未使用的那一块内存空间中，之后清除正在使用的内存块中的所有对象，完成垃圾回收。
-
- 标记压缩算法
-    在标记清除算法的基础上做了优化,将所有的存活对象压缩到内存空间的一端，之后，清理边界外所有的空间。
-
-
-通常新生代回收的频率很高，但是每次回收的时间都很短，而老年代回收的频率比较低，但是被消耗很多的时间
-
-为了支持高频率的新生代回收，虚拟机可能使用一种叫做卡表的数据结构，卡表为一个比特位集合，
-每一个比特位可以用来表示老年代的某一区域中的所有对象是否持有新生代对象的引用，
-新生代GC时，可以不用花大量时间扫描所有老年代对象，来确定每一个对象的引用关系，而可以先扫描卡表，只有当卡表的标记为1时，
-才需要扫描给定区域的老年代对象，而卡表为0的所在区域的老年代对象，一定不含有新生代对象的引用。
-
-分区算法
-    将整个堆空间划分为连续的不同小区间
-
-    相同的条件下，堆空间越大，一次GC所需的时间就越长，从而产生的停顿时间就越长。为了更好的控制GC产生的停顿时间，
-    将一块大的内存区域分割成多个小块，
-    根据目标的停顿时间，每次合理的回收若干个小区间，而不是整个堆空间，从而减少一个GC的停顿时间。
-</code></pre><p>11.进程间通信<br>    方式<br>        信号<br>            用于通知接收进程某个事件已经发生</p>
-<pre><code>    进程间的软件中断通知和处理机制(SIGKILL SIGSTOP SIGCONT)
-    接收处理
-        捕获
-        忽略
-        屏蔽
-
-管道
-    普通管道PIPE： 通常有两种限制,一是单工,只能单向传输;二是只能在父子或者兄弟进程间使用.
-    流管道s_pipe: 去除了第一种限制,为半双工，只能在父子或兄弟进程间使用，可以双向传输.
-    命名管道:name_pipe：去除了第二种限制,可以在许多并不相关的进程之间进行通讯.
-
-    进程间基于内存文件的通信机制
-    子进程从父进程继承文件描述符
-    缺省文件描述符
-    一种半双工的通信方式，数据只能单向流动，而且只能在具有亲缘关系的进程间使用。进程的亲缘关系通常是指父子进程关系。
-
-消息队列
-    操作系统维护的以字节序列为基本单位的间接通信机制
-    由消息的链表，存放在内核中并由消息队列标识符标识
-    消息队列克服了信号传递信息少、管道只能承载无格式字节流以及缓冲区大小受限等缺点。
-
-共享内存
-    把同一个物理内存区域映射到多个进程的内存地址空间的通信机制
-
-信号量
-    信号量是一个计数器，可以用来控制多个进程对共享资源的访问。它常作为一种锁机制，
-    防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程内不同线程之间的同步手段。
-
-套接字
-    可用于不同机器间的进程通信
-</code></pre><p>12.数据库索引<br>    平衡树  </p>
-<pre><code>聚集索引
-
-非聚集索引和聚集索引的区别在于， 通过聚集索引可以查到需要查找的数据， 
-而通过非聚集索引可以查到记录对应的主键值 ， 再使用主键的值通过聚集索引查找到需要的数据
-
-覆盖索引
-    不使用聚集索引就能查询出所需要的数据
-</code></pre><p>15.</p>
-<p>多线程区:</p>
-<pre><code>2. concurrenthashmap为何读不用加锁
-
-    jdk1.7
-        1）HashEntry中的key、hash、next 均为final 型，只能表头插入、删除结点
-        2）HashEntry类的value域被声明为volatile型
-        3）不允许用null作为键和值，当读线程读到某个HashEntry的 value域的值为null时，便知道产生了冲突——发生了重排序现象（put设置新value对象的字节码指令重排序），需要加锁后重新读入这个value值
-        4）volatile变量count协调读写线程之间的内存可见性，写操作后修改count，读操作先读count，根据happen-before传递性原则写操作的修改读操作能够看到
-    jdk1.8
-        1）Node的val和next均为volatile型
-        2）tabAt和casTabAt对应的unsafe操作实现了volatile语义
-</code></pre><p>算法区:<br>    1.最小区间：k个有序的数组，找到最小区间使k个数组中每个数组至少有一个数在区间中</p>
-<pre><code>2.快排
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quicksort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">            quicksort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quicksort</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">                <span class="keyword">int</span> pivot = partition(arr, low, high);</span><br><span class="line">                quicksort(arr, low, pivot - <span class="number">1</span>);</span><br><span class="line">                quicksort(arr, pivot + <span class="number">1</span>, high);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">            <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[high]) &#123;</span><br><span class="line">                    high--;</span><br><span class="line">                &#125;</span><br><span class="line">                arr[low] = arr[high];</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[low] &lt;= pivot) &#123;</span><br><span class="line">                    low++;</span><br><span class="line">                &#125;</span><br><span class="line">                arr[high] = arr[low];</span><br><span class="line">            &#125;</span><br><span class="line">            arr[low] = pivot;</span><br><span class="line">            <span class="keyword">return</span> low;</span><br><span class="line">        &#125;</span><br><span class="line"> ```   </span><br><span class="line">    <span class="number">3</span>.TOP k</span><br><span class="line">        <span class="number">1</span>.快排思路</span><br><span class="line">```java</span><br><span class="line">            <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">                <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">                    <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &gt;= arr[high]) &#123;</span><br><span class="line">                        high--;</span><br><span class="line">                    &#125;</span><br><span class="line">                    arr[low] = arr[high];</span><br><span class="line">                    <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[low]) &#123;</span><br><span class="line">                        low++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    arr[high] = arr[low];</span><br><span class="line">                &#125;</span><br><span class="line">                arr[low] = pivot;</span><br><span class="line">                <span class="keyword">return</span> low;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">topK</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">int</span> low = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">int</span> high = arr.length - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">int</span> index = partition(arr, low, high);</span><br><span class="line">                <span class="keyword">while</span> (index != k) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (index &gt; k) &#123;</span><br><span class="line">                        high = index - <span class="number">1</span>;</span><br><span class="line">                        partition(arr, low, high);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        low = index + <span class="number">1</span>;</span><br><span class="line">                        partition(arr, low, high);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
-<p>linux区<br>    常用命令<br>        删除指定日期之前的文件<br>            find /data1/yulei/user_mq/logs -mtime +7 -type f | xargs rm -rf</p>
-<p>Redis区<br>     Redis是一个Key-value存储系统。它支持存储的value类型很多，包括String（字符串）、链表(list)、set（集合）、zset（有序集合） hash。<br>     Redis支持各种不同方式的排序。可以把周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件。</p>
-<pre><code>缓存穿透
-    缓存系统按照KEY去查询VALUE,当KEY对应的VALUE一定不存在的时候并对KEY并发请求量很大的时候，就会对后端造成很大的压力。
-
-    解决办法
-        布隆过滤器
-            将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。
-        缓存层缓存空值
-            如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。
-               存储层更新代码了，缓存层还是空值。（优化：后台设置时主动删除空值，并缓存把值进去）
-
-缓存雪崩（缓存失效）
-     如果缓存集中在一段时间内失效，发生大量的缓存穿透，所有的查询都落在数据库上，造成了缓存雪崩。
-
-     解决办法
-        1.在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。
-        2.可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存
-        3.不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀
-        4.做二级缓存，或者双缓存策略。A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期。
-
-热点key
-    将热点key对应value并缓存在客户端本地，并且设置一个失效时间。
-    对于每次读请求，将首先检查key是否存在于本地缓存中，如果存在则直接返回，如果不存在再去访问分布式缓存的机器。
-
-    将热点key分散为多个子key，然后存储到缓存集群的不同机器上，这些子key对应的value都和热点key是一样的。
-    当通过热点key去查询数据时，通过某种hash算法随机选择一个子key，然后再去访问缓存机器，将热点分散到了多个子key上。
-
-
-淘汰策略
-    noeviction: 不删除策略, 达到最大内存限制时, 如果需要更多内存, 直接返回错误信息。 大多数写命令都会导致占用更多的内存(有极少数会例外, 如 DEL )。
-    allkeys-lru: 所有key通用; 优先删除最近最少使用(less recently used ,LRU) 的 key。
-    volatile-lru: 只限于设置了 expire 的部分; 优先删除最近最少使用(less recently used ,LRU) 的 key。
-    allkeys-random: 所有key通用; 随机删除一部分 key。
-    volatile-random: 只限于设置了 expire 的部分; 随机删除一部分 key。
-    volatile-ttl: 只限于设置了 expire 的部分; 优先删除剩余时间(time to live,TTL) 短的key。
-
-    如果分为热数据与冷数据, 推荐使用 allkeys-lru 策略。 也就是, 其中一部分key经常被读写. 如果不确定具体的业务特征,
-     那么 allkeys-lru 是一个很好的选择。
-
-     如果需要循环读写所有的key, 或者各个key的访问频率差不多, 可以使用 allkeys-random 策略, 即读写所有元素的概率差不多。
-
-     假如要让 Redis 根据 TTL 来筛选需要删除的key, 请使用 volatile-ttl 策略。
-
-     volatile-lru 和 volatile-random 策略主要应用场景是: 既有缓存,又有持久key的实例中。
-      一般来说, 像这类场景, 应该使用两个单独的 Redis 实例。
-      值得一提的是, 设置 expire 会消耗额外的内存, 所以使用 allkeys-lru 策略, 可以更高效地利用内存, 因为这样就可以不再设置过期时间了。
-</code></pre>
       
 
       
@@ -576,22 +283,22 @@ join的作用
     <div class="article-info article-info-index">
       
       
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Cache</a>
         		</li>
       		
 		</ul>
 	</div>
 
+      
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Notes/要记要背/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Caffeine Cache/">展开全文 >></a>
         </p>
       
 
@@ -621,191 +328,50 @@ join的作用
 
 
   
-    <article id="post-Notes/深入理解Java-Web" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java8查漏补缺" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Notes/深入理解Java-Web/">深入理解Java Web</a>
+      <a class="article-title" href="/2019/04/05/Java8查漏补缺/">Java8查漏补缺</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Notes/深入理解Java-Web/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:40:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/Java8查漏补缺/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Web请求过程<br>    HTTP 无状态的短连接.发起一个http请求就是建立一个socket通信的过程<br>        Request Header<br>            Accept-Charset<br>            Accept-Encoding<br>            Accept-Language<br>            Host<br>            User-Agent<br>            Connection: Keep-Alive<br>        Response Header<br>            Server<br>            Content-Type<br>            Content-Encoding<br>            Content-Language<br>            Content-Length<br>            Keep-Alive: timeout=5,max=120</p>
-<pre><code>    常见状态码
-        200     成功
-        302     临时跳转, 跳转的地址通过Location指定
-        304     文件未变化
-        400     客户端请求有语法错误, 不能被服务器识别
-        403     服务器收到请求, 但是拒绝提供服务
-        404     请求的资源不存在
-        500     服务器发生不可预期的错误
+        <ol>
+<li><p>函数式接口里可以有继承自Object类的抽象方法.<br> 例:</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><p> 以上代码是合法的.</p>
+</li>
+<li><p>函数式接口的实例可以通过 lambda表达式, 方法引用 或者 构造方法引用 创建.</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyInterface myInterface = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">System.out.println(myInterface.getClass());</span><br><span class="line">System.out.println(myInterface.getClass().getSuperclass());</span><br><span class="line">System.out.println(myInterface.getClass().getInterfaces()[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
 
-    浏览器缓存
-        Pragma: no-cache
-        Cache-Control: no-cache
-
-    Expires
-
-    Last-Modified/Etag
-        浏览器在请求头中增加If-Modified-Since, 如果是最新的, 返回304
-
-DNS域名解析过程
-    1. 浏览器检查缓存有没有.
-    2. 操作系统缓存. hosts文件
-    3. LDNS
-    4. Root Server
-
-CDN工作机制
-</code></pre><p>java io<br>    Java IO类库<br>        传输数据的数据格式<br>            基于字节操作的IO接口:    InputStream OutputStream<br>            基于字符操作的IO接口:    Writer Reader<br>        传输数据的方式<br>            基于磁盘操作的IO接口:    File<br>            基于网络操作的IO接口:    Socket</p>
-<pre><code>    字符与字节的转化接口
-        InputStreamReader: 字节到字符的转化桥梁
-        OutStreamWriter:    字符到字节的编码过程
-
-磁盘IO工作机制
-    访问文件的方式
-        标准访问文件方式
-            read()
-                检查内核缓存,有的话直接返回, 没有的话从磁盘读取, 缓存在内核地址空间
-            write()
-                从用户地址复制到内核地址空间缓存, 什么时候写到磁盘由操作系统决定,
-                除非显示调用sync同步命令
-
-        直接IO方式
-            直接访问磁盘数据,不经过操作系统内核数据缓冲区.减少一次数据复制.
-            通常是在对数据的缓存管理由应用程序实现的数据库管理系统中.
-
-        同步访问文件方式
-
-        异步访问文件方式
-
-        内存映射的方式
-            将操作系统内存中的某一块区域与磁盘中的文件关联起来.
-</code></pre><p>java编码</p>
-<p>java编译原理:  将java源码编译成java字节码, .java-&gt;.class, 源代码-&gt;二进制数字<br>    模块<br>        词法分析器:  找出语法关键词 -&gt; 规范Token流<br>            Scanner: 具体读取和归类不同词法<br>            JavacParser: 规定了哪些词是符合java语言规范<br>        语法分析器:  检查关键词是否符合java语言规范 -&gt; 抽象语法树<br>        语义分析器:  将复杂的语法转化为简单的语法(foreach 注解) -&gt; 注解过后的语法树<br>        代码生成器:  生成字节码<br>    语法树结构<br>    工作流程详解<br>        词法分析<br>        语法分析<br>        符号表的构建<br>        annotation的处理<br>        标注和语法检查<br>        数据流分析<br>        类型转化<br>        语法<br>    实现内部类<br>    实现对异常的处理<br>    与其他编译器的比较</p>
-<p>class文件结构</p>
-<p>ClassLoader工作机制</p>
-<p>JVM体系结构和工作方式<br>    虚拟内存<br>        多个进程空间上共享物理内存, 逻辑上不能互相访问<br>        一个虚拟地址被映射到一段物理内存,文件或其他可以寻址的存储(Swap分区)<br>    内核空间和用户空间<br>        减少从内核空间到用户空间的数据复制方式:sendfile文件传输方式</p>
-<pre><code>Java中哪些组件需要使用内存
-    Java堆
-        堆的大小在JVM启动时一次向操作系统申请完成.
-        分配完成后堆的大小固定,内存不够时再重新申请.内存空闲时也不能将多余的空间交还.
-
-    线程
-        每个线程创建时JVM都会为它创建一个堆栈, 通常在256KB-756KB之间
-
-    类和类加载器
-        存储在永久代
-
-    NIO
-        基于通道和缓冲区来执行IO的新方式.
-        java.nio.ByteBuffer.allocateDirect()方法分配内存.使用本机内存而不是Java堆上内存.
-            每次分配内存会调用操作系统的os::malloc()函数.
-
-        ByteBuffer产生的数据如果和网络或者磁盘交互都在操作系统的内核空间发生,不需要
-        将数据复制到java内存中.(如果io频繁发送很小的数据,系统调用的开销会抵消掉不用复制的好处)
-
-        直接ByteBuffer对象会自动清理本机缓冲区,这个过程只能作为java堆gc的一部分来执行
-
-    JNI
-
-JVM内存结构
-    PC寄存器
-        一个数据结构,用于保存当前正常执行的程序的内存地址,记录哪个线程当前执行到哪条指令.
-    Java栈
-        每当创建一个线程时,JVM就会为这个线程创建一个对应的java栈,这个栈中又会含有多个帧栈.
-        每运行一个方法创建一个帧栈.帧栈含有内部变量,操作栈,方法返回值等信息
-        每当方法执行完成时,帧栈弹出帧栈的元素作为方法的返回值.
-    堆
-    方法区
-    本地方法区
-    运行时常量池
-</code></pre><p>JVM内存管理</p>
-<p>Servlet工作原理<br>    Servlet容器<br>        启动过程<br>            启动类: org.apache.catalina.startup.Tomcat,创建实例对象并调用start方法.<br>                通过该对象增加和修改Tomcat配置参数, 动态增加Context,Servlet等<br>            基于观察者模式: 所有容器继承Lifecycle接口,它管理容器的整个生命周期,所有<br>                容器的修改和状态的改变都由它去通知已经注册的观察者(Listener)</p>
-<pre><code>Tomcat启动时序图
-    Tomcat start
-        StandardServer start init
-            StandardService init
-                StandardEngine init
-                   Connector
-                    StandardServer start
-                        StandardService start
-                            StandardEngine start
-                                StandardHost init start
-                                    StandardContext init(ContextConfig作为观察者被通知)
-                                    StandardContext init(配置解析)
-                                    StandardContext startInternal
-                                        StandardService start
-                                            Connector init
-                                                Http11Protocol start
-                                                Http11Protocol init
-
-当Context容器初始化状态设为init时, 添加到Context容器的Listener将会被调用.
-ContextConfig继承了LifecycleListener接口, 它是在调用Tomcat.addWebapp时被加入到
-StandardContext容器中的.
-ContextConfig类会负责整个Web应用的配置文件的解析工作.
-
-ContextConfig的init方法
-    创建用于解析XML配置文件的contextDigester对象
-    读取默认的context.xml配置文件,如果存在则解析它
-    读取默认的Host配置文件,如果存在则解析它
-    读取默认的Context自身的配置文件,如果存在则解析它
-    设置Context的DocBase
-
-Context容器的startInternal方法
-    创建读取资源文件的对象
-    创建ClassLoader对象
-    设置应用的工作目录
-    启动相关的辅助类(如Logger,realm,resources)
-    修改启动状态, 通知感兴趣的观察者(Web应用的配置)
-    子容器的初始化
-    获取ServletContext并设置必要的参数
-    初始化&quot;load on startup&quot;的Servlet
-
-Web应用的初始化工作(在ContextConfig的configureStart方法中实现)
-    解析web.xml文件, 其中的各个配置项会被解析成相应的属性保存在WebXml对象中
-    将WebXml对象中的属性设置到Context容器中,包括创建Servlet对象,filter.listener等
-
-    将Servlet包装成Context容器中的StandardWrapper并作为子容器添加到Context中
-
-创建Servlet实例(Wrapper.loadServlet实现)
-    web.xml默认配置项(Tomcat启动时这两个Servlet就会被启动)
-        DefaultServlet
-        JspServlet
-    loadServlet方法获取servletClass,交给InstanceManager去创建一个基于
-    servletClass.class的对象
-    如果这个Servlet配置了jsp-file,那这个servletClass就是JspServlet
-
-初始化Servlet(StandardWrapper的initServlet方法)
-    initServlet
-        调用Servlet的init()方法,同时把包装了StandardWrapper对象
-        的StandardWrapperFacade做为ServletConfig传给Servlet.
-
-
-Servlet体系结构(握手型的交互式:两个模块为了交换数据准备一个交易场景)
-    StandardWrapper和StandardWrapperFacade都实现了ServletConfig接口.
-    StandardWrapperFacade传给Servlet,保证从StandardWrapper中拿到ServletConfig
-    所规定的数据,又不把ServletConfig不关心的数据暴露给Servlet
-
-    ServletContext ApplicationContext ApplicationContextFacade
-        保证ServletContext只能从从容器拿到它该拿的数据.
-</code></pre><p>Session与Cookie</p>
-<p>Tomcat系统架构与设计模式<br>    Tomcat<br>        Container容器<br>            Engine<br>                Host<br>                    Servlet容器<br>                        Context(对应一个Web工程)<br>                            Wrapper(Servlet包装类)</p>
-<p>Jetty工作原理解析</p>
-<p>Spring设计理念</p>
-<p>SpringMVC工作机制</p>
-<p>MyBatis系统架构</p>
-<p>Velocity工作原理</p>
+class sth.jdk8.Test2$$Lambda$2/1149319664
+class java.lang.Object
+interface sth.jdk8.MyInterface
+</code></pre><p> 可以看到这个函数式接口实例的父类是Object,它实现了接口MyInterface</p>
+<pre><code>通过方法引用创建函数式接口实例
+list.forEach(System.out::println);
+</code></pre></li>
+<li><p>方法引用的四种形式:<br>  类名::实例方法 所对应lambda表达式的第一个参数就是这个调用方法的对象</p>
+</li>
+<li><p>Function&lt;T, R&gt;接口<br> Represents a function that accepts one argument and produces a result.<br> 抽象方法:     R apply(T t);<br> 例:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, String&gt; function)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 默认方法: compose andThen<br> 静态方法: identity</p>
+<p> BiFunction&lt;T, U, R&gt;接口<br> 抽象方法: R apply(T t, U u);<br> 默认方法: <v> BiFunction&lt;T, U, V&gt; andThen(Function&lt;? super R, ? extends V&gt; after)</v></p>
+<p> 重要建议: equals方法 把常量放在前面,变量放在后面. 可以避免变量为null时引发的空指针异常</p>
+</li>
+</ol>
 
       
 
@@ -819,36 +385,21 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Web</a>
-        		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Notes/深入理解Java-Web/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Java8查漏补缺/">展开全文 >></a>
         </p>
       
 
@@ -878,35 +429,27 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 
 
   
-    <article id="post-Notes/Spring Cloud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Haskell实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Notes/Spring Cloud/">Spring Cloud</a>
+      <a class="article-title" href="/2019/04/04/Haskell实现2048/">Haskell实现2048</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Notes/Spring Cloud/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/04/Haskell实现2048/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Spring Cloud<br>    Spring Cloud Config<br>        配置管理工具包<br>    Spring Cloud Netflix<br>        包含Netflix OSS的基础组件:<br>            Eureka: 云端服务管理,基于REST<br>            Hystrix: 断路器,容错机制,降级机制<br>            Zuul: 动态路由,监控,安全,过滤<br>            Ribbon: 云端负载均衡<br>            Feign: REST客户端</p>
-<p>Ribbon<br>    负载均衡器:<br>        功能:<br>            维护服务器的IP,DNS名称等<br>            根据特定的逻辑在服务器列表中循环<br>        子模块:<br>            Rule: 逻辑组件,决定从服务器列表中返回哪个服务器实例.<br>                默认使用RoundRobinRule,轮询服务器列表.<br>                AvailabilityFilteringRule: 忽略无法连接的服务器,忽略并发数过高的服务器.<br>                WeightedResponseTimeRule: 根据服务器的响应时间,设置权重值.<br>                ZoneAvoidanceRule: 根据区域(机架,机房),可用服务器为基础选择服务器.<br>                BestAvailableRule: 忽略短路的服务器,选择并发数较低的服务器.<br>                RandomRule: 随机选.<br>                RetryRule: 如果使用RoundRobinRule选择的服务器无法连接,重新选择服务器.</p>
-<pre><code>Ping: 使用定时器来确保服务器网络可以连接.每隔一段时间Ping服务器,判断是否存活.
-
-
-ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,也可以
-            动态指定,通过动态指定时会有后台的线程来刷新该列表.
-</code></pre><p>Feign   调用REST服务<br>    使用JDK的动态代理,生成的代理类将请求的信息封装,交给feign.Client接口发送请求,该接口的默认实现类<br>    最终使用java.net.HttpURLConnection来发送HTTP请求.</p>
-
+        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Prelude hiding (Left, Right)</span><br><span class="line"><span class="keyword">import</span> Data.Char (toLower)</span><br><span class="line"><span class="keyword">import</span> Data.List</span><br><span class="line"><span class="keyword">import</span> System.IO</span><br><span class="line"><span class="keyword">import</span> System.Random</span><br><span class="line"><span class="keyword">import</span> Text.Printf</span><br><span class="line"><span class="keyword">import</span> System.Process</span><br><span class="line"></span><br><span class="line">data Move = Up | Down | Left | Right</span><br><span class="line">type Grid = [[Int]]</span><br><span class="line"></span><br><span class="line">start :: IO Grid</span><br><span class="line">start = do grid<span class="string">'  &lt;- addTile $ replicate 4 [0, 0, 0, 0]</span></span><br><span class="line"><span class="string">           addTile grid'</span></span><br><span class="line"></span><br><span class="line">merge :: [Int] -&gt; [Int]</span><br><span class="line">merge xs = merged ++ padding</span><br><span class="line">    where padding = replicate (length xs - length merged) <span class="number">0</span></span><br><span class="line">          merged  = combine $ filter (/= <span class="number">0</span>) xs</span><br><span class="line">          combine (x:y:xs) | x == y = x * <span class="number">2</span> : combine xs</span><br><span class="line">                           | otherwise = x  : combine (y:xs)</span><br><span class="line">          combine x = x</span><br><span class="line"></span><br><span class="line">move :: Move -&gt; Grid -&gt; Grid</span><br><span class="line">move Left  = map merge</span><br><span class="line">move Right = map (reverse . merge . reverse)</span><br><span class="line">move Up    = transpose . move Left  . transpose</span><br><span class="line">move Down  = transpose . move Right . transpose</span><br><span class="line"></span><br><span class="line">getZeroes :: Grid -&gt; [(Int, Int)]</span><br><span class="line">getZeroes grid = filter (\(row, col) -&gt; (grid!!row)!!col == 0) coordinates</span><br><span class="line">    where singleRow n = zip (replicate <span class="number">4</span> n) [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line">          coordinates = concatMap singleRow [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line"></span><br><span class="line">setSquare :: Grid -&gt; (Int, Int) -&gt; Int -&gt; Grid</span><br><span class="line">setSquare grid (row, col) val = pre ++ [mid] ++ post</span><br><span class="line">    where pre  = take row grid</span><br><span class="line">          mid  = take col (grid!!row) ++ [val] ++ drop (col + <span class="number">1</span>) (grid!!row)</span><br><span class="line">          post = drop (row + <span class="number">1</span>) grid</span><br><span class="line"></span><br><span class="line">isMoveLeft :: Grid -&gt; Bool</span><br><span class="line">isMoveLeft grid = sum allChoices &gt; <span class="number">0</span></span><br><span class="line">    where allChoices = map (length . getZeroes . flip move grid) directions</span><br><span class="line">          directions = [Left, Right, Up, Down]</span><br><span class="line"></span><br><span class="line">printGrid :: Grid -&gt; IO ()</span><br><span class="line">printGrid grid = do</span><br><span class="line">    system <span class="string">"cls"</span> -- clears the screen</span><br><span class="line">    mapM_ (putStrLn . showRow) grid</span><br><span class="line"></span><br><span class="line">showRow :: [Int] -&gt; String</span><br><span class="line">showRow = concatMap (printf <span class="string">"%5d"</span>)</span><br><span class="line"></span><br><span class="line">moves :: [(Char, Move)]</span><br><span class="line">moves = keys <span class="string">"wasd"</span> ++ keys <span class="string">"chtn"</span></span><br><span class="line">    where keys chars = zip chars [Up, Left, Down, Right]</span><br><span class="line"></span><br><span class="line">captureMove :: IO Move</span><br><span class="line">captureMove = do</span><br><span class="line">    inp &lt;- getChar</span><br><span class="line">    case lookup (toLower inp) moves of</span><br><span class="line">        Just x  -&gt; return x</span><br><span class="line">        Nothing -&gt; do putStrLn "Use WASD or CHTN as input"</span><br><span class="line">                      captureMove</span><br><span class="line"></span><br><span class="line">check2048 :: Grid -&gt; Bool</span><br><span class="line">check2048 grid = [] /= filter (== <span class="number">2048</span>) (concat grid)</span><br><span class="line">                </span><br><span class="line">addTile :: Grid -&gt; IO Grid</span><br><span class="line">addTile grid = do</span><br><span class="line">    let candidates = getZeroes grid</span><br><span class="line">    pick &lt;- choose candidates</span><br><span class="line">    val  &lt;- choose [<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>]</span><br><span class="line">    let new_grid = setSquare grid pick val</span><br><span class="line">    <span class="keyword">return</span> new_grid</span><br><span class="line"></span><br><span class="line">choose :: [a] -&gt; IO a</span><br><span class="line">choose xs = do</span><br><span class="line">    i &lt;- randomRIO (<span class="number">0</span>, length xs<span class="number">-1</span>)</span><br><span class="line">    <span class="keyword">return</span> (xs !! i)</span><br><span class="line"></span><br><span class="line">newGrid :: Grid -&gt; IO Grid</span><br><span class="line">newGrid grid = do</span><br><span class="line">    m &lt;- captureMove</span><br><span class="line">    let new_grid = move m grid</span><br><span class="line">    <span class="keyword">return</span> new_grid</span><br><span class="line"></span><br><span class="line">gameLoop :: Grid -&gt; IO ()</span><br><span class="line">gameLoop grid</span><br><span class="line">    | isMoveLeft grid = do</span><br><span class="line">        printGrid grid</span><br><span class="line">        <span class="keyword">if</span> check2048 grid</span><br><span class="line">        then putStrLn <span class="string">"You won!"</span></span><br><span class="line">        <span class="keyword">else</span> do new_grid &lt;- newGrid grid</span><br><span class="line">                <span class="keyword">if</span> grid /= new_grid</span><br><span class="line">                then do new &lt;- addTile new_grid</span><br><span class="line">                        gameLoop new</span><br><span class="line">                <span class="keyword">else</span> gameLoop grid</span><br><span class="line">    | otherwise = do</span><br><span class="line">        printGrid grid</span><br><span class="line">        putStrLn <span class="string">"Game over"</span></span><br><span class="line"></span><br><span class="line">main :: IO ()</span><br><span class="line">main = do</span><br><span class="line">    hSetBuffering stdin NoBuffering</span><br><span class="line">    grid &lt;- start</span><br><span class="line">    gameLoop grid</span><br></pre></td></tr></table></figure>
       
 
       
@@ -919,7 +462,15 @@ ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Haskell</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2048</a>
         		</li>
       		
 		</ul>
@@ -929,7 +480,7 @@ ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Notes/Spring Cloud/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/04/Haskell实现2048/">展开全文 >></a>
         </p>
       
 
@@ -961,7 +512,7 @@ ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 

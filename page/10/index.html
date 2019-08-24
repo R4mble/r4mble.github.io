@@ -151,73 +151,133 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Notes/编程的数学原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-动态规划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/28/Notes/编程的数学原理/">编程的数学原理</a>
+      <a class="article-title" href="/2019/04/08/动态规划/">动态规划</a>
     </h1>
   
 
         
-        <a href="/2019/04/28/Notes/编程的数学原理/" class="archive-article-date">
-  	<time datetime="2019-04-28T04:32:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
+        <a href="/2019/04/08/动态规划/" class="archive-article-date">
+  	<time datetime="2019-04-08T07:20:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-08</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="群-group"><a href="#群-group" class="headerlink" title="群(group)"></a>群(group)</h1><p>群是一个集合G与其上定义的某种二元关系运算.</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
-<li>消去公理: 对任何a ∈ G, 都存在一个逆元a<sup>-1</sup>使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e</li>
-</ol>
-<p>例子: 整数加法群, 整数模5加法群</p>
-<h1 id="幺半群-monoid"><a href="#幺半群-monoid" class="headerlink" title="幺半群(monoid)"></a>幺半群(monoid)</h1><p>幺半群是一个集合S和其上定义的二元运算</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
-</ol>
-<p>例子: 字符串的拼接, 列表的连接</p>
-<h1 id="半群-semigroup"><a href="#半群-semigroup" class="headerlink" title="半群(semigroup)"></a>半群(semigroup)</h1><p>半群是一个集合S和其上定义的二元运算</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-</ol>
-<p>例子: 全体正整数构成的加法半群, 乘法半群; 全体偶数构成的加法半群, 乘法半群</p>
-<h2 id="群的性质"><a href="#群的性质" class="headerlink" title="群的性质"></a>群的性质</h2><blockquote>
-<p>群的单位元是惟一的<br>群中的任意元素a,都存在且仅存在一个逆元使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e<br>有限群的每个元素都有有限的阶<br>    对群的一个元a,能够满足a<sup>m</sup> = e的最小整数m叫做a的阶<br>    如果m不存在,则称a的阶是无限的.</p>
-</blockquote>
-<p>存在从某个集合A到另一个集合B的映射f<br>a和b是A中的两个元, f(a)和f(b)是它们在B中的像<br>考虑在A上的二元封闭运算产生的元a · b,在映射下在B中的像f(a · b)<br>如果对B上的二元封闭运算总有<br>    f(a) · f(b) = f(a · b)</p>
-<p>则称f是从A到B的同态映射<br>如果f是满射(即B中所有元素都在A中有原像),则称为同态满射<br>例:奇偶判定函数odd: Z -&gt; Bool,接受一个整数,如果是奇数返回True,否则返回False<br>    布尔集合{True,False  }在逻辑或运算下构成一个群</p>
-<p> 如果f不仅是满射,还是单射,那么它就是一一映射.称f是从A到B的同构映射,简称同构,记做A ≌ B<br>    例: a=2,f(a)=4<br>        b=3,f(b)=9<br>        ab=6,f(ab)=f(a)f(b)=36</p>
-<h2 id="范畴Category"><a href="#范畴Category" class="headerlink" title="范畴Category"></a>范畴Category</h2><p>一个范畴C包括一组对象（Object），记为A,B,C,…，和一组箭头<br>（Arrow），记为f,g,h,…。它们之上定义了以下四种操作：</p>
+        <h1 id="斐波那契数列"><a href="#斐波那契数列" class="headerlink" title="斐波那契数列"></a>斐波那契数列</h1><h2 id="70-Climbing-Stairs"><a href="#70-Climbing-Stairs" class="headerlink" title="70. Climbing Stairs"></a><a href="https://leetcode.com/problems/climbing-stairs" target="_blank" rel="noopener">70. Climbing Stairs</a></h2><p>主要的难点在于想清楚: 走到第 i 个楼梯的方法数为走到第 i-1 和第 i-2 个楼梯的方法数之和<br>第i-1个楼梯到第i个楼梯只有这一种方法,<br>第i-2个楼梯到第i个楼梯要么直接走2个台阶上去, 一步一步走上去的那种方法已经被算在了前一种方法里.<br>即: dp[i] = dp[i-1] + dp[i-2]<br>可以比较容易地写出下面这种递归的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> climbStairs(n - <span class="number">1</span>) + climbStairs(n - <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不过这个是树形递归的方法, 有很多重复计算.(在LeetCode里面跑会超时)<br>迭代的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">1</span>, pre2 = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>; i&lt;n; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = pre1 + pre2;</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="198-House-Robber"><a href="#198-House-Robber" class="headerlink" title="198. House Robber"></a><a href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">198. House Robber</a></h2><p>要想清楚: 抢到第 i 个住户时的最大抢劫量为 抢到第i-2个用户的钱加上第i个用户的钱<br>                                       抢到第i-1个用户的钱<br>                                这二者的最大值.<br>即: dp[i] = max(dp[i-2] + nums[i], dp[i-1])<br>容易写出下面的递归写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.length == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums.length == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(nums[<span class="number">0</span>], nums[<span class="number">1</span>]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(rob(Arrays.copyOf(nums, nums.length - <span class="number">2</span>)) + nums[nums.length - <span class="number">1</span>],</span><br><span class="line">                rob(Arrays.copyOf(nums, nums.length - <span class="number">1</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>和上面的一样,也会超时.<br>迭代的写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">0</span>, pre2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = Math.max(pre1 + nums[i], pre2);</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/08/动态规划/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-神秘的Scala implicit" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/神秘的Scala implicit/">神秘的Scala implicit</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/神秘的Scala implicit/" class="archive-article-date">
+  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="神秘的Scala-implicit"><a href="#神秘的Scala-implicit" class="headerlink" title="神秘的Scala implicit"></a>神秘的Scala implicit</h1><h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><ul>
+<li>隐式值<br>  编译器会在方法省略隐式参数的情况下去搜索作用域内的隐式值作为缺少参数<br>  例: <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def person(implicit name: String) = name</span><br><span class="line">implicit val p = &quot;ramble&quot;</span><br><span class="line">person  // ramble</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+</ul>
 <ul>
-<li>成为源和目标</li>
-<li>id</li>
-<li>组合<br>两条公理:</li>
-<li>结合</li>
-<li>单位元<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">Monoid</span> <span class="type">String</span> <span class="keyword">where</span></span></span><br><span class="line">    e = <span class="string">""</span></span><br><span class="line">    (*) = (++)</span><br></pre></td></tr></table></figure>
+<li><p>隐式视图</p>
+<ol>
+<li><p>隐式转换为目标类型：把一种类型自动转换到另一种类型<br>例: </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def foo(msg: String) = println(msg)</span><br><span class="line">implicit def intToString(x: Int) = x.toString</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使对象调用类中本不存在的方法<br>例: </p>
+ <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SwingType</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wantLearned</span></span>(sw: <span class="type">String</span>) = println(<span class="string">"兔子已经学会了"</span> + sw)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">swimming</span> </span>&#123;</span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">learningType</span></span>(s: <span class="type">AnimalType</span>) = <span class="keyword">new</span> <span class="type">SwingType</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AnimalType</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">AnimalType</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="keyword">import</span> swimming._</span><br><span class="line">    <span class="keyword">val</span> rabbit = <span class="keyword">new</span> <span class="type">AnimalType</span></span><br><span class="line">    rabbit.wantLearned(<span class="string">"蛙泳"</span>)  <span class="comment">//兔子已经学会了蛙泳</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 </li>
 </ul>
-<p>字符串幺半群(S, ++, “”)<br>    r ++ (s ++ t) = (r ++ s) ++ t<br>    “” ++ s = s = s ++ “”<br>字符集幺半群(C, ∪, {})<br>自然数幺半群(N, +, 0)</p>
-<p>S到C的态射: 把串中用到的字符组成一个字符集 S -&gt; C  φ: s -&gt; {c | c ∈ s}<br>    φ(s ++ r) = φ(s) ∪ φ(r)<br>    φ(“”) = {}<br>C到N的态射: 集合的大小映射为自然数,空集的大小映射为0 C −→ N  ψ : c → |c|<br>    ψ(s) ∪ ψ(r) = ψ(s + r)<br>    {} = ψ(0)</p>
-<p>S -&gt; C -&gt; N<br>幺半群范畴Mon,对象是幺半群,箭头是态射,恒等箭头是从一个幺半群到它自己的态射</p>
-<p>只有一个对象的幺半群范畴:<br>    对象是字符串幺半群(S, ++, “”), 箭头是前缀映射,单位元是空串””</p>
-<p>预序 preset</p>
 <ul>
-<li>自反性 任何集合中的元素a都有a ≤ a；</li>
-<li>传递性 若a ≤ b且b ≤ c，则a ≤ c；<br>在预序基础上满足 </li>
-<li>反对称性 若a ≤ b且b ≤ a，则a = b；<br>称为偏序 poset</li>
+<li>隐式类</li>
 </ul>
-<p>偏序集例子: 族谱, {x,y,z}的所有子集在包含关系下</p>
 
       
 
@@ -231,7 +291,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -243,7 +303,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -252,7 +312,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/28/Notes/编程的数学原理/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/神秘的Scala implicit/">展开全文 >></a>
         </p>
       
 
@@ -282,132 +342,27 @@
 
 
   
-    <article id="post-Notes/范畴论-贺伟" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JavaScript函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/28/Notes/范畴论-贺伟/">范畴论 贺伟</a>
+      <a class="article-title" href="/2019/04/05/JavaScript函数式编程/">JavaScript函数式编程</a>
     </h1>
   
 
         
-        <a href="/2019/04/28/Notes/范畴论-贺伟/" class="archive-article-date">
-  	<time datetime="2019-04-27T18:23:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
+        <a href="/2019/04/05/JavaScript函数式编程/" class="archive-article-date">
+  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><ul>
-<li>obC 范畴C的全体对象</li>
-<li>C(A,B) 对象A到B的态射集</li>
-<li>MorC 范畴C的全体态射</li>
-<li>dom(f) 态射f的定义域</li>
-<li>cod(f) 态射f的值域</li>
-<li>$1_A$ 对象A到自身的单位态射</li>
-<li>$1_C$ 范畴C到自身的单位函子</li>
-</ul>
-<h1 id="范畴与函子"><a href="#范畴与函子" class="headerlink" title="范畴与函子"></a>范畴与函子</h1><h2 id="范畴的定义"><a href="#范畴的定义" class="headerlink" title="范畴的定义"></a>范畴的定义</h2><ol>
-<li>一族对象obC</li>
-<li></li>
-</ol>
-<ul>
-<li>(a) 复合运算律</li>
-<li>(b) 结合律</li>
-<li>(c) 单位态射：每一个对象A,存在一个态射$1_A ∈ C(A,A)$使得对任意的f ∈ C(A,B)及g ∈ C(C,A),有<br>$f1_A = f,   1_Ag = g$</li>
-</ul>
-<hr>
-<h3 id="对偶原理-duality-principle"><a href="#对偶原理-duality-principle" class="headerlink" title="对偶原理(duality principle)"></a>对偶原理(duality principle)</h3><pre><code>态射反向，称为对偶。
-</code></pre><h3 id="B上的切片范畴-slice-category-over-B-C-B"><a href="#B上的切片范畴-slice-category-over-B-C-B" class="headerlink" title="B上的切片范畴(slice category over B) C/B"></a>B上的切片范畴(slice category over B) C/B</h3><pre><code>任意两个以B为值域的态射,
-</code></pre><h2 id="函子"><a href="#函子" class="headerlink" title="函子"></a>函子</h2><h2 id="自然变换"><a href="#自然变换" class="headerlink" title="自然变换"></a>自然变换</h2><h2 id="单态射与满态射"><a href="#单态射与满态射" class="headerlink" title="单态射与满态射"></a>单态射与满态射</h2><h2 id="子对象与商对象"><a href="#子对象与商对象" class="headerlink" title="子对象与商对象"></a>子对象与商对象</h2><h2 id="Yoneda引理与可表达函子"><a href="#Yoneda引理与可表达函子" class="headerlink" title="Yoneda引理与可表达函子"></a>Yoneda引理与可表达函子</h2><h2 id="射影对象与单射对象"><a href="#射影对象与单射对象" class="headerlink" title="射影对象与单射对象"></a>射影对象与单射对象</h2>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/28/Notes/范畴论-贺伟/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Notes/Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Notes/Docker/">Docker</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/27/Notes/Docker/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>利用Linux内核提供的namespace和CGroups为应用进程构架起沙箱和资源限制.<br>在沙箱容器中,应用拥有自己的设备文件,进程间通信环境,根文件系统,进程空间,<br>用户账户空间和网络资源空间.<br>进程级资源隔离, 秒级启动.</p>
+        <p><img src="../codes/JavaScript/fp.js" alt="fp.js"></p>
 
       
 
@@ -421,7 +376,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Monad</a>
         		</li>
       		
 		</ul>
@@ -431,7 +390,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Notes/Docker/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/JavaScript函数式编程/">展开全文 >></a>
         </p>
       
 
@@ -461,187 +420,118 @@
 
 
   
-    <article id="post-Notes/Elasticsearch" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Redis-in-action" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Notes/Elasticsearch/">Elasticsearch</a>
+      <a class="article-title" href="/2019/04/05/Redis-in-action/">Redis in action</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/Notes/Elasticsearch/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+        <a href="/2019/04/05/Redis-in-action/" class="archive-article-date">
+  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h1><p>全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.</p>
-<p>分片机制, 复制机制.</p>
-<blockquote>
-<p>Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.</p>
-</blockquote>
-<p>Elasticsearch内置了对分布式集群和分布式索引的管理.</p>
-<p>Lucene倒排索引<br>    根据属性的值来查找记录.<br>    表现为: 一个关键词,它的频度,位置.</p>
-<pre><code>1. 取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点.
-2. 建立倒排索引. 关键词所在的文章号,关键词的位置, 频度
-3. 实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针.
-4. 压缩算法. 关键词压缩: &lt;前缀长度,后缀&gt;. 数字压缩:只保存与上一个值的差值.
-5. 查询单词时,Lucene对词典二元查找
-</code></pre><p>Lucene的评分机制, 查询DSL, 底层索引控制.</p>
-<p>Elasticsearch术语<br>    索引词(term): 能够被索引的精确值.<br>    文本(text): 普通的非结构化文字, 会被分析成一个个的索引词.<br>    分析(analysis): 将文本转换为索引词的过程.<br>    集群(cluster)<br>    节点(node)<br>    路由(routing): 存储文档时通过散列值进行选择分片.<br>    分片(shard): 单个Lucene实例. 索引是指向主分片和副本分片的逻辑空间,索引可以<br>        分解为多个分片,Elasticsearch会自动管理集群中的所有分片.<br>    主分片(primary shard): 默认一个索引有5个主分片.<br>    副本分片(replica shard): 每一个分片有零个或多个副本.<br>        当主分片失败时,可以从副本中选择一个作为主分片.<br>        并行操作提高性能和吞吐量.<br>    索引(index) 具有相同结构的文档集合<br>    类型(type) 类型是索引的逻辑分区.<br>    文档(document) JSON格式的字符串,像关系数据库中的一行.<br>    映射(mapping) 像关系数据库的表结构,每一个索引都有一个映射,定义了索引中的每一个字段类型,以及一个索引范围内的设置.<br>    字段(field) 像关系数据库中的列.每个字段对应一个类型: 整数,字符串,对象等.<br>    来源字段(source field) 原文档被存储在_source这个字段中.<br>    主键(ID) </p>
-<p>API约定<br>    多索引参数<br>        同时查询多个索引中的数据, 通配符 <em> : test</em>表示查询所有以test开头的索引. -test表示排除test<br>    日期筛选<br>        &lt;static_name{date_math_expr{date_format|time_zone}}&gt;<br>        static_name: 索引名称<br>        date_math_expr: 动态日期计算表达式<br>        date_format: 日期格式<br>        time_zone: 时区,默认UTC<br>    通用参数<br>        pretty<br>        human</p>
-<p>POST改变对象的当前状态, PUT创建一个对象.        </p>
-<p>Elasticsearch从5.X引入text和keyword，keyword适用于不分词字段，搜索时只能完全匹配.<br>               6.X彻底移除string, “index”的值只能是boolean变量.</p>
-<p>创建库:<br>    PUT <a href="http://127.0.0.1:9200/secisland" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland</a><br>查看库状态:<br>    GET <a href="http://127.0.0.1:9200/_cat/indices?v" target="_blank" rel="noopener">http://127.0.0.1:9200/_cat/indices?v</a><br>插入数据:<br>    PUT <a href="http://127.0.0.1:9200/secisland/secilog/1" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1</a><br>    参数:<br>        {<br>            “computer”: “x1 carbon”,<br>            “message” : “for coding”<br>        }<br>修改文档:<br>    POST <a href="http://127.0.0.1:9200/secisland/secilog/1/_update" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/_update</a><br>    参数:<br>        {<br>            “doc”: {<br>                “computer”: “x1 carbon”,<br>                “message”: “lenovo”<br>            }<br>        }<br>查询文档:<br>    GET  <a href="http://127.0.0.1:9200/secisland/secilog/1/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/</a><br>删除文档:<br>    DELETE <a href="http://127.0.0.1:9200/secisland/secilog/1/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/secilog/1/</a><br>删除库:<br>    DELETE <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a></p>
-<p>索引<br>    创建索引<br>        PUT <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a><br>        参数:<br>            {<br>                “settings”: {<br>                    “index”: {“number_of_shards”: 3, “number_of_replicas”: 2}<br>                }<br>            }<br>        修改副本数量<br>            PUT <a href="http://127.0.0.1:9200/secisland/_settings/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/_settings/</a><br>            参数:<br>             {<br>                “number_of_replicas”: 1<br>             }</p>
-<pre><code>创建自定义字段类型:
-    PUT http://127.0.0.1:9200/secisland
-    参数:
-        {
-            &quot;settings&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2},
-            &quot;mappings&quot;: {
-                &quot;secilog&quot;: 
-                    {
-                        &quot;properties&quot;: 
-                            {
-                                &quot;logType&quot;: 
-                                    {
-                                       &quot;type&quot;: &quot;text&quot;, 
-                                       &quot;index&quot;: &quot;not_analyzed&quot;
-                                    }
-                            }
-                    }
-                }
-        }
-</code></pre><p>映射<br>    增加映射:<br>        PUT <a href="http://127.0.0.1:9200/secisland/" target="_blank" rel="noopener">http://127.0.0.1:9200/secisland/</a><br>        参数:<br>        {<br>            “mappings”: {<br>                “log”: {<br>                    “properties”: {<br>                        “message”: {“type”: “text”}<br>                    }<br>                }<br>            }<br>        }</p>
-<pre><code>    添加索引名为secisland, 文档类型为log, 其中包含字段message, 字段类型是字符串.
+        <p>Redis in action</p>
+<pre><code>4. 数据安全与性能保障
+    数据持久化到硬盘
+    数据复制到其他机器
+    处理系统故障
+    Redis事物
+    非事物型流水线
+    诊断性能问题
 
-    PUT http://127.0.0.1:9200/secisland/_mapping/user
-    {
-        &quot;properties&quot;: {
-            &quot;name&quot;: {&quot;type&quot;: &quot;keyword&quot;}
-        }
-    }
-    向已存在的索引secisland添加文档类型为user, 包含字段name, 字段类型是keyword 
+    4.1 持久化选项
+        4.1.1 快照 snapshotting
+            将存在于某一时刻的所有数据都写入硬盘里面
 
+            如果新的快照文件创建完毕之前,Redis,系统或硬件这三者
+            之中的任意一个崩溃,那么Redis将丢失最近一次创建快照之后
+            写入的所有数据.
+            快照持久化只适用于即使丢失一部分数据也不会造成问题的应用程序
 
-多个索引设置映射
-    PUT http://127.0.0.1:9200/{index}/_mapping/{type}
-    {body}
+            创建快照的方法:
+                客户端向Redis发送bgsave命令来创建一个快照.
+                Redis会调用fork来创建一个子进程,然后子进程负责
+                将快照写入硬盘,父进程继续处理命令请求
 
-获取映射
-    GET http://127.0.0.1:9200/secisland/_mapping/secilog
+                客户端向Redis发送save命令来创建一个快照.
+                Redis在创建完毕之前不再响应其他任何命令.
+                在没有足够内存的情况,或者等待持久化操作执行完毕
+                也无所谓的情况下 才会使用此命令.
 
-获取字段映射
-    GET http://127.0.0.1:9200/secisland/_mapping/secilog/field/description
+                如果用户设置了save配置选项.如save 60 10000
+                Redis从最近一次创建快照算起,当60秒之内有10000次
+                写入时,Redis自动触发bgsave
 
-    只返回字段为description的内容.
-</code></pre><p>索引别名:<br>    类似数据库中的视图.</p>
-<pre><code>为索引添加别名
-    PUT http://127.0.0.1:9200/_alias
-    {
-        &quot;actions&quot;: {&quot;add&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
-    }
+                Redis接收到shutdown命令或者接收到标准TERM信号时,
+                会执行save命令.save完成后关闭.
 
-删除别名
-    PUT http://127.0.0.1:9200/_alias
-    {
-        &quot;actions&quot;: {&quot;remove&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
-    }
+                当一个Redis服务器连接另一个Redis服务器,并向对方发送sync
+                命令来开始一次复制操作时,如果主服务器没有在执行bgsave,或者
+                并非刚刚执行完bgsave,那么主服务器会执行bgsave.
 
-创建过滤索引别名
-    PUT http://127.0.0.1:9200/_alias
-    {
-        &quot;actions&quot;: {
-            &quot;add&quot;: {
-                &quot;index&quot;: &quot;test1&quot;, &quot;alias&quot;: &quot;alias2&quot;,
-                &quot;filter&quot;: {&quot;term&quot;: {&quot;user&quot;: &quot;ramble&quot;}}
-            }
-        }
-    }
+            使用快照持久化的场景:
+                1.个人开发
+                    降低快照持久化带来的资源消耗.
+                    save 900 1
+                    如果距离上次生成快照超过900秒,并在此期间执行了至少
+                    一次写入操作.那么触发一次新的bgsave
+
+                2.对日志进行聚合计算
+                    恢复因故障而被中断的日志处理操作
 
 
-新建文档(不需要先创建索引)
-PUT http://127.0.0.1:9200/blog/article/2 
-{
-    &quot;title&quot;: &quot;SB ES&quot;,
-    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
-    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
-}
-
-返回结果
-{
-    &quot;_index&quot;: &quot;blog&quot;,
-    &quot;_type&quot;: &quot;article&quot;,
-    &quot;_id&quot;: &quot;2&quot;,
-    &quot;_version&quot;: 1,
-    &quot;result&quot;: &quot;created&quot;,
-    &quot;_shards&quot;: {
-        &quot;total&quot;: 2,
-        &quot;successful&quot;: 1,
-        &quot;failed&quot;: 0
-    },
-    &quot;_seq_no&quot;: 0,
-    &quot;_primary_term&quot;: 1
-}
-再执行一次的话, _version, _seq_no会加一, result会变成updated
-
-不指定id, ES会自动生成唯一标识符.(改用了POST方法,因为是更改而不是创建)
-POST http://127.0.0.1:9200/blog/article
-{
-    &quot;title&quot;: &quot;SB ES&quot;,
-    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
-    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
-}
-返回结果
-{
-    &quot;_index&quot;: &quot;blog&quot;,
-    &quot;_type&quot;: &quot;article&quot;,
-    &quot;_id&quot;: &quot;_qm_l2sBFUlcgb1-d5N2&quot;,
-    &quot;_version&quot;: 1,
-    &quot;result&quot;: &quot;created&quot;,
-    &quot;_shards&quot;: {
-        &quot;total&quot;: 2,
-        &quot;successful&quot;: 1,
-        &quot;failed&quot;: 0
-    },
-    &quot;_seq_no&quot;: 0,
-    &quot;_primary_term&quot;: 1
-}
-
-检索文档
-    GET http://127.0.0.1:9200/blog/article/2 
-更新文档
-    POST http://127.0.0.1:9200/blog/article/1/_update
-    {
-        &quot;script&quot;: &quot;ctx._source.content = \&quot;new content\&quot;&quot;
-    }
-    只修改了content字段和version.
-
-    要更新索引中的文档, ES先获取文档,从_source属性获得数据,删除旧的
-    文件,更改_source属性,然后把它作为新的文档来索引.
-    信息一旦在Lucene的倒排索引中存储,就不能再被更改,ES通过一个带_update
-    参数的脚本来实现它.
 
 
-    如果文档中没有该字段,使用upsert来提供该字段的默认值.
-    POST http://127.0.0.1:9200/blog/article/1/_update
-    {
-        &quot;script&quot;: {
-            &quot;source&quot;: &quot;ctx._source.counter += params.count&quot;,
-            &quot;lang&quot;: &quot;painless&quot;,
-            &quot;params&quot;: {
-                &quot;count&quot;: 4
-            }
-        },
-        &quot;upsert&quot;: {&quot;counter&quot;: 0}
-    }
+        4.1.2只追加文件 append-only file AOF
+            在执行写命令时,将被执行的写命令复制到硬盘里面.以记录数据的变化.
+            Redis只要从头到尾重新执行一次AOF文件包含的所有写命令,就可以
+            恢复AOF文件所记录的数据集.
+            appendonly yes
+            appendfsync选项:
+                always
+                everysec
+                no
+
+        4.1.3 重写/压缩AOF文件
+             bgrewriteaof命令会移除aof文件中的冗余命令并重写aof文件,
+             使aof文件体积尽量变小, 工作原理与bgsave相似
+
+    4.2复制
+        主服务器向多个从服务器发送更新,并使用从服务器来处理所有的读请求.
+
+        4.2.1  从服务器的配置
+                启动redis服务器时,指定一个包含slaveof host port的配置文件.
+                redis服务器会根据ip和端口来连接主服务器.
+
+                正在运行的redis服务器,可以发送slaveof no one命令使服务器
+                终止复制操作,不再接受主服务器的数据更新
+                发送 slaveof host port来让服务器开始复制一个新的主服务器.
+
+
+5.使用Redis构建支持程序
+    使用Redis记录日志
+    使用Redis实现计数器并进行数据统计
+    查询IP地址所属的城市和国家
+    服务的发现和配置
+
+6.使用Redis构建应用程序组件
+    构建两个前缀匹配自动补全程序
+
+
+    6.1 自动补全最近联系人
+
+
+8. 构建简单的社交网站
 </code></pre>
       
 
@@ -657,6 +547,10 @@ POST http://127.0.0.1:9200/blog/article
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
       		
 		</ul>
 	</div>
@@ -665,7 +559,7 @@ POST http://127.0.0.1:9200/blog/article
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Notes/Elasticsearch/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Redis-in-action/">展开全文 >></a>
         </p>
       
 
@@ -697,7 +591,7 @@ POST http://127.0.0.1:9200/blog/article
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
     </nav>
   
 

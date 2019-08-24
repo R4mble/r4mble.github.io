@@ -151,60 +151,126 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Notes/Ramda碎碎念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-汉诺塔问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Notes/Ramda碎碎念/">Ramda碎碎念</a>
+      <a class="article-title" href="/2019/04/02/汉诺塔问题/">汉诺塔问题</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Notes/Ramda碎碎念/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/02/汉诺塔问题/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>prop基于path实现.<br>    prop = (p, obj) =&gt; path([p], obj)</p>
-<pre><code>path一层层索引
+        <p>看&lt;&lt;七周七Web框架&gt;&gt;的时候里面提到了这个问题,突然想看看怎么解决它.<br>当A有两个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C<br>当A有三个盘子,则:<br>    1 -&gt; C, 2 -&gt; B, 1 -&gt; B, 3 -&gt; C, 1 -&gt; A, 2 -&gt; C, 1 -&gt; C<br>当A有四个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C, 3 -&gt; B, 1 -&gt; A, 2 -&gt; B, 1 -&gt; B, 4 -&gt; C 然后就是三个盘子的问题</p>
+<p>Java实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Hanoi().hanoi(<span class="number">5</span>, <span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b, <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            hanoi(n - <span class="number">1</span>, a, c, b);</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">            hanoi(n - <span class="number">1</span>, b, a, c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b)</span> </span>&#123;</span><br><span class="line">        count++;</span><br><span class="line">        System.out.println(<span class="string">"第"</span> + count + <span class="string">"次: "</span> + n + <span class="string">"号盘子从"</span> + a + <span class="string">"移动到"</span> + b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
-    R.path([&apos;a&apos;, &apos;b&apos;], {a: {b: 2}}); //=&gt; 2a
-    R.prop(&apos;x&apos;, {x: 100}); //=&gt; 100
-</code></pre><p>descend = (f, a, b) =&gt; f(a) &gt; f(b) ? -1 : f(a) &lt; f(b) ? 1 : 0<br>类似地: ascend…</p>
-<p>sort = (comparator, list) =&gt; Array.prototype.slice.call(list, 0).sort(comparator)<br>sort函数实现直接用的原生实现,不过返回了新list,而且curry了.</p>
-<p>comparator :: a -&gt; b -&gt; Int</p>
-<p>thrush combinator 接受一个值, 并将函数作用于其上.  applyTo = (x, f) =&gt; f(x)<br>    const t42 = R.applyTo(42);<br>    t42(R.identity); //=&gt; 42<br>    t42(R.add(1)); //=&gt; 43</p>
-<p>keys 返回对象最外层key    </p>
-<p>applySpec : 接受一个属性值为函数的对象,返回的函数使用传入的参数调用对象的每个属性位对应的函数，来生成相应属性的值。</p>
-<pre><code>const getMetrics = R.applySpec({
-    sum: (a,b,c) =&gt; a+b+c,
-    nested: { mul: (a,b,c) =&gt; a*b*c }
-});
-print(getMetrics(2, 5, 4)) // { sum: 11, nested: { mul: 40 } }
+      
 
-内部函数: mapValues = (f, obj) =&gt; 
-            R.keys(obj).reduce((acc, key) =&gt; {
-                acc[key] = f(obj[key])
-                return acc
-            }, {})
-        是为了避免specs函数也包含map
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
-pluck 从列表内的每个对象元素中取出特定名称的属性，组成一个新的列表
-    pluck = (p, list) =&gt; map(prop(p), list)
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
-    var getAges = R.pluck(&apos;age&apos;);
-    getAges([{name: &apos;fred&apos;, age: 29}, {name: &apos;wilma&apos;, age: 27}]); //=&gt; [29, 27]
 
-    R.pluck(0, [[1, 2], [3, 4]]);               //=&gt; [1, 3]
-    R.pluck(&apos;val&apos;, {a: {val: 3}, b: {val: 5}}); //=&gt; {a: 3, b: 5}
-</code></pre><p>addIndex: 没咋看懂<br>adjust: 将数组中指定索引处的值替换为经函数变换的值<br>    R.adjust(1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);      //=&gt; [‘a’, ‘B’, ‘c’, ‘d’]<br>    R.adjust(-1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);     //=&gt; [‘a’, ‘b’, ‘c’, ‘D’]</p>
-<pre><code>实现: 统一索引,利用_concat新建list,将索引处值替换.
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/汉诺塔问题/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-TCP粘包和拆包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/TCP粘包和拆包/">TCP粘包和拆包</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/TCP粘包和拆包/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>TCP是没有界限的一串数据，它会根据TCP缓冲区的实际情况进行包的划分。<br>一个完整的包会被TCP拆分为多个包进行发送，多个小包也可能会被封装为一个<br>大的数据包发送， 这就是TCP粘包和拆包问题。</p>
+<p>发生的原因：<br>    1.应用程序write写入的字节大小大于套接口发送缓冲区大小。<br>    2.进行MSS大小的TCP分段<br>    3.以太网帧的payload大于MTU进行IP分片</p>
+<p>底层无法保证数据包不被拆分，只能通过上层应用协议栈设计来解决。<br>    解决方案：<br>        1.消息定长，如每个报文固定大小为200字节，不够的话空位补空格<br>        2.在包尾增加回车换行符进行分割，如FTP协议<br>        3.将消息分为消息头和消息体，消息头中包含表示消息总长度的字段。<br>            通常为消息头的第一个字段使用int32来表示消息的总长度。</p>
+<p>Netty解决TCP粘包问题<br>    LineBasedFrameDecoder:<br>        依次遍历ByteBuf中的可读字节，判断是否有\n或\r\n，如果有，就以此为结束标志，<br>        从可读索引到结束位置区间的字节就组成了一行。<br>        它是以换行符为结束标志的解码器，支持携带结束符或者不携带结束符两种解码方式，<br>        同时支持配置单行的最大长度。如果连续读到最大长度后仍然没有发现换行符，就会抛出<br>        异常，同时忽略之前读到的异常码流。</p>
+<pre><code>StringDecoder:
+    将接收到的对象转换成字符串，然后继续调用后面的Handler。
+
+
+LineBasedFrameDecoder + StringDecoder组合就是按行切换的文本解码器。
+
+指定分隔符：
+DelimiterBasedFrameDecoder + StringDecoder
+定长：
+FixedLengthFrameDecoder + StringDecoder
 </code></pre>
       
 
@@ -213,32 +279,13 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">柯西</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/探索Ramda//" class="article-tag-list-link color3">探索Ramda</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -247,7 +294,7 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Notes/Ramda碎碎念/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/TCP粘包和拆包/">展开全文 >></a>
         </p>
       
 
@@ -277,290 +324,133 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 
 
   
-    <article id="post-Notes/Ramda里的柯西化实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-缓存进化史" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Notes/Ramda里的柯西化实现/">Ramda里的柯西化实现</a>
+      <a class="article-title" href="/2019/04/02/缓存进化史/">缓存进化史</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Notes/Ramda里的柯西化实现/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/02/缓存进化史/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>先说R.__ (两个下划线)<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> __ = &#123;<span class="string">'@@functional/placeholder'</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"></span><br><span class="line"> *      <span class="keyword">const</span> greet = R.replace(<span class="string">'&#123;name&#125;'</span>, R.__, <span class="string">'Hello, &#123;name&#125;!'</span>);</span><br><span class="line"> *      greet(<span class="string">'Alice'</span>); <span class="comment">//=&gt; 'Hello, Alice!'</span></span><br></pre></td></tr></table></figure></p>
-<p>R.__是一个含有@@functional/placeholder属性的对象, 那么它是怎么起到占位符作用的呢?</p>
-<p>看下这个函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_isPlaceholder</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">         <span class="keyword">typeof</span> a === <span class="string">'object'</span> &amp;&amp;</span><br><span class="line">         a[<span class="string">'@@functional/placeholder'</span>] === <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这个函数的作用就是检查一个对象的@@functional/placeholder属性是否为true.</p>
-<p>第一个curry函数:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_curry1</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>.length === <span class="number">0</span> || _isPlaceholder(a)) &#123;</span><br><span class="line">      <span class="keyword">return</span> f1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Ramda</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">柯西</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/探索Ramda//" class="article-tag-list-link color3">探索Ramda</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Notes/Ramda里的柯西化实现/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Notes/Nodejs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Notes/Nodejs/">nodejs</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/Notes/Nodejs/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Nodejs适合I/O密集型应用,而不适合计算密集型应用.</p>
-<p>全局变量:<br>    process:<br>        process.argv 命令行参数数组,第一个元素是node,第二个是脚本名称,之后是运行参数<br>        process.stdout<br>        process.stdin<br>        process.nextTick(callback) 为事件循环设置一项任务,Node.js会在下次事件循环调响应<br>                                                      时调用callback.<br>                    目的: 缩短事件的执行时间<br>        process.platform<br>        process.pid<br>        process.execPath<br>        process.memoryUsage()    </p>
-<pre><code>util:
-    util.inherits 
-event:
-    EventEmitter.on(event, listener)
-    EventEmitter.emit(event, [args])
-    EventEmitter.once(event, listener) 单次监听器,触发后解除.
-    EventEmitter.removeListener(event, listener)
-    EventEmitter.removeAllListener(event)
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">nodejs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/nodejs//" class="article-tag-list-link color2">nodejs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Notes/Nodejs/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Notes/PostgreSQL Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Notes/PostgreSQL Notes/">PostgreSQL</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/Notes/PostgreSQL Notes/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="PostgreSQL"><a href="#PostgreSQL" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h1><h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
-<li>multi-version concurrency control (MVCC), Oracle中的快照隔离</li>
-<li>面向对象, 可以添加自定义函数.</li>
-<li>可拓展, 可以自定义数据类型,索引类型. </li>
-</ul>
-<h2 id="PostgreSQL与MySQL的对比"><a href="#PostgreSQL与MySQL的对比" class="headerlink" title="PostgreSQL与MySQL的对比:"></a>PostgreSQL与MySQL的对比:</h2><ol>
-<li>MySQL多表连接查询只支持Nest Loop,不支持hash join和sort merge join,子查询性能较低,不支持sequence</li>
-<li>性能优化工具和度量信息不足, 异步复制,无法通过主从做到数据零丢失</li>
-<li>在线操作功能弱.</li>
+        <ol>
+<li>数据同步加Redis<br> 通过消息队列进行数据同步到Redis,用Java去取缓存.<br> 优点: 分布式缓存,数据更新快.<br> 缺点: 依赖Redis稳定性.</li>
 </ol>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
-<li>基本数据类型: Integer, Numeric, String, Boolean, 二进制bytea, </li>
-<li>字符型: varchar(n), char(n), text</li>
-<li>位串类型: bit(n), bit varying(n)</li>
-<li>枚举类型: enum</li>
-<li>网络地址类型: cidr, inet, macaddr</li>
-<li>结构型: Data/Time, Array, Range, UUID</li>
-<li>文档型: JSON, XML, K-V</li>
-<li>几何型: 点, 线, 圈, 多边形</li>
-<li>定制型: 组合, 定制类型</li>
-</ul>
-<h2 id="数据完整性"><a href="#数据完整性" class="headerlink" title="数据完整性"></a>数据完整性</h2><ul>
-<li>UNIQUE, NOT NULL</li>
-<li>主键</li>
-<li>外键</li>
-<li>排除约束</li>
-<li>Explicit Locks</li>
-<li>Advisory Locks</li>
-</ul>
-<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><ul>
-<li>select 连接两列合并为一列<blockquote>
-<p>select first_name  || ‘ ‘ ||  last_name as full_name, email from customer;</p>
-</blockquote>
+<p>2-3. Java Map到Guava cache<br>    进程内缓存作为一级缓存,Redis作为二级缓存.<br>    优点: 不受外部系统影响.<br>    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.</p>
+<ol start="4">
+<li><p>Guava Cache刷新<br> 设置写后刷新时间,进行刷新.</p>
 </li>
-<li>order by时升序NULL在最后，降序NULL在最前</li>
-<li>distinct bcolor, fcolor 这样使用distinct时会把这两列作为整体进行去重</li>
-<li><blockquote>
-<p>select distinct on (bcolor) bcolor, fcolor from t1 order by bcolor ,fcolor;     </p>
-</blockquote>
-<p>  先按照bcolor, fcolor对行进行排序，每一组重复的bcolor中选取第一个所在的行。</p>
+<li><p>外部缓存异步刷新.</p>
 </li>
-<li><blockquote>
-<p>limit n offset m </p>
-</blockquote>
-<p>  跳过m个，选取n个. 注意m数量不要太大  </p>
-<p> fetch是postgresql对sql标准的实现，和limit offset功能相同</p>
-<blockquote>
-<p>OFFSET start { ROW | ROWS } FETCH { FIRST | NEXT } [ row_count ] { ROW | ROWS } ONLY        </p>
-<ul>
-<li>where in 既可以接列表，也可以接一个子查询。</li>
-<li>like匹配符： % 匹配任意个字符， _ 匹配单个字符</li>
-<li>和null做 = 比较，永远为false， 因此使用 is null 和 is not null</li>
-</ul>
-</blockquote>
-</li>
-<li><p>找到表a中有的b中没有的行: </p>
-<blockquote>
-<p>basket_a a LEFT JOIN basket_b b ON a.fruit = b.fruit WHERE b.id IS NULL;  </p>
-</blockquote>
-</li>
-<li>找到表a和表b中各自独特的行：<blockquote>
-<p>basket_a a FULL JOIN basket_b b ON a.fruit = b.fruit WHERE a.id IS NULL OR b.id IS NULL;</p>
-</blockquote>
-</li>
-<li>join 等价于 inner join</li>
-<li>self-join 查询有层级体系的数据，同一张表中比较行。</li>
-<li>json与jsonb：<ul>
-<li>json是对输入文本的完整拷贝，保留输入的空格，重复键和顺序。处理函数必须在每个执行上重新解析。存储快，读取慢。</li>
-<li>jsonb是解析输入后保存的二进制，在解析时会删除不必要的空格和重复键，顺序也会不同，使用时不用再次解析。支持索引。存储慢，读取快。</li>
-</ul>
-</li>
-</ul>
+</ol>
+<p>HashMap<br>    无法数据淘汰,内存会无限制增长.<br>    不需要淘汰机制时,使用HashMap做缓存.<br>LRUHashMap<br>    FIFO: 队列, 命中率不行.<br>    LRU: 最近最少使用算法, 每次访问数据放在队尾, 淘汰数据时直接淘汰队首. 不能保证热点数据存留.<br>    LFU: 最近最少频率使用, 利用额外的空间记录每个数据的使用频率,对频率最低的进行淘汰.</p>
+<pre><code>实现LRUMap: 继承LinkedHashMap,重写removeEldestEntry方法.
+缺点: 锁竞争严重,不支持过期时间,不支持自动刷新.
+</code></pre><p>Guava Cache<br>    分段锁: 锁太少竞争依然激烈, 锁太多会出现随机淘汰.根据一定的算法进行分段<br>    过期时间: expireAfterWrite 写后多久过期<br>             expireAfterAccess 读后多久过期<br>    虚引用: 两个引用队列, 记录被回收的引用，其中每个队列记录了每个被回收的Entry的hash，这样回收了之后通过这个队列中的hash值就能把以前的             Entry进行删除。<br>    删除监听器: 获取数据被淘汰的原因: 被用户删除, 被用户替代, 过期, 驱逐收集, 由于大小被淘汰.</p>
+<p>Caffeine<br>    W-TinyLfu(LFU+LRU算法变种)<br>    LFU只要数据访问模式中的概率分布随时间保持不变,命中率就非常高. 但难以淘汰某些过去访问量高,但现在访问量低的数据.<br>    基于时间周期进行衰减,使用额外空间记录数据访问频率.</p>
+<pre><code>频率记录
+    Count-Min Sketch记录访问频率, 布隆过滤器的变种.
 
+异步读写
+    使用RingBuffer
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/缓存进化史/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Tree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/Tree/">Tree</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/Tree/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>说起树,首先想到的就是递归,递归,还有递归…<br>树的算法里确实有很多漂亮的递归,感觉比Scheme里面的递归还要迷人(主要是指迷惑的迷)</p>
+<h2 id="1-树的高度"><a href="#1-树的高度" class="headerlink" title="1. 树的高度"></a>1. 树的高度</h2><p><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">104. Maximum Depth of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(maxDepth(root.left), maxDepth(root.right)) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>算法很优雅,但是并不能一眼看穿,来人肉单步执行一下吧<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">3</span></span><br><span class="line">   / \</span><br><span class="line">  <span class="number">9</span>  <span class="number">20</span></span><br><span class="line">    /  \</span><br><span class="line">   <span class="number">15</span>   <span class="number">7</span></span><br><span class="line"></span><br><span class="line">Math.max(maxDepth(<span class="number">9</span>), maxDepth(<span class="number">20</span>)) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="number">15</span>), maxDepth(<span class="number">7</span>)) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(<span class="number">0</span>, <span class="number">0</span>) + <span class="number">1</span>, Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, Math.max(<span class="number">1</span>, <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, <span class="number">2</span>) + <span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="2-平衡树"><a href="#2-平衡树" class="headerlink" title="2. 平衡树"></a>2. 平衡树</h2><p><a href="https://leetcode.com/problems/balanced-binary-tree" target="_blank" rel="noopener">110. Balanced Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> result = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBalanced</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    maxDepth(root);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = maxDepth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = maxDepth(root.right);</span><br><span class="line">    <span class="keyword">if</span> (Math.abs(l - r) &gt; <span class="number">1</span>)</span><br><span class="line">        result = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>利用最大高度,每次递归求的时候看下左子树和右子树的高度差有没有超过1</p>
+<h2 id="3-两节点的最长路径"><a href="#3-两节点的最长路径" class="headerlink" title="3. 两节点的最长路径"></a>3. 两节点的最长路径</h2><p><a href="https://leetcode.com/problems/diameter-of-binary-tree" target="_blank" rel="noopener">543. Diameter of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">diameterOfBinaryTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    depth(root);</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">depth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = depth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = depth(root.right);</span><br><span class="line">    max = Math.max(max, l + r);</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也是利用求最大高度的, 每次算一下左边和右边的距离, 存一个最大值.</p>
+<h2 id="4-翻转树"><a href="#4-翻转树" class="headerlink" title="4. 翻转树"></a>4. 翻转树</h2><p><a href="https://leetcode.com/problems/invert-binary-tree" target="_blank" rel="noopener">226. Invert Binary Tree</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">invertTree</span><span class="params">(TreeNode)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    TreeNode left = root.left;</span><br><span class="line">    root.left = invertTree(root.right);</span><br><span class="line">    root.right = invertTree(left);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>人肉单步执行:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">     <span class="number">4</span></span><br><span class="line">   /   \</span><br><span class="line">  <span class="number">2</span>     <span class="number">7</span></span><br><span class="line"> / \   / \</span><br><span class="line"><span class="number">1</span>   <span class="number">3</span> <span class="number">6</span>   <span class="number">9</span></span><br><span class="line"></span><br><span class="line">invertTree(<span class="number">4</span>)</span><br><span class="line">    root = <span class="number">4</span>,</span><br><span class="line">    left = <span class="number">2</span>,</span><br><span class="line">    root.left = invertTree(<span class="number">7</span>)</span><br><span class="line">                    left = <span class="number">6</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">9</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">6</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">    root.right = invertTree(<span class="number">2</span>)</span><br><span class="line">                    left = <span class="number">1</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">3</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">1</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure></p>
+<p>交换值,本来是一个比较常见的操作:<br>int temp = a;<br>a = b;<br>b = temp;<br>但是要让这个操作应用到树的每一个左右节点时,就让人犯了难.<br>看上面的演算就知道要临场想出来难度有多大.<br>让我想到了以前背的四阶魔方最后一个L公式之后可能出现的中间两个错位现象,当时我们把它叫做牙齿公式.<br>15步的超长公式,很酷炫同时也很难记住.<br>我当时把这个公式用订书机钉在了数学笔记本上,每次翻笔记的时候都会顺带复习一遍.<br>但是难度大+用得少,不可避免的会遗忘.</p>
+<h2 id="5-合并树"><a href="#5-合并树" class="headerlink" title="5.合并树"></a>5.合并树</h2><p><a href="https://leetcode.com/problems/merge-two-binary-trees" target="_blank" rel="noopener">617. Merge Two Binary Trees</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">mergeTrees</span><span class="params">(TreeNode t1, TreeNode t2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span> &amp;&amp; t2 == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span>) <span class="keyword">return</span> t2;</span><br><span class="line">    <span class="keyword">if</span> (t2 == <span class="keyword">null</span>) <span class="keyword">return</span> t1;</span><br><span class="line">    TreeNode root = <span class="keyword">new</span> TreeNode(t1.val + t2.val);</span><br><span class="line">    root.left = mergeTrees(t1.left, t2.left);</span><br><span class="line">    root.right = mergeTrees(t1.right, t2.right);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>精准而优雅,嗯…<br>新建了一个二叉树,而不是一个合并到另一个上.</p>
+<h2 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h2>
       
 
       
@@ -573,7 +463,11 @@ event:
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">PostgreSQL</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Tree</a>
         		</li>
       		
 		</ul>
@@ -585,7 +479,7 @@ event:
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/PostgreSQL//" class="article-tag-list-link color1">PostgreSQL</a>
+        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
         		</li>
       		
 		</ul>
@@ -594,7 +488,7 @@ event:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Notes/PostgreSQL Notes/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/Tree/">展开全文 >></a>
         </p>
       
 
@@ -626,7 +520,7 @@ event:
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/19/">Next &raquo;</a>
     </nav>
   
 

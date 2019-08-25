@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  数据类型字符串(string)常规操作: set name &amp;quot;Tom&amp;quot; get name append name &amp;quot;Jack&amp;quot; exists name del name 批量操作: MGET name1 name2 name3">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-25T13:19:31.554Z">
+<meta property="og:updated_time" content="2019-08-25T13:37:23.677Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis">
 <meta name="twitter:description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  数据类型字符串(string)常规操作: set name &amp;quot;Tom&amp;quot; get name append name &amp;quot;Jack&amp;quot; exists name del name 批量操作: MGET name1 name2 name3">
@@ -238,7 +238,19 @@ zrem bookstore &quot;Java Concurrency&quot;
 </code></pre><p>相当于SortedSet和HashMap的结合.<br>一方面作为Set保证value的唯一性,另一方面给value赋予score,使用<br>跳跃列表的数据结构来排序.</p>
 <p>跳跃列表<br>    层级结构,最下面一层所有元素串起来,每隔几个元素挑出一个代表,将这几个<br>    代表使用另外一级指针串起来,然后在这些代表中再挑出二级代表,再串起来.</p>
 <p>容器型数据结构通用规则:<br>    create if not exists<br>    drop if no elements<br>如果字符串已经设置了过期时间, 然后调用set方法修改它, 它的过期时间会消失.</p>
-<p>分布式锁<br>    setnx(set if not exist)<br>    分布式锁逻辑流程:<br>        setnx lock:codehole true<br>            do something…<br>        expire lock:codehole 5<br>        del lock:codehole<br>    存在问题: setnx和expire操作之间如果进程挂掉就会造成死锁.<br>    解决办法: redis2.8后加入set指令扩展参数,使这两个指令一起执行.<br>        set lock:codehole true ex 5 nx<br>            do something…<br>        del lock:codehole<br>    依然存在问题: 如果加锁和释放锁之间逻辑执行时间太长超出锁超时限制,<br>        锁会过期,第二个线程重新持有锁. 第一个线程执行完逻辑后把锁释放了,<br>        第三个线程就会在第二个线程逻辑执行完之前拿到了锁.<br>    解决方案: 为set指令的value设置一个随机数,释放锁时检查随机数是否一致,<br>        然后再删除key. 检查value和删除key不是原子操作,需要Lua脚本来处理.</p>
+<h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3><pre><code>setnx(set if not exist)
+分布式锁逻辑流程:
+
+setnx lock:codehole true
+    do something...
+expire lock:codehole 5        
+del lock:codehole
+</code></pre><p>存在问题: setnx和expire操作之间如果进程挂掉就会造成死锁.</p>
+<p>解决办法: redis2.8后加入set指令扩展参数,使这两个指令一起执行.</p>
+<pre><code>set lock:codehole true ex 5 nx
+    do something...
+del lock:codehole
+</code></pre><p>依然存在问题: 如果加锁和释放锁之间逻辑执行时间太长超出锁超时限制,<br>    锁会过期,第二个线程重新持有锁. 第一个线程执行完逻辑后把锁释放了,<br>    第三个线程就会在第二个线程逻辑执行完之前拿到了锁.<br>解决方案: 为set指令的value设置一个随机数,释放锁时检查随机数是否一致,<br>    然后再删除key. 检查value和删除key不是原子操作,需要Lua脚本来处理.</p>
 <p>延时队列<br>    blpop/brpop 阻塞读, 队列没数据时立即进入休眠状态,一旦数据到来,立刻<br>        醒过来,消息延迟几乎为零.<br>    空闲连接自动断开<br>        闲置过久的客户端连接会被服务器主动断开,减少闲置资源占用.这时<br>        blpop/brpop会抛出异常.<br>    分布式锁加锁失败处理:</p>
 <pre><code>    1. 直接抛异常, 通知用户稍后再试.
     2. sleep一会儿再充实.
@@ -246,8 +258,13 @@ zrem bookstore &quot;Java Concurrency&quot;
 延时队列可以用zset来实现,消息序列化为字符串作为zset的value,这个
 消息的到期时间作为score,然后用多个线程轮询zset获取到期的任务进行
 处理.
-</code></pre><h3 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h3><p>比特位组成的数组.<br>用途举例: 存用户一年的签到记录.<br>bitcount<br>    统计指定位置范围内1的个数,start和end是字节索引,必须是8的倍数.<br>    要查找用户某个月签到多少天,需要将这个月覆盖的字节全部取出然后统计.<br>bitpos 来查找指定范围内出现的第一个0或1<br>bitfield 一次操作多个位</p>
-<h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>提供不精确的去重计数方案, 标准误差0.81%</p>
+</code></pre><h3 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h3><p>比特位组成的数组.<br>用途举例: 存用户一年的签到记录.</p>
+<pre><code>bitcount
+    统计指定位置范围内1的个数,start和end是字节索引,必须是8的倍数.
+    要查找用户某个月签到多少天,需要将这个月覆盖的字节全部取出然后统计.
+bitpos 来查找指定范围内出现的第一个0或1
+bitfield 一次操作多个位
+</code></pre><h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>提供不精确的去重计数方案, 标准误差0.81%</p>
 <pre><code>pfadd uv user1
 pfcount uv
 pfadd uv user2 user3 user1 user4
@@ -275,8 +292,8 @@ PUBLISH redisChat &quot;Learn redis&quot;
 <li>SAVE: 阻塞Redis服务器进程</li>
 <li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
 </ol>
-<h3 id="Redis哨兵-Sentinel"><a href="#Redis哨兵-Sentinel" class="headerlink" title="Redis哨兵(Sentinel)"></a>Redis哨兵(Sentinel)</h3><h3 id="自动分区-Cluster"><a href="#自动分区-Cluster" class="headerlink" title="自动分区(Cluster)"></a>自动分区(Cluster)</h3><h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><p>scan cursor [MATCH    pattern] [COUNT count]</p>
-<p>Redis中的key存在一个很大的字典中,数组加链表. scan指令返回的游标就是数组的位置索引,</p>
+<h3 id="Redis哨兵-Sentinel"><a href="#Redis哨兵-Sentinel" class="headerlink" title="Redis哨兵(Sentinel)"></a>Redis哨兵(Sentinel)</h3><h3 id="自动分区-Cluster"><a href="#自动分区-Cluster" class="headerlink" title="自动分区(Cluster)"></a>自动分区(Cluster)</h3><h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><pre><code>scan cursor [MATCH pattern] [COUNT count]
+</code></pre><p>Redis中的key存在一个很大的字典中,数组加链表. scan指令返回的游标就是数组的位置索引,</p>
 <ol>
 <li>复杂度为O(n), 通过游标分步进行, 不会阻塞线程.</li>
 <li>提供limit参数, 可以控制每次返回结果的最大条数. 等于服务器单次遍历的字典槽位数量.</li>
@@ -467,7 +484,7 @@ n表示单个管道内并行的请求数量.
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据类型"><span class="toc-number">1.</span> <span class="toc-text">数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#字符串-string"><span class="toc-number">1.1.</span> <span class="toc-text">字符串(string)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列表-list"><span class="toc-number">1.2.</span> <span class="toc-text">列表(list)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#散列-hash"><span class="toc-number">1.3.</span> <span class="toc-text">散列(hash)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集合-set"><span class="toc-number">1.4.</span> <span class="toc-text">集合(set)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#有序集合-zset"><span class="toc-number">1.5.</span> <span class="toc-text">有序集合(zset)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#位图-bitmap"><span class="toc-number">1.6.</span> <span class="toc-text">位图(bitmap)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HyperLogLog"><span class="toc-number">1.7.</span> <span class="toc-text">HyperLogLog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#地理空间-geospatial"><span class="toc-number">1.8.</span> <span class="toc-text">地理空间(geospatial).</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#事务-transaction"><span class="toc-number">1.9.</span> <span class="toc-text">事务(transaction)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#排序"><span class="toc-number">1.10.</span> <span class="toc-text">排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生存时间"><span class="toc-number">1.11.</span> <span class="toc-text">生存时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#管道命令-Piplining"><span class="toc-number">1.12.</span> <span class="toc-text">管道命令(Piplining)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#发布-订阅"><span class="toc-number">1.13.</span> <span class="toc-text">发布/订阅</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制-replication"><span class="toc-number">1.14.</span> <span class="toc-text">复制(replication)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lua脚本-Lua-scripting"><span class="toc-number">1.15.</span> <span class="toc-text">Lua脚本(Lua scripting)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LRU驱动事件-LRU-eviction"><span class="toc-number">1.16.</span> <span class="toc-text">LRU驱动事件(LRU eviction)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#磁盘持久化-persistence"><span class="toc-number">1.17.</span> <span class="toc-text">磁盘持久化(persistence)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RDB"><span class="toc-number">1.17.1.</span> <span class="toc-text">RDB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AOF"><span class="toc-number">1.17.2.</span> <span class="toc-text">AOF</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis哨兵-Sentinel"><span class="toc-number">1.18.</span> <span class="toc-text">Redis哨兵(Sentinel)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动分区-Cluster"><span class="toc-number">1.19.</span> <span class="toc-text">自动分区(Cluster)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#scan"><span class="toc-number">1.20.</span> <span class="toc-text">scan</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据类型"><span class="toc-number">1.</span> <span class="toc-text">数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#字符串-string"><span class="toc-number">1.1.</span> <span class="toc-text">字符串(string)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列表-list"><span class="toc-number">1.2.</span> <span class="toc-text">列表(list)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#散列-hash"><span class="toc-number">1.3.</span> <span class="toc-text">散列(hash)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集合-set"><span class="toc-number">1.4.</span> <span class="toc-text">集合(set)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#有序集合-zset"><span class="toc-number">1.5.</span> <span class="toc-text">有序集合(zset)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分布式锁"><span class="toc-number">1.6.</span> <span class="toc-text">分布式锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#位图-bitmap"><span class="toc-number">1.7.</span> <span class="toc-text">位图(bitmap)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HyperLogLog"><span class="toc-number">1.8.</span> <span class="toc-text">HyperLogLog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#地理空间-geospatial"><span class="toc-number">1.9.</span> <span class="toc-text">地理空间(geospatial).</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#事务-transaction"><span class="toc-number">1.10.</span> <span class="toc-text">事务(transaction)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#排序"><span class="toc-number">1.11.</span> <span class="toc-text">排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生存时间"><span class="toc-number">1.12.</span> <span class="toc-text">生存时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#管道命令-Piplining"><span class="toc-number">1.13.</span> <span class="toc-text">管道命令(Piplining)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#发布-订阅"><span class="toc-number">1.14.</span> <span class="toc-text">发布/订阅</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制-replication"><span class="toc-number">1.15.</span> <span class="toc-text">复制(replication)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lua脚本-Lua-scripting"><span class="toc-number">1.16.</span> <span class="toc-text">Lua脚本(Lua scripting)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LRU驱动事件-LRU-eviction"><span class="toc-number">1.17.</span> <span class="toc-text">LRU驱动事件(LRU eviction)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#磁盘持久化-persistence"><span class="toc-number">1.18.</span> <span class="toc-text">磁盘持久化(persistence)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RDB"><span class="toc-number">1.18.1.</span> <span class="toc-text">RDB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AOF"><span class="toc-number">1.18.2.</span> <span class="toc-text">AOF</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis哨兵-Sentinel"><span class="toc-number">1.19.</span> <span class="toc-text">Redis哨兵(Sentinel)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动分区-Cluster"><span class="toc-number">1.20.</span> <span class="toc-text">自动分区(Cluster)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#scan"><span class="toc-number">1.21.</span> <span class="toc-text">scan</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>

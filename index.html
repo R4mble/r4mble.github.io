@@ -247,10 +247,16 @@ zrem bookstore &quot;Java Concurrency&quot;
 消息的到期时间作为score,然后用多个线程轮询zset获取到期的任务进行
 处理.
 </code></pre><h3 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h3><p>比特位组成的数组.<br>用途举例: 存用户一年的签到记录.<br>bitcount<br>    统计指定位置范围内1的个数,start和end是字节索引,必须是8的倍数.<br>    要查找用户某个月签到多少天,需要将这个月覆盖的字节全部取出然后统计.<br>bitpos 来查找指定范围内出现的第一个0或1<br>bitfield 一次操作多个位</p>
-<h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>提供不精确的去重计数方案, 标准误差0.81%<br>pfadd uv user1<br>pfcount uv<br>pfadd uv user2 user3 user1 user4<br>pfcount uv  </p>
-<p>pfmerge 将多个pf计数值累加形成新的pf值</p>
-<p>布隆过滤器:<br>    场景举例: 推荐内容去重.<br>bf.add             bf.madd<br>bf.exists         bf.mexists</p>
-<p>向布隆过滤器添加key时,使用多个hash函数对key进行hash算得一个整数索引,</p>
+<h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>提供不精确的去重计数方案, 标准误差0.81%</p>
+<pre><code>pfadd uv user1
+pfcount uv
+pfadd uv user2 user3 user1 user4
+pfcount uv  
+</code></pre><p>pfmerge 将多个pf计数值累加形成新的pf值</p>
+<p>布隆过滤器:<br>    场景举例: 推荐内容去重.</p>
+<pre><code>bf.add         bf.madd
+bf.exists         bf.mexists
+</code></pre><p>向布隆过滤器添加key时,使用多个hash函数对key进行hash算得一个整数索引,</p>
 <h3 id="地理空间-geospatial"><a href="#地理空间-geospatial" class="headerlink" title="地理空间(geospatial)."></a>地理空间(geospatial).</h3><h3 id="事务-transaction"><a href="#事务-transaction" class="headerlink" title="事务(transaction)"></a>事务(transaction)</h3><pre><code>MULTI
 INCR likes
 INCR visitors
@@ -264,16 +270,11 @@ EXPIRE session 20
 TTL session
 </code></pre><h3 id="管道命令-Piplining"><a href="#管道命令-Piplining" class="headerlink" title="管道命令(Piplining)"></a>管道命令(Piplining)</h3><h3 id="发布-订阅"><a href="#发布-订阅" class="headerlink" title="发布/订阅"></a>发布/订阅</h3><pre><code>SUBSCRIBE redisChat
 PUBLISH redisChat &quot;Learn redis&quot;
-</code></pre><h3 id="复制-replication"><a href="#复制-replication" class="headerlink" title="复制(replication)"></a>复制(replication)</h3><h3 id="Lua脚本-Lua-scripting"><a href="#Lua脚本-Lua-scripting" class="headerlink" title="Lua脚本(Lua scripting)"></a>Lua脚本(Lua scripting)</h3><h3 id="LRU驱动事件-LRU-eviction"><a href="#LRU驱动事件-LRU-eviction" class="headerlink" title="LRU驱动事件(LRU eviction)"></a>LRU驱动事件(LRU eviction)</h3><h3 id="磁盘持久化-persistence"><a href="#磁盘持久化-persistence" class="headerlink" title="磁盘持久化(persistence)"></a>磁盘持久化(persistence)</h3><ul>
-<li><h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><h5 id="默认的持久化方式-将服务器某个时间点上的数据库状态-非空数据库以及相关键值-保存到一个经过压缩的二进制文件中-dump-rdb"><a href="#默认的持久化方式-将服务器某个时间点上的数据库状态-非空数据库以及相关键值-保存到一个经过压缩的二进制文件中-dump-rdb" class="headerlink" title="默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)"></a>默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)</h5><h5 id="手动持久化命令"><a href="#手动持久化命令" class="headerlink" title="手动持久化命令:"></a>手动持久化命令:</h5></li>
-</ul>
+</code></pre><h3 id="复制-replication"><a href="#复制-replication" class="headerlink" title="复制(replication)"></a>复制(replication)</h3><h3 id="Lua脚本-Lua-scripting"><a href="#Lua脚本-Lua-scripting" class="headerlink" title="Lua脚本(Lua scripting)"></a>Lua脚本(Lua scripting)</h3><h3 id="LRU驱动事件-LRU-eviction"><a href="#LRU驱动事件-LRU-eviction" class="headerlink" title="LRU驱动事件(LRU eviction)"></a>LRU驱动事件(LRU eviction)</h3><h3 id="磁盘持久化-persistence"><a href="#磁盘持久化-persistence" class="headerlink" title="磁盘持久化(persistence)"></a>磁盘持久化(persistence)</h3><h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><p>默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)<br>手动持久化命令:</p>
 <ol>
 <li>SAVE: 阻塞Redis服务器进程</li>
-<li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.</li>
+<li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
 </ol>
-<ul>
-<li><h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
-</ul>
 <h3 id="Redis哨兵-Sentinel"><a href="#Redis哨兵-Sentinel" class="headerlink" title="Redis哨兵(Sentinel)"></a>Redis哨兵(Sentinel)</h3><h3 id="自动分区-Cluster"><a href="#自动分区-Cluster" class="headerlink" title="自动分区(Cluster)"></a>自动分区(Cluster)</h3><h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><p>scan cursor [MATCH    pattern] [COUNT count]</p>
 <p>Redis中的key存在一个很大的字典中,数组加链表. scan指令返回的游标就是数组的位置索引,</p>
 <ol>

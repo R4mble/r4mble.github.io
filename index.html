@@ -151,166 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Redis跳表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/25/Redis跳表/">Redis跳表</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/25/Redis跳表/" class="archive-article-date">
-  	<time datetime="2019-08-25T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>SkipList 有序数据结构<br>    在每个节点维持多个指向其他节点的指针.<br>    平均O(logN),最坏O(N)复杂度的节点查找,可以通过顺序性操作来<br>        批量处理节点.<br>    当有序集合包含的元素数量较多, 或有序集合中元素的member是比较长的字符串时,<br>    Redis使用跳表来作为有序集合键的底层实现.</p>
-<p>跳表在Redis的两个应用: 有序集合键, 集群节点中做内部数据结构</p>
-<p>zskiplist<br>    header: 指向跳表的表头节点<br>    tail: 指向跳表的表尾节点<br>    level: 记录目前跳表内,层数最大的那个节点的层数(表头节点的层数不计算在内)<br>    length: 跳表目前包含节点的数量(表头节点不计算在内)</p>
-<p>zskiplistNode<br>    level: L1代表第一层, L2代表第二层.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/25/Redis跳表/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-RxJava" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/25/RxJava/">RxJava</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/25/RxJava/" class="archive-article-date">
-  	<time datetime="2019-08-25T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Observable<br>    被观察者, 决定什么时候触发事件和触发什么事件, 决定异步操作模块的顺序和次数.<br>Observer<br>    观察者, 可以在不同的线程中执行任务. 创建一个处于待命状态的观察者哨兵, 可以在未来某个时刻<br>    响应Observable的通知,不需要阻塞等待Observable发射数据.<br>subscribe<br>    subscribe(onNext)<br>    subscribe(onNext, onError)<br>    subscribe(onNext, onError, onComplete)<br>    subscribe(onNext, onError, onComplete, onSubscribe)    </p>
-<pre><code>onComplete在onNext之后执行, 它是一个Action, 无参数类型
-onSubscribe在onNext和onComplete之前执行
-</code></pre><p>五种观察者模式<br>    Observable: 能够发射0或n个数据,并以成功或错误事件终止<br>    Flowable: 同上, 支持背压,可以控制数据源发射的速度<br>    Single: 只能发射单个数据或错误事件<br>    Completable: 不发射数据,只处理onComplete和onError事件<br>    Maybe: 能够发射0或1个数据,要么成功要么失败,类似Option</p>
-<p>do操作符<br>    doOnSubscribe: 一旦观察者订阅了Observable, 就会被订阅<br>    doOnLifecycle: 在观察者订阅之后,设置是否取消订阅<br>    doOnNext: 它产生的Observable每发射一项数据就会调用它一次,它的Consumer接受发射的数据项.在subscribe<br>                之前对数据进行处理.<br>    doOnEach:<br>    doAfterNext:<br>    doOnComplete:<br>    doFinally:<br>    doAfterTerminate: </p>
-<p>Hot/Code Observable<br>Hot: </p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">RP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/25/RxJava/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-Redis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -331,7 +171,7 @@ onSubscribe在onNext和onComplete之前执行
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><hr>
+        <hr>
 <blockquote>
 <p> 用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.</p>
 </blockquote>
@@ -555,10 +395,192 @@ n表示单个管道内并行的请求数量.
 	</div>
 
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/08/25/Redis/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Redis跳表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/25/Redis跳表/">Redis跳表</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/25/Redis跳表/" class="archive-article-date">
+  	<time datetime="2019-08-25T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>SkipList 有序数据结构<br>    在每个节点维持多个指向其他节点的指针.<br>    平均O(logN),最坏O(N)复杂度的节点查找,可以通过顺序性操作来<br>        批量处理节点.<br>    当有序集合包含的元素数量较多, 或有序集合中元素的member是比较长的字符串时,<br>    Redis使用跳表来作为有序集合键的底层实现.</p>
+<p>跳表在Redis的两个应用: 有序集合键, 集群节点中做内部数据结构</p>
+<p>zskiplist<br>    header: 指向跳表的表头节点<br>    tail: 指向跳表的表尾节点<br>    level: 记录目前跳表内,层数最大的那个节点的层数(表头节点的层数不计算在内)<br>    length: 跳表目前包含节点的数量(表头节点不计算在内)</p>
+<p>zskiplistNode<br>    level: L1代表第一层, L2代表第二层.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/25/Redis跳表/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-RxJava" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/25/RxJava/">RxJava</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/25/RxJava/" class="archive-article-date">
+  	<time datetime="2019-08-25T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Observable<br>    被观察者, 决定什么时候触发事件和触发什么事件, 决定异步操作模块的顺序和次数.<br>Observer<br>    观察者, 可以在不同的线程中执行任务. 创建一个处于待命状态的观察者哨兵, 可以在未来某个时刻<br>    响应Observable的通知,不需要阻塞等待Observable发射数据.<br>subscribe<br>    subscribe(onNext)<br>    subscribe(onNext, onError)<br>    subscribe(onNext, onError, onComplete)<br>    subscribe(onNext, onError, onComplete, onSubscribe)    </p>
+<pre><code>onComplete在onNext之后执行, 它是一个Action, 无参数类型
+onSubscribe在onNext和onComplete之前执行
+</code></pre><p>五种观察者模式<br>    Observable: 能够发射0或n个数据,并以成功或错误事件终止<br>    Flowable: 同上, 支持背压,可以控制数据源发射的速度<br>    Single: 只能发射单个数据或错误事件<br>    Completable: 不发射数据,只处理onComplete和onError事件<br>    Maybe: 能够发射0或1个数据,要么成功要么失败,类似Option</p>
+<p>do操作符<br>    doOnSubscribe: 一旦观察者订阅了Observable, 就会被订阅<br>    doOnLifecycle: 在观察者订阅之后,设置是否取消订阅<br>    doOnNext: 它产生的Observable每发射一项数据就会调用它一次,它的Consumer接受发射的数据项.在subscribe<br>                之前对数据进行处理.<br>    doOnEach:<br>    doAfterNext:<br>    doOnComplete:<br>    doFinally:<br>    doAfterTerminate: </p>
+<p>Hot/Code Observable<br>Hot: </p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">RP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/25/RxJava/">展开全文 >></a>
         </p>
       
 
@@ -610,7 +632,7 @@ n表示单个管道内并行的请求数量.
       
         <p>Spring注解:<br>    AnnotationConfigApplicationContext extends GenericApplicationContext<br>                                       implements AnnotationConfigRegistry </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//根据参数类型可以知道，其实可以传入多个annotatedClasses，但是这种情况出现的比较少</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AnnotationConfigApplicationContext</span><span class="params">(Class&lt;?&gt;... annotatedClasses)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//调用无参构造函数，会先调用父类GenericApplicationContext的构造函数</span></span><br><span class="line">		<span class="comment">//父类的构造函数里面就是初始化DefaultListableBeanFactory，并且赋值给beanFactory</span></span><br><span class="line">		<span class="comment">//本类的构造函数里面，初始化了一个读取器：AnnotatedBeanDefinitionReader read，一个扫描器ClassPathBeanDefinitionScanner scanner</span></span><br><span class="line">		<span class="comment">//scanner的用处不是很大，它仅仅是在我们外部手动调用 .scan 等方法才有用，常规方式是不会用到scanner对象的</span></span><br><span class="line">		<span class="keyword">this</span>();</span><br><span class="line">		<span class="comment">//把传入的类进行注册，这里有两个情况，</span></span><br><span class="line">		<span class="comment">//传入传统的配置类</span></span><br><span class="line">		<span class="comment">//传入bean（虽然一般没有人会这么做</span></span><br><span class="line">		<span class="comment">//看到后面会知道spring把传统的带上@Configuration的配置类称之为FULL配置类，不带@Configuration的称之为Lite配置类</span></span><br><span class="line">		<span class="comment">//但是我们这里先把带上@Configuration的配置类称之为传统配置类，不带的称之为普通bean</span></span><br><span class="line">		register(annotatedClasses);</span><br><span class="line">		<span class="comment">//刷新</span></span><br><span class="line">		refresh();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="/images/Spring源码/AnnotationConfigApplicationContext.png" alt="AnnotationConfigApplicationContext"><br><img src="../images/Spring源码/DefaultListableBeanFactory.png" alt="AnnotationConfigApplicationContext"></p>
+<p><img src="/images/Spring源码/AnnotationConfigApplicationContext.png" alt="AnnotationConfigApplicationContext"><br><img src="/images/Spring源码/DefaultListableBeanFactory.png" alt="AnnotationConfigApplicationContext"></p>
 
       
 
@@ -774,6 +796,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
@@ -786,10 +812,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Elm</a>
               </li>
              
@@ -798,19 +820,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -822,15 +836,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Functor</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -850,7 +872,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
+                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -858,7 +880,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
+                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -886,7 +908,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">React</a>
+                <a href="javascript:void(0)" class="js-tag color3">RP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -898,15 +920,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -914,11 +928,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
+                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">闲言碎语</a>
+                <a href="javascript:void(0)" class="js-tag color5">lens</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -238,19 +238,19 @@ FixedLengthFrameDecoder + StringDecoder
 
 
   
-    <article id="post-Tree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-WebSocket" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Tree/">Tree</a>
+      <a class="article-title" href="/2019/04/02/WebSocket/">WebSocket</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/Tree/" class="archive-article-date">
+        <a href="/2019/04/02/WebSocket/" class="archive-article-date">
   	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
@@ -258,20 +258,172 @@ FixedLengthFrameDecoder + StringDecoder
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>说起树,首先想到的就是递归,递归,还有递归…<br>树的算法里确实有很多漂亮的递归,感觉比Scheme里面的递归还要迷人(主要是指迷惑的迷)</p>
-<h2 id="1-树的高度"><a href="#1-树的高度" class="headerlink" title="1. 树的高度"></a>1. 树的高度</h2><p><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">104. Maximum Depth of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(maxDepth(root.left), maxDepth(root.right)) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>算法很优雅,但是并不能一眼看穿,来人肉单步执行一下吧<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">3</span></span><br><span class="line">   / \</span><br><span class="line">  <span class="number">9</span>  <span class="number">20</span></span><br><span class="line">    /  \</span><br><span class="line">   <span class="number">15</span>   <span class="number">7</span></span><br><span class="line"></span><br><span class="line">Math.max(maxDepth(<span class="number">9</span>), maxDepth(<span class="number">20</span>)) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="number">15</span>), maxDepth(<span class="number">7</span>)) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(<span class="number">0</span>, <span class="number">0</span>) + <span class="number">1</span>, Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, Math.max(<span class="number">1</span>, <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, <span class="number">2</span>) + <span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="2-平衡树"><a href="#2-平衡树" class="headerlink" title="2. 平衡树"></a>2. 平衡树</h2><p><a href="https://leetcode.com/problems/balanced-binary-tree" target="_blank" rel="noopener">110. Balanced Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> result = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBalanced</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    maxDepth(root);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = maxDepth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = maxDepth(root.right);</span><br><span class="line">    <span class="keyword">if</span> (Math.abs(l - r) &gt; <span class="number">1</span>)</span><br><span class="line">        result = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>利用最大高度,每次递归求的时候看下左子树和右子树的高度差有没有超过1</p>
-<h2 id="3-两节点的最长路径"><a href="#3-两节点的最长路径" class="headerlink" title="3. 两节点的最长路径"></a>3. 两节点的最长路径</h2><p><a href="https://leetcode.com/problems/diameter-of-binary-tree" target="_blank" rel="noopener">543. Diameter of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">diameterOfBinaryTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    depth(root);</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">depth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = depth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = depth(root.right);</span><br><span class="line">    max = Math.max(max, l + r);</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>也是利用求最大高度的, 每次算一下左边和右边的距离, 存一个最大值.</p>
-<h2 id="4-翻转树"><a href="#4-翻转树" class="headerlink" title="4. 翻转树"></a>4. 翻转树</h2><p><a href="https://leetcode.com/problems/invert-binary-tree" target="_blank" rel="noopener">226. Invert Binary Tree</a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">invertTree</span><span class="params">(TreeNode)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    TreeNode left = root.left;</span><br><span class="line">    root.left = invertTree(root.right);</span><br><span class="line">    root.right = invertTree(left);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>人肉单步执行:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">     <span class="number">4</span></span><br><span class="line">   /   \</span><br><span class="line">  <span class="number">2</span>     <span class="number">7</span></span><br><span class="line"> / \   / \</span><br><span class="line"><span class="number">1</span>   <span class="number">3</span> <span class="number">6</span>   <span class="number">9</span></span><br><span class="line"></span><br><span class="line">invertTree(<span class="number">4</span>)</span><br><span class="line">    root = <span class="number">4</span>,</span><br><span class="line">    left = <span class="number">2</span>,</span><br><span class="line">    root.left = invertTree(<span class="number">7</span>)</span><br><span class="line">                    left = <span class="number">6</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">9</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">6</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">    root.right = invertTree(<span class="number">2</span>)</span><br><span class="line">                    left = <span class="number">1</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">3</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">1</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure></p>
-<p>交换值,本来是一个比较常见的操作:<br>int temp = a;<br>a = b;<br>b = temp;<br>但是要让这个操作应用到树的每一个左右节点时,就让人犯了难.<br>看上面的演算就知道要临场想出来难度有多大.<br>让我想到了以前背的四阶魔方最后一个L公式之后可能出现的中间两个错位现象,当时我们把它叫做牙齿公式.<br>15步的超长公式,很酷炫同时也很难记住.<br>我当时把这个公式用订书机钉在了数学笔记本上,每次翻笔记的时候都会顺带复习一遍.<br>但是难度大+用得少,不可避免的会遗忘.</p>
-<h2 id="5-合并树"><a href="#5-合并树" class="headerlink" title="5.合并树"></a>5.合并树</h2><p><a href="https://leetcode.com/problems/merge-two-binary-trees" target="_blank" rel="noopener">617. Merge Two Binary Trees</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">mergeTrees</span><span class="params">(TreeNode t1, TreeNode t2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span> &amp;&amp; t2 == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span>) <span class="keyword">return</span> t2;</span><br><span class="line">    <span class="keyword">if</span> (t2 == <span class="keyword">null</span>) <span class="keyword">return</span> t1;</span><br><span class="line">    TreeNode root = <span class="keyword">new</span> TreeNode(t1.val + t2.val);</span><br><span class="line">    root.left = mergeTrees(t1.left, t2.left);</span><br><span class="line">    root.right = mergeTrees(t1.right, t2.right);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>精准而优雅,嗯…<br>新建了一个二叉树,而不是一个合并到另一个上.</p>
-<h2 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h2>
+        <p>相关技术<br>    向客户端广播或者推送消息: Server-Sent Event(SSE),提供自动重连,事件ID等功能.<br>    扩充HTTP的网络协议: SPDY, 压缩HTTP首标,多路复用,工作管道.<br>    Web实时通信: Web Real-Time Communication(WebRTC)浏览器之间实时通信,实时语音和视频聊天.</p>
+<p>WebSocket<br>    事件驱动,异步编程,支持二进制数据和文本数据.    </p>
+<pre><code>构造函数: URL和protocols
+    URL可以是ws或wss, 分别用于非加密和加密流量.wss使用SSL,就是HTTPS的安全机制来保证.
+    protocols可以是XMPP,SOAP,自定义协议等.客户端定义通信协议,服务器选择一种.
+
+    客户发送带有协议名称的Sec-WebSocket-Protocol首标,服务器响应一个带有和客户请求相同的
+    协议名称的Sec-WebSockt-Protocol首标.
+
+WebSocket事件:
+    open, message, error, close
+
+二进制数据类型: ws.binaryType: Blob(多媒体文件,图像,视频,音频), ArrayBuffer(Uint8Array)
+
+WebSocket方法
+    send()
+        onopen之后,onclose之前.  当连接不可用时,抛出一个有关无效连接状态的异常.
+    close()
+        终止连接, 可选参数: code(数字型状态码), reason(文本字符串)
+
+WebSocket对象特性 
+    readyState
+        0: WebSocket.CONNECTING
+        1: WebSocket.OPEN
+        2: WebSocket.CLOSING
+        3: WebSocket.CLOSED
+    bufferedAmount
+        检查已进入队列,但尚未发送到服务器的字节数,不包括协议组帧开销或操作系统,网络硬件所进行的缓冲.
+        可以限制应用向服务器发送的速率,避免网络饱和.
+        关闭连接前也可以检查,看是否还有数据没有发送到服务器.
+    protocol
+        服务器选择的协议名,在握手完成之前为空.
+
+WebSocket初始握手
+    客户端:
+        GET /echo /HTTP/1.1
+        Host: echo.websocket.org
+        Origin: http://www.websocket.org
+        Sec-WebSocket-Key: ah43rfdidajureqf
+        Sec-WebSocket-Version: 13
+        Upgrade: websocket
+    服务器:
+        101 Switching Protocols
+        Connection: Upgrade
+        Date: Wed, 20 Jun 2012 03:23:13 GMT
+        Sec-WebSocket-Accepct: da+fdlfskjoewi
+        Server: Kaazing Gateway
+        Upgrade: WebSocket
+
+    计算响应键值
+        WebSocket服务器响应一个计算出来的键值,从客户端发送的Sec-WebSocket-Key首标中
+        取得键值,在Sec-WebSocket-Accepct首标中返回根据客户端预期计算的键值.
+
+消息格式
+</code></pre><p>消息和帧</p>
+<ol start="26">
+<li><p>Spring对WebSocket的支持<br>26.1 介绍<br>26.2 服务端的Spring WebSocket API</p>
+<pre><code>WebSocketHandler接口: WebSocket消息和生命周期事件处理器.
+    void afterConnectionEstablished(WebSocketSession session) throws Exception;
+        在WebSocket协定成功并且连接建立准备好使用时执行
+    void handleMessage(WebSocketSession session, WebSocketMessage&lt;?&gt; message) throws Exception;
+        在新消息到达时执行
+    void handleTransportError(WebSocketSession session, Throwable exception) throws Exception;
+        处理WebSocket消息传输下层错误  
+    void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception;            
+        连接关闭或者发生传输错误时执行.
+    boolean supportsPartialMessages();
+        WebSocketHandler是否处理部分消息.
+
+AbstractWebSocketHandler抽象类: 重写了handleMessage()方法,将三种message分配给三个新建的处理方法.
+                               重写了supportsPartialMessages()方法, 直接返回false
+                               其它的都是空实现.
+
+BinaryWebSocketHandler和TextWebSocketHandler:
+    继承自AbstractWebSocketHandler, 重写对方的消息处理方法, 关闭会话.                             
+
+WebSocketSession接口: WebSocket会话抽象,允许在WebSocket连接之上发送消息然后关闭它.
+    String getId();                          返回会话的独特标识符
+    URI getUri();                            返回建立WebSocket连接的URI
+    HttpHeaders getHandshakeHeaders();       返回握手请求中使用的Headers
+    Map&lt;String, Object&gt; getAttributes();     返回WebSocket会话属性
+    Principal getPrincipal();                返回包含已认证用户的姓名的Principal实例,如果用户未认证,返回null.
+    InetSocketAddress getLocalAddress();     返回请求被接受的地址
+    InetSocketAddress getRemoteAddress();    返回远程客户端的地址
+    String getAcceptedProtocol();            返回协定的子协议
+    void setTextMessageSizeLimit(int messageSizeLimit); 配置接收文本消息的最大值
+    int getTextMessageSizeLimit();           获取已配置的接收文本消息的最大值
+    void setBinaryMessageSizeLimit(int messageSizeLimit); 配置接收二进制消息的最大值
+    int getBinaryMessageSizeLimit();         获取已配置的接收二进制消息的最大值
+    List&lt;WebSocketExtension&gt; getExtensions(); 确定协定的拓展
+    void sendMessage(WebSocketMessage&lt;?&gt; message) throws IOException; 发送WebSocket消息.
+    boolean isOpen();                         返回连接是否依然开放
+    void close() throws IOException;          以1000的状态码关闭WebSocket连接(CloseStatus.NORMAL)
+    void close(CloseStatus status) throws IOException; 以给定的的状态码关闭WebSocket连接
+
+WebSocketMessage&lt;T&gt;接口: 可以在WebSocket连接上处理和发送的消息
+    T getPayload();             返回消息的负载
+    int getPayloadLength();     返回消息字节数
+    boolean isLast();           如果当前消息是客户端发送的完整的WebSocket消息的最后一部分,返回true.
+                                如果部分消息支持不可用或者未开启,返回false
+
+WebSocketConfigurer接口: 定义回调方法来配置WebSocket的请求处理.
+    void registerWebSocketHandlers(WebSocketHandlerRegistry registry);
+        注册WebSocketHandler
+
+WebSocketHandlerRegistry接口: 提供配置WebSocketHandler请求映射的方法.
+    WebSocketHandlerRegistration addHandler(WebSocketHandler webSocketHandler, String... paths);
+        在指定的URL路径上配置WebSocketHandler
+
+WebSocketHandlerRegistration接口: 提供配置WebSocket Handler的方法.
+    WebSocketHandlerRegistration addHandler(WebSocketHandler handler, String... paths);
+        添加共享相同配置(interceptors,SockJS,config)的handler.
+    WebSocketHandlerRegistration setHandshakeHandler(HandshakeHandler handshakeHandler);
+        配置HandshakeHandler
+    WebSocketHandlerRegistration addInterceptors(HandshakeInterceptor... interceptors);
+        配置握手请求的拦截器
+    WebSocketHandlerRegistration setAllowedOrigins(String... origins);
+        配置被允许的header值
+    SockJsServiceRegistration withSockJS();
+        开启SockJS fallback选项
+</code></pre><p>26.4 STOMP协议的介绍,配置,常用注解,测试</p>
+<pre><code>WebSocket子协议,定义可以发送的消息类型,格式和内容.面向文本的协议,但是消息负载可以是文本也可以是二进制.
+基于帧的协议,帧结构:
+    COMMAND
+    header1:value1
+    header2:value2
+
+    Body^@
+客户端可以使用SEND或者SUBSCRIBE命令来发送或者订阅消息,同时使用destination的header来描述消息的相关信息和
+接收地址.
+</code></pre></li>
+</ol>
+<pre><code>        Message&lt;T&gt;接口: 有headers和body的通用消息表示.
+            T getPayload();                 返回消息负载
+            MessageHeaders getHeaders();    返回消息headers
+        MessageSendingOperations接口: 发送消息到目标的操作.
+            void send(Message&lt;?&gt; message) throws MessagingException;
+                发送消息到默认目标
+            void send(D destination, Message&lt;?&gt; message) throws MessagingException;
+                发送消息到给定目标
+            void convertAndSend(Object payload) throws MessagingException;
+                转换后发送
+
+        常用注解:
+            @EnableWebSocketMessageBroker: 在WebSocket之上使用高级的消息子协议开启broker-backed消息
+            @MessageMapping: 映射Message到消息处理方法上.
+            @SendTo
+
+        常用接口和类:
+            WebSocketMessageBrokerConfigurer接口: 定义在WebSocket客户端使用STOMP消息处理的方法.
+                default void registerStompEndpoints(StompEndpointRegistry registry) {}
+                    注册STOMP端点到指定的URL
+
+            StompEndpointRegistry接口: 在WebSocket端点之上注册STOMP
+            StompWebSocketEndpointRegistration接口: 在WebSocket端点之上配置STOMP
+            SimpMessagingTemplate类: STOMP消息发送器
+
+STOMP
+    SEND帧:
+        SEND
+            destination:/queue/trade
+            content-type:application/json
+            content-length:44
+
+            {&quot;action&quot;:&quot;BUY&quot;,&quot;ticker&quot;:&quot;MMM&quot;,&quot;shares&quot;,44}^@
+</code></pre>
       
 
       
@@ -279,21 +431,159 @@ FixedLengthFrameDecoder + StringDecoder
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Tree</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
 	</div>
 
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/WebSocket/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-volatile&amp;synchronized&amp;Reentrantlock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/volatile&synchronized&Reentrantlock/">volatile&amp;synchronized&amp;Reentrantlock</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/volatile&synchronized&Reentrantlock/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>5.volatile<br>    缓存一致性协议: 保证了每个缓存中使用的共享变量的副本是一致的<br>        当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，<br>        会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，<br>        发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。</p>
+<pre><code>JMM: 并发编程的三个问题
+    原子性问题
+        一个操作或者多个操作,要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。
+    可见性问题
+        当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。
+    有序性问题
+        指令重排序不会影响单个线程的执行，但是会影响到线程并发执行的正确性。
+
+Java对这三个问题的解决方案
+    原子性
+        Java内存模型只保证了基本读取和赋值是原子性操作,如果要实现更大范围操作的原子性，可以通过synchronized和Lock来实现
+
+    可见性
+        Java提供了volatile关键字来保证可见性.当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主存，
+        当有其他线程需要读取时，它会去内存中读取新值。
+
+        而普通的共享变量不能保证可见性，因为普通共享变量被修改之后，什么时候被写入主存是不确定的，
+        当其他线程去读取时，此时内存中可能还是原来的旧值，因此无法保证可见性。
+
+        通过synchronized和Lock也能够保证可见性，synchronized和Lock能保证同一时刻只有一个线程获取锁然后执行同步代码，
+        并且在释放锁之前会将对变量的修改刷新到主存当中。因此可以保证可见性。
+
+    有序性
+        通过volatile关键字来保证一定的“有序性”.  可以通过synchronized和Lock来保证有序性
+
+        Java内存模型具备一些先天的“有序性”，即不需要通过任何手段就能够得到保证的有序性，这个通常也称为 happens-before 原则
+            程序次序规则：一个线程内，按照代码顺序，书写在前面的操作先行发生于书写在后面的操作
+            锁定规则：一个unLock操作先行发生于后面对同一个锁lock操作
+            volatile变量规则：对一个变量的写操作先行发生于后面对这个变量的读操作
+            传递规则：如果操作A先行发生于操作B，而操作B又先行发生于操作C，则可以得出操作A先行发生于操作C
+            线程启动规则：Thread对象的start()方法先行发生于此线程的每个一个动作
+            线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生
+            线程终结规则：线程中所有的操作都先行发生于线程的终止检测，我们可以通过Thread.join()方法结束、Thread.isAlive()的返回值手段检测到线程已经终止执行
+            对象终结规则：一个对象的初始化完成先行发生于他的finalize()方法的开始
+
+volatile关键字的两层语义
+    保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。
+    禁止进行指令重排序。
+    (不保证原子性)
+
+        当程序执行到volatile变量的读操作或者写操作时，在其前面的操作的更改肯定全部已经进行，
+        且结果已经对后面的操作可见；在其后面的操作肯定还没有进行；
+
+        在进行指令优化时，不能将在对volatile变量访问的语句放在其后面执行，
+        也不能把volatile变量后面的语句放到其前面执行。
+
+volatile的原理和实现机制
+    加入volatile关键字时，会多出一个lock前缀指令
+    lock前缀指令实际上相当于一个内存屏障（也成内存栅栏），内存屏障会提供3个功能：
+    　　1）它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；
+    　　2）它会强制将对缓存的修改操作立即写入主存；
+    　　3）如果是写操作，它会导致其他CPU中对应的缓存行无效。
+
+使用volatile关键字的场景
+    对变量的写操作不依赖于当前值     该变量没有包含在具有其他变量的不变式中
+        可以被写入 volatile 变量的这些有效值独立于任何程序的状态，包括变量的当前状态。
+
+
+
+synchronized和reentrantlock异同
+
+    相同点
+        都实现了多线程同步和内存可见性语义
+        都是可重入锁
+    不同点
+        实现机制不同 
+            synchronized通过java对象头锁标记和Monitor对象实现 
+            synchronized依赖jvm内存模型保证包含共享变量的多线程内存可见性
+
+            reentrantlock通过CAS、ASQ（AbstractQueuedSynchronizer）和locksupport（用于阻塞和解除阻塞）实现 
+            reentrantlock通过ASQ的volatile state保证包含共享变量的多线程内存可见性
+
+        使用方式不同 
+            synchronized可以修饰实例方法（锁住实例对象）、静态方法（锁住类对象）、代码块（显式指定锁对象）
+            reentrantlock显式调用trylock()/lock()方法，需要在finally块中释放锁
+
+        功能丰富程度不同 
+            reentrantlock提供有限时间等候锁（设置过期时间）、可中断锁（lockInterruptibly）、condition（提供await、signal等方法）等丰富语义 
+            reentrantlock提供公平锁和非公平锁实现 synchronized不可设置等待时间、不可被中断（interrupted）            
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
@@ -309,7 +599,7 @@ FixedLengthFrameDecoder + StringDecoder
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/Tree/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/volatile&synchronized&Reentrantlock/">展开全文 >></a>
         </p>
       
 
@@ -339,27 +629,61 @@ FixedLengthFrameDecoder + StringDecoder
 
 
   
-    <article id="post-堆" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Springboot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/堆/">堆</a>
+      <a class="article-title" href="/2019/04/02/Springboot/">SpringBoot</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/堆/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/02/Springboot/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>堆是完全二叉树, 使用数组表示. 从数组下标1开始放置.<br>节点i的子节点在 2i 和 2i+1 处. 父节点在 i/2 处, 根除外.</p>
+        <p>@Autowired<br>    先根据类型找bean，如果对应类型的bean不唯一，则根据属性名称和bean的名称进行匹配。<br>    如果不确定其标注属性一定存在且允许为null，则可设置required属性为false<br>        @Autowired(required = false)<br>    可以用到方法或者方法参数上。</p>
+<pre><code>@Primary
+    多个同类型bean同时存在时，设置注入的优先级。
+
+@Qualifier
+    与@Autowired配合，通过类型和名称一起找到Bean。
+
+也可以放在构造器参数前面，注入参数。
+</code></pre><p>Bean的生命周期<br>    Bean定义</p>
+<pre><code>    1. 在@ComponentScan定义的扫描路径找带有@Component的类，资源定位。
+    2. 解析资源，保存Bean定义的信息到BeanDefinition的实例中。
+    3. 把Bean定义发布到Spring IoC容器中
+    4. 默认情况下，Spring继续完成Bean的实例化和依赖注入。
+Bean生命周期
+    @ComponentScan配置项lazyInit，默认为false，不进行延迟初始化。
+
+    接口BeanNameAware setBeanName方法
+    接口BeanFactoryAware setBeanFactory方法
+    接口ApplicationContextAware(需要容器实现ApplicationContext接口) setApplicationContext方法
+    BeanPostProcessor预初始化方法(针对全部Bean生效) postPorcessBeforeInitialization方法
+    @PostConstruct标注方法 自定义初始化方法
+    接口InitializingBean afterPropertiesSet方法
+    BeanPostProcessor后初始化方法(针对全部Bean生效) postPorcessAfterInitialization方法
+    生存期
+    @PreDestroy标注方法 自定义销毁方法
+    接口DisPosableBean destroy方法: 释放资源
+</code></pre><p>文件上传</p>
+<p>SessionCallback和RedisCallback接口<br>作用: 让RedisTemplate进行回调, 通过它们可以在同一条连接下执行<br>     多个Redis命令.避免RedisTemplate多次获取不同的连接</p>
+<pre><code> SessionCallback封装良好,应当优先使用.
+ RedisCallback比较底层,要处理的内容多,可读性差.
+
+SessionCallback&lt;T&gt;: 
+    &lt;K, V&gt; T execute(RedisOperations&lt;K, V&gt; operations) throws DataAccessException;
+        执行同一个session中的所有操作.
+</code></pre><p>ThreadPoolTaskExecutor类:</p>
 
       
 
@@ -374,7 +698,7 @@ FixedLengthFrameDecoder + StringDecoder
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        			<a href="/categories/SpringBoot//" class="article-tag-list-link color1">SpringBoot</a>
         		</li>
       		
 		</ul>
@@ -383,94 +707,7 @@ FixedLengthFrameDecoder + StringDecoder
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/堆/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/分布式消息队列实践/">分布式消息队列实践</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/分布式消息队列实践/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
-<p>ArrayBlockingQueue</p>
-<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
-<pre><code>    功能命令
-
-    传输层协议
-
-MQTT
-
-STOMP
-
-XMPP
-
-JMS
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/分布式消息队列实践/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/Springboot/">展开全文 >></a>
         </p>
       
 

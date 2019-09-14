@@ -151,6 +151,266 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-es doc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/es doc/">Elasticsearch</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/es doc/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>新建文档</li>
+</ul>
+<pre><code>PUT /customer/_doc/1
+{
+&quot;name&quot;: &quot;John Doe&quot;
+}
+</code></pre><ul>
+<li>获取文档</li>
+</ul>
+<pre><code>GET /customer/_doc/1
+</code></pre><ul>
+<li>批量导入</li>
+</ul>
+<pre><code>curl -H &quot;Content-Type: application/json&quot; -XPOST &quot;localhost:9200/bank/_bulk?pretty&amp;refresh&quot; --data-binary &quot;@accounts.json&quot;
+curl &quot;localhost:9200/_cat/indices?v&quot;
+</code></pre><ul>
+<li>搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match_all&quot;: {}
+    },
+    &quot;sort&quot;: [
+        {
+            &quot;account_number&quot;: {
+                &quot;order&quot;: &quot;desc&quot;
+            }
+        }
+    ],
+    &quot;from&quot;: 10,
+    &quot;size&quot;: 10
+}
+from和size做分页
+</code></pre><ul>
+<li>匹配搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match&quot;: {
+            &quot;address&quot;: &quot;mill lane&quot;
+        }
+    }
+}    
+</code></pre><ul>
+<li>精确搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match_phrase&quot;: {
+            &quot;address&quot;: &quot;mill lane&quot;
+        }
+    }
+}
+</code></pre><ul>
+<li>must,should,must_not从句<br>  must: 文档必须完全匹配条件<br>  should: should下面会带一个以上的条件，至少满足一个条件，这个文档就符合should<br>  must_not: 文档必须不匹配条件</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;bool&quot;: {
+            &quot;must&quot;: [
+                {&quot;match&quot;: {&quot;age&quot;: &quot;40&quot;}}
+            ],
+            &quot;must_not&quot;: [
+                {&quot;match&quot;: {&quot;state&quot;: &quot;ID&quot;}}
+            ]
+        }
+    }
+}
+</code></pre><ul>
+<li>范围过滤器</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;bool&quot;: {
+            &quot;must&quot;: {&quot;match_all&quot;: {}},
+            &quot;filter&quot;: {
+                &quot;range&quot;: {
+                    &quot;balance&quot;: {
+                        &quot;gte&quot;: 20000,
+                        &quot;lte&quot;: 30000
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/es doc/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Category-Theory-for-Programmers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -309,182 +569,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/24/算法4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Kubernetes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/Kubernetes/">Kubernetes</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/Kubernetes/" class="archive-article-date">
-  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>一切以服务为中心, 一切围绕服务运转.<br>自动化.<br>一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发<br>调度流程,最终在选定的目标节点上启动相应数量的服务实例副本.</p>
-<p>核心组件:<br>    etcd: 保存整个集群的状态<br>    apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制<br>    controller manager: 维护集群的状态, 如故障检测,自动扩展,滚动更新等.<br>    scheduler: 负责资源调度,按照预定的调度策略将Pod调度到相应的机器上.<br>    kubelet: 负责维护容器的生命周期,也负责Volume(CVI)和网格(CNI)的管理.<br>    Container runtime: 负责镜像管理以及Pod和容器的真正运行(CRI)<br>    kube-proxy: 负责为Service提供cluster内部的服务发现和负载均衡.</p>
-<p>Add-ons:<br>    kube-dns: 负责为整个集群提供DNS服务<br>    Ingress Controller: 为服务提供外网入口.<br>    Heapster: 资源监控</p>
-<p>API对象: Kubernetes集群中的管理操作单元.<br>    三大类属性: 元数据metadata<br>                 标识API对象,至少包含:namespace,name和uid. 使用标签来标识和匹配不同的对象.<br>                                如env=dev来标识开发服务.<br>              规范spec<br>                 描述了用户期望的Kubernetes集群中的分布式系统达到的理想状态.如通过Replication Controller设置<br>                    期望的Pod副本数为3.<br>              状态status<br>                 描述了系统实际当前达到的状态,如当前实际Pod副本数为2</p>
-<p>Pod: Kubernetes集群中运行部署应用或服务的最小单元.一个Pod代表集群中运行的一个进程.<br>        支持多个容器在一个Pod中共享网络地址和文件系统,可以通过进程间通信和<br>        文件共享的方式完成服务.</p>
-<p>kubectl get nodes<br>    获取可用的节点.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/Kubernetes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><pre><code>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.
-</code></pre><h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><pre><code>类从加载到卸载的生命周期7个阶段: 
-    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)
-    解析可以在初始化之后开始.
-
-5种必须对类进行初始化的情况:
-    1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
-    2. 使用reflect包方法对类进行反射调用时.
-    3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
-    4. 虚拟机启动时用户指定要执行的主类
-    5. 动态语言支持
-
-不会触发初始化的引用--被动引用:
-    1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
-    2. 通过数组定义来引用类,不会触发类的初始化
-        package org.fenixsoft.classloading
-            SuperClass[] sca = new SuperClass[10];
-        类org.fenixsoft.classloading.SuperClass不会被初始化.
-        但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
-            创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
-            数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
-    3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
-
-对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.
-</code></pre><h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><pre><code>加载
-    1. 通过一个类的全限定名来获取定义此类的二进制字节流
-    2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
-    3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
-验证
-
-准备
-
-解析
-
-初始化
-</code></pre><h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
         </p>
       
 

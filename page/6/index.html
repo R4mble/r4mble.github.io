@@ -151,19 +151,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-每周总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux_sed&amp;awk三剑客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/每周总结/">每周总结</a>
+      <a class="article-title" href="/2019/06/29/Linux_sed&awk三剑客/">Linux</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/每周总结/" class="archive-article-date">
+        <a href="/2019/06/29/Linux_sed&awk三剑客/" class="archive-article-date">
   	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
@@ -171,57 +171,118 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>感觉每个周做一次总结还是挺不错的, 频率不会太频繁导致难以维护, 一个周的时间<br>  也足够做一些东西出来, 系统地学一些知识.</p>
-</blockquote>
-<h2 id="todos"><a href="#todos" class="headerlink" title="todos"></a>todos</h2><ul>
-<li><p>[] 英语: 单词, 听力</p>
-</li>
-<li><p>[] 算法: 数组, 字符串, 链表, 树, 动态规划</p>
-</li>
-<li><p>[] Web框架: Spring</p>
-</li>
-<li><p>[] 数据存储: Redis, Elasticsearch, Postgresql, MyBatis</p>
-</li>
-<li><p>[] 开发工具: Maven, Git, Linux, Kubernete</p>
-</li>
-<li><p>[] 编程语言: Java, Go, JavaScript</p>
-</li>
-<li><p>[] 网络协议: Http, TCP, WebScoket, Netty, gRPC</p>
-</li>
-<li><p>[] 消息队列: RabbitMQ</p>
-<h2 id="2019"><a href="#2019" class="headerlink" title="2019"></a>2019</h2><h3 id="6-24-6-29"><a href="#6-24-6-29" class="headerlink" title="6.24-6.29"></a>6.24-6.29</h3></li>
-<li><p>[x] 学习了Elasticsearch的相关知识</p>
-</li>
-<li><p>[x] 了解下angular</p>
-</li>
-<li><p>[] Leetcode Weekly contest</p>
-</li>
-<li><p>[] </p>
-<h4 id="6-29"><a href="#6-29" class="headerlink" title="6.29"></a>6.29</h4></li>
-<li>[] MyBatis缓存<h3 id="7-1-7-6"><a href="#7-1-7-6" class="headerlink" title="7.1-7.6"></a>7.1-7.6</h3></li>
-<li>[] Leetcode Weekly contest</li>
-<li>[] 20道算法题</li>
-<li>[] 200个单词</li>
-</ul>
+        <p>awk<br>    每行按空格或TAB分割，输出文本中的1、4项<br>    awk ‘{print $1,$4}’ log.txt</p>
+<pre><code>格式化输出
+awk &apos;{printf &quot;%-8s %-10s\n&quot;,$1,$4}&apos; log.txt
 
+使用&quot;,&quot;分割
+awk -F, &apos;{print $1,$2}&apos; log.txt
+
+使用内建变量
+awk &apos;BEGIN{FS=&quot;,&quot;} {print $1,$2}&apos; log.txt
+
+使用多个分隔符, 先使用空格分割，然后对分割结果再使用&quot;,&quot;分割
+awk -F &apos;[ ,]&apos; &apos;{print $1,$2,$5}&apos; log.txt
+
+设置变量a=1, b=s (字符串加数字结果为数字, $1b相当于concat)
+awk -va=1 &apos;{print $1,$1+a}&apos; log.txt
+awk -va=1 -vb=s &apos;{print $1,$1+a,$1b}&apos; log.txt
+
+过滤第一列大于2的行
+awk &apos;$1&gt;2&apos; log.txt
+
+过滤第一列等于2的行
+awk &apos;$1==2 {print $1,$3}&apos; log.txt
+
+过滤第一列大于2并且第二列等于&apos;Are&apos;的行
+awk &apos;$1&gt;2 &amp;&amp; $2==&quot;Are&quot; {print $1,$2,$3}&apos; log.txt
+
+内建变量: 
+    FILENAME: 当前文件名
+    NR: 行号, 从1开始
+
+指定输出分割符
+awk &apos;{print $1,$2,$5}&apos; OFS=&quot; $ &quot;  log.txt
+
+~ 表示模式开始。// 中是模式。
+找到第二列包含 &quot;th&quot;的行，打印第二列与第四列
+awk &apos;$2 ~ /th/ {print $2,$4}&apos; log.txt
+
+输出包含&quot;re&quot; 的行
+awk &apos;/re/ &apos; log.txt
+
+忽略大小写
+awk &apos;BEGIN{IGNORECASE=1} /this/&apos; log.txt
+
+计算文件大小
+ls -l *.txt | awk &apos;{sum+=$6} END {print sum}&apos;
+
+从文件中找出长度大于80的行
+awk &apos;length&gt;80&apos; log.txt
+</code></pre><p>sed<br>    在第四行后添加一行，并将结果输出到标准输出<br>    sed -e 4a\newline testfile</p>
+<pre><code>在第二行前添加一行，并将结果输出到标准输出
+sed -e &apos;2i drink tea&apos; testfile
+
+删除第二行和第三行
+sed -e &apos;2,3d&apos; testfile
+
+删除第二行到最后一行
+sed -e &apos;2,$d&apos; testfile
+
+添加多行,使用\隔开
+
+第二行到第五行整个使用No 2-5 number替换
+sed &apos;2,5c No 2-5 number&apos; testfile
+
+列出第2-4行
+sed -n &apos;2,4p&apos; testfile
+
+搜索匹配Linux的行
+sed -n &apos;/Linux/p&apos; testfile
+
+删除匹配的行
+sed &apos;/Linux/d&apos; testfile
+
+替换匹配的行
+sed &apos;s/Linux/linux/g&apos; testfile
+
+行尾的.换成! 并写入文件
+sed -i &apos;s/\.$/\!/g&apos; testfile
+</code></pre>
       
 
       
     </div>
     <div class="article-info article-info-index">
       
-        <div class="article-pop-out tagcloud">
-          <i class="icon-tuding"></i>
-          <a class="article-tag-list-link color3">置顶</a>
-        </div>
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
-      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/每周总结/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Linux_sed&awk三剑客/">展开全文 >></a>
         </p>
       
 
@@ -372,6 +433,153 @@ Nginx使用了边缘触发:
 
 
   
+    <article id="post-Linux_C" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/Linux_C/">Linux进程</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/Linux_C/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>GCC<br>    gcc hello.c -o hello<br>    预处理<br>        预处理器cpp, .c -&gt; .i<br>        解释预处理指令: 文件包含,宏定义,条件编译.<br>        删除注释<br>        查看一个c程序被预处理之后的样子:<br>            gcc hello.c -o hello.i -E<br>    编译<br>        词法分析,语法分析, 生成硬件平台的汇编语言.<br>        查看c程序被预处理和编译之后的汇编程序:<br>            gcc hello.i -o hello.s S<br>    汇编<br>        将汇编程序翻译成可重定位文件.文件已经包含处理器可以<br>        执行的指令流,但全局符号尚未定位.<br>    链接<br>        重定位<br>        合并相同权限的段</p>
+<p>Makefile<br>    make: 自动检查文件的更新情况,自动进行编译的软件.<br>    Makefile: make的配置文件, 指定编译选项,编译环境等.<br>            每一个子目录有一个Makefile,有一个顶层Makefile管理<br>            所有的子目录Makefile.</p>
+<p>Linux C语言<br>    条件编译语句:</p>
+<pre><code>    #ifdef DEBUG
+        printf(&quot;debugging message\n&quot;);
+    #endif
+打开调试信息:
+    gcc debug.c -o debug -DDEBUG
+
+数组和指针
+    通用性指针void
+        void *p = malloc(8); //申请了8个字节未知用途的内存
+
+        void指针解引用时必须转化为某种具体的数据类型指针.
+        double f = 3.14;
+        *(double *)p = f;
+
+    函数指针:
+        double func(int a, char c);
+        double (*p)(int a, char c);
+        p = func; //func本身就是函数地址
+
+        double ans1 = func(100, &apos;x&apos;);
+        double ans2 = (*p)(100, &apos;x&apos;);
+
+    const指针:
+        const变量不能作为switch的条件.
+        希望通过指针访问某块内存的数据但不希望修改它.
+
+        int a,b;
+        const int *p = &amp;a;
+        a = 100;    //正确
+        p = &amp;b;     //正确
+        *p = 100;   //错误
+
+结构体:
+    各种初始化方法, 访问方法详见![struct.c](/linux_c/struct.c)
+
+共同体(联合体):
+    union ex
+    共用同一块内存, 适合存储互斥量.
+
+枚举:
+
+IO:
+    一切皆文件, 文件类别:
+        普通文件(regular)
+        目录文件(directory)
+        管道文件(pipe)
+        套接字文件(socket)
+        链接文件(link)
+        字符设备文件(character)
+        块设备文件(block)
+
+    打开文件并获得文件描述符: file.c
+</code></pre><p>  #include &lt;sys/types.h&gt;</p>
+<p>  #include &lt;sys/stat.h&gt;</p>
+<p>  #include &lt;fcntl.h&gt;</p>
+<p>  int open(const char pathname, int flags);<br>  int open(const char pathname, int flags, mode_t mode);</p>
+<p>  flgs: 只读O_RDONLY, 只写, 读写, 追加… 多个flag用 | 隔开.<br>  mode: 权限,  如 0644, 0755<br>  返回值: 文件描述符</p>
+<p>  可以用来打开普通文件,块设备文件,字符设备文件,链接文件,管道文件,<br>  只能用来创建普通文件,每一种特殊文件的创建都有其特定的其他函数.</p>
+<p>  #include &lt;unistd.h&gt;</p>
+<p>  int close(int fd);<br>  fd: 要关闭的文件的描述符.<br>  返回值: 成功0, 失败1.<br>  可以重复关闭已关闭或未打开的文件.</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">读文件: </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count);</span><br><span class="line"></span><br><span class="line">fd: 文件描述符</span><br><span class="line">buf: 指向存放读到的数据的缓冲区</span><br><span class="line">count: 要读取的字节数</span><br><span class="line"></span><br><span class="line">返回值: 成功 -&gt; 读到的字节数, 失败 -&gt; <span class="number">-1.</span> </span><br><span class="line"></span><br><span class="line">写文件:</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="keyword">ssize_t</span> write(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count);</span><br><span class="line">fd: 文件描述符</span><br><span class="line">buf: 指向要写入的数据</span><br><span class="line">count: 要写入的字节数</span><br><span class="line"></span><br><span class="line">返回值: 成功 -&gt; 写入的字节数, 失败 -&gt; <span class="number">-1.</span></span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/Linux_C/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -425,79 +633,6 @@ Nginx使用了边缘触发:
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/05/30/linux/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-撸个ioc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/30/撸个ioc/">撸个ioc</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/30/撸个ioc/" class="archive-article-date">
-  	<time datetime="2019-05-30T03:43:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/30/撸个ioc/">展开全文 >></a>
         </p>
       
 

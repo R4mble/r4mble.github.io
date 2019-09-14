@@ -151,6 +151,99 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Linux进程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/Linux进程/">Linux进程</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/Linux进程/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>进程原理<br>    对操作系统所管理的硬件资源的请求.<br>    资源包括: 磁盘IO, 网络IO, 内存, CPU, 显卡.</p>
+<pre><code>在内核空间,线程与进程没有太大区别.
+
+父子进程
+    子进程退出, 父进程要调用wait或waitpid函数等待回收子进程的资源, 否则子进程
+    就一直以僵尸状态存在.
+</code></pre><p>进程调度</p>
+<p>资源</p>
+<p>多进程与进程通信</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/Linux进程/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Lua" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -238,19 +331,19 @@
 
 
   
-    <article id="post-Linux_sed&amp;awk三剑客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Micrometer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux_sed&awk三剑客/">Linux</a>
+      <a class="article-title" href="/2019/06/29/Micrometer/">Meter</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Linux_sed&awk三剑客/" class="archive-article-date">
+        <a href="/2019/06/29/Micrometer/" class="archive-article-date">
   	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
@@ -258,84 +351,122 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>awk<br>    每行按空格或TAB分割，输出文本中的1、4项<br>    awk ‘{print $1,$4}’ log.txt</p>
-<pre><code>格式化输出
-awk &apos;{printf &quot;%-8s %-10s\n&quot;,$1,$4}&apos; log.txt
+        <p>记录 Java 应用性能指标</p>
+<p>计量器注册表 MeterRegistry<br>    创建和维护计量器.</p>
+<pre><code>基于内存的计量器注册表实现: 
+    SimpleMeterRegistry 不支持导出数据到监控系统
 
-使用&quot;,&quot;分割
-awk -F, &apos;{print $1,$2}&apos; log.txt
+可以组合多个计量器注册表的实现类
+    CompositeMeterRegistry 运行同时发布数据到多个监控系统
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompositeMeterRegistryExample</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CompositeMeterRegistry registry = <span class="keyword">new</span> CompositeMeterRegistry();</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry());</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry(<span class="keyword">new</span> MyConfig(), Clock.SYSTEM));</span><br><span class="line"> </span><br><span class="line">    Counter counter = registry.counter(<span class="string">"simple"</span>);</span><br><span class="line">    counter.increment();</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> <span class="keyword">implements</span> <span class="title">SimpleConfig</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">prefix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"my"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>静态的全局计量器注册表对象 
+    Metrics.globalRegistry 组合注册表
+</code></pre><pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalRegistryExample</span> </span>{
 
-使用内建变量
-awk &apos;BEGIN{FS=&quot;,&quot;} {print $1,$2}&apos; log.txt
-
-使用多个分隔符, 先使用空格分割，然后对分割结果再使用&quot;,&quot;分割
-awk -F &apos;[ ,]&apos; &apos;{print $1,$2,$5}&apos; log.txt
-
-设置变量a=1, b=s (字符串加数字结果为数字, $1b相当于concat)
-awk -va=1 &apos;{print $1,$1+a}&apos; log.txt
-awk -va=1 -vb=s &apos;{print $1,$1+a,$1b}&apos; log.txt
-
-过滤第一列大于2的行
-awk &apos;$1&gt;2&apos; log.txt
-
-过滤第一列等于2的行
-awk &apos;$1==2 {print $1,$3}&apos; log.txt
-
-过滤第一列大于2并且第二列等于&apos;Are&apos;的行
-awk &apos;$1&gt;2 &amp;&amp; $2==&quot;Are&quot; {print $1,$2,$3}&apos; log.txt
-
-内建变量: 
-    FILENAME: 当前文件名
-    NR: 行号, 从1开始
-
-指定输出分割符
-awk &apos;{print $1,$2,$5}&apos; OFS=&quot; $ &quot;  log.txt
-
-~ 表示模式开始。// 中是模式。
-找到第二列包含 &quot;th&quot;的行，打印第二列与第四列
-awk &apos;$2 ~ /th/ {print $2,$4}&apos; log.txt
-
-输出包含&quot;re&quot; 的行
-awk &apos;/re/ &apos; log.txt
-
-忽略大小写
-awk &apos;BEGIN{IGNORECASE=1} /this/&apos; log.txt
-
-计算文件大小
-ls -l *.txt | awk &apos;{sum+=$6} END {print sum}&apos;
-
-从文件中找出长度大于80的行
-awk &apos;length&gt;80&apos; log.txt
-</code></pre><p>sed<br>    在第四行后添加一行，并将结果输出到标准输出<br>    sed -e 4a\newline testfile</p>
-<pre><code>在第二行前添加一行，并将结果输出到标准输出
-sed -e &apos;2i drink tea&apos; testfile
-
-删除第二行和第三行
-sed -e &apos;2,3d&apos; testfile
-
-删除第二行到最后一行
-sed -e &apos;2,$d&apos; testfile
-
-添加多行,使用\隔开
-
-第二行到第五行整个使用No 2-5 number替换
-sed &apos;2,5c No 2-5 number&apos; testfile
-
-列出第2-4行
-sed -n &apos;2,4p&apos; testfile
-
-搜索匹配Linux的行
-sed -n &apos;/Linux/p&apos; testfile
-
-删除匹配的行
-sed &apos;/Linux/d&apos; testfile
-
-替换匹配的行
-sed &apos;s/Linux/linux/g&apos; testfile
-
-行尾的.换成! 并写入文件
-sed -i &apos;s/\.$/\!/g&apos; testfile
+  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
+    Metrics.addRegistry(<span class="keyword">new</span> SimpleMeterRegistry());
+    Counter counter = Metrics.counter(<span class="string">"simple"</span>);
+    counter.increment();
+  }
+}
 </code></pre>
+<p>计量器 Meter<br>    需要收集的性能指标数据.</p>
+<pre><code>计量器名称和标签
+    每个计量器在创建时都可以指定一系列标签。标签以名值对的形式出现。监控系统使用标签对数据进行过滤。除了每个计量器独有的标签之外，每个计量器注册表还可以添加通用标签。所有该注册表导出的数据都会带上这些通用标签。
+</code></pre><p>计数器 Counter<br>    单个只允许增加的值.    </p>
+<p>计量仪 Gauge<br>    单个变化的值. Gauge对象既可以从计量器注册表中创建,也可以使用<br>    Gauge.builder()构建.</p>
+<p>计时器 Timer<br>    记录事件的持续时间.</p>
+<p>集成SpringBoot</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Meter</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Meter//" class="article-tag-list-link color1">Meter</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/Micrometer/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Linux性能优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/Linux性能优化/">Linux性能优化</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/Linux性能优化/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>计算CPU每秒定时中断的次数:<br>cat /proc/interrupts | grep timer; sleep 10; cat /proc/interrupts | grep timer<br>    结果:<br>          CPU0        CPU1<br>    LOC: 2142174276 2150800894<br>    LOC: 2142179825 2150806783<br>CPU0: (2142179825 - 2142174276) / 10 = 555次中断 / 秒<br>CPU1: (2150806783 - 2150800894) / 10 = 589次中断 / 秒</p>
+<p>(我的腾讯云: 357次中断 / 秒)</p>
+<p>虚拟内存统计: vmstat [-n] [-s] [delay [count]]<br>    参数说明:<br>            delay: vmstat采样的间隔时间<br>            count: 采样次数<br>            -s: 更详细的信息<br>    功能: 正在运行的进程个数, CPU的使用情况, CPU接收的中断个数, 调度器执行的上下文切换次数<br>    模式: 采样模式和平均模式. 不指定参数则运行于平均模式,显示从系统启动以来所有统计数据的均值.<br>          指定延迟后, 第一个采样仍是系统启动以来的均值,之后按延迟秒数采样系统并显示.<br>    直接运行vmstat的结果:<br>procs ———–memory———- —swap– —–io—- -system– ——cpu—–<br> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st<br> 1  0      0 198800  68680 488468    0    0     2     7    0    0  0  0 99  0  0<br>    结果说明<br>        r: 当前可运行的进程数, 已经准备好. 理想的话, 可运行进程数应与可用CPU的数量相等<br>        b: 等待IO完成的被阻塞进程数<br>        forks: 创建新进程的次数<br>        in: 系统发生中断的次数<br>        cs: 系统发生上下文切换的次数<br>        us: 用户进程消耗总CPU时间的百分比<br>        sy: 系统代码消耗的总CPU时间百分比<br>        wa: 等待IO消耗的CPU时间百分比<br>        id: 系统空闲的消耗总CPU时间百分比</p>
+<pre><code>把结果输出到文件: vmstat 1 | tee /tmp/output
+</code></pre><p>把占用CPU最多的进程按降序排列: top [d delay] [C] [H] [i] [n iter] [b]<br>        (默认每3秒更新一次)<br>    两种模式选项: 命令行模式, 运行时模式<br>    参数说明: i 不显示未使用任何cpu的进程<br>             H 显示应用程序所有的单个线程</p>
+
       
 
       
@@ -369,233 +500,7 @@ sed -i &apos;s/\.$/\!/g&apos; testfile
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux_sed&awk三剑客/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Maven" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Maven/">Maven</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/29/Maven/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="scope"><a href="#scope" class="headerlink" title="scope"></a>scope</h2><ul>
-<li><p>compile<br>（默认scope),也就是说这个项目在编译，测试，运行阶段都需要这个artifact对应的jar包在classpath中。</p>
-</li>
-<li><p>provided<br>这个provided是目标容器已经provide这个artifact。换句话说，它只影响到编译，测试阶段。<br>在编译测试阶段，我们需要这个artifact对应的jar包在classpath中，而在运行阶段，假定目标的容器（比如我们这里的liferay容器）已经提供了这个jar包，<br>所以无需我们这个artifact对应的jar包了。</p>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Maven//" class="article-tag-list-link color1">Maven</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Maven/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Linux_C" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux_C/">Linux进程</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/29/Linux_C/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>GCC<br>    gcc hello.c -o hello<br>    预处理<br>        预处理器cpp, .c -&gt; .i<br>        解释预处理指令: 文件包含,宏定义,条件编译.<br>        删除注释<br>        查看一个c程序被预处理之后的样子:<br>            gcc hello.c -o hello.i -E<br>    编译<br>        词法分析,语法分析, 生成硬件平台的汇编语言.<br>        查看c程序被预处理和编译之后的汇编程序:<br>            gcc hello.i -o hello.s S<br>    汇编<br>        将汇编程序翻译成可重定位文件.文件已经包含处理器可以<br>        执行的指令流,但全局符号尚未定位.<br>    链接<br>        重定位<br>        合并相同权限的段</p>
-<p>Makefile<br>    make: 自动检查文件的更新情况,自动进行编译的软件.<br>    Makefile: make的配置文件, 指定编译选项,编译环境等.<br>            每一个子目录有一个Makefile,有一个顶层Makefile管理<br>            所有的子目录Makefile.</p>
-<p>Linux C语言<br>    条件编译语句:</p>
-<pre><code>    #ifdef DEBUG
-        printf(&quot;debugging message\n&quot;);
-    #endif
-打开调试信息:
-    gcc debug.c -o debug -DDEBUG
-
-数组和指针
-    通用性指针void
-        void *p = malloc(8); //申请了8个字节未知用途的内存
-
-        void指针解引用时必须转化为某种具体的数据类型指针.
-        double f = 3.14;
-        *(double *)p = f;
-
-    函数指针:
-        double func(int a, char c);
-        double (*p)(int a, char c);
-        p = func; //func本身就是函数地址
-
-        double ans1 = func(100, &apos;x&apos;);
-        double ans2 = (*p)(100, &apos;x&apos;);
-
-    const指针:
-        const变量不能作为switch的条件.
-        希望通过指针访问某块内存的数据但不希望修改它.
-
-        int a,b;
-        const int *p = &amp;a;
-        a = 100;    //正确
-        p = &amp;b;     //正确
-        *p = 100;   //错误
-
-结构体:
-    各种初始化方法, 访问方法详见![struct.c](/linux_c/struct.c)
-
-共同体(联合体):
-    union ex
-    共用同一块内存, 适合存储互斥量.
-
-枚举:
-
-IO:
-    一切皆文件, 文件类别:
-        普通文件(regular)
-        目录文件(directory)
-        管道文件(pipe)
-        套接字文件(socket)
-        链接文件(link)
-        字符设备文件(character)
-        块设备文件(block)
-
-    打开文件并获得文件描述符: file.c
-</code></pre><p>  #include &lt;sys/types.h&gt;</p>
-<p>  #include &lt;sys/stat.h&gt;</p>
-<p>  #include &lt;fcntl.h&gt;</p>
-<p>  int open(const char pathname, int flags);<br>  int open(const char pathname, int flags, mode_t mode);</p>
-<p>  flgs: 只读O_RDONLY, 只写, 读写, 追加… 多个flag用 | 隔开.<br>  mode: 权限,  如 0644, 0755<br>  返回值: 文件描述符</p>
-<p>  可以用来打开普通文件,块设备文件,字符设备文件,链接文件,管道文件,<br>  只能用来创建普通文件,每一种特殊文件的创建都有其特定的其他函数.</p>
-<p>  #include &lt;unistd.h&gt;</p>
-<p>  int close(int fd);<br>  fd: 要关闭的文件的描述符.<br>  返回值: 成功0, 失败1.<br>  可以重复关闭已关闭或未打开的文件.</p>
- <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">读文件: </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count);</span><br><span class="line"></span><br><span class="line">fd: 文件描述符</span><br><span class="line">buf: 指向存放读到的数据的缓冲区</span><br><span class="line">count: 要读取的字节数</span><br><span class="line"></span><br><span class="line">返回值: 成功 -&gt; 读到的字节数, 失败 -&gt; <span class="number">-1.</span> </span><br><span class="line"></span><br><span class="line">写文件:</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="keyword">ssize_t</span> write(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count);</span><br><span class="line">fd: 文件描述符</span><br><span class="line">buf: 指向要写入的数据</span><br><span class="line">count: 要写入的字节数</span><br><span class="line"></span><br><span class="line">返回值: 成功 -&gt; 写入的字节数, 失败 -&gt; <span class="number">-1.</span></span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux_C/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Linux性能优化/">展开全文 >></a>
         </p>
       
 

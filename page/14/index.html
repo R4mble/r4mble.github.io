@@ -151,33 +151,197 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Caffeine Cache" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spark实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Caffeine Cache/">Caffeine Cache</a>
+      <a class="article-title" href="/2019/04/05/Spark实战/">Spark实战</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Caffeine Cache/" class="archive-article-date">
-  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/Spark实战/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Cache接口: 定义通用缓存操作的接口<br>    获取缓存的名字<br>    获取底层的缓存提供者</p>
-<p>CacheManager接口: spring的核心缓存管理服务提供接口<br>    获取给定名字的缓存<br>    获取此缓存管理器的所有缓存名字集合</p>
-<p>ApplicationListener接口: 事件监听器, 观察者模式.<br>    void onApplicationEvent(E event); 处理事件</p>
-<p>ContextRefreshedEvent类: 当ApplicationContext初始化或者刷新时该事件触发</p>
-<p>CacheRefreshNotifier类:<br>    利用PostgreSQL的Notify/Listen机制,配合触发器函数notify_data_change(), 监听表数据的增删改,对缓存进行同步刷新</p>
-<p>注解:<br>    @EnableCaching: 开启缓存管理<br>    @Cacheable: 执行方法的结果可以被缓存<br>    @CacheEvict: 方法会触发清除缓存操作</p>
+        <p>Spark<br>    快速: Spark有一个Directed Acyclic Graph(DAG有向无环图)执行引擎,支持循环数据流和内存计算.</p>
+<pre><code>Spark Core
+    任务调度,内存管理,故障恢复,存储系统的交互
+    核心思想: 将数据集缓存在内存中,用Lineage机制来进行容错
 
+    RDD
+        自动容错,位置感知调度,可伸缩性
+        容错性方式:
+            数据检查点(传输成本高), 记录数据的更新(只支持粗粒度的转换)
+
+    编程接口,2类API
+        Transformations (懒策略, 只有在action提交时才被触发执行)
+            map, filter, union, sample, join
+        Actions
+            count, collect, save, reduce, lookup
+
+    依赖关系
+        窄依赖
+            一个父RDD最多被一个子RDD引用,如 map, filter, union
+        宽依赖
+           一个父RDD被多个子RDD引用,如groupByKey
+
+    Stage DAG
+        Spark提交Job生成多个Stage, Stage之间存在依赖, 这些依赖关系构成了DAG
+        对于窄依赖,spark尽量把RDD转换放在一个Stage中
+        对于宽依赖,spark将Stage定义为ShuffleMapStage,以便向MapOutputTracker
+            注册shuffle操作. Spark将shuffle操作定义为stage的边界.
+
+Spark Streaming
+    对实时数据流进行高通量,容错处理的流式处理系统,可以对多种数据源(Kafka,Flume)
+      进行map,reduce,join,window等操作,并将结果保存到外部文件系统,数据库等.
+
+     原理: 将Stream数据分成小的时间片段,以类似batch批量处理的方式来处理这一小部分数据
+
+GraphX
+    提供了一套图算法工具包,方便用户对图进行分析
+        分布式图计算框架
+            图存储模式
+                边分割
+                    每个顶点存储一次,但有的边会被打断分到两台机器
+                    好处: 节省存储空间
+                    坏处: 对一条两个顶点被分到不同的机器上的边来说,要跨机器通信
+                            传输数据,内网通信流量大
+
+                点分割
+                    每条边存储一次.邻居多的点会被复制到多台机器上,增加了存储开销
+                       引发数据同步问题
+
+            图计算模型
+                BSP(Bulk Synchronous Parallel)计算模式
+                    一次计算过程由一系列全局超步组成,每一个超步由并发计算,通信和
+                    栅栏同步三个步骤组成. 同步完成标志着这个超步的完成以及下一个
+                    超步的开始.
+
+                 Pregel模型
+                    消息通信范式. 只需要实现一个顶点更新函数, 让框架在遍历
+                    顶点时进行调用.
+
+                 GAS模型
+                    共享内存.Gather,Apply,Scatter
+
+
+Spark SQL
+
+MLlib
+    二元分类
+        监督学习.如判断邮件是否是垃圾邮件. 返回一个模型,对标签未知的新个体进行
+        潜在标签预测.
+
+        两个适用于二元分类的标准模型家族
+            线性支持向量机(SVMs)
+            逻辑回归
+
+            输入一个正则项参数和多个梯度下降相关参数
+
+
+    线性回归
+        监督学习.
+
+    聚类
+        非监督学习.KMeans
+    协同过滤
+        用于推荐系统. 交替最小二乘法.
+
+    梯度下降优化基础算法
+    朴素贝叶斯算法
+    决策树的解析
+
+Spark整体流程
+    Client(提交应用) -&gt; Master(找到Worker,启动Driver) -&gt; Driver -&gt; RDD Graph (由DAGScheduler转化为有向无环图) -&gt; TaskScheduler -&gt; Executor
+
+Spark算子
+    Value型Transformation
+        输入分区与输出分区一对一
+            map
+            flatMap
+            mapPartitions
+            glom
+
+        输入分区与输出分区多对一
+            union
+            cartesian 笛卡尔积
+
+        输入分区与输出分区多对多
+            groupBy
+
+        输出分区为输入分区子集
+            filter
+            distinct
+            subtract
+            sample
+            takeSample
+
+        一对一 Cache型
+            cache
+            persist
+
+
+    Key-Value型Transformation
+
+    Action型,会触发SparkContext提交Job
+        无输出
+            foreach
+        HDFS
+            saveAsTextFile
+            saveAsObjectFile
+        Scala
+            collect
+            collectAsMap
+            reduceByKeyLocally  先reduce再collectAsMap
+            lookup
+            count
+            top
+            reduce
+            fold
+            aggregate
+
+
+Spark工作机制
+    Spark主要模块
+        调度与任务分配
+            RDD的Action触发Job提交,生成RDD DAG,由DAGScheduler转化为
+              Stage DAG,每个Stage中产生相应的Task集合,TaskScheduler将
+              任务分发到Executor执行.Executor创建线程池,并发执行
+              每个任务对应相应的一个数据块,使用
+              用户定义的函数处理数据块.
+
+              对RDD的块管理通过BlockManager完成.
+
+            层次
+                应用
+
+                Job
+
+                Stage
+
+                Task
+            算法
+                FIFO
+                FAIR
+
+        I/O模块
+            将数据以块为单位管理
+
+        通信控制模块
+            AKKA框架
+
+        容错模块
+            Lineage Checkpoint
+        Shuffle模块
+</code></pre><h1 id="Spark-SQL"><a href="#Spark-SQL" class="headerlink" title="Spark SQL"></a>Spark SQL</h1><h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1>
       
 
       
@@ -190,7 +354,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Cache</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
         		</li>
       		
 		</ul>
@@ -200,7 +364,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Caffeine Cache/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Spark实战/">展开全文 >></a>
         </p>
       
 
@@ -230,47 +394,105 @@
 
 
   
-    <article id="post-Elm" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Netty-in-action" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Elm/">Elm</a>
+      <a class="article-title" href="/2019/04/05/Netty-in-action/">Netty in action</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Elm/" class="archive-article-date">
-  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/Netty-in-action/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:36:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>终端工具:<br>    elm repl<br>        交互. 编译代码到JS, 使用Node.js运行</p>
-<pre><code>elm reactor
-    运行elm项目
+        <p>Netty   异步和事件驱动</p>
+<pre><code>Netty核心组件:
+        Bootstrap 和 ServerBootstrap
+            提供了一个用于应用程序网络层配置的容器
 
-elm make
-    构建elm项目
-        elm make Main.elm --output=main.html
-        elm make Main.elm --output=mian.js
-</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">  &lt;title&gt;Main&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">  &lt;link rel="stylesheet" href="whatever-you-want.css"&gt;</span></span><br><span class="line"><span class="regexp">  &lt;script src="main.js"&gt;&lt;/</span>script&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">  &lt;div id="elm"&gt;&lt;/</span>div&gt;</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">  <span class="keyword">var</span> app = Elm.Main.init(&#123;</span><br><span class="line">    node: <span class="built_in">document</span>.getElementById(<span class="string">'elm'</span>)</span><br><span class="line">  &#125;);</span><br><span class="line">  &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br><span class="line"><span class="regexp">```                </span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    elm install</span></span><br><span class="line"><span class="regexp">        安装依赖.</span></span><br><span class="line"><span class="regexp">            elm install elm/</span>json</span><br><span class="line"></span><br><span class="line">语言基础:</span><br><span class="line">    值:</span><br><span class="line">        字符串拼接: ++</span><br><span class="line">        浮点数除法: <span class="regexp">/       9 /</span> <span class="number">2</span> == <span class="number">4.5</span></span><br><span class="line">        整数除法: <span class="comment">//       9 // 2 == 4</span></span><br><span class="line">    函数:</span><br><span class="line">        isNegative n = n &lt; <span class="number">0</span></span><br><span class="line">    匿名函数:</span><br><span class="line">        \n -&gt; n &lt; <span class="number">0</span></span><br><span class="line">    数据结构:</span><br><span class="line">        List, Tuples, Records</span><br><span class="line">        Record更新: &#123; model | content = newContent &#125;</span><br><span class="line"></span><br><span class="line">Elm架构:</span><br><span class="line">    Model:  应用状态</span><br><span class="line">    Update: 更新状态</span><br><span class="line">    View:   展示状态</span><br><span class="line"></span><br><span class="line"><span class="string">``</span><span class="string">`elm</span></span><br><span class="line"><span class="string">import Html exposing (..)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- MODEL</span></span><br><span class="line"><span class="string">type alias Model = &#123; ... &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- UPDATE   a set of messages that we will get from the UI</span></span><br><span class="line"><span class="string">type Msg = Reset | ...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">update : Msg -&gt; Model -&gt; Model</span></span><br><span class="line"><span class="string">update msg model =</span></span><br><span class="line"><span class="string">  case msg of</span></span><br><span class="line"><span class="string">    Reset -&gt; ...</span></span><br><span class="line"><span class="string">    ...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- VIEW</span></span><br><span class="line"><span class="string">view : Model -&gt; Html Msg</span></span><br><span class="line"><span class="string">view model =</span></span><br><span class="line"><span class="string">  ...</span></span><br></pre></td></tr></table></figure>
-<p>用户输入: Buttons, Text Fields, Check Boxes, Radio Buttons.</p>
-<pre><code>             Html
-Elm         -----&gt;
-</code></pre><p>Browser.sandbox         Runtime System — DOM<br>                &lt;—–<br>                  Msg</p>
-<pre><code>             Html
-            Cmd/Sub
-Elm         -----&gt;                 --- HTTP
-</code></pre><p>Browser.element         Runtime System — DOM<br>                &lt;—–                 — Randomness<br>                  Msg                  — Current Time</p>
-<p>command the runtime system to make an HTTP request or<br>    generate a random number.<br>subscribe to the current time.</p>
-<p>Json处理:<br>    单个属性读取:<br>        nameDecoder = field “name” string<br>    嵌套属性读取:<br>        gifDecoder = field “data” (field “image_url” string)<br>    多个属性读取:<br>        type alias Person = {name : String, age : Int}<br>        personDecoder = map2 Person (field “name” string) (field “age” int)</p>
-<p> 与JavaScript的互操作<br>    Flags<br>    Ports</p>
-<p>页面跳转:<br>    Browser.application</p>
+            Bootstrap
+                连接远程主机,有1个EventLoopGroup
+
+            ServerBootstrap 绑定本地端口
+                在服务器监听一个端口轮询客户端的Bootstrap或DatagramChannel是否
+                    连接服务器.   调用Bootstrap类的connect方法,也可以先bind()
+                    再connect(),之后使用的Channel包含在bind()返回的ChannelFuture中
+                一个ServerBootstrap有2个Channel集合.(EventLoopGroup)
+                    1.包含一个单例ServerChannel,代表持有一个绑定了本地端口的socket
+                    2.包含所有创建的Channel,处理服务器所接收到的客户端进来的连接.
+
+        Channel
+            代表了一个用于连接到实体如硬件设备,文件,网络套接字或程序组件,能够执行一个或多个不同的IO操作的开放连接.
+            底层网络传输API必须提供给应用I/O操作的接口.如读/写/绑定等.
+            定义了与socket丰富交互的操作集:bind,close,config,connect,
+                isActive,isOpen,isWritable,read,write.
+
+        ChannelHandler
+            支持很多协议,提供用于数据处理的容器. 应用程序的核心
+            由特定事件触发
+            ChannelInboundHandler
+                数据从远程主机到用户应用程序
+            ChannelOutboundHandler
+                数据从用户应用程序到远程主机
+            体现了关注点分离的设计原则,并简化业务逻辑的迭代开发的要求.
+                    每一个方法覆盖到hook在活动周期适当的点.
+                    覆盖channelRead0因为需要处理所有接收到的数据
+                    覆盖exceptionCaught可以应对任何Throwable的子类型,
+                    这种情况记录并关闭所有可能处于未知状态的连接.
+            每一个Channel都有一个关联的ChannelPipeline,它代表了ChannelHandler实例
+            的链.适配器处理的实现是将一个处理方法转发到链中的下一个处理器.
+            因此提供至少一个实现exceptionCaught的ChannelHandler
+            ChannelHandler给不同类型的事件调用应用程序实现或扩展ChannelHandler挂接到事件生命周期和提供自定义应用逻辑
+
+        Callback 回调   回调事件由接口ChannelHandler的实现来处理
+            // 一旦一个新的连接建立, channelActive方法就会被调用
+            public class ConnectHandler extends ChannelInboundHandlerAdapter {
+                @Override
+                public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                    System.out.println(&quot;Client &quot; + ctx.channel().remoteAddress() + &quot; connected&quot;);
+                }
+            }
+
+        ChannelFuture
+            Netty所有的I/O操作都是异步的,当操作完成时可以被通知.
+            一个未来执行操作结果的占位符.
+
+        ChannelPipeline
+            提供一个容器给ChannelHandler链并提供一个API用于管理沿着链入站
+            和出站事件的流动.
+            每个Channel都有自己的ChannelPipeline,当Channel创建时自动创建
+
+            实现了ChannelHandler的抽象ChannelInitializer.
+            ChannelInitializer子类通过ServerBootstrap注册.
+            当它的方法initChannel()被调用时,这个对象将安装自定义的ChannelHandler集到
+            pipeline. 当这个操作完成时,ChannelInitializer子类从ChannelPipeline
+            自动删除自身.
+
+        EventLoop
+            处理Channel的I/O操作. 一个单一的EventLoop会处理多个Channel事件.
+            一个EventLoopGroup可以含有多于一个的EventLoop和提供了一种迭代用于
+            检索清单中的下一个.
+
+
+        Channel Event 和 I/O
+            Netty 非阻塞,事件驱动的网络框架
+                使用多线程处理I/O事件.
+                Netty的设计保证程序处理事件不会有同步. 不需要在Channel之间共享ChannelHandler实例
+
+                一个EventLoopGroup有一个或多个EventLoop,一个EventLoop作为一个线程给Channel执行工作
+
+                当创建一个Channel,Netty通过一个单独的EventLoop实例来注册该Channel的通道的使用寿命.
+                所有Channel的I/O始终用相同的线程来执行,所以不需要同步Netty的I/O操作.
+</code></pre><p>引导服务器<br>    监听和接收进来的连接请求<br>    配置Channel来通知一个关于入站消息的EchoServerHandler实例</p>
 
       
 
@@ -284,11 +506,11 @@ Elm         -----&gt;                 --- HTTP
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Elm</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -300,7 +522,7 @@ Elm         -----&gt;                 --- HTTP
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elm//" class="article-tag-list-link color4">Elm</a>
+        			<a href="/categories/Netty//" class="article-tag-list-link color1">Netty</a>
         		</li>
       		
 		</ul>
@@ -309,7 +531,7 @@ Elm         -----&gt;                 --- HTTP
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Elm/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Netty-in-action/">展开全文 >></a>
         </p>
       
 
@@ -339,51 +561,27 @@ Elm         -----&gt;                 --- HTTP
 
 
   
-    <article id="post-Java8查漏补缺" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Git技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Java8查漏补缺/">Java8查漏补缺</a>
+      <a class="article-title" href="/2019/04/05/Git技巧/">Git技巧</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Java8查漏补缺/" class="archive-article-date">
-  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/Git技巧/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>函数式接口里可以有继承自Object类的抽象方法.<br> 例:</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</code></pre><p> 以上代码是合法的.</p>
-</li>
-<li><p>函数式接口的实例可以通过 lambda表达式, 方法引用 或者 构造方法引用 创建.</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyInterface myInterface = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">System.out.println(myInterface.getClass());</span><br><span class="line">System.out.println(myInterface.getClass().getSuperclass());</span><br><span class="line">System.out.println(myInterface.getClass().getInterfaces()[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
-
-class sth.jdk8.Test2$$Lambda$2/1149319664
-class java.lang.Object
-interface sth.jdk8.MyInterface
-</code></pre><p> 可以看到这个函数式接口实例的父类是Object,它实现了接口MyInterface</p>
-<pre><code>通过方法引用创建函数式接口实例
-list.forEach(System.out::println);
-</code></pre></li>
-<li><p>方法引用的四种形式:<br>  类名::实例方法 所对应lambda表达式的第一个参数就是这个调用方法的对象</p>
-</li>
-<li><p>Function&lt;T, R&gt;接口<br> Represents a function that accepts one argument and produces a result.<br> 抽象方法:     R apply(T t);<br> 例:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, String&gt; function)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> 默认方法: compose andThen<br> 静态方法: identity</p>
-<p> BiFunction&lt;T, U, R&gt;接口<br> 抽象方法: R apply(T t, U u);<br> 默认方法: <v> BiFunction&lt;T, U, V&gt; andThen(Function&lt;? super R, ? extends V&gt; after)</v></p>
-<p> 重要建议: equals方法 把常量放在前面,变量放在后面. 可以避免变量为null时引发的空指针异常</p>
-</li>
-</ol>
-
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line">git技巧</span><br><span class="line"></span><br><span class="line">后悔药系列:</span><br><span class="line">    撤销存入暂存区操作</span><br><span class="line">    git reset head &lt;filename&gt; </span><br><span class="line"></span><br><span class="line">    删除暂存区文件</span><br><span class="line">    git rm --cache xxx.zip</span><br><span class="line">    </span><br><span class="line">    放弃本地修改</span><br><span class="line">    git checkout xxx.java</span><br><span class="line"></span><br><span class="line">    命令放弃本次合并</span><br><span class="line">    git merge --abort </span><br><span class="line"></span><br><span class="line">    退回到改之前的版本</span><br><span class="line">    git checkout &lt;hash&gt; &lt;filename&gt;</span><br><span class="line"></span><br><span class="line">    放弃本地修改，强制拉取更新   </span><br><span class="line">    git fetch --all                                git fetch 指令是下载远程仓库最新内容，不做合并 </span><br><span class="line">    git reset --hard origin/master                 git reset 指令把HEAD指向master最新版本</span><br><span class="line"></span><br><span class="line">提交:</span><br><span class="line">    相当于git add . 加上 git commit -m &quot;xxx&quot;  只会add修改的文件,不add新增的文件.</span><br><span class="line">    git commit -am &quot;xxx&quot; </span><br><span class="line"></span><br><span class="line">    提交会与上一次提交合并成一个新的提交，之前的提交会被废弃掉。</span><br><span class="line">    git commit --amend  </span><br><span class="line"></span><br><span class="line">    放弃commit, 回到未提交状态</span><br><span class="line">    git reset --soft HEAD^</span><br><span class="line"></span><br><span class="line">    git reset --hard xxxx</span><br><span class="line"></span><br><span class="line">推分支到远程</span><br><span class="line">    git push origin local_branch:remote_branch</span><br><span class="line">删除远程分支</span><br><span class="line">    git push origin --delete remote_branch</span><br><span class="line"></span><br><span class="line">查看历史:</span><br><span class="line">    来查看最近一次提交的差异，当然也可以使用 git log -p 来查看所有的差异</span><br><span class="line">    git log -p -1   </span><br><span class="line"></span><br><span class="line">    git log --pretty=oneline </span><br><span class="line">    git log --oneline --graph --all </span><br><span class="line">    </span><br><span class="line">标签:</span><br><span class="line">    git tag -a 版本号 -m &apos;tag 信息&apos;来创建“轻量标签”</span><br><span class="line"></span><br><span class="line">    git show v1.1.1 来查看v1.1.1处的相关信息</span><br><span class="line"></span><br><span class="line">    给之前的某个commit打一个tag, 将commit号追加到打标签的命令后方</span><br><span class="line">    git tag -a vx.x.x -m &apos;message&apos; commit-hash</span><br><span class="line"></span><br><span class="line">    将本地创建的所有 tag 推送到远端origin</span><br><span class="line">    git push origin --tags</span><br><span class="line"></span><br><span class="line">别名:</span><br><span class="line">    创建别名</span><br><span class="line">    git config --global alias.s status </span><br><span class="line"></span><br><span class="line">    查看设置过的所有别名</span><br><span class="line">    git config -l</span><br><span class="line"></span><br><span class="line">开发中分支合并最新master且不新增提交:</span><br><span class="line">1.在开发分支合并最新的master.</span><br><span class="line">2.切换至master,使用git read-tree -m -u &lt;开发分支&gt;, 获得开发改动的代码的 未提交状态.</span><br><span class="line">3.在master新建开发分支</span><br><span class="line"></span><br><span class="line">理论知识:</span><br><span class="line">    Git 保存的不是文件差异或者变化量，而只是一系列文件快照。</span><br><span class="line"></span><br><span class="line">    git add时, 暂存操作会为每个文件计算校验和,把当前版本的文件使用bolb对象保存到Git仓库中.</span><br><span class="line"></span><br><span class="line">    git commit时, 提交操作会计算每一个子目录的校验和, 在Git仓库中将这些校验和</span><br><span class="line">    保存为树对象. 然后Git创建一个提交对象, 包含一个指向暂存内容快照的指针,作者的</span><br><span class="line">    姓名邮箱,提交时的输入信息和指向父对象的指针, 指向树对象的指针.</span><br><span class="line"></span><br><span class="line">        此时Git仓库中的对象:</span><br><span class="line">            bolb对象: 保存文件快照.</span><br><span class="line">            树对象: 记录着目录结构和blob对象索引.</span><br><span class="line">            提交对象: 包含着指向前面树对象的指针和所有的提交信息.</span><br><span class="line"></span><br><span class="line">    Git分支: 指向提交对象的可变指针. 实质上是包含所指向对象校验和的文件. </span><br><span class="line">    创建分支: 创建一个可以移动的新指针. 相当于往一个文件中0  写41个字节(40个SHA-1字符和1个换行符).</span><br><span class="line">    HEAD指针: 指向当前所在的分支</span><br><span class="line"></span><br><span class="line">Fast-forward</span><br><span class="line">    如果顺着一个分支走下去能够达到另一个分支, 那么Git在合并时只会简单的将指针前进.</span><br><span class="line">&apos;recursive&apos; strategy 合并提交</span><br><span class="line">    选取一个共同祖先, 作为合并的基础, 做一个新的快照并自动创建一个提交指向它.</span><br><span class="line"></span><br><span class="line">git rebase</span><br><span class="line">    将提交到某一分支上的所有修改都应用到另一分支.</span><br><span class="line">    原理: 先找到最近共同祖先, 对比当前分支相对于该祖先的历次提交,</span><br><span class="line">        提取相应的修改并存为临时文件,然后将当前分支指向目标基底,</span><br><span class="line">        将之前另存为临时文件的修改依序应用.</span><br><span class="line">    实质: 丢弃一些现有的提交, 然后相应地新建一些内容一样但不同的提交.</span><br><span class="line">    结果: 最终结果和git merge没有任何区别, 只是让提交历史变成一串.</span><br><span class="line">    特殊选项: </span><br><span class="line">        --onto</span><br><span class="line">            取出 client 分支，找出处于 client 分支和 server 分支的共同祖先之后的修改，然后把它们在 master 分支上重放一遍</span><br><span class="line">            git rebase --onto master server client</span><br><span class="line">        </span><br><span class="line">        将特性分支变基到目标分支</span><br><span class="line">        git rebase [basebranch] [topicbranch]</span><br><span class="line"></span><br><span class="line">    风险: 丢弃掉已经被人依赖的提交, 导致这边丢不掉, 那边提交重复.</span><br><span class="line">    解决办法: 用rebase解决rebase.</span><br><span class="line">            git rebase teamone/master</span><br><span class="line">        过程:1. 检查哪些提交是我们分支独有的.</span><br><span class="line">            2. 检查其中哪些提交不是合并操作的结果.</span><br><span class="line">            3. 检查其中哪些提交在对方覆盖更新时并没有被纳入目标分支.</span><br><span class="line">            4. 把查到的这些提交应用到teamone/master上.</span><br><span class="line">            </span><br><span class="line">    原则: 只对尚未推送或分享给别人的本地修改执行rebase操作清理历史,</span><br><span class="line">         不对已推送至别处的提交执行rebase.</span><br></pre></td></tr></table></figure>
       
 
       
@@ -396,11 +594,7 @@ list.forEach(System.out::println);
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		
 		</ul>
@@ -412,7 +606,7 @@ list.forEach(System.out::println);
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/Git//" class="article-tag-list-link color4">Git</a>
         		</li>
       		
 		</ul>
@@ -421,7 +615,7 @@ list.forEach(System.out::println);
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Java8查漏补缺/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Git技巧/">展开全文 >></a>
         </p>
       
 
@@ -451,27 +645,58 @@ list.forEach(System.out::println);
 
 
   
-    <article id="post-Haskell实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-GitFlow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Haskell实现2048/">Haskell实现2048</a>
+      <a class="article-title" href="/2019/04/05/GitFlow/">Git Flow</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Haskell实现2048/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/05/GitFlow/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Prelude hiding (Left, Right)</span><br><span class="line"><span class="keyword">import</span> Data.Char (toLower)</span><br><span class="line"><span class="keyword">import</span> Data.List</span><br><span class="line"><span class="keyword">import</span> System.IO</span><br><span class="line"><span class="keyword">import</span> System.Random</span><br><span class="line"><span class="keyword">import</span> Text.Printf</span><br><span class="line"><span class="keyword">import</span> System.Process</span><br><span class="line"></span><br><span class="line">data Move = Up | Down | Left | Right</span><br><span class="line">type Grid = [[Int]]</span><br><span class="line"></span><br><span class="line">start :: IO Grid</span><br><span class="line">start = do grid<span class="string">'  &lt;- addTile $ replicate 4 [0, 0, 0, 0]</span></span><br><span class="line"><span class="string">           addTile grid'</span></span><br><span class="line"></span><br><span class="line">merge :: [Int] -&gt; [Int]</span><br><span class="line">merge xs = merged ++ padding</span><br><span class="line">    where padding = replicate (length xs - length merged) <span class="number">0</span></span><br><span class="line">          merged  = combine $ filter (/= <span class="number">0</span>) xs</span><br><span class="line">          combine (x:y:xs) | x == y = x * <span class="number">2</span> : combine xs</span><br><span class="line">                           | otherwise = x  : combine (y:xs)</span><br><span class="line">          combine x = x</span><br><span class="line"></span><br><span class="line">move :: Move -&gt; Grid -&gt; Grid</span><br><span class="line">move Left  = map merge</span><br><span class="line">move Right = map (reverse . merge . reverse)</span><br><span class="line">move Up    = transpose . move Left  . transpose</span><br><span class="line">move Down  = transpose . move Right . transpose</span><br><span class="line"></span><br><span class="line">getZeroes :: Grid -&gt; [(Int, Int)]</span><br><span class="line">getZeroes grid = filter (\(row, col) -&gt; (grid!!row)!!col == 0) coordinates</span><br><span class="line">    where singleRow n = zip (replicate <span class="number">4</span> n) [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line">          coordinates = concatMap singleRow [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line"></span><br><span class="line">setSquare :: Grid -&gt; (Int, Int) -&gt; Int -&gt; Grid</span><br><span class="line">setSquare grid (row, col) val = pre ++ [mid] ++ post</span><br><span class="line">    where pre  = take row grid</span><br><span class="line">          mid  = take col (grid!!row) ++ [val] ++ drop (col + <span class="number">1</span>) (grid!!row)</span><br><span class="line">          post = drop (row + <span class="number">1</span>) grid</span><br><span class="line"></span><br><span class="line">isMoveLeft :: Grid -&gt; Bool</span><br><span class="line">isMoveLeft grid = sum allChoices &gt; <span class="number">0</span></span><br><span class="line">    where allChoices = map (length . getZeroes . flip move grid) directions</span><br><span class="line">          directions = [Left, Right, Up, Down]</span><br><span class="line"></span><br><span class="line">printGrid :: Grid -&gt; IO ()</span><br><span class="line">printGrid grid = do</span><br><span class="line">    system <span class="string">"cls"</span> -- clears the screen</span><br><span class="line">    mapM_ (putStrLn . showRow) grid</span><br><span class="line"></span><br><span class="line">showRow :: [Int] -&gt; String</span><br><span class="line">showRow = concatMap (printf <span class="string">"%5d"</span>)</span><br><span class="line"></span><br><span class="line">moves :: [(Char, Move)]</span><br><span class="line">moves = keys <span class="string">"wasd"</span> ++ keys <span class="string">"chtn"</span></span><br><span class="line">    where keys chars = zip chars [Up, Left, Down, Right]</span><br><span class="line"></span><br><span class="line">captureMove :: IO Move</span><br><span class="line">captureMove = do</span><br><span class="line">    inp &lt;- getChar</span><br><span class="line">    case lookup (toLower inp) moves of</span><br><span class="line">        Just x  -&gt; return x</span><br><span class="line">        Nothing -&gt; do putStrLn "Use WASD or CHTN as input"</span><br><span class="line">                      captureMove</span><br><span class="line"></span><br><span class="line">check2048 :: Grid -&gt; Bool</span><br><span class="line">check2048 grid = [] /= filter (== <span class="number">2048</span>) (concat grid)</span><br><span class="line">                </span><br><span class="line">addTile :: Grid -&gt; IO Grid</span><br><span class="line">addTile grid = do</span><br><span class="line">    let candidates = getZeroes grid</span><br><span class="line">    pick &lt;- choose candidates</span><br><span class="line">    val  &lt;- choose [<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>]</span><br><span class="line">    let new_grid = setSquare grid pick val</span><br><span class="line">    <span class="keyword">return</span> new_grid</span><br><span class="line"></span><br><span class="line">choose :: [a] -&gt; IO a</span><br><span class="line">choose xs = do</span><br><span class="line">    i &lt;- randomRIO (<span class="number">0</span>, length xs<span class="number">-1</span>)</span><br><span class="line">    <span class="keyword">return</span> (xs !! i)</span><br><span class="line"></span><br><span class="line">newGrid :: Grid -&gt; IO Grid</span><br><span class="line">newGrid grid = do</span><br><span class="line">    m &lt;- captureMove</span><br><span class="line">    let new_grid = move m grid</span><br><span class="line">    <span class="keyword">return</span> new_grid</span><br><span class="line"></span><br><span class="line">gameLoop :: Grid -&gt; IO ()</span><br><span class="line">gameLoop grid</span><br><span class="line">    | isMoveLeft grid = do</span><br><span class="line">        printGrid grid</span><br><span class="line">        <span class="keyword">if</span> check2048 grid</span><br><span class="line">        then putStrLn <span class="string">"You won!"</span></span><br><span class="line">        <span class="keyword">else</span> do new_grid &lt;- newGrid grid</span><br><span class="line">                <span class="keyword">if</span> grid /= new_grid</span><br><span class="line">                then do new &lt;- addTile new_grid</span><br><span class="line">                        gameLoop new</span><br><span class="line">                <span class="keyword">else</span> gameLoop grid</span><br><span class="line">    | otherwise = do</span><br><span class="line">        printGrid grid</span><br><span class="line">        putStrLn <span class="string">"Game over"</span></span><br><span class="line"></span><br><span class="line">main :: IO ()</span><br><span class="line">main = do</span><br><span class="line">    hSetBuffering stdin NoBuffering</span><br><span class="line">    grid &lt;- start</span><br><span class="line">    gameLoop grid</span><br></pre></td></tr></table></figure>
+        <p>集中式工作流<br>    工作方式<br>        以中央仓库作为项目所有修改的单点实体,所有修改提交到这个分支<br>        上,只用到master这一个分支.<br>    冲突解决<br>        开发者提交之前,需要先fetch中央库的新增提交,rebase自己提交到<br>        中央仓库提交历史之上.[把自己的修改加到别人已经完成的修改上]</p>
+<pre><code>git pull --rebase origin master
+    --rebase选项把提交已到同步了中央仓库修改后的master分支的顶部.
+</code></pre><p>功能分支工作流<br>    所有的功能开发应该在一个专门的分支</p>
+<p>GitFlow工作流<br>    历史分支<br>        使用两个分支来记录项目的历史,master分支存储了正式发布的历史,develop<br>        分支作为功能的集成分支.<br>    功能分支<br>        使用develop作为父分支,新功能完成时合并回develop分支.<br>    发布分支<br>        从develop分支上fork一个发布分支,新建的分支用于开始发布循环,发布分支<br>        合并到master分支并分配一个版本号打好Tag.</p>
+<pre><code>示例
+    git checkout -b some-feature develop
+
+    git status
+    git add 
+    git commit
+
+    git pull origin develop
+    git checkout develop
+    git merge some-feature
+    git push
+    git branch -d some-feature
+
+    git checkout -b release-0.1 develop
+
+    git checkout master
+    git merge release-0.1
+    git push
+    git checkout develop
+    git merge release-0.1
+    git push
+    git branch -d release-0.1
+
+    git tag -a 0.1 -m &quot;Initial public release&quot; master
+    git push --tag
+</code></pre><p>Forking工作流</p>
+
       
 
       
@@ -484,15 +709,7 @@ list.forEach(System.out::println);
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Haskell</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">2048</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
         		</li>
       		
 		</ul>
@@ -504,7 +721,7 @@ list.forEach(System.out::println);
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Haskell//" class="article-tag-list-link color3">Haskell</a>
+        			<a href="/categories/Git//" class="article-tag-list-link color4">Git</a>
         		</li>
       		
 		</ul>
@@ -513,7 +730,7 @@ list.forEach(System.out::println);
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Haskell实现2048/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/GitFlow/">展开全文 >></a>
         </p>
       
 
@@ -545,7 +762,7 @@ list.forEach(System.out::println);
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 

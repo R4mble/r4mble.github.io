@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="特点 multi-version concurrency control (MVCC), Oracle中的快照隔离 面向对象, 可以添加自定义函数. 可拓展, 可以自定义数据类型,索引类型.   PostgreSQL与MySQL的对比: MySQL多表连接查询只支持Nest Loop,不支持hash join和sort merge join,子查询性能较低,不支持sequence 性能优化工具和度">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-25T13:19:31.540Z">
+<meta property="og:updated_time" content="2019-09-14T11:11:30.330Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PostgreSQL">
 <meta name="twitter:description" content="特点 multi-version concurrency control (MVCC), Oracle中的快照隔离 面向对象, 可以添加自定义函数. 可拓展, 可以自定义数据类型,索引类型.   PostgreSQL与MySQL的对比: MySQL多表连接查询只支持Nest Loop,不支持hash join和sort merge join,子查询性能较低,不支持sequence 性能优化工具和度">
@@ -200,6 +200,250 @@
 <li>Explicit Locks</li>
 <li>Advisory Locks</li>
 </ul>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><ul>
+<li><p>创建   </p>
+<blockquote>
+<p>   create table test_array (</p>
+<pre><code>id          integer,
+array_i     integer[],
+array_t     text[]
+</code></pre><p>  )</p>
+</blockquote>
+</li>
+<li><p>插入</p>
+<ul>
+<li>花括号表示<blockquote>
+<p>   insert into test_array(id, array_i, array_t)<br>   values (1, ‘{1,2,3}’, ‘{“a”, “b”, “c”}’);</p>
+</blockquote>
+</li>
+<li>array关键字<blockquote>
+<p>  insert into test_array(id, array_i, array_t)<br>  values (1, array[1,2,3], array[‘a’, ‘b’, ‘c’]);</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>查询<ul>
+<li>查询数组所有元素<blockquote>
+<p>select array_i from test_array where id=1;</p>
+</blockquote>
+</li>
+<li>查询数组指定索引. 索引为1到n, n是数组长度<blockquote>
+<p>select array_i[1], array_t[3] from test_array where id=1;    </p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>追加<blockquote>
+<p>select array_append(array[1,2,3], 4);  </p>
+<pre><code>select array[1,2,3] || 4;
+</code></pre></blockquote>
+</li>
+<li>删除<br>  移除数组中所有等于给定值的元素<blockquote>
+<p>select array_remove(array[1,2,3,2], 2);  </p>
+</blockquote>
+</li>
+<li>修改      <blockquote>
+<p>update test_array set array_i[3]=4 where id=1;<br>  更新整个数组:<br>  update test_array set array_i=array[5,6,7] where id=1;</p>
+</blockquote>
+</li>
+<li><p>替换</p>
+<blockquote>
+<p>array_replace(arr, srcEle, tarEle) 替换数组元素<br>  select array_replace(array[1,2,5,4], 5, 10);<br>  =&gt; {1,2,10,4}</p>
+</blockquote>
+</li>
+<li><p>元素第一次出现的位置</p>
+<blockquote>
+<p>select array_position(array[‘a’,’b’,’c’,’d’], ‘d’);<br>  =&gt; 4   </p>
+</blockquote>
+</li>
+<li><p>to_string   </p>
+<blockquote>
+<p>array_to_string(arr, separator, replaceNull)<br>  select array_to_string(array[1,2,null,3], ‘, ‘, ‘10’);<br>  =&gt; 1,2,10,3</p>
+</blockquote>
+</li>
+<li><p>其他函数</p>
+<blockquote>
+<p>@&gt; 包含  </p>
+<pre><code>&lt;@ 被包含   
+&amp;&amp; 重叠  
+|| 串接  
+array_length 数组长度  
+</code></pre></blockquote>
+</li>
+</ul>
+<h2 id="json-jsonb"><a href="#json-jsonb" class="headerlink" title="json/jsonb"></a>json/jsonb</h2><h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><ol>
+<li>json数据类型存储格式为文本,而jsonb数据类型存储格式为二进制<br>检索json数据时必须重新解析,而jsonb类型不需要.<br>因此, json写入比jsonb快,检索比jsonb慢</li>
+<li>jsonb输出键的顺序和输入不一样, json输出键的顺序和输入完全一样</li>
+<li>jsonb类型会去掉输入数据键值的空格, json不会删掉空格.</li>
+<li>jsonb会删掉重复的键,仅保留最后一个. json会保留重复的键值.<blockquote>
+<p>推荐: 大多数场景下使用jsonb, 对json的键顺序有要求时可以使用json</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>创建<blockquote>
+<p>create table test_json(id serial primary key, name json);</p>
+</blockquote>
+</li>
+<li>插入<blockquote>
+<p>insert into test_json(name) values (‘{“col1”:1, “col2”:”francs”, “col3”: “male”}’);</p>
+</blockquote>
+</li>
+<li><p>查询</p>
+<blockquote>
+<p>select name -&gt; ‘col2’ from test_json where id=1;  </p>
+<pre><code>=&gt; &quot;francs&quot;  (json)
+以文本格式返回json字段键值  
+select name -&gt;&gt; &apos;col2&apos; from test_json where id=1;  
+=&gt; &quot;francs&quot; (text)
+</code></pre></blockquote>
+</li>
+<li><p>字符串是否为顶层键值</p>
+<blockquote>
+<p>select ‘{“a”:1, “b”:2}’::jsonb ? ‘a’;<br>  =&gt; true</p>
+</blockquote>
+</li>
+<li>删除json数据的键/值    <blockquote>
+<p>select ‘{“a”:1, “b”:2}’::jsonb - ‘a’;<br>  =&gt; “{“b”: 2}” (jsonb)  </p>
+<ul>
+<li>删除json数组中的值,索引从0开始.<br>select ‘[“red”, “green”, “blue”]’::jsonb -0;<br>=&gt; [“green”, “blue”]</li>
+<li>删除嵌套json使用#-加上数组形式的删除路径<br>select ‘{“name”:  “James”,  “contact”:  {“phone”:  “01234  567890”,  “fax”:<br>  “01987543210”}}’::jsonb #- ‘{contact, fax}’::text[]<br>=&gt; “{“name”: “James”, “contact”: {“phone”: “01234  567890”}}”</li>
+<li>删除嵌套的json数组: 使用text数组指明要删除的位置<br>select ‘{“name”: “James”, “aliases”: [“Jamie”, “The Jamester”, “J Man”]}’<br>:: jsonb #- ‘{alias,1}’::text[];<br>=&gt; “{“name”: “James”, “aliases”: [“Jamie”, “J Man”]}”</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>扩展最外层json对象成一组键值结果集<blockquote>
+<p>select * from json_each(‘{“a”:”foo”, “b”:”bar”}’);<br>  =&gt;key text  value json  </p>
+<pre><code>a    &quot;foo&quot;  
+b    &quot;bar&quot;  
+以文本形式返回:  
+select * from json_each_text(&apos;{&quot;a&quot;:&quot;foo&quot;, &quot;b&quot;:&quot;bar&quot;}&apos;);  
+</code></pre><p>  =&gt;key text  value text  </p>
+<pre><code>a    foo  
+b    bar  
+</code></pre></blockquote>
+</li>
+<li>把行作为json对象返回<blockquote>
+<p>select row_to_json(test_copy) from test_copy where id=1;       </p>
+</blockquote>
+</li>
+<li><p>返回最外层的json对象中的键的集合</p>
+<blockquote>
+<p>select * from json_object_keys(‘{“a”:”foo”, “b”:”bar”}’);<br>   a<br>   b  </p>
+</blockquote>
+</li>
+<li><p>jsonb追加</p>
+<blockquote>
+<p>select ‘{“name”:”francs”, “age”:”31”}’::jsonb || ‘{“gender”:”male”}’::jsonb;<br>  =&gt; “{“age”: “31”, “name”: “francs”, “gender”: “male”}” </p>
+</blockquote>
+</li>
+<li><p>更新</p>
+<ul>
+<li>覆盖更新<blockquote>
+<p>select ‘{“name”:”francs”, “age”:”31”}’ :: jsonb || ‘{“age”: “32”, “name”: “francs”}’;    </p>
+</blockquote>
+</li>
+<li>jsonb_set, true:键不存在则添加, false:键不存在则不添加<blockquote>
+<p>select jsonb_set(‘{“name”:”francs”, “age”:”31”}’ :: jsonb, ‘{age}’, ‘“32”‘::jsonb, true);<br>  注意32前后有单引号<br>=&gt; “{“age”: “32”, “name”: “francs”}”<br>select jsonb_set(‘{“name”:”francs”, “age”:”31”}’::jsonb, ‘{sex}’, ‘“male”‘::jsonb, true);<br>=&gt;  {“age”: “31”, “sex”: “male”, “name”: “francs”}</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><ul>
+<li>varchar转为text<blockquote>
+<p>select cast(varchar ‘123’ as text);</p>
+</blockquote>
+</li>
+<li>varchar转为int4    <blockquote>
+<p>select cast(varchar ‘123’ as int4);</p>
+</blockquote>
+</li>
+<li>通过::操作符转换<blockquote>
+<p>select 1::int4, 3/2::numeric;   </p>
+</blockquote>
+</li>
+</ul>
+<h2 id="with查询"><a href="#with查询" class="headerlink" title="with查询"></a>with查询</h2><pre><code>with t as (
+    select generate_series(1,3)
+)
+select * from t;
+-----------
+1
+2
+3 
+</code></pre><ul>
+<li>递归查询</li>
+</ul>
+<pre><code>with recursive t (x) as (
+    select 1
+    union
+    select x + 1
+    from t
+    where x &lt; 5
+)    
+select sum(x) from t;
+</code></pre><p>层级查询实例:</p>
+<pre><code>CREATE TABLE test_area(id int4, name varchar(32), fatherid int4);
+INSERT INTO test_area VALUES (1, &apos;中国&apos;   ,0);
+INSERT INTO test_area VALUES (2, &apos;辽宁&apos;   ,1);
+INSERT INTO test_area VALUES (3, &apos;山东&apos;   ,1);
+INSERT INTO test_area VALUES (4, &apos;沈阳&apos;   ,2);
+INSERT INTO test_area VALUES (5, &apos;大连&apos;   ,2);
+INSERT INTO test_area VALUES (6, &apos;济南&apos;   ,3);
+INSERT INTO test_area VALUES (7, &apos;和平区&apos; ,4);
+INSERT INTO test_area VALUES (8, &apos;沈河区&apos; ,4);    
+
+-- 找到和平区的所有父节点
+with recursive r as (
+    select * from test_area where id = 7
+    union all
+    select test_area.* from test_area, r where test_area.id = r.fatherid
+)
+select * from r order by id;
+
+-- 拼接name字段, 输出&quot;中国辽宁沈阳和平区&quot;
+ with recursive r as (
+        select * from test_area where id = 7
+        union all
+        select test_area.* from test_area, r where test_area.id = r.fatherid
+    )
+    select string_agg(name, &apos;&apos;) from (select name from r order by id) as n;
+
+ -- 查找沈阳市及管辖的区
+ with recursive r as (
+     select * from test_area where id = 4
+     union all
+     select test_area.* from test_area, r where test_area.fatherid = r.id
+ )
+ select * from r order by id;
+</code></pre><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<li>简化SQL代码,减少SQL嵌套次数,提高可读性</li>
+<li>计算一次,在主查询中多次使用</li>
+<li>不需要共享查询结果时,比视图更轻量.    </li>
+</ul>
+<h2 id="批量插入"><a href="#批量插入" class="headerlink" title="批量插入"></a>批量插入</h2><ul>
+<li>通过表数据或函数批量插入<blockquote>
+<p>insert into tbl(id, name) select id, name from user_ini;<br>insert into tbl(id, info) select generate_series(1,5), ‘batch2’;</p>
+</blockquote>
+</li>
+<li>insert into values(),(),()<blockquote>
+<p>insert into tble(id, name) values (1,’a’), (2,’b’);<br>  减少和数据库的交互,减少数据库wal日志生成,提升插入效率.</p>
+</blockquote>
+</li>
+<li>copy或\copy元命令  <blockquote>
+<p>导出<br>   copy pguser.tbl to ‘/home/pg10/tbl.txt’<br>  导入  </p>
+<pre><code>copy pguser.tbl from &apos;/home/pg10/tbl.txt&apos;  
+</code></pre></blockquote>
+</li>
+</ul>
+<h2 id="returning"><a href="#returning" class="headerlink" title="returning"></a>returning</h2><p>INSERT语句后接RETURNING属性返回插入的数据；<br>UPDATE语句后接RETURNING属性返回更新后的新值；<br>DELETE语句后接RETURNING属性返回删除的数据      </p>
+<blockquote>
+<p>insert into test_re(flag) values(‘a’) returning id;</p>
+</blockquote>
+<h2 id="upsert"><a href="#upsert" class="headerlink" title="upsert"></a>upsert</h2><p>insert … on conflict update</p>
 <h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><ul>
 <li>select 连接两列合并为一列<blockquote>
 <p>select first_name  || ‘ ‘ ||  last_name as full_name, email from customer;</p>
@@ -375,7 +619,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#特点"><span class="toc-number">1.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PostgreSQL与MySQL的对比"><span class="toc-number">2.</span> <span class="toc-text">PostgreSQL与MySQL的对比:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据类型"><span class="toc-number">3.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据完整性"><span class="toc-number">4.</span> <span class="toc-text">数据完整性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用操作"><span class="toc-number">5.</span> <span class="toc-text">常用操作</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#特点"><span class="toc-number">1.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PostgreSQL与MySQL的对比"><span class="toc-number">2.</span> <span class="toc-text">PostgreSQL与MySQL的对比:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据类型"><span class="toc-number">3.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据完整性"><span class="toc-number">4.</span> <span class="toc-text">数据完整性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数组"><span class="toc-number">5.</span> <span class="toc-text">数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#json-jsonb"><span class="toc-number">6.</span> <span class="toc-text">json/jsonb</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#区别"><span class="toc-number">6.1.</span> <span class="toc-text">区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型转换"><span class="toc-number">7.</span> <span class="toc-text">类型转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#with查询"><span class="toc-number">8.</span> <span class="toc-text">with查询</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#优点"><span class="toc-number">8.0.1.</span> <span class="toc-text">优点</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#批量插入"><span class="toc-number">9.</span> <span class="toc-text">批量插入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#returning"><span class="toc-number">10.</span> <span class="toc-text">returning</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#upsert"><span class="toc-number">11.</span> <span class="toc-text">upsert</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用操作"><span class="toc-number">12.</span> <span class="toc-text">常用操作</span></a></li>
                     </div>
                 </span>
             </div>

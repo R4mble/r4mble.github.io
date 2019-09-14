@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Spring MVC | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="DispatcherServlet 1.用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.  2.DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该     Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.     这些对象被封装到一个HandlerExecu">
+  <meta name="description" content="DispatcherServlet 用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.  DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该 Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器. 这些对象被封装到一个HandlerExecutionChain对象当">
 <meta name="keywords" content="Spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring MVC">
 <meta property="og:url" content="http://yoursite.com/2019/04/05/Spring-MVC/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="DispatcherServlet 1.用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.  2.DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该     Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.     这些对象被封装到一个HandlerExecu">
+<meta property="og:description" content="DispatcherServlet 用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.  DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该 Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器. 这些对象被封装到一个HandlerExecutionChain对象当">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-24T19:27:24.151Z">
+<meta property="og:updated_time" content="2019-09-14T11:11:30.377Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring MVC">
-<meta name="twitter:description" content="DispatcherServlet 1.用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.  2.DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该     Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.     这些对象被封装到一个HandlerExecu">
+<meta name="twitter:description" content="DispatcherServlet 用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.  DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该 Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器. 这些对象被封装到一个HandlerExecutionChain对象当">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -171,30 +171,42 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>DispatcherServlet</p>
-<pre><code>1.用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.
+        <h2 id="DispatcherServlet"><a href="#DispatcherServlet" class="headerlink" title="DispatcherServlet"></a>DispatcherServlet</h2><ol>
+<li><p>用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.</p>
+</li>
+<li><p>DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该<br> Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.<br> 这些对象被封装到一个HandlerExecutionChain对象当中返回<br><code>`</code>java<br>interface HandlerMapping {<br> HandlerExecutionChain getHandler(HttpServletRequest request);<br>}</p>
+</li>
+</ol>
+<p>interface HandlerAdapter {<br>    boolean supports(Object handler);<br>    ModelAndView handle(HttpServletRequest request,<br>                        HttpServletResponse response,<br>                        Object handler);<br>    long getLastModified(HttpServletRequest request, Object handler);<br>}</p>
+<p>public interface Controller {<br>    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response);<br>}</p>
+<p>public interface LastModified {<br>    long getLastModified(HttpServletRequest request);<br>}</p>
+<p>public class SimpleControllerHandlerAdapter implements HandlerAdapter {<br>    public boolean supports(Object handler) {<br>        return (handler instanceof Controller);<br>    }</p>
+<pre><code>public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    return ((Controller) handler).handleRequest(request, response);
+}
 
-2.DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该
-    Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.
-    这些对象被封装到一个HandlerExecutionChain对象当中返回
+public long getLastModified(HttpServletRequest request, Object handler) {
+    if (handler instanceof LastModified) {
+        return ((LastModified) handler).getLastModified(request);
+    }
+    return -1L;
+}
+</code></pre><p>}<br><code>`</code>    </p>
+<ol start="3">
+<li><p>DispatcherServlet根据Handler选择HandlerAdapter,调用实际处理请求的方法.</p>
+</li>
+<li><p>提取请求中的模型数据,执行Handler.在填充Handler入参过程中:<br> 消息转换:   将json,xml等转换成一个对象,将对象转换为指定的响应消息<br> 数据转换:   对请求消息进行数据转换,String转换为Integer,Double等<br> 数据格式化:  如字符串转为格式化数字或格式化日期等<br> 数据验证:   验证数据的有效性,验证结果存到BindingResult或Error中</p>
+</li>
+<li><p>Handler执行完成之后,向DispatcherServlet返回一个ModelAndView对象,包含视图名<br> 或视图名和模型</p>
+</li>
+<li><p>根据ModelAndView选择一个合适的ViewResolver返回给DispatcherServlet</p>
+</li>
+<li><p>ViewSolver结合Model和View来渲染视图</p>
+</li>
+<li><p>将视图返回给客户端</p>
+</li>
+</ol>
 
-3.DispatcherServlet根据Handler选择HandlerAdapter,调用实际处理请求的方法.
-
-4.提取请求中的模型数据,执行Handler.在填充Handler入参过程中:
-    消息转换:   将json,xml等转换成一个对象,将对象转换为指定的响应消息
-    数据转换:   对请求消息进行数据转换,String转换为Integer,Double等
-    数据格式化:  如字符串转为格式化数字或格式化日期等
-    数据验证:   验证数据的有效性,验证结果存到BindingResult或Error中
-
-5.Handler执行完成之后,向DispatcherServlet返回一个ModelAndView对象,包含视图名
-    或视图名和模型
-
-6.根据ModelAndView选择一个合适的ViewResolver返回给DispatcherServlet
-
-7.ViewSolver结合Model和View来渲染视图
-
-8.将视图返回给客户端
-</code></pre>
       
 
       
@@ -214,6 +226,17 @@
 	</div>
 
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Web//" class="article-tag-list-link color4">Web</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -315,7 +338,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#DispatcherServlet"><span class="toc-number">1.</span> <span class="toc-text">DispatcherServlet</span></a></li></ol>
                     </div>
                 </span>
             </div>

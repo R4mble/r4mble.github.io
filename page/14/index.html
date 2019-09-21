@@ -151,191 +151,229 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-深入理解Java-Web" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/深入理解Java-Web/">深入理解Java Web</a>
+      <a class="article-title" href="/2019/04/24/JWT/">JWT</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/深入理解Java-Web/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:40:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/24/JWT/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Web请求过程<br>    HTTP 无状态的短连接.发起一个http请求就是建立一个socket通信的过程<br>        Request Header<br>            Accept-Charset<br>            Accept-Encoding<br>            Accept-Language<br>            Host<br>            User-Agent<br>            Connection: Keep-Alive<br>        Response Header<br>            Server<br>            Content-Type<br>            Content-Encoding<br>            Content-Language<br>            Content-Length<br>            Keep-Alive: timeout=5,max=120</p>
-<pre><code>    常见状态码
-        200     成功
-        302     临时跳转, 跳转的地址通过Location指定
-        304     文件未变化
-        400     客户端请求有语法错误, 不能被服务器识别
-        403     服务器收到请求, 但是拒绝提供服务
-        404     请求的资源不存在
-        500     服务器发生不可预期的错误
+        <ol>
+<li><p>了解JWT相关知识</p>
+<pre><code>JWT组成: 
+    Header.Payload.Signature
+    头部.负载.签名
 
-    浏览器缓存
-        Pragma: no-cache
-        Cache-Control: no-cache
+头部:
+    {
+       &quot;alg&quot;: &quot;HS256&quot;,
+        &quot;typ&quot;: &quot;JWT&quot;
+    }
+    alg表示签名的算法，默认是HMAC SHA256, typ表示这个令牌的类型.
 
-    Expires
+负载:
+    iss (issuer)：签发人
+    exp (expiration time)：过期时间
+    sub (subject)：主题
+    aud (audience)：受众
+    nbf (Not Before)：生效时间
+    iat (Issued At)：签发时间
+    jti (JWT ID)：编号
 
-    Last-Modified/Etag
-        浏览器在请求头中增加If-Modified-Since, 如果是最新的, 返回304
+签名: 对前两部分的签名,防止数据篡改.
+    HMACSHA256(
+        base64UrlEncode(header) + &quot;.&quot; +
+        base64UrlEncode(payload),
+        secret)
+把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用&quot;点&quot;（.）分隔
+</code></pre></li>
+</ol>
+<p>Spring中使用JWT:</p>
+<pre><code>1. 编写由登录对象转为token和由token获取登录对象的方法.
+2. 继承OncePerRequestFilter,重写doFilterInternal方法,对每一次请求进行token检查.
+3. 使用@AuthenticationPrincipal注解, 根据前端传过来的header获取登录对象.
+</code></pre><ol start="2">
+<li>postgresql的具体使用:<pre><code>读取数组属性:
+    1. 定义ArrayTypeHandelr继承BaseTypeHandler,重写get,set方法
+    2. 指定mybatis的类型处理器包的位置为ArrayTypeHandelr所在包.
+    3. 定义数组属性所在类型的resultMap.
+</code></pre></li>
+</ol>
 
-DNS域名解析过程
-    1. 浏览器检查缓存有没有.
-    2. 操作系统缓存. hosts文件
-    3. LDNS
-    4. Root Server
+      
 
-CDN工作机制
-</code></pre><p>java io<br>    Java IO类库<br>        传输数据的数据格式<br>            基于字节操作的IO接口:    InputStream OutputStream<br>            基于字符操作的IO接口:    Writer Reader<br>        传输数据的方式<br>            基于磁盘操作的IO接口:    File<br>            基于网络操作的IO接口:    Socket</p>
-<pre><code>    字符与字节的转化接口
-        InputStreamReader: 字节到字符的转化桥梁
-        OutStreamWriter:    字符到字节的编码过程
-
-磁盘IO工作机制
-    访问文件的方式
-        标准访问文件方式
-            read()
-                检查内核缓存,有的话直接返回, 没有的话从磁盘读取, 缓存在内核地址空间
-            write()
-                从用户地址复制到内核地址空间缓存, 什么时候写到磁盘由操作系统决定,
-                除非显示调用sync同步命令
-
-        直接IO方式
-            直接访问磁盘数据,不经过操作系统内核数据缓冲区.减少一次数据复制.
-            通常是在对数据的缓存管理由应用程序实现的数据库管理系统中.
-
-        同步访问文件方式
-
-        异步访问文件方式
-
-        内存映射的方式
-            将操作系统内存中的某一块区域与磁盘中的文件关联起来.
-</code></pre><p>java编码</p>
-<p>java编译原理:  将java源码编译成java字节码, .java-&gt;.class, 源代码-&gt;二进制数字<br>    模块<br>        词法分析器:  找出语法关键词 -&gt; 规范Token流<br>            Scanner: 具体读取和归类不同词法<br>            JavacParser: 规定了哪些词是符合java语言规范<br>        语法分析器:  检查关键词是否符合java语言规范 -&gt; 抽象语法树<br>        语义分析器:  将复杂的语法转化为简单的语法(foreach 注解) -&gt; 注解过后的语法树<br>        代码生成器:  生成字节码<br>    语法树结构<br>    工作流程详解<br>        词法分析<br>        语法分析<br>        符号表的构建<br>        annotation的处理<br>        标注和语法检查<br>        数据流分析<br>        类型转化<br>        语法<br>    实现内部类<br>    实现对异常的处理<br>    与其他编译器的比较</p>
-<p>class文件结构</p>
-<p>ClassLoader工作机制</p>
-<p>JVM体系结构和工作方式<br>    虚拟内存<br>        多个进程空间上共享物理内存, 逻辑上不能互相访问<br>        一个虚拟地址被映射到一段物理内存,文件或其他可以寻址的存储(Swap分区)<br>    内核空间和用户空间<br>        减少从内核空间到用户空间的数据复制方式:sendfile文件传输方式</p>
-<pre><code>Java中哪些组件需要使用内存
-    Java堆
-        堆的大小在JVM启动时一次向操作系统申请完成.
-        分配完成后堆的大小固定,内存不够时再重新申请.内存空闲时也不能将多余的空间交还.
-
-    线程
-        每个线程创建时JVM都会为它创建一个堆栈, 通常在256KB-756KB之间
-
-    类和类加载器
-        存储在永久代
-
-    NIO
-        基于通道和缓冲区来执行IO的新方式.
-        java.nio.ByteBuffer.allocateDirect()方法分配内存.使用本机内存而不是Java堆上内存.
-            每次分配内存会调用操作系统的os::malloc()函数.
-
-        ByteBuffer产生的数据如果和网络或者磁盘交互都在操作系统的内核空间发生,不需要
-        将数据复制到java内存中.(如果io频繁发送很小的数据,系统调用的开销会抵消掉不用复制的好处)
-
-        直接ByteBuffer对象会自动清理本机缓冲区,这个过程只能作为java堆gc的一部分来执行
-
-    JNI
-
-JVM内存结构
-    PC寄存器
-        一个数据结构,用于保存当前正常执行的程序的内存地址,记录哪个线程当前执行到哪条指令.
-    Java栈
-        每当创建一个线程时,JVM就会为这个线程创建一个对应的java栈,这个栈中又会含有多个帧栈.
-        每运行一个方法创建一个帧栈.帧栈含有内部变量,操作栈,方法返回值等信息
-        每当方法执行完成时,帧栈弹出帧栈的元素作为方法的返回值.
-    堆
-    方法区
-    本地方法区
-    运行时常量池
-</code></pre><p>JVM内存管理</p>
-<p>Servlet工作原理<br>    Servlet容器<br>        启动过程<br>            启动类: org.apache.catalina.startup.Tomcat,创建实例对象并调用start方法.<br>                通过该对象增加和修改Tomcat配置参数, 动态增加Context,Servlet等<br>            基于观察者模式: 所有容器继承Lifecycle接口,它管理容器的整个生命周期,所有<br>                容器的修改和状态的改变都由它去通知已经注册的观察者(Listener)</p>
-<pre><code>Tomcat启动时序图
-    Tomcat start
-        StandardServer start init
-            StandardService init
-                StandardEngine init
-                   Connector
-                    StandardServer start
-                        StandardService start
-                            StandardEngine start
-                                StandardHost init start
-                                    StandardContext init(ContextConfig作为观察者被通知)
-                                    StandardContext init(配置解析)
-                                    StandardContext startInternal
-                                        StandardService start
-                                            Connector init
-                                                Http11Protocol start
-                                                Http11Protocol init
-
-当Context容器初始化状态设为init时, 添加到Context容器的Listener将会被调用.
-ContextConfig继承了LifecycleListener接口, 它是在调用Tomcat.addWebapp时被加入到
-StandardContext容器中的.
-ContextConfig类会负责整个Web应用的配置文件的解析工作.
-
-ContextConfig的init方法
-    创建用于解析XML配置文件的contextDigester对象
-    读取默认的context.xml配置文件,如果存在则解析它
-    读取默认的Host配置文件,如果存在则解析它
-    读取默认的Context自身的配置文件,如果存在则解析它
-    设置Context的DocBase
-
-Context容器的startInternal方法
-    创建读取资源文件的对象
-    创建ClassLoader对象
-    设置应用的工作目录
-    启动相关的辅助类(如Logger,realm,resources)
-    修改启动状态, 通知感兴趣的观察者(Web应用的配置)
-    子容器的初始化
-    获取ServletContext并设置必要的参数
-    初始化&quot;load on startup&quot;的Servlet
-
-Web应用的初始化工作(在ContextConfig的configureStart方法中实现)
-    解析web.xml文件, 其中的各个配置项会被解析成相应的属性保存在WebXml对象中
-    将WebXml对象中的属性设置到Context容器中,包括创建Servlet对象,filter.listener等
-
-    将Servlet包装成Context容器中的StandardWrapper并作为子容器添加到Context中
-
-创建Servlet实例(Wrapper.loadServlet实现)
-    web.xml默认配置项(Tomcat启动时这两个Servlet就会被启动)
-        DefaultServlet
-        JspServlet
-    loadServlet方法获取servletClass,交给InstanceManager去创建一个基于
-    servletClass.class的对象
-    如果这个Servlet配置了jsp-file,那这个servletClass就是JspServlet
-
-初始化Servlet(StandardWrapper的initServlet方法)
-    initServlet
-        调用Servlet的init()方法,同时把包装了StandardWrapper对象
-        的StandardWrapperFacade做为ServletConfig传给Servlet.
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
 
-Servlet体系结构(握手型的交互式:两个模块为了交换数据准备一个交易场景)
-    StandardWrapper和StandardWrapperFacade都实现了ServletConfig接口.
-    StandardWrapperFacade传给Servlet,保证从StandardWrapper中拿到ServletConfig
-    所规定的数据,又不把ServletConfig不关心的数据暴露给Servlet
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/JWT/">展开全文 >></a>
+        </p>
+      
 
-    ServletContext ApplicationContext ApplicationContextFacade
-        保证ServletContext只能从从容器拿到它该拿的数据.
-</code></pre><p>Session与Cookie</p>
-<p>Tomcat系统架构与设计模式<br>    Tomcat<br>        Container容器<br>            Engine<br>                Host<br>                    Servlet容器<br>                        Context(对应一个Web工程)<br>                            Wrapper(Servlet包装类)</p>
-<p>Jetty工作原理解析</p>
-<p>Spring设计理念</p>
-<p>SpringMVC工作机制</p>
-<p>MyBatis系统架构</p>
-<p>Velocity工作原理</p>
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Kotlin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/Kotlin/">Kotlin</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/Kotlin/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>is运算符<br>    检测一个表达式是否某类型的实例.如果是,在检测后可以直接当做该类型使用.<br>for循环<br>    普通的和索引遍历.<br>        for((k, v) in map) print(“$k -&gt; $v”)<br>when表达式<br>    模式匹配, 可以匹配具体的值, 也可以匹配类型.<br>in运算符<br>    检测某个数字是否在指定区间内.<br>        for (x in 9 downTo 0 step 3) print(x)<br>lambda表达式<br>    filter, sortedBy, map, forEach使用大括号<br>    list.filter{it &gt; 0}<br>类的创建<br>    不同指定实例类型, 不用new<br>DTO<br>    data class Customer(val name: String, val email: String)<br>    提供: getters, 对var还有setters<br>         equals(), hashCode(), toString(), copy()<br>默认参数<br>    fun foo(a: Int = 0, b: String = “”) {…}<br>访问map<br>    map[“key”]<br>延迟属性<br>    val p: String by lazy {}<br>扩展函数<br>    fun String.spaceToCamelCase() {…}<br>创建单例<br>    object Resource {<br>        val name = “Name”<br>    }</p>
+<p>if not null缩写<br>    val files = File(“Test”).listFiles()<br>    print(files?.size)</p>
+<p>if not null and else<br>    print(files?.size ?: “empty”)</p>
+<p>if null执行语句<br>    val email = values[“email”] ?: throw IllegalStateException(“Email is missing”)</p>
+<p>在可能会空的集合取第一个元素<br>    val mainEmail = emails.firstOrNull() ?: “”</p>
+<p>if not null执行代码<br>    value?.let {}</p>
+<p>可空布尔<br>    val b: Boolean? = …</p>
+<p>交换变量<br>    a = b.also {b = a}</p>
+<p>三个等号与两个等号<br>    数字装箱的 同一性 相等性</p>
+<p>基本类型<br>    在运行时表示为原生类型值,使用时像普通的类.<br>    较小类型不能隐式转换为较大的类型.</p>
+<p>密封类<br>    表示受限的类继承结构, 当一个值为有限集中的类型,不能有任何其他类型时.</p>
+<p>协程</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kotlin//" class="article-tag-list-link color2">Kotlin</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/Kotlin/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-动态规划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/08/动态规划/">动态规划</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/08/动态规划/" class="archive-article-date">
+  	<time datetime="2019-04-08T07:20:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="斐波那契数列"><a href="#斐波那契数列" class="headerlink" title="斐波那契数列"></a>斐波那契数列</h1><h2 id="70-Climbing-Stairs"><a href="#70-Climbing-Stairs" class="headerlink" title="70. Climbing Stairs"></a><a href="https://leetcode.com/problems/climbing-stairs" target="_blank" rel="noopener">70. Climbing Stairs</a></h2><p>主要的难点在于想清楚: 走到第 i 个楼梯的方法数为走到第 i-1 和第 i-2 个楼梯的方法数之和<br>第i-1个楼梯到第i个楼梯只有这一种方法,<br>第i-2个楼梯到第i个楼梯要么直接走2个台阶上去, 一步一步走上去的那种方法已经被算在了前一种方法里.<br>即: dp[i] = dp[i-1] + dp[i-2]<br>可以比较容易地写出下面这种递归的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> climbStairs(n - <span class="number">1</span>) + climbStairs(n - <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不过这个是树形递归的方法, 有很多重复计算.(在LeetCode里面跑会超时)<br>迭代的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">1</span>, pre2 = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>; i&lt;n; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = pre1 + pre2;</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="198-House-Robber"><a href="#198-House-Robber" class="headerlink" title="198. House Robber"></a><a href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">198. House Robber</a></h2><p>要想清楚: 抢到第 i 个住户时的最大抢劫量为 抢到第i-2个用户的钱加上第i个用户的钱<br>                                       抢到第i-1个用户的钱<br>                                这二者的最大值.<br>即: dp[i] = max(dp[i-2] + nums[i], dp[i-1])<br>容易写出下面的递归写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.length == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums.length == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(nums[<span class="number">0</span>], nums[<span class="number">1</span>]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(rob(Arrays.copyOf(nums, nums.length - <span class="number">2</span>)) + nums[nums.length - <span class="number">1</span>],</span><br><span class="line">                rob(Arrays.copyOf(nums, nums.length - <span class="number">1</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>和上面的一样,也会超时.<br>迭代的写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">0</span>, pre2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = Math.max(pre1 + nums[i], pre2);</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -349,7 +387,7 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
         		</li>
       		
 		</ul>
@@ -361,7 +399,7 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
         		</li>
       		
 		</ul>
@@ -370,7 +408,7 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/深入理解Java-Web/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/08/动态规划/">展开全文 >></a>
         </p>
       
 
@@ -400,62 +438,27 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 
 
   
-    <article id="post-Spring-MVC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JavaScript函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spring-MVC/">Spring MVC</a>
+      <a class="article-title" href="/2019/04/05/JavaScript函数式编程/">JavaScript函数式编程</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Spring-MVC/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/JavaScript函数式编程/" class="archive-article-date">
+  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="DispatcherServlet"><a href="#DispatcherServlet" class="headerlink" title="DispatcherServlet"></a>DispatcherServlet</h2><ol>
-<li><p>用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.</p>
-</li>
-<li><p>DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该<br> Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.<br> 这些对象被封装到一个HandlerExecutionChain对象当中返回<br><code>`</code>java<br>interface HandlerMapping {<br> HandlerExecutionChain getHandler(HttpServletRequest request);<br>}</p>
-</li>
-</ol>
-<p>interface HandlerAdapter {<br>    boolean supports(Object handler);<br>    ModelAndView handle(HttpServletRequest request,<br>                        HttpServletResponse response,<br>                        Object handler);<br>    long getLastModified(HttpServletRequest request, Object handler);<br>}</p>
-<p>public interface Controller {<br>    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response);<br>}</p>
-<p>public interface LastModified {<br>    long getLastModified(HttpServletRequest request);<br>}</p>
-<p>public class SimpleControllerHandlerAdapter implements HandlerAdapter {<br>    public boolean supports(Object handler) {<br>        return (handler instanceof Controller);<br>    }</p>
-<pre><code>public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    return ((Controller) handler).handleRequest(request, response);
-}
-
-public long getLastModified(HttpServletRequest request, Object handler) {
-    if (handler instanceof LastModified) {
-        return ((LastModified) handler).getLastModified(request);
-    }
-    return -1L;
-}
-</code></pre><p>}<br><code>`</code>    </p>
-<ol start="3">
-<li><p>DispatcherServlet根据Handler选择HandlerAdapter,调用实际处理请求的方法.</p>
-</li>
-<li><p>提取请求中的模型数据,执行Handler.在填充Handler入参过程中:<br> 消息转换:   将json,xml等转换成一个对象,将对象转换为指定的响应消息<br> 数据转换:   对请求消息进行数据转换,String转换为Integer,Double等<br> 数据格式化:  如字符串转为格式化数字或格式化日期等<br> 数据验证:   验证数据的有效性,验证结果存到BindingResult或Error中</p>
-</li>
-<li><p>Handler执行完成之后,向DispatcherServlet返回一个ModelAndView对象,包含视图名<br> 或视图名和模型</p>
-</li>
-<li><p>根据ModelAndView选择一个合适的ViewResolver返回给DispatcherServlet</p>
-</li>
-<li><p>ViewSolver结合Model和View来渲染视图</p>
-</li>
-<li><p>将视图返回给客户端</p>
-</li>
-</ol>
-
+        
       
 
       
@@ -463,13 +466,24 @@ public long getLastModified(HttpServletRequest request, Object handler) {
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
         		</li>
       		
 		</ul>
@@ -478,331 +492,7 @@ public long getLastModified(HttpServletRequest request, Object handler) {
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spring-MVC/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring Cloud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spring Cloud/">Spring Cloud</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Spring Cloud/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Spring Cloud<br>    Spring Cloud Config<br>        配置管理工具包<br>    Spring Cloud Netflix<br>        包含Netflix OSS的基础组件:<br>            Eureka: 云端服务管理,基于REST<br>            Hystrix: 断路器,容错机制,降级机制<br>            Zuul: 动态路由,监控,安全,过滤<br>            Ribbon: 云端负载均衡<br>            Feign: REST客户端</p>
-<p>Ribbon<br>    负载均衡器:<br>        功能:<br>            维护服务器的IP,DNS名称等<br>            根据特定的逻辑在服务器列表中循环<br>        子模块:<br>            Rule: 逻辑组件,决定从服务器列表中返回哪个服务器实例.<br>                默认使用RoundRobinRule,轮询服务器列表.<br>                AvailabilityFilteringRule: 忽略无法连接的服务器,忽略并发数过高的服务器.<br>                WeightedResponseTimeRule: 根据服务器的响应时间,设置权重值.<br>                ZoneAvoidanceRule: 根据区域(机架,机房),可用服务器为基础选择服务器.<br>                BestAvailableRule: 忽略短路的服务器,选择并发数较低的服务器.<br>                RandomRule: 随机选.<br>                RetryRule: 如果使用RoundRobinRule选择的服务器无法连接,重新选择服务器.</p>
-<pre><code>Ping: 使用定时器来确保服务器网络可以连接.每隔一段时间Ping服务器,判断是否存活.
-
-
-ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,也可以
-            动态指定,通过动态指定时会有后台的线程来刷新该列表.
-</code></pre><p>Feign   调用REST服务<br>    使用JDK的动态代理,生成的代理类将请求的信息封装,交给feign.Client接口发送请求,该接口的默认实现类<br>    最终使用java.net.HttpURLConnection来发送HTTP请求.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spring Cloud/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spark实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spark实战/">Spark实战</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Spark实战/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Spark<br>    快速: Spark有一个Directed Acyclic Graph(DAG有向无环图)执行引擎,支持循环数据流和内存计算.</p>
-<pre><code>Spark Core
-    任务调度,内存管理,故障恢复,存储系统的交互
-    核心思想: 将数据集缓存在内存中,用Lineage机制来进行容错
-
-    RDD
-        自动容错,位置感知调度,可伸缩性
-        容错性方式:
-            数据检查点(传输成本高), 记录数据的更新(只支持粗粒度的转换)
-
-    编程接口,2类API
-        Transformations (懒策略, 只有在action提交时才被触发执行)
-            map, filter, union, sample, join
-        Actions
-            count, collect, save, reduce, lookup
-
-    依赖关系
-        窄依赖
-            一个父RDD最多被一个子RDD引用,如 map, filter, union
-        宽依赖
-           一个父RDD被多个子RDD引用,如groupByKey
-
-    Stage DAG
-        Spark提交Job生成多个Stage, Stage之间存在依赖, 这些依赖关系构成了DAG
-        对于窄依赖,spark尽量把RDD转换放在一个Stage中
-        对于宽依赖,spark将Stage定义为ShuffleMapStage,以便向MapOutputTracker
-            注册shuffle操作. Spark将shuffle操作定义为stage的边界.
-
-Spark Streaming
-    对实时数据流进行高通量,容错处理的流式处理系统,可以对多种数据源(Kafka,Flume)
-      进行map,reduce,join,window等操作,并将结果保存到外部文件系统,数据库等.
-
-     原理: 将Stream数据分成小的时间片段,以类似batch批量处理的方式来处理这一小部分数据
-
-GraphX
-    提供了一套图算法工具包,方便用户对图进行分析
-        分布式图计算框架
-            图存储模式
-                边分割
-                    每个顶点存储一次,但有的边会被打断分到两台机器
-                    好处: 节省存储空间
-                    坏处: 对一条两个顶点被分到不同的机器上的边来说,要跨机器通信
-                            传输数据,内网通信流量大
-
-                点分割
-                    每条边存储一次.邻居多的点会被复制到多台机器上,增加了存储开销
-                       引发数据同步问题
-
-            图计算模型
-                BSP(Bulk Synchronous Parallel)计算模式
-                    一次计算过程由一系列全局超步组成,每一个超步由并发计算,通信和
-                    栅栏同步三个步骤组成. 同步完成标志着这个超步的完成以及下一个
-                    超步的开始.
-
-                 Pregel模型
-                    消息通信范式. 只需要实现一个顶点更新函数, 让框架在遍历
-                    顶点时进行调用.
-
-                 GAS模型
-                    共享内存.Gather,Apply,Scatter
-
-
-Spark SQL
-
-MLlib
-    二元分类
-        监督学习.如判断邮件是否是垃圾邮件. 返回一个模型,对标签未知的新个体进行
-        潜在标签预测.
-
-        两个适用于二元分类的标准模型家族
-            线性支持向量机(SVMs)
-            逻辑回归
-
-            输入一个正则项参数和多个梯度下降相关参数
-
-
-    线性回归
-        监督学习.
-
-    聚类
-        非监督学习.KMeans
-    协同过滤
-        用于推荐系统. 交替最小二乘法.
-
-    梯度下降优化基础算法
-    朴素贝叶斯算法
-    决策树的解析
-
-Spark整体流程
-    Client(提交应用) -&gt; Master(找到Worker,启动Driver) -&gt; Driver -&gt; RDD Graph (由DAGScheduler转化为有向无环图) -&gt; TaskScheduler -&gt; Executor
-
-Spark算子
-    Value型Transformation
-        输入分区与输出分区一对一
-            map
-            flatMap
-            mapPartitions
-            glom
-
-        输入分区与输出分区多对一
-            union
-            cartesian 笛卡尔积
-
-        输入分区与输出分区多对多
-            groupBy
-
-        输出分区为输入分区子集
-            filter
-            distinct
-            subtract
-            sample
-            takeSample
-
-        一对一 Cache型
-            cache
-            persist
-
-
-    Key-Value型Transformation
-
-    Action型,会触发SparkContext提交Job
-        无输出
-            foreach
-        HDFS
-            saveAsTextFile
-            saveAsObjectFile
-        Scala
-            collect
-            collectAsMap
-            reduceByKeyLocally  先reduce再collectAsMap
-            lookup
-            count
-            top
-            reduce
-            fold
-            aggregate
-
-
-Spark工作机制
-    Spark主要模块
-        调度与任务分配
-            RDD的Action触发Job提交,生成RDD DAG,由DAGScheduler转化为
-              Stage DAG,每个Stage中产生相应的Task集合,TaskScheduler将
-              任务分发到Executor执行.Executor创建线程池,并发执行
-              每个任务对应相应的一个数据块,使用
-              用户定义的函数处理数据块.
-
-              对RDD的块管理通过BlockManager完成.
-
-            层次
-                应用
-
-                Job
-
-                Stage
-
-                Task
-            算法
-                FIFO
-                FAIR
-
-        I/O模块
-            将数据以块为单位管理
-
-        通信控制模块
-            AKKA框架
-
-        容错模块
-            Lineage Checkpoint
-        Shuffle模块
-</code></pre><h1 id="Spark-SQL"><a href="#Spark-SQL" class="headerlink" title="Spark SQL"></a>Spark SQL</h1><h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spark实战/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/JavaScript函数式编程/">展开全文 >></a>
         </p>
       
 
@@ -834,7 +524,7 @@ Spark工作机制
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 
@@ -1091,6 +781,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
             
             <div class="clearfix"></div>

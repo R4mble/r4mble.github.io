@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Elasticsearch | 三石的QQ空间</title>
+  <title>es index | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="创建索引  PUT /secisland {     &amp;quot;settings&amp;quot; : {         &amp;quot;index&amp;quot;: {&amp;quot;number_of_shards&amp;quot;: 3, &amp;quot;number_of_replicas&amp;quot;: 2}     } } 三个主分片,两个副本分片  修改副本分片的数量  PUT /secisland/_se">
 <meta name="keywords" content="读书笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Elasticsearch">
+<meta property="og:title" content="es index">
 <meta property="og:url" content="http://yoursite.com/2019/04/27/es index/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="创建索引  PUT /secisland {     &amp;quot;settings&amp;quot; : {         &amp;quot;index&amp;quot;: {&amp;quot;number_of_shards&amp;quot;: 3, &amp;quot;number_of_replicas&amp;quot;: 2}     } } 三个主分片,两个副本分片  修改副本分片的数量  PUT /secisland/_se">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-14T13:47:48.616Z">
+<meta property="og:updated_time" content="2019-09-21T13:33:42.951Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Elasticsearch">
+<meta name="twitter:title" content="es index">
 <meta name="twitter:description" content="创建索引  PUT /secisland {     &amp;quot;settings&amp;quot; : {         &amp;quot;index&amp;quot;: {&amp;quot;number_of_shards&amp;quot;: 3, &amp;quot;number_of_replicas&amp;quot;: 2}     } } 三个主分片,两个副本分片  修改副本分片的数量  PUT /secisland/_se">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
@@ -158,7 +158,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Elasticsearch
+      es index
     </h1>
   
 
@@ -191,32 +191,8 @@
 </code></pre><ul>
 <li>创建自定义字段类型</li>
 </ul>
-<pre><code>PUT /secisland
-{
-    &quot;settings&quot; : {
-       &quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2
-    },
-    &quot;mappings&quot;: {
-        &quot;secilog&quot;: {
-            &quot;properties&quot;: {
-                &quot;logType&quot;: {
-                    &quot;type&quot;: &quot;string&quot;,
-                    &quot;index&quot;: &quot;not_analyzed&quot;
-                }
-            }
-        }
-    }
-}
-
-PUT /secisland/_mapping/secilog
-{
-    &quot;properties&quot;: {
-        &quot;logType&quot;: {
-            &quot;type&quot;: &quot;string&quot;
-        }
-    }
-}
-创建了一个名为secilog的类型，类型中有一个字段，字段的名称是logType，
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">PUT /secisland</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span> : &#123;</span><br><span class="line">       <span class="string">"number_of_shards"</span>: <span class="number">3</span>, <span class="string">"number_of_replicas"</span>: <span class="number">2</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"mappings"</span>: &#123;</span><br><span class="line">        <span class="string">"secilog"</span>: &#123;</span><br><span class="line">            <span class="string">"properties"</span>: &#123;</span><br><span class="line">                <span class="string">"logType"</span>: &#123;</span><br><span class="line">                    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">                    <span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /secisland/_mapping/secilog</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"properties"</span>: &#123;</span><br><span class="line">        <span class="string">"logType"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"string"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>创建了一个名为secilog的类型，类型中有一个字段，字段的名称是logType，
 字段的数据类型是string，而且这个字段是不进行分析的。
 // 创建失败,
 </code></pre><ul>
@@ -396,14 +372,14 @@ PUT /secisland/_mapping/secilog
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Elasticsearch
+          es doc
         
       </div>
     </a>
   
   
-    <a href="/2019/04/27/Category-Theory-for-Programmers/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Category Theory for Programmers</div>
+    <a href="/2019/04/27/Category-Theory/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Category Theory</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -444,7 +420,7 @@ PUT /secisland/_mapping/secilog
   
   <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="es index" data-title="Elasticsearch" data-url="http://yoursite.com/2019/04/27/es index/"></div>
+	<div class="ds-thread" data-thread-key="es index" data-title="es index" data-url="http://yoursite.com/2019/04/27/es index/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
@@ -724,6 +700,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
             
             <div class="clearfix"></div>

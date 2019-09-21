@@ -151,223 +151,60 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Springboot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Ramda碎碎念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Springboot/">SpringBoot</a>
+      <a class="article-title" href="/2019/04/04/Ramda碎碎念/">Ramda碎碎念</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/Springboot/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/04/Ramda碎碎念/" class="archive-article-date">
+  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>@Autowired<br>    先根据类型找bean，如果对应类型的bean不唯一，则根据属性名称和bean的名称进行匹配。<br>    如果不确定其标注属性一定存在且允许为null，则可设置required属性为false<br>        @Autowired(required = false)<br>    可以用到方法或者方法参数上。</p>
-<pre><code>@Primary
-    多个同类型bean同时存在时，设置注入的优先级。
+        <p>prop基于path实现.<br>    prop = (p, obj) =&gt; path([p], obj)</p>
+<pre><code>path一层层索引
 
-@Qualifier
-    与@Autowired配合，通过类型和名称一起找到Bean。
+    R.path([&apos;a&apos;, &apos;b&apos;], {a: {b: 2}}); //=&gt; 2a
+    R.prop(&apos;x&apos;, {x: 100}); //=&gt; 100
+</code></pre><p>descend = (f, a, b) =&gt; f(a) &gt; f(b) ? -1 : f(a) &lt; f(b) ? 1 : 0<br>类似地: ascend…</p>
+<p>sort = (comparator, list) =&gt; Array.prototype.slice.call(list, 0).sort(comparator)<br>sort函数实现直接用的原生实现,不过返回了新list,而且curry了.</p>
+<p>comparator :: a -&gt; b -&gt; Int</p>
+<p>thrush combinator 接受一个值, 并将函数作用于其上.  applyTo = (x, f) =&gt; f(x)<br>    const t42 = R.applyTo(42);<br>    t42(R.identity); //=&gt; 42<br>    t42(R.add(1)); //=&gt; 43</p>
+<p>keys 返回对象最外层key    </p>
+<p>applySpec : 接受一个属性值为函数的对象,返回的函数使用传入的参数调用对象的每个属性位对应的函数，来生成相应属性的值。</p>
+<pre><code>const getMetrics = R.applySpec({
+    sum: (a,b,c) =&gt; a+b+c,
+    nested: { mul: (a,b,c) =&gt; a*b*c }
+});
+print(getMetrics(2, 5, 4)) // { sum: 11, nested: { mul: 40 } }
 
-也可以放在构造器参数前面，注入参数。
-</code></pre><p>Bean的生命周期<br>    Bean定义</p>
-<pre><code>    1. 在@ComponentScan定义的扫描路径找带有@Component的类，资源定位。
-    2. 解析资源，保存Bean定义的信息到BeanDefinition的实例中。
-    3. 把Bean定义发布到Spring IoC容器中
-    4. 默认情况下，Spring继续完成Bean的实例化和依赖注入。
-Bean生命周期
-    @ComponentScan配置项lazyInit，默认为false，不进行延迟初始化。
+内部函数: mapValues = (f, obj) =&gt; 
+            R.keys(obj).reduce((acc, key) =&gt; {
+                acc[key] = f(obj[key])
+                return acc
+            }, {})
+        是为了避免specs函数也包含map
 
-    接口BeanNameAware setBeanName方法
-    接口BeanFactoryAware setBeanFactory方法
-    接口ApplicationContextAware(需要容器实现ApplicationContext接口) setApplicationContext方法
-    BeanPostProcessor预初始化方法(针对全部Bean生效) postPorcessBeforeInitialization方法
-    @PostConstruct标注方法 自定义初始化方法
-    接口InitializingBean afterPropertiesSet方法
-    BeanPostProcessor后初始化方法(针对全部Bean生效) postPorcessAfterInitialization方法
-    生存期
-    @PreDestroy标注方法 自定义销毁方法
-    接口DisPosableBean destroy方法: 释放资源
-</code></pre><p>文件上传</p>
-<p>SessionCallback和RedisCallback接口<br>作用: 让RedisTemplate进行回调, 通过它们可以在同一条连接下执行<br>     多个Redis命令.避免RedisTemplate多次获取不同的连接</p>
-<pre><code> SessionCallback封装良好,应当优先使用.
- RedisCallback比较底层,要处理的内容多,可读性差.
+pluck 从列表内的每个对象元素中取出特定名称的属性，组成一个新的列表
+    pluck = (p, list) =&gt; map(prop(p), list)
 
-SessionCallback&lt;T&gt;: 
-    &lt;K, V&gt; T execute(RedisOperations&lt;K, V&gt; operations) throws DataAccessException;
-        执行同一个session中的所有操作.
-</code></pre><p>ThreadPoolTaskExecutor类:</p>
+    var getAges = R.pluck(&apos;age&apos;);
+    getAges([{name: &apos;fred&apos;, age: 29}, {name: &apos;wilma&apos;, age: 27}]); //=&gt; [29, 27]
 
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/Springboot/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-汉诺塔问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/汉诺塔问题/">汉诺塔问题</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/汉诺塔问题/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>看&lt;&lt;七周七Web框架&gt;&gt;的时候里面提到了这个问题,突然想看看怎么解决它.<br>当A有两个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C<br>当A有三个盘子,则:<br>    1 -&gt; C, 2 -&gt; B, 1 -&gt; B, 3 -&gt; C, 1 -&gt; A, 2 -&gt; C, 1 -&gt; C<br>当A有四个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C, 3 -&gt; B, 1 -&gt; A, 2 -&gt; B, 1 -&gt; B, 4 -&gt; C 然后就是三个盘子的问题</p>
-<p>Java实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Hanoi().hanoi(<span class="number">5</span>, <span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b, <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            hanoi(n - <span class="number">1</span>, a, c, b);</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">            hanoi(n - <span class="number">1</span>, b, a, c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b)</span> </span>&#123;</span><br><span class="line">        count++;</span><br><span class="line">        System.out.println(<span class="string">"第"</span> + count + <span class="string">"次: "</span> + n + <span class="string">"号盘子从"</span> + a + <span class="string">"移动到"</span> + b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/汉诺塔问题/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-TCP粘包和拆包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/TCP粘包和拆包/">TCP粘包和拆包</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/TCP粘包和拆包/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>TCP是没有界限的一串数据，它会根据TCP缓冲区的实际情况进行包的划分。<br>一个完整的包会被TCP拆分为多个包进行发送，多个小包也可能会被封装为一个<br>大的数据包发送， 这就是TCP粘包和拆包问题。</p>
-<p>发生的原因：<br>    1.应用程序write写入的字节大小大于套接口发送缓冲区大小。<br>    2.进行MSS大小的TCP分段<br>    3.以太网帧的payload大于MTU进行IP分片</p>
-<p>底层无法保证数据包不被拆分，只能通过上层应用协议栈设计来解决。<br>    解决方案：<br>        1.消息定长，如每个报文固定大小为200字节，不够的话空位补空格<br>        2.在包尾增加回车换行符进行分割，如FTP协议<br>        3.将消息分为消息头和消息体，消息头中包含表示消息总长度的字段。<br>            通常为消息头的第一个字段使用int32来表示消息的总长度。</p>
-<p>Netty解决TCP粘包问题<br>    LineBasedFrameDecoder:<br>        依次遍历ByteBuf中的可读字节，判断是否有\n或\r\n，如果有，就以此为结束标志，<br>        从可读索引到结束位置区间的字节就组成了一行。<br>        它是以换行符为结束标志的解码器，支持携带结束符或者不携带结束符两种解码方式，<br>        同时支持配置单行的最大长度。如果连续读到最大长度后仍然没有发现换行符，就会抛出<br>        异常，同时忽略之前读到的异常码流。</p>
-<pre><code>StringDecoder:
-    将接收到的对象转换成字符串，然后继续调用后面的Handler。
-
-
-LineBasedFrameDecoder + StringDecoder组合就是按行切换的文本解码器。
-
-指定分隔符：
-DelimiterBasedFrameDecoder + StringDecoder
-定长：
-FixedLengthFrameDecoder + StringDecoder
+    R.pluck(0, [[1, 2], [3, 4]]);               //=&gt; [1, 3]
+    R.pluck(&apos;val&apos;, {a: {val: 3}, b: {val: 5}}); //=&gt; {a: 3, b: 5}
+</code></pre><p>addIndex: 没咋看懂<br>adjust: 将数组中指定索引处的值替换为经函数变换的值<br>    R.adjust(1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);      //=&gt; [‘a’, ‘B’, ‘c’, ‘d’]<br>    R.adjust(-1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);     //=&gt; [‘a’, ‘b’, ‘c’, ‘D’]</p>
+<pre><code>实现: 统一索引,利用_concat新建list,将索引处值替换.
 </code></pre>
       
 
@@ -376,13 +213,24 @@ FixedLengthFrameDecoder + StringDecoder
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
         		</li>
       		
 		</ul>
@@ -391,7 +239,7 @@ FixedLengthFrameDecoder + StringDecoder
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/TCP粘包和拆包/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/04/Ramda碎碎念/">展开全文 >></a>
         </p>
       
 
@@ -421,192 +269,42 @@ FixedLengthFrameDecoder + StringDecoder
 
 
   
-    <article id="post-WebSocket" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/WebSocket/">WebSocket</a>
+      <a class="article-title" href="/2019/04/03/类型系统/">类型和程序设计语言</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/WebSocket/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/03/类型系统/" class="archive-article-date">
+  	<time datetime="2019-04-03T07:50:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>相关技术<br>    向客户端广播或者推送消息: Server-Sent Event(SSE),提供自动重连,事件ID等功能.<br>    扩充HTTP的网络协议: SPDY, 压缩HTTP首标,多路复用,工作管道.<br>    Web实时通信: Web Real-Time Communication(WebRTC)浏览器之间实时通信,实时语音和视频聊天.</p>
-<p>WebSocket<br>    事件驱动,异步编程,支持二进制数据和文本数据.    </p>
-<pre><code>构造函数: URL和protocols
-    URL可以是ws或wss, 分别用于非加密和加密流量.wss使用SSL,就是HTTPS的安全机制来保证.
-    protocols可以是XMPP,SOAP,自定义协议等.客户端定义通信协议,服务器选择一种.
-
-    客户发送带有协议名称的Sec-WebSocket-Protocol首标,服务器响应一个带有和客户请求相同的
-    协议名称的Sec-WebSockt-Protocol首标.
-
-WebSocket事件:
-    open, message, error, close
-
-二进制数据类型: ws.binaryType: Blob(多媒体文件,图像,视频,音频), ArrayBuffer(Uint8Array)
-
-WebSocket方法
-    send()
-        onopen之后,onclose之前.  当连接不可用时,抛出一个有关无效连接状态的异常.
-    close()
-        终止连接, 可选参数: code(数字型状态码), reason(文本字符串)
-
-WebSocket对象特性 
-    readyState
-        0: WebSocket.CONNECTING
-        1: WebSocket.OPEN
-        2: WebSocket.CLOSING
-        3: WebSocket.CLOSED
-    bufferedAmount
-        检查已进入队列,但尚未发送到服务器的字节数,不包括协议组帧开销或操作系统,网络硬件所进行的缓冲.
-        可以限制应用向服务器发送的速率,避免网络饱和.
-        关闭连接前也可以检查,看是否还有数据没有发送到服务器.
-    protocol
-        服务器选择的协议名,在握手完成之前为空.
-
-WebSocket初始握手
-    客户端:
-        GET /echo /HTTP/1.1
-        Host: echo.websocket.org
-        Origin: http://www.websocket.org
-        Sec-WebSocket-Key: ah43rfdidajureqf
-        Sec-WebSocket-Version: 13
-        Upgrade: websocket
-    服务器:
-        101 Switching Protocols
-        Connection: Upgrade
-        Date: Wed, 20 Jun 2012 03:23:13 GMT
-        Sec-WebSocket-Accepct: da+fdlfskjoewi
-        Server: Kaazing Gateway
-        Upgrade: WebSocket
-
-    计算响应键值
-        WebSocket服务器响应一个计算出来的键值,从客户端发送的Sec-WebSocket-Key首标中
-        取得键值,在Sec-WebSocket-Accepct首标中返回根据客户端预期计算的键值.
-
-消息格式
-</code></pre><p>消息和帧</p>
-<ol start="26">
-<li><p>Spring对WebSocket的支持<br>26.1 介绍<br>26.2 服务端的Spring WebSocket API</p>
-<pre><code>WebSocketHandler接口: WebSocket消息和生命周期事件处理器.
-    void afterConnectionEstablished(WebSocketSession session) throws Exception;
-        在WebSocket协定成功并且连接建立准备好使用时执行
-    void handleMessage(WebSocketSession session, WebSocketMessage&lt;?&gt; message) throws Exception;
-        在新消息到达时执行
-    void handleTransportError(WebSocketSession session, Throwable exception) throws Exception;
-        处理WebSocket消息传输下层错误  
-    void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception;            
-        连接关闭或者发生传输错误时执行.
-    boolean supportsPartialMessages();
-        WebSocketHandler是否处理部分消息.
-
-AbstractWebSocketHandler抽象类: 重写了handleMessage()方法,将三种message分配给三个新建的处理方法.
-                               重写了supportsPartialMessages()方法, 直接返回false
-                               其它的都是空实现.
-
-BinaryWebSocketHandler和TextWebSocketHandler:
-    继承自AbstractWebSocketHandler, 重写对方的消息处理方法, 关闭会话.                             
-
-WebSocketSession接口: WebSocket会话抽象,允许在WebSocket连接之上发送消息然后关闭它.
-    String getId();                          返回会话的独特标识符
-    URI getUri();                            返回建立WebSocket连接的URI
-    HttpHeaders getHandshakeHeaders();       返回握手请求中使用的Headers
-    Map&lt;String, Object&gt; getAttributes();     返回WebSocket会话属性
-    Principal getPrincipal();                返回包含已认证用户的姓名的Principal实例,如果用户未认证,返回null.
-    InetSocketAddress getLocalAddress();     返回请求被接受的地址
-    InetSocketAddress getRemoteAddress();    返回远程客户端的地址
-    String getAcceptedProtocol();            返回协定的子协议
-    void setTextMessageSizeLimit(int messageSizeLimit); 配置接收文本消息的最大值
-    int getTextMessageSizeLimit();           获取已配置的接收文本消息的最大值
-    void setBinaryMessageSizeLimit(int messageSizeLimit); 配置接收二进制消息的最大值
-    int getBinaryMessageSizeLimit();         获取已配置的接收二进制消息的最大值
-    List&lt;WebSocketExtension&gt; getExtensions(); 确定协定的拓展
-    void sendMessage(WebSocketMessage&lt;?&gt; message) throws IOException; 发送WebSocket消息.
-    boolean isOpen();                         返回连接是否依然开放
-    void close() throws IOException;          以1000的状态码关闭WebSocket连接(CloseStatus.NORMAL)
-    void close(CloseStatus status) throws IOException; 以给定的的状态码关闭WebSocket连接
-
-WebSocketMessage&lt;T&gt;接口: 可以在WebSocket连接上处理和发送的消息
-    T getPayload();             返回消息的负载
-    int getPayloadLength();     返回消息字节数
-    boolean isLast();           如果当前消息是客户端发送的完整的WebSocket消息的最后一部分,返回true.
-                                如果部分消息支持不可用或者未开启,返回false
-
-WebSocketConfigurer接口: 定义回调方法来配置WebSocket的请求处理.
-    void registerWebSocketHandlers(WebSocketHandlerRegistry registry);
-        注册WebSocketHandler
-
-WebSocketHandlerRegistry接口: 提供配置WebSocketHandler请求映射的方法.
-    WebSocketHandlerRegistration addHandler(WebSocketHandler webSocketHandler, String... paths);
-        在指定的URL路径上配置WebSocketHandler
-
-WebSocketHandlerRegistration接口: 提供配置WebSocket Handler的方法.
-    WebSocketHandlerRegistration addHandler(WebSocketHandler handler, String... paths);
-        添加共享相同配置(interceptors,SockJS,config)的handler.
-    WebSocketHandlerRegistration setHandshakeHandler(HandshakeHandler handshakeHandler);
-        配置HandshakeHandler
-    WebSocketHandlerRegistration addInterceptors(HandshakeInterceptor... interceptors);
-        配置握手请求的拦截器
-    WebSocketHandlerRegistration setAllowedOrigins(String... origins);
-        配置被允许的header值
-    SockJsServiceRegistration withSockJS();
-        开启SockJS fallback选项
-</code></pre><p>26.4 STOMP协议的介绍,配置,常用注解,测试</p>
-<pre><code>WebSocket子协议,定义可以发送的消息类型,格式和内容.面向文本的协议,但是消息负载可以是文本也可以是二进制.
-基于帧的协议,帧结构:
-    COMMAND
-    header1:value1
-    header2:value2
-
-    Body^@
-客户端可以使用SEND或者SUBSCRIBE命令来发送或者订阅消息,同时使用destination的header来描述消息的相关信息和
-接收地址.
+        <p>多态类型,子类型,依赖类型 三个正交分支</p>
+<p>递归由函数不动点实现</p>
+<p>p355 解答</p>
+<h1 id="无类型系统"><a href="#无类型系统" class="headerlink" title="无类型系统"></a>无类型系统</h1><h2 id="无类型算术表达式"><a href="#无类型算术表达式" class="headerlink" title="无类型算术表达式"></a>无类型算术表达式</h2><p>练习3.24 p38<br>    S1 = {true,false,0}<br>    Si+1 = Si^3 + Si*3 + 3<br>    解释: 不考虑类型合不合适.<br>    得: S3有59439个元素.</p>
+<p>练习3.25 归纳证明 构造Sj Si Si+1</p>
+<h4 id="3-4-语义形式"><a href="#3-4-语义形式" class="headerlink" title="3.4 语义形式"></a>3.4 语义形式</h4><ul>
+<li>操作语义<ul>
+<li>小步语义 结构操作语义<br>定义一个简单的抽象机器来说明一个程序语言的行为.<br>用语言的项作为机器状态,对每个状态,要么通过对项做一步简化给出下一个状态,<pre><code>要么声明机器已停止.
 </code></pre></li>
-</ol>
-<pre><code>        Message&lt;T&gt;接口: 有headers和body的通用消息表示.
-            T getPayload();                 返回消息负载
-            MessageHeaders getHeaders();    返回消息headers
-        MessageSendingOperations接口: 发送消息到目标的操作.
-            void send(Message&lt;?&gt; message) throws MessagingException;
-                发送消息到默认目标
-            void send(D destination, Message&lt;?&gt; message) throws MessagingException;
-                发送消息到给定目标
-            void convertAndSend(Object payload) throws MessagingException;
-                转换后发送
-
-        常用注解:
-            @EnableWebSocketMessageBroker: 在WebSocket之上使用高级的消息子协议开启broker-backed消息
-            @MessageMapping: 映射Message到消息处理方法上.
-            @SendTo
-
-        常用接口和类:
-            WebSocketMessageBrokerConfigurer接口: 定义在WebSocket客户端使用STOMP消息处理的方法.
-                default void registerStompEndpoints(StompEndpointRegistry registry) {}
-                    注册STOMP端点到指定的URL
-
-            StompEndpointRegistry接口: 在WebSocket端点之上注册STOMP
-            StompWebSocketEndpointRegistration接口: 在WebSocket端点之上配置STOMP
-            SimpMessagingTemplate类: STOMP消息发送器
-
-STOMP
-    SEND帧:
-        SEND
-            destination:/queue/trade
-            content-type:application/json
-            content-length:44
-
-            {&quot;action&quot;:&quot;BUY&quot;,&quot;ticker&quot;:&quot;MMM&quot;,&quot;shares&quot;,44}^@
-</code></pre>
+<li>大步语义 自然语义<br>  抽象机器的一个单个转换就可以将项求值为最终值.                                   </li>
+</ul>
+</li>
+<li>指称语义<br>  一个项的语义不仅是机器状态的序列,而且是某个数学对象,如一个数或一个函数.<br>  一个语言的指称语义是由一个语义域的集合和将项映射到域中元素的解释函数所组成.</li>
+<li>公理语义<br>  用规则本身作为语言的定义.一个项的语义就是关于这个项我们能证明的东西.</li>
+</ul>
+<h2 id="无类型lambda演算"><a href="#无类型lambda演算" class="headerlink" title="无类型lambda演算"></a>无类型lambda演算</h2><h2 id="项的无名称表示"><a href="#项的无名称表示" class="headerlink" title="项的无名称表示"></a>项的无名称表示</h2><h1 id="简单类型"><a href="#简单类型" class="headerlink" title="简单类型"></a>简单类型</h1><h2 id="类型算术表达式"><a href="#类型算术表达式" class="headerlink" title="类型算术表达式"></a>类型算术表达式</h2><h2 id="简单类型的lambda演算"><a href="#简单类型的lambda演算" class="headerlink" title="简单类型的lambda演算"></a>简单类型的lambda演算</h2><h2 id="简单扩展"><a href="#简单扩展" class="headerlink" title="简单扩展"></a>简单扩展</h2><h1 id="子类型化"><a href="#子类型化" class="headerlink" title="子类型化"></a>子类型化</h1><h2 id="子类型"><a href="#子类型" class="headerlink" title="子类型"></a>子类型</h2><h2 id="子类型元理论"><a href="#子类型元理论" class="headerlink" title="子类型元理论"></a>子类型元理论</h2><h1 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h1><h2 id="递归类型-1"><a href="#递归类型-1" class="headerlink" title="递归类型"></a>递归类型</h2><h2 id="递归类型元理论"><a href="#递归类型元理论" class="headerlink" title="递归类型元理论"></a>递归类型元理论</h2><h1 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h1><h2 id="类型重构"><a href="#类型重构" class="headerlink" title="类型重构"></a>类型重构</h2><h2 id="全程类型"><a href="#全程类型" class="headerlink" title="全程类型"></a>全程类型</h2><h2 id="存在类型"><a href="#存在类型" class="headerlink" title="存在类型"></a>存在类型</h2><h1 id="高阶系统"><a href="#高阶系统" class="headerlink" title="高阶系统"></a>高阶系统</h1><h2 id="高阶多态"><a href="#高阶多态" class="headerlink" title="高阶多态"></a>高阶多态</h2><h2 id="高阶子类型化"><a href="#高阶子类型化" class="headerlink" title="高阶子类型化"></a>高阶子类型化</h2>
       
 
       
@@ -614,13 +312,24 @@ STOMP
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        			<a href="/categories/PL//" class="article-tag-list-link color3">PL</a>
         		</li>
       		
 		</ul>
@@ -629,7 +338,200 @@ STOMP
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/WebSocket/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/03/类型系统/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-lambda演算" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/03/lambda演算/">lambda演算入门</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/03/lambda演算/" class="archive-article-date">
+  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>来写一写lambda演算里的东西,主要是用代换模型人肉parse.</p>
+<h2 id="求值"><a href="#求值" class="headerlink" title="求值"></a>求值</h2><pre><code>一个&quot;λ&quot;一个&quot;.&quot;, 极简函数写法,
+比function,=&gt;,-&gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.
+例子:
+    (λx.(λy.x))a 求值结果为λy.a 
+    就是把a带进去,返回一个&quot;输入y返回a&quot;的函数.
+</code></pre><h2 id="布尔逻辑"><a href="#布尔逻辑" class="headerlink" title="布尔逻辑"></a>布尔逻辑</h2><pre><code>T 表示为：λx.λy.x      它接收两个参数x和y,返回x, 也就是说它返回前面的那个参数
+F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它返回后面的那个参数
+这样一来, if函数就是λbtf, 等价于λb.λt.λf.btf
+         if函数接收三个参数,分别是判断条件b,
+                                当b为True时: (λx.λy.x)(t)(f)  返回的语句t 
+                                和b为False时: (λx.λy.y)(t)(f) 返回的语句f
+
+         布尔逻辑运算符与或非分别是:
+         与: λab.IFabF  接收两个参数a和b, 如果a是True,那就返回前一个也就是b,与的结果和b的取值一样
+                                         如果a是False,那就返回后一个就是False
+         或: λab.IFaTb  接收两个参数a和b, 如果a是True,那就返回前一个也就是True
+                                         如果a是False,那就返回后一个就是b,或的结果和b的取值一样
+         非: λa.IFaFT   接收一个参数a, 如果a是True,那就返回前一个也就是False
+                                      如果a是False,那就返回后一个也就是True
+</code></pre><h2 id="数"><a href="#数" class="headerlink" title="数"></a>数</h2><pre><code>0=λf.λx.x
+1=λf.λx.fx
+2=λf.λx.f(fx)
+3=λf.λx.f(f(fx))
+后继函数S=λn.λf.λx.f((nf)x)
+加法: ADD = λab.(aS)b
+      举例: 0和0相加:  ((λf.λx.x)(λn.λf.λx.f((nf)x)))(λf.λx.x)
+                     = (λx.x)(λf.λx.x)
+                     = λf.λx.x
+                     = 0
+            1和2相加: (λf.λx.fx)(λn.λf.λx.f((nf)x))(λf.λx.f(fx))
+                     = (λn.λf.λx.f((nf)x))(λf.λx.f(fx))
+                     = λf.λx.f(((λf.λx.f(fx))f)x)
+                     = λf.λx.f((λx.f(fx))x)
+                     = λf.λx.f(f(fx))
+                     = 3
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/03/lambda演算/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Ramda搜索关键字得到图片列表并展示" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">Ramda搜索关键字得到图片列表并展示</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/" class="archive-article-date">
+  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">requirejs.config(&#123;</span><br><span class="line">    paths: &#123;</span><br><span class="line">        ramda: <span class="string">'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.13.0/ramda.min'</span>,</span><br><span class="line">        jquery: <span class="string">'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>([</span><br><span class="line">    <span class="string">'ramda'</span>,</span><br><span class="line">    <span class="string">'jquery'</span>,</span><br><span class="line">],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">_, $</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> Impure = &#123;</span><br><span class="line">            getJSON: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">callback, url</span>) </span>&#123;</span><br><span class="line">                $.getJSON(url, callback);</span><br><span class="line">            &#125;),</span><br><span class="line"></span><br><span class="line">            setHtml: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">sel, html</span>) </span>&#123;</span><br><span class="line">                $(sel).html(html)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> img = <span class="function"><span class="keyword">function</span> (<span class="params">url</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> $(<span class="string">'&lt;img /&gt;'</span>, &#123; <span class="attr">src</span>: url&#125;);</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> trace = _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">tag, x</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(tag, x);</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> url = <span class="function"><span class="keyword">function</span> (<span class="params">term</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'https://api.flickr.com/services/feeds/photos_public.gne?tags='</span> + term + <span class="string">'&amp;format=json&amp;jsoncallback=?'</span>;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> mediaUrl = _.compose(_.prop(<span class="string">'m'</span>), _.prop(<span class="string">'media'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let srcs = _.compose(_.map(mediaUrl), _.prop('items'));</span></span><br><span class="line">        <span class="comment">// let images = _.compose(_.map(img), srcs);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//上面2行有两个map, 循环了两边.  优化写法:</span></span><br><span class="line">        <span class="keyword">let</span> mediaToImg = _.compose(img, mediaUrl);</span><br><span class="line">        <span class="keyword">let</span> images = _.compose(_.map(mediaToImg), _.prop(<span class="string">'items'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> renderImages = _.compose(Impure.setHtml(<span class="string">"body"</span>), images);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> app = _.compose(Impure.getJSON(renderImages), url);</span><br><span class="line"></span><br><span class="line">        app(<span class="string">"star"</span>);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">展开全文 >></a>
         </p>
       
 
@@ -661,7 +563,7 @@ STOMP
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
     </nav>
   
 
@@ -918,6 +820,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
             
             <div class="clearfix"></div>

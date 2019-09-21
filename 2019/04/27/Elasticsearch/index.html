@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.   分片机制, 复制机制.   Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.    Elasticsearch内置了对分布式集群和分布式索引的管理.  Lucene倒排索引根据属性的值来查找记录.表现为: 一个关键词,它的频度,位置.  取得关键词. 去掉无意">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-14T11:11:30.194Z">
+<meta property="og:updated_time" content="2019-09-21T13:33:42.920Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch">
 <meta name="twitter:description" content="全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.   分片机制, 复制机制.   Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.    Elasticsearch内置了对分布式集群和分布式索引的管理.  Lucene倒排索引根据属性的值来查找记录.表现为: 一个关键词,它的频度,位置.  取得关键词. 去掉无意">
@@ -235,6 +235,12 @@
 <blockquote>
 <p>Elasticsearch从5.X引入text和keyword，keyword适用于不分词字段，搜索时只能完全匹配.<br>               6.X彻底移除string, “index”的值只能是boolean变量.</p>
 </blockquote>
+<h2 id="准实时索引的实现"><a href="#准实时索引的实现" class="headerlink" title="准实时索引的实现"></a>准实时索引的实现</h2><p>新收到的数据写到新的索引文件里.<br>Lucene把每次生成的倒排索引, 叫做一个段. 使用一个commit文件记录索引内所有的segment.<br>生成segment的数据来源就是内存中的buffer.</p>
+<p>1) 当前索引有3个segment可用.<br>2) 新接收的数据进入内存buffer<br>3) 内存buffer生成一个新的segment, 刷到文件系统缓存中(默认1秒间隔, Lucene即可检索到这个新的segment),<br>   再由文件系统缓存刷到磁盘, commit文件同步更新</p>
+<pre><code>curl -XPOST http://127.0.0.1:9200/logstash-2015.06.21/_settings -d&apos;
+{ “refresh_interval”: “10s” }
+</code></pre><h3 id="translog"><a href="#translog" class="headerlink" title="translog"></a>translog</h3><p>ES把数据写入内存buffer的同时,另外记录了一个translog日志.<br>在文件系统缓存刷到磁盘的过程中如果发生了异常, ES会从commit位置开始, 恢复整个translog文件中的记录, 保证数据一致性.<br>真正把segment刷到磁盘, 且commit文件进行更新时, translog文件才清空.称为flush<br>ES默认每30分钟或当translog文件大于512MB时 主动进行一次flush<br>ES默认每5秒强制刷新translog日志到磁盘上.(如果数据没备份,发生故障时确实有可能丢失5秒数据)</p>
+<h3 id="segment-merge"><a href="#segment-merge" class="headerlink" title="segment merge"></a>segment merge</h3><p>独立线程来进行segment数据归并.</p>
 
       
 
@@ -329,11 +335,11 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/04/28/范畴论-贺伟/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/04/27/Category-Theory/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          范畴论 贺伟
+          Category Theory
         
       </div>
     </a>
@@ -367,7 +373,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lucene倒排索引"><span class="toc-number">1.</span> <span class="toc-text">Lucene倒排索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Elasticsearch术语"><span class="toc-number">2.</span> <span class="toc-text">Elasticsearch术语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API约定"><span class="toc-number">3.</span> <span class="toc-text">API约定</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lucene倒排索引"><span class="toc-number">1.</span> <span class="toc-text">Lucene倒排索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Elasticsearch术语"><span class="toc-number">2.</span> <span class="toc-text">Elasticsearch术语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API约定"><span class="toc-number">3.</span> <span class="toc-text">API约定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准实时索引的实现"><span class="toc-number">4.</span> <span class="toc-text">准实时索引的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#translog"><span class="toc-number">4.1.</span> <span class="toc-text">translog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#segment-merge"><span class="toc-number">4.2.</span> <span class="toc-text">segment merge</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -661,6 +667,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
             
             <div class="clearfix"></div>

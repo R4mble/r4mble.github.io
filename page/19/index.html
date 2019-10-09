@@ -151,6 +151,104 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Java里的for-in" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Java里的for-in/">Java里的for in</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Java里的for-in/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:42:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+         <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
+</blockquote>
+<blockquote>
+<p>答案: <code>没有</code></p>
+</blockquote>
+<p><i class="icon-reorder"></i>把for in 循环换成普通的for循环:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
+</blockquote>
+<blockquote>
+<p>答案: <code>是的</code></p>
+</blockquote>
+<blockquote>
+<p>由此可见: </p>
+<ul>
+<li><strong>for循环是值传导的,获取到的是原对象的拷贝.</strong></li>
+<li><strong>而数组索引就相当于指针,直接修改了内存中的值.</strong></li>
+</ul>
+</blockquote>
+<p>所以自然地:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck java"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Arrays.stream(ele).map(e -&gt; e.inner).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+<p>当然是”fuck js”啦!</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Java里的for-in/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-要记要背" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -824,114 +922,6 @@ ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/05/Spring Cloud/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring-MVC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spring-MVC/">Spring MVC</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Spring-MVC/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="DispatcherServlet"><a href="#DispatcherServlet" class="headerlink" title="DispatcherServlet"></a>DispatcherServlet</h2><ol>
-<li><p>用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.</p>
-</li>
-<li><p>DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该<br> Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.<br> 这些对象被封装到一个HandlerExecutionChain对象当中返回<br><code>`</code>java<br>interface HandlerMapping {<br> HandlerExecutionChain getHandler(HttpServletRequest request);<br>}</p>
-</li>
-</ol>
-<p>interface HandlerAdapter {<br>    boolean supports(Object handler);<br>    ModelAndView handle(HttpServletRequest request,<br>                        HttpServletResponse response,<br>                        Object handler);<br>    long getLastModified(HttpServletRequest request, Object handler);<br>}</p>
-<p>public interface Controller {<br>    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response);<br>}</p>
-<p>public interface LastModified {<br>    long getLastModified(HttpServletRequest request);<br>}</p>
-<p>public class SimpleControllerHandlerAdapter implements HandlerAdapter {<br>    public boolean supports(Object handler) {<br>        return (handler instanceof Controller);<br>    }</p>
-<pre><code>public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    return ((Controller) handler).handleRequest(request, response);
-}
-
-public long getLastModified(HttpServletRequest request, Object handler) {
-    if (handler instanceof LastModified) {
-        return ((LastModified) handler).getLastModified(request);
-    }
-    return -1L;
-}
-</code></pre><p>}<br><code>`</code>    </p>
-<ol start="3">
-<li><p>DispatcherServlet根据Handler选择HandlerAdapter,调用实际处理请求的方法.</p>
-</li>
-<li><p>提取请求中的模型数据,执行Handler.在填充Handler入参过程中:<br> 消息转换:   将json,xml等转换成一个对象,将对象转换为指定的响应消息<br> 数据转换:   对请求消息进行数据转换,String转换为Integer,Double等<br> 数据格式化:  如字符串转为格式化数字或格式化日期等<br> 数据验证:   验证数据的有效性,验证结果存到BindingResult或Error中</p>
-</li>
-<li><p>Handler执行完成之后,向DispatcherServlet返回一个ModelAndView对象,包含视图名<br> 或视图名和模型</p>
-</li>
-<li><p>根据ModelAndView选择一个合适的ViewResolver返回给DispatcherServlet</p>
-</li>
-<li><p>ViewSolver结合Model和View来渲染视图</p>
-</li>
-<li><p>将视图返回给客户端</p>
-</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spring-MVC/">展开全文 >></a>
         </p>
       
 

@@ -151,6 +151,114 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Spring-MVC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Spring-MVC/">Spring MVC</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Spring-MVC/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="DispatcherServlet"><a href="#DispatcherServlet" class="headerlink" title="DispatcherServlet"></a>DispatcherServlet</h2><ol>
+<li><p>用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.</p>
+</li>
+<li><p>DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该<br> Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.<br> 这些对象被封装到一个HandlerExecutionChain对象当中返回<br><code>`</code>java<br>interface HandlerMapping {<br> HandlerExecutionChain getHandler(HttpServletRequest request);<br>}</p>
+</li>
+</ol>
+<p>interface HandlerAdapter {<br>    boolean supports(Object handler);<br>    ModelAndView handle(HttpServletRequest request,<br>                        HttpServletResponse response,<br>                        Object handler);<br>    long getLastModified(HttpServletRequest request, Object handler);<br>}</p>
+<p>public interface Controller {<br>    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response);<br>}</p>
+<p>public interface LastModified {<br>    long getLastModified(HttpServletRequest request);<br>}</p>
+<p>public class SimpleControllerHandlerAdapter implements HandlerAdapter {<br>    public boolean supports(Object handler) {<br>        return (handler instanceof Controller);<br>    }</p>
+<pre><code>public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    return ((Controller) handler).handleRequest(request, response);
+}
+
+public long getLastModified(HttpServletRequest request, Object handler) {
+    if (handler instanceof LastModified) {
+        return ((LastModified) handler).getLastModified(request);
+    }
+    return -1L;
+}
+</code></pre><p>}<br><code>`</code>    </p>
+<ol start="3">
+<li><p>DispatcherServlet根据Handler选择HandlerAdapter,调用实际处理请求的方法.</p>
+</li>
+<li><p>提取请求中的模型数据,执行Handler.在填充Handler入参过程中:<br> 消息转换:   将json,xml等转换成一个对象,将对象转换为指定的响应消息<br> 数据转换:   对请求消息进行数据转换,String转换为Integer,Double等<br> 数据格式化:  如字符串转为格式化数字或格式化日期等<br> 数据验证:   验证数据的有效性,验证结果存到BindingResult或Error中</p>
+</li>
+<li><p>Handler执行完成之后,向DispatcherServlet返回一个ModelAndView对象,包含视图名<br> 或视图名和模型</p>
+</li>
+<li><p>根据ModelAndView选择一个合适的ViewResolver返回给DispatcherServlet</p>
+</li>
+<li><p>ViewSolver结合Model和View来渲染视图</p>
+</li>
+<li><p>将视图返回给客户端</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Spring-MVC/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Spark实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -528,110 +636,6 @@ Spark工作机制
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/05/Netty-in-action/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-GitFlow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/GitFlow/">Git Flow</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/GitFlow/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>集中式工作流<br>    工作方式<br>        以中央仓库作为项目所有修改的单点实体,所有修改提交到这个分支<br>        上,只用到master这一个分支.<br>    冲突解决<br>        开发者提交之前,需要先fetch中央库的新增提交,rebase自己提交到<br>        中央仓库提交历史之上.[把自己的修改加到别人已经完成的修改上]</p>
-<pre><code>git pull --rebase origin master
-    --rebase选项把提交已到同步了中央仓库修改后的master分支的顶部.
-</code></pre><p>功能分支工作流<br>    所有的功能开发应该在一个专门的分支</p>
-<p>GitFlow工作流<br>    历史分支<br>        使用两个分支来记录项目的历史,master分支存储了正式发布的历史,develop<br>        分支作为功能的集成分支.<br>    功能分支<br>        使用develop作为父分支,新功能完成时合并回develop分支.<br>    发布分支<br>        从develop分支上fork一个发布分支,新建的分支用于开始发布循环,发布分支<br>        合并到master分支并分配一个版本号打好Tag.</p>
-<pre><code>示例
-    git checkout -b some-feature develop
-
-    git status
-    git add 
-    git commit
-
-    git pull origin develop
-    git checkout develop
-    git merge some-feature
-    git push
-    git branch -d some-feature
-
-    git checkout -b release-0.1 develop
-
-    git checkout master
-    git merge release-0.1
-    git push
-    git checkout develop
-    git merge release-0.1
-    git push
-    git branch -d release-0.1
-
-    git tag -a 0.1 -m &quot;Initial public release&quot; master
-    git push --tag
-</code></pre><p>Forking工作流</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Git//" class="article-tag-list-link color4">Git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/GitFlow/">展开全文 >></a>
         </p>
       
 

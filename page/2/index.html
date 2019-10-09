@@ -250,6 +250,142 @@ ACK=1118+1=1119
 
 
   
+    <article id="post-TCP交钱学系列 (2) - packetdrill tcpdump" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/">TCP交钱学系列 (2) - packetdrill tcpdump</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/" class="archive-article-date">
+  	<time datetime="2019-09-30T03:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><h3 id="tcpdump-–-网络流量分析工具"><a href="#tcpdump-–-网络流量分析工具" class="headerlink" title="tcpdump – 网络流量分析工具"></a>tcpdump – 网络流量分析工具</h3><blockquote>
+<p>linux设置root密码: sudo passwd root</p>
+</blockquote>
+<ol>
+<li>tcpdump -i any<br>-i表示指定哪一个网卡，any 表示任意<br>ifconfig查看有哪些网卡</li>
+</ol>
+<p>tcpdump -i eth3 只看网卡eth3经过的数据包</p>
+<ol start="2">
+<li>只看某个ip的网络包<br>tcpdump -i any host 220.181.38.148<br>这个ip可以是源地址也可以是目标地址</li>
+</ol>
+<p>tcpdump -i any host src 220.181.38.148<br>只抓这个ip发出的包</p>
+<p>tcpdump -i any host dst 220.181.38.148<br>只抓这个ip收到的包</p>
+<ol start="3">
+<li>只看某个端口的包<br>tcpdump -i any port 80</li>
+</ol>
+<p>tcpdump -i any dst port 80<br>只看某个ip收到的包</p>
+<ol start="4">
+<li><p>抓取某个区间内端口的包<br>tcpdump portrange 21-23</p>
+</li>
+<li><p>禁用主机与端口解析: -n 与 -nn</p>
+</li>
+<li><p>过滤协议<br>tcpdump -i any -nn udp   </p>
+</li>
+<li><p>用ascii格式查看包体内容: -A选项<br> 限制包大小：-s 选项<br>  -X 命令，用来同时用 HEX 和 ASCII 显示报文内容<br> -c 选项 抓取 number 个报文后退出</p>
+<p> -w 选项用来把数据报文输出到文件<br> 显示绝对的序号：-S 选项</p>
+</li>
+<li><p>过滤器</p>
+</li>
+</ol>
+<p>抓取 ip 为 10.211.55.10 到端口 3306 的数据包<br>sudo tcpdump -i any host 10.211.55.10 and dst port 3306</p>
+<p>抓取源 ip 为 10.211.55.10，目标端口除了22 以外所有的流量<br>sudo tcpdump -i any src 10.211.55.10 and not dst port 22</p>
+<p>抓取：来源 ip 为 10.211.55.10 且目标端口为 3306 或 6379 的包<br>sudo tcpdump -i any ‘src 10.211.55.10 and (dst port 3306 or 6379)’</p>
+<p>显示所有的 RST 包<br>tcpdump ‘tcp[13] &amp; 4 != 0’</p>
+<p>想过滤 SYN + ACK 包<br>tcpdump ‘tcp[13] &amp; 18 != 0’</p>
+<h3 id="packetdrill-–-Google网络工具"><a href="#packetdrill-–-Google网络工具" class="headerlink" title="packetdrill – Google网络工具"></a>packetdrill – Google网络工具</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
+<li>国内源没一个好用的, 直接梯子, 刷刷装好bison flex</li>
+<li>关掉offload机制, 不光要注释掉函数, 也要注掉函数调用</li>
+<li>make命令就是命令行直接手敲”make”, 然后Enter</li>
+</ol>
+<h4 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h4><p>packetdrill 脚本采用 c 语言和 tcpdump 混合的语法。脚本文件名一般以 .pkt 为后缀，<br>执行脚本的方式为sudo ./packetdrill test.pkt</p>
+<p>脚本的每一行可以由以下几种类型的语句构成：</p>
+<ul>
+<li>执行系统调用（system call），对比返回值是否符合预期</li>
+<li>把数据包（packet）注入到内核协议栈，模拟协议栈收到包</li>
+<li>比较内核协议栈发出的包与预期是否相符</li>
+<li>执行 shell 命令</li>
+<li>执行 python 命令</li>
+</ul>
+<p>脚本每一行都有一个时间参数用来表明执行的时间或者预期事件发生的时间，packetdrill 支持绝对时间和相对时间。绝对时间就是一个简单的数字，相对时间会在数字前面添加一个+号</p>
+<h4 id="代码环节"><a href="#代码环节" class="headerlink" title="代码环节"></a>代码环节</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span> socket(..., SOCK_STREAM, IPPROTO_TCP) = <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>解释: 脚本执行的第0s创建一个socket, 使用系统调用的方式<br>    脚本中的…表示使用packetdrill的默认值<br>    linux在每个程序的开始都有3个已经打开的文件句柄: stdin(0), sdtout(1), stderr(2)</p>
+<p>socket函数签名:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成功时返回文件描述符, 失败时返回-1</span></span><br><span class="line"><span class="keyword">int</span> socket_fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br></pre></td></tr></table></figure></p>
+<p>domain 表示套接字协议簇, AF_INET表示IPv4, AF_INET6表示IPv6.<br>type 表示套接字数据传输类型信息, 面向连接的SOCK_STREAM(默认TCP), 面向无连接的SOCK_DGRAM(默认UDP).<br>protocal 用0来表示使用默认的协议族和套接字类型</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> setsockopt(<span class="number">3</span>, SOL_SOCKET, SO_REUSEADDR, [<span class="number">1</span>], <span class="number">4</span>) = <span class="number">0</span></span><br><span class="line">+<span class="number">0</span> bind(<span class="number">3</span>, ..., ...) = <span class="number">0</span></span><br><span class="line">+<span class="number">0</span> listen(<span class="number">3</span>, <span class="number">1</span>) = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>setsockopt函数设置端口重用<br>bind函数, 使用默认端口8080<br>listen函数, 此时socket已经可以接受客户端的tcp连接.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> &lt; S <span class="number">0</span>:<span class="number">0</span>(<span class="number">0</span>) win <span class="number">4000</span> &lt;mss <span class="number">1000</span>&gt;</span><br><span class="line">+<span class="number">0</span> &gt; S. <span class="number">0</span>:<span class="number">0</span>(<span class="number">0</span>) ack <span class="number">1</span> &lt;...&gt;</span><br><span class="line">+<span class="number">.1</span> &lt; . <span class="number">1</span>:<span class="number">1</span>(<span class="number">0</span>) ack <span class="number">1</span> win <span class="number">1000</span></span><br></pre></td></tr></table></figure>
+<p>经典的三次握手</p>
+<p>‘&lt;’ 表示输入的数据包, packetdrill会构造真实的数据包, 注入到内核协议栈.<br>‘&gt;’ 表示预期协议栈会响应的包, packetdrill会检查协议栈是不是真的发出了这个包, 如果没有, 脚本就会报错停止执行.</p>
+<p>+0 &lt; S 0:0(0) win 4000 <mss 1000><br>S后面的三个0分别表示: 包的起始seq, 结束seq, 包的长度.<br>win表示发送端的接收窗口大小, SYN包的MSS选项</mss></p>
+<p>+0 &gt; S. 0:0(0) ack 1 &lt;…&gt;<br>预期协议栈立即返回SYN+ACK包, ack为上次seq+1, 表示第一个SYN包已经收到</p>
+<p>+.1 &lt; . 1:1(0) ack 1 win 1000<br>0.1秒后注入一个ACK包到协议栈, 没有携带数据, 包的长度为0.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> accept(<span class="number">3</span>, ..., ...) = <span class="number">4</span></span><br><span class="line">+<span class="number">0</span> &lt; P. <span class="number">1</span>:<span class="number">201</span>(<span class="number">200</span>) win <span class="number">4000</span></span><br><span class="line">+<span class="number">0</span> &gt; . <span class="number">1</span>:<span class="number">1</span>(<span class="number">0</span>) ack <span class="number">201</span></span><br></pre></td></tr></table></figure>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>执行脚本前创建名为tun0的虚拟网卡, 脚本执行完, tun0被销毁.<br>虚拟网卡在操作系统中/dev/net/tun文件, 每次程序通过 write 等系统调用将数据写入到这个文件 fd 时，这些数据会经过 tun0 这个虚拟网卡，将数据写入到内核协议栈，read 系统调用读取数据的过程类似。协议栈可以向操作普通网卡一样操作虚拟网卡 tun0。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-The Little系列(2) - The Little Schemer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -294,92 +430,6 @@ ACK=1118+1=1119
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/30/The Little系列(2) - The Little Schemer/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-TCP交钱学系列 (1) - 可靠,连接,字节,全双工" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/29/TCP交钱学系列 (1) - 可靠,连接,字节,全双工/">TCP交钱学系列 (1) - 可靠,连接,字节,全双工</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/29/TCP交钱学系列 (1) - 可靠,连接,字节,全双工/" class="archive-article-date">
-  	<time datetime="2019-09-29T15:11:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>应用层: HTTP DNS SMTP POP3 FTP NTP(时钟同步协议) NFS(网络文件共享协议)<br>传输层: TCP UDP<br>网络互联层: IP<br>网络访问层: Ethernet<br>网络介质</p>
-<p>以太网头 + IP头 + TCP头 + GET /HTTP/1.1</p>
-<h2 id="可靠"><a href="#可靠" class="headerlink" title="可靠"></a>可靠</h2><p>TCP的下层 – IP就是无连接,不可靠的. 它不保证是否到达,达到的顺序,是否重复<br>TCP面向连接且可靠, 就要做到:</p>
-<ol>
-<li>对每个包提供校验和 – 每个TCP包首部有两字节表示校验和.如果传输过程中损坏, 校验和有差错, TCP不发送确认直接丢掉,等待发送端重传.</li>
-<li>包的序列号解决了接收数据的乱序,重复问题 – 接收端根据序列号重排列, 丢弃重复数据</li>
-<li>超时重传 – TCP发送数据后启动定时器, 如果指定时间内没有对端确认的ack, 就重传.多次重传失败后放弃.</li>
-<li>流量控制,拥塞控制 – 暂且不表</li>
-</ol>
-<h2 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h2><p>三次握手协商通信的起始序列号,窗口缩放大小信息,四次挥手</p>
-<h2 id="字节"><a href="#字节" class="headerlink" title="字节"></a>字节</h2><p>粘包</p>
-<h2 id="全双工"><a href="#全双工" class="headerlink" title="全双工"></a>全双工</h2><p>每个方向的数据流都独立管理序列号,滑动窗口大小,MSS等信息.</p>
-<p>sudo passwd root</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/29/TCP交钱学系列 (1) - 可靠,连接,字节,全双工/">展开全文 >></a>
         </p>
       
 

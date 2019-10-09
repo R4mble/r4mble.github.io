@@ -151,19 +151,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-深究Spring系列 (1) - 就...Get了个Bean" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-精通Redis系列 (1) - 简单动态字符串" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/">深究Spring系列 (1) - 就...Get了个Bean</a>
+      <a class="article-title" href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/">精通Redis系列 (0) - 写在前面的话</a>
     </h1>
   
 
         
-        <a href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/" class="archive-article-date">
+        <a href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/" class="archive-article-date">
   	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
 </a>
         
@@ -171,39 +171,25 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>曾听一位高级工程师吐槽: 面试者回答”Spring中Bean是如何创建的,getBean的过程是什么样的?”这个问题时, 语塞说不出话来, 最后憋出一句: “就…Get了个Bean”.<br>他说完后组内笑声此起彼伏, 我却陷入深思. 严格来讲我也不是很清楚这里面到底发生了啥.</p>
-<h2 id="Spring的领域模型"><a href="#Spring的领域模型" class="headerlink" title="Spring的领域模型"></a>Spring的领域模型</h2><ol>
-<li>容器领域模型(Context模型)<br>Spring的掌控域(或者服务域),对Spring核心领域模型(Bean模型)进行生命周期管理.</li>
-<li>核心领域模型(Bean模型)<br>Bean是应用运行时可执行的最小函数式单元,可以是一个属性单元,也可以是Java中的一个函数对象,一种对象式的为某种特殊行为而生的可复用的概念,不受职责或者大小的限制.<br>每个线程的真正执行者,整个会话生命周期的管理者,Spring对外暴露的核心实体.</li>
-<li>代理领域模型(Advisor模型)<br>Spring代理的执行依赖于Bean模型,Spring代理的生成,执行及选择都依赖于Spring自身定义的Advisor模型,只有符合Advisor模型的定义,才能生成Spring代理.</li>
-</ol>
-<p>Spring注解:<br>    AnnotationConfigApplicationContext extends GenericApplicationContext<br>                                       implements AnnotationConfigRegistry </p>
-<p><img src="/images/Spring源码/AnnotationConfigApplicationContext.png" alt="AnnotationConfigApplicationContext"><br><img src="/images/Spring源码/DefaultListableBeanFactory.png" alt="AnnotationConfigApplicationContext"></p>
-<h2 id="Spring上下文和容器"><a href="#Spring上下文和容器" class="headerlink" title="Spring上下文和容器"></a>Spring上下文和容器</h2><ol>
-<li>ApplicationContext: 整个容器的基本功能定义类. 利用代理的设计方法, 内部持有BeanFactory实例, 这个实例替它执行BeanFactory接口定义的功能.</li>
-<li>AbstractApplicationContext: 整个容器的核心处理类, 真正的Spring容器执行者, 在内部使用模板方法, 实现了高复用,高扩展,实现了Spring的启动,停止,刷新,事件推送,BeanFactory方法的默认实现及虚拟机回调的注册.</li>
-<li>GenericApplicationContext: 最容易构建Spring环境的实体类,涵盖了Spring Context的核心功能, 开箱即用.</li>
-<li><p>AnnotationConfigApplicationContext: 利用GenericApplicationContext的封装性和简便性. 传入class数组创建一个可执行的上下文实例来构造一个可运行的Spring运行环境.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//根据参数类型可以知道，其实可以传入多个annotatedClasses，但是这种情况出现的比较少</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AnnotationConfigApplicationContext</span><span class="params">(Class&lt;?&gt;... annotatedClasses)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//调用无参构造函数，会先调用父类GenericApplicationContext的构造函数</span></span><br><span class="line">		<span class="comment">//父类的构造函数里面就是初始化DefaultListableBeanFactory，并且赋值给beanFactory</span></span><br><span class="line">		<span class="comment">//本类的构造函数里面，初始化了一个读取器：AnnotatedBeanDefinitionReader reader，一个扫描器ClassPathBeanDefinitionScanner scanner</span></span><br><span class="line">		<span class="comment">//scanner的用处不是很大，它仅仅是在我们外部手动调用 .scan 等方法才有用，常规方式是不会用到scanner对象的</span></span><br><span class="line">		<span class="keyword">this</span>();</span><br><span class="line">		<span class="comment">//把传入的类进行注册，这里有两个情况，</span></span><br><span class="line">		<span class="comment">//传入传统的配置类</span></span><br><span class="line">		<span class="comment">//传入bean（虽然一般没有人会这么做</span></span><br><span class="line">		<span class="comment">//看到后面会知道spring把传统的带上@Configuration的配置类称之为FULL配置类，不带@Configuration的称之为Lite配置类</span></span><br><span class="line">		<span class="comment">//但是我们这里先把带上@Configuration的配置类称之为传统配置类，不带的称之为普通bean</span></span><br><span class="line">		register(annotatedClasses);</span><br><span class="line">		<span class="comment">//刷新</span></span><br><span class="line">		refresh();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+        <p>Simple Dynamic Strings, SDS<br>存储字符串和整型数据, 兼容C语言标准字符串处理函数, 在此基础之上保证二进制安全, 避免缓冲区溢出.</p>
+<h3 id="什么是二进制安全"><a href="#什么是二进制安全" class="headerlink" title="什么是二进制安全?"></a>什么是二进制安全?</h3><p>C语言中用”\0”表示字符串的结束, 如果字符串本身就含有”\0”字符, 字符串就会被截断, 就是非二进制安全.<br>所以C字符串不能保存图片,音频,视频,压缩文件这样的二进制数据.</p>
+<p>如果可以通过某种机制, 保证读写字符串时不损害其内容, 则称为二进制安全.<br>Redis的sds有长度统计变量len, 读写字符串不依赖”\0”终止符,保证了二进制安全.</p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><ol>
+<li>Redis3.2之前<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sds</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// buf中已占用空间</span></span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// buf中剩余可用字节数</span></span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 数据空间, 柔性数组, 通过malloc函数动态分配内存</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>AbstractRefreshableApplicationContext: 继承自AbstractApplicationContext, 是XmlWebApplicationContext的核心父类,如果当前上下文持有BeanFactory,则关闭当前BeanFactory,然后为上下文生命周期的下一个阶段初始化一个新的BanFactory, 并且在创建新容器时仍然保持对其父容器的引用.</p>
-</li>
-<li>EmbeddedWebApplicationContext: Spring Boot中新增的上下文实现类,是使用自嵌容器启动web应用的核心上下文基类.</li>
 </ol>
-<h2 id="BeanFactory的设计"><a href="#BeanFactory的设计" class="headerlink" title="BeanFactory的设计"></a>BeanFactory的设计</h2><ol>
-<li>BeanFactory: 职责定义接口, 定义了按照名称,参数,类型等几个维度获取,判断Bean实例的职能</li>
-<li>HierarchicalBeanFactory: 定义了父容器及判断当前Bean名称是否在当前Bean工厂中.</li>
-<li>ConfigurableBeanFactory: 提供了设置父容器接口,指定类加载器的职能, 并且为当前容器工厂设计Bean的定制型的解析处理器,类型处理器等,实现对BeanFactory的可配置型</li>
-<li>AutowireCapableBeanFactory: 提供了Bean的创建,注入职能, 提供了对Bean初始化前后的扩展性处理职能. 主要职责是处理在当前工厂中注册的Bean实例并使其达到可用状态</li>
-<li>ListableBeanFactory: 对Bean实例的枚举,对有某些共同特征的Bean的管理,按照Bean名称,Bean实例,Bean类型获取Bean实例</li>
-<li>ConfigurableListableBeanFactory: 集成ListableBeanFactory,AutowireCapableBeanFactory,ConfigurableBeanFactory接口所有职能,扩展了修改Bean定义信息和分析Bean的功能,实现了预实例化单例Bean及冻结当前工厂配置等功能.</li>
-<li>AbstractBeanFactory: 实现了对基本容器功能定义的模板式封装和实现. 同时实现了对Bean信息的注册, 对Bean的创建及Bean定义描述信息相关的处理使用了抽象画处理的方式并交由继承者实现.</li>
-<li>AbstractAutowireCapableBeanFactory: 解决Bean之间的依赖和注入问题,实现了Bean的创建方法.</li>
-<li>DefaultListableBeanFactory: 提供了对Bean容器的完全成熟的默认实现, 可以直接对外使用.许多依赖BeanFactory的场景都通过DefaultListableBeanFactory类来实现对Bean的管理,注入,依赖解决,创建,销毁等功能</li>
-<li>XmlBeanFactory: 集成DefaultListableBeanFactory并且内部持有XmlBeanDefinitionReader属性的Bean工厂容器(实现对XML文件定义的Bean描述信息的加载解析和处理)</li>
+<p>64位系统中: len与free各占4字节.</p>
+<ul>
+<li>预分配冗余空间的方式来减少内存的频繁分配.字符串<br>  长度小于1M时,加倍扩容,大于1M时每次扩1M.最大长度为512M.</li>
+<li>惰性空间释放<br>当sds要缩短保存的字符串时,不立即使用内存重分配来回收缩短后多出来的字节,而是使用free记录下来.</li>
+</ul>
+<ol start="2">
+<li>改进版sds</li>
 </ol>
-<h2 id="Spring父子上下文和容器"><a href="#Spring父子上下文和容器" class="headerlink" title="Spring父子上下文和容器"></a>Spring父子上下文和容器</h2><p>ApplicationContext中持有BeanFactory实例<br>子容器可以共用父容器中的Bean, 父容器不能共用子容器的Bean, 因为当父容器已经启动时,子容器还没有实例化并启动.</p>
-<h2 id="Spring加载机制的设计和实现"><a href="#Spring加载机制的设计和实现" class="headerlink" title="Spring加载机制的设计和实现"></a>Spring加载机制的设计和实现</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></span><br><span class="line"><span class="comment"> * However is here to document the layout of type 5 SDS strings. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr5</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr64</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>一般情况下结构体会按其所有变量大小的最小公倍数做字节对齐,而使用packed修饰后,结构体变为按照1字节对齐.<br>好处: 1. 节省内存; 2. 实现简单–SDS返回给上层指向内容的指针而不是结构体首地址.</p>
+<h3 id="SDS的创建"><a href="#SDS的创建" class="headerlink" title="SDS的创建"></a>SDS的创建</h3><p>sdsnewlen函数创建SDS<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init, <span class="keyword">size_t</span> initlen)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">void</span> *sh;</span><br><span class="line">    sds s;</span><br><span class="line">    <span class="keyword">char</span> type = sdsReqType(initlen);</span><br><span class="line">    <span class="comment">/* Empty strings are usually created in order to append. Use type 8</span></span><br><span class="line"><span class="comment">     * since type 5 is not good at this. */</span></span><br><span class="line">    <span class="keyword">if</span> (type == SDS_TYPE_5 &amp;&amp; initlen == <span class="number">0</span>) type = SDS_TYPE_8;</span><br><span class="line">    <span class="keyword">int</span> hdrlen = sdsHdrSize(type);</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *fp; <span class="comment">/* flags pointer. */</span></span><br><span class="line"></span><br><span class="line">    sh = s_malloc(hdrlen+initlen+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (init==SDS_NOINIT)</span><br><span class="line">        init = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!init)</span><br><span class="line">        <span class="built_in">memset</span>(sh, <span class="number">0</span>, hdrlen+initlen+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (sh == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    s = (<span class="keyword">char</span>*)sh+hdrlen;</span><br><span class="line">    fp = ((<span class="keyword">unsigned</span> <span class="keyword">char</span>*)s)<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">switch</span>(type) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5: &#123;</span><br><span class="line">            *fp = type | (initlen &lt;&lt; SDS_TYPE_BITS);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">8</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">16</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">32</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">64</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(s, init, initlen);</span><br><span class="line">    s[initlen] = <span class="string">'\0'</span>;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="释放字符串"><a href="#释放字符串" class="headerlink" title="释放字符串"></a>释放字符串</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsfree</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    s_free((<span class="keyword">char</span>*)s-sdsHdrSize(s[<span class="number">-1</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将len归零, 新的数据可以覆盖写</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsclear</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    sdssetlen(s, <span class="number">0</span>);</span><br><span class="line">    s[<span class="number">0</span>] = <span class="string">'\0'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
 
       
@@ -217,7 +203,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -226,7 +212,106 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-精通Redis系列 (2) - 跳跃表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/19/精通Redis系列 (2) - 跳跃表/">精通Redis系列 (2) - 跳跃表</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/19/精通Redis系列 (2) - 跳跃表/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>核心思想: 有序链表分层, 空间换时间<br>性质:</p>
+<ol>
+<li>头结点中有一个64层结构, 每层结构包含指向本层的下个节点的指针, 指向本层下个节点中间所跨越的节点个数为本层的跨度.</li>
+<li>除头结点外, 层数最多的节点的层高为跳跃表的高度,</li>
+<li>每一层都是有序链表, 数据递增</li>
+<li>除头结点外, 一个元素在上层有序链表中出现, 一定会在下层有序链表中出现.</li>
+<li>跳跃表每层最后一个节点指向Null, 表示本层有序链表的结束</li>
+<li>跳跃表有一个tail指针, 指向跳跃吧的最后一个节点.</li>
+<li>最底层的有序链表包含所有节点, 最底层的节点个数为跳跃表的长度(不包括头节点)</li>
+<li>每个节点包含一个后退指针, 头结点和第一个节点指向Null</li>
+</ol>
+<h2 id="冲向源码"><a href="#冲向源码" class="headerlink" title="冲向源码"></a>冲向源码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    sds ele;</span><br><span class="line">    <span class="comment">// 用于存储排序的分值</span></span><br><span class="line">    <span class="keyword">double</span> score;</span><br><span class="line">    <span class="comment">// 回退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="comment">// 柔性数组,每个节点的数组长度不一样. 生成跳跃表节点时,随机生成一个1-64的值,值越大出现的概率越低</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">// 本层的下一个节点, 尾节点的forward指向Null</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">// forward指向的节点与本节点之间的元素个数, span值越大,跳过的节点个数越多</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">long</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="comment">// header: 头结点,level数组元素个数为64, 头结点不存储任何member和score,ele为Null,score为0,</span></span><br><span class="line">    <span class="comment">// 不计入跳跃表的总长度.头结点在初始化时,64个元素都指向Null,span值都为0</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> length;</span><br><span class="line">    <span class="keyword">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每个节点的ele存储zset的member, socre存储score, 当有序集合分值相同时,节点会按member的字典序进行排序</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zset</span> &#123;</span></span><br><span class="line">    dict *dict;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line">&#125; zset;</span><br></pre></td></tr></table></figure>
+<h3 id="跳跃表的创建"><a href="#跳跃表的创建" class="headerlink" title="跳跃表的创建"></a>跳跃表的创建</h3><h4 id="节点层高"><a href="#节点层高" class="headerlink" title="节点层高"></a>节点层高</h4><p>最小值为1, 最大值为64.<br>生成算法: level初始为1, 随机值小于p时level加1<br>    level为1的概率: 1-p<br>    level为2的概率: p(1-p)<br>    level为3的概率: (1-p) * p^2</p>
+<p>节点层高为n的概率是(1-p) * p^(n-1), p=0.25<br>节点的期望层高为1/(1-p), 即: 1.33</p>
+<h4 id="创建节点"><a href="#创建节点" class="headerlink" title="创建节点"></a>创建节点</h4><p>每个节点就是有序集合的一个元素, 创建节点时, 待创建节点的层高,分值,member等都已确定.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">zskiplistNode *<span class="title">zslCreateNode</span><span class="params">(<span class="keyword">int</span> level, <span class="keyword">double</span> score, sds ele)</span> </span>&#123;</span><br><span class="line">    zskiplistNode *zn =</span><br><span class="line">        zmalloc(<span class="keyword">sizeof</span>(*zn)+level*<span class="keyword">sizeof</span>(struct zskiplistLevel));</span><br><span class="line">    zn-&gt;score = score;</span><br><span class="line">    zn-&gt;ele = ele;</span><br><span class="line">    <span class="keyword">return</span> zn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Create a new skiplist. */</span></span><br><span class="line"><span class="function">zskiplist *<span class="title">zslCreate</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line"></span><br><span class="line">    zsl = zmalloc(<span class="keyword">sizeof</span>(*zsl));</span><br><span class="line">    zsl-&gt;level = <span class="number">1</span>;</span><br><span class="line">    zsl-&gt;length = <span class="number">0</span>;</span><br><span class="line">    zsl-&gt;header = zslCreateNode(ZSKIPLIST_MAXLEVEL,<span class="number">0</span>,<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; ZSKIPLIST_MAXLEVEL; j++) &#123;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].forward = <span class="literal">NULL</span>;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].span = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    zsl-&gt;header-&gt;backward = <span class="literal">NULL</span>;</span><br><span class="line">    zsl-&gt;tail = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> zsl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="插入节点"><a href="#插入节点" class="headerlink" title="插入节点"></a>插入节点</h4><ol>
+<li>查找要插入的位置</li>
+<li>调整跳跃表高度</li>
+<li>插入节点</li>
+<li>调整backward</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Insert a new node in the skiplist. Assumes the element does not already</span></span><br><span class="line"><span class="comment"> * exist (up to the caller to enforce that). The skiplist takes ownership</span></span><br><span class="line"><span class="comment"> * of the passed SDS string 'ele'. */</span></span><br><span class="line"><span class="function">zskiplistNode *<span class="title">zslInsert</span><span class="params">(zskiplist *zsl, <span class="keyword">double</span> score, sds ele)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入节点时, 需要更新被插入节点每层的前一个节点. 将每层需要更新的节点记录在update[i]中</span></span><br><span class="line">    <span class="comment">// x是跳跃表的头结点</span></span><br><span class="line">    zskiplistNode *update[ZSKIPLIST_MAXLEVEL], *x;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 记录当前层从header节点到update[i]节点所经历的步长, 在更新update[i]的span和设置</span></span><br><span class="line">    <span class="comment">// 新插入节点的span时用到</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> rank[ZSKIPLIST_MAXLEVEL];</span><br><span class="line">    <span class="keyword">int</span> i, level;</span><br><span class="line"></span><br><span class="line">    serverAssert(!isnan(score));</span><br><span class="line">    x = zsl-&gt;header;</span><br><span class="line">    <span class="keyword">for</span> (i = zsl-&gt;level<span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="comment">/* store rank that is crossed to reach the insert position */</span></span><br><span class="line">        rank[i] = i == (zsl-&gt;level<span class="number">-1</span>) ? <span class="number">0</span> : rank[i+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">while</span> (x-&gt;level[i].forward &amp;&amp;</span><br><span class="line">                (x-&gt;level[i].forward-&gt;score &lt; score ||</span><br><span class="line">                    (x-&gt;level[i].forward-&gt;score == score &amp;&amp;</span><br><span class="line">                    sdscmp(x-&gt;level[i].forward-&gt;ele,ele) &lt; <span class="number">0</span>)))</span><br><span class="line">        &#123;</span><br><span class="line">            rank[i] += x-&gt;level[i].span;</span><br><span class="line">            x = x-&gt;level[i].forward;</span><br><span class="line">        &#125;</span><br><span class="line">        update[i] = x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* we assume the element is not already inside, since we allow duplicated</span></span><br><span class="line"><span class="comment">     * scores, reinserting the same element should never happen since the</span></span><br><span class="line"><span class="comment">     * caller of zslInsert() should test in the hash table if the element is</span></span><br><span class="line"><span class="comment">     * already inside or not. */</span></span><br><span class="line">    level = zslRandomLevel();</span><br><span class="line">    <span class="keyword">if</span> (level &gt; zsl-&gt;level) &#123;</span><br><span class="line">        <span class="keyword">for</span> (i = zsl-&gt;level; i &lt; level; i++) &#123;</span><br><span class="line">            rank[i] = <span class="number">0</span>;</span><br><span class="line">            update[i] = zsl-&gt;header;</span><br><span class="line">            update[i]-&gt;level[i].span = zsl-&gt;length;</span><br><span class="line">        &#125;</span><br><span class="line">        zsl-&gt;level = level;</span><br><span class="line">    &#125;</span><br><span class="line">    x = zslCreateNode(level,score,ele);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; level; i++) &#123;</span><br><span class="line">        x-&gt;level[i].forward = update[i]-&gt;level[i].forward;</span><br><span class="line">        update[i]-&gt;level[i].forward = x;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* update span covered by update[i] as x is inserted here */</span></span><br><span class="line">        x-&gt;level[i].span = update[i]-&gt;level[i].span - (rank[<span class="number">0</span>] - rank[i]);</span><br><span class="line">        update[i]-&gt;level[i].span = (rank[<span class="number">0</span>] - rank[i]) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* increment span for untouched levels */</span></span><br><span class="line">    <span class="keyword">for</span> (i = level; i &lt; zsl-&gt;level; i++) &#123;</span><br><span class="line">        update[i]-&gt;level[i].span++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    x-&gt;backward = (update[<span class="number">0</span>] == zsl-&gt;header) ? <span class="literal">NULL</span> : update[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;level[<span class="number">0</span>].forward)</span><br><span class="line">        x-&gt;level[<span class="number">0</span>].forward-&gt;backward = x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        zsl-&gt;tail = x;</span><br><span class="line">    zsl-&gt;length++;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SkipList 有序数据结构<br>    在每个节点维持多个指向其他节点的指针.<br>    平均O(logN),最坏O(N)复杂度的节点查找,可以通过顺序性操作来<br>        批量处理节点.<br>    当有序集合包含的元素数量较多, 或有序集合中元素的member是比较长的字符串时,<br>    Redis使用跳表来作为有序集合键的底层实现.</p>
+<p>跳表在Redis的两个应用: 有序集合键, 集群节点中做内部数据结构</p>
+<p>zskiplist<br>    header: 指向跳表的表头节点<br>    tail: 指向跳表的表尾节点<br>    level: 记录目前跳表内,层数最大的那个节点的层数(表头节点的层数不计算在内)<br>    length: 跳表目前包含节点的数量(表头节点不计算在内)</p>
+<p>zskiplistNode<br>    level: L1代表第一层, L2代表第二层.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (2) - 跳跃表/">展开全文 >></a>
         </p>
       
 
@@ -381,80 +466,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/17/The Little系列(1) - A Little Java, A Few Patterns/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-The Little系列(0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/17/The Little系列(0) - 写在前面的话/">The Little系列(0) - 写在前面的话</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/17/The Little系列(0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-09-17T09:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The Little系列指的是Daniel P. Friedman写的一系列书, 包括&lt;&lt; A Little Java, A Few Patterns&gt;&gt;, &lt;&lt; The Little Schemer&gt;&gt;, &lt;&lt; The Little Typer&gt;&gt;, &lt;&lt; The Little Prover&gt;&gt;, &lt;&lt; The Little MLer&gt;&gt;, &lt;&lt; The Seasoned Schemer&gt;&gt;,<br> &lt;&lt; The Reasoned Schemer&gt;&gt;等书籍.<br>这套书的风格就是对话式教学, 别人对这套书的评价很高, 我却觉得絮絮叨叨的看着难受. 蟹六跪而二螯，非蛇鳝之穴无可寄托者，用心躁也。既然益处多多, 还是用心去读一读吧. 我决定边做笔记边啃下来这本书. 途中遇到不认识的单词也顺手记下来, 就当英文阅读理解了.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">PL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/17/The Little系列(0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 

@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Elasticsearch | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.   分片机制, 复制机制.   Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.    Elasticsearch内置了对分布式集群和分布式索引的管理.  Lucene倒排索引根据属性的值来查找记录.表现为: 一个关键词,它的频度,位置.  取得关键词. 去掉无意">
+  <meta name="description" content="全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.   分片机制, 复制机制.   Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.    Elasticsearch内置了对分布式集群和分布式索引的管理.  Lucene的评分机制, 查询DSL, 底层索引控制. Elasticsearch术语索引词(term):">
 <meta name="keywords" content="读书笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Elasticsearch">
 <meta property="og:url" content="http://yoursite.com/2019/04/27/Elasticsearch/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.   分片机制, 复制机制.   Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.    Elasticsearch内置了对分布式集群和分布式索引的管理.  Lucene倒排索引根据属性的值来查找记录.表现为: 一个关键词,它的频度,位置.  取得关键词. 去掉无意">
+<meta property="og:description" content="全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.   分片机制, 复制机制.   Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.    Elasticsearch内置了对分布式集群和分布式索引的管理.  Lucene的评分机制, 查询DSL, 底层索引控制. Elasticsearch术语索引词(term):">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-21T13:33:42.920Z">
+<meta property="og:updated_time" content="2019-10-09T16:02:09.573Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch">
-<meta name="twitter:description" content="全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.   分片机制, 复制机制.   Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.    Elasticsearch内置了对分布式集群和分布式索引的管理.  Lucene倒排索引根据属性的值来查找记录.表现为: 一个关键词,它的频度,位置.  取得关键词. 去掉无意">
+<meta name="twitter:description" content="全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.   分片机制, 复制机制.   Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.    Elasticsearch内置了对分布式集群和分布式索引的管理.  Lucene的评分机制, 查询DSL, 底层索引控制. Elasticsearch术语索引词(term):">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -183,18 +183,6 @@
 <blockquote>
 <p> Elasticsearch内置了对分布式集群和分布式索引的管理.</p>
 </blockquote>
-<h2 id="Lucene倒排索引"><a href="#Lucene倒排索引" class="headerlink" title="Lucene倒排索引"></a>Lucene倒排索引</h2><p>根据属性的值来查找记录.<br>表现为: 一个关键词,它的频度,位置.</p>
-<ol>
-<li>取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点.</li>
-<li>建立倒排索引. 关键词所在的文章号,关键词的位置, 频度</li>
-<li>实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针.</li>
-<li>压缩算法. 关键词压缩: &lt;前缀长度,后缀&gt;. 数字压缩:只保存与上一个值的差值.</li>
-<li><p>查询单词时,Lucene对词典二元查找</p>
-<p>对应关系: “文章号” 对应 “文章中所有关键词”<br>倒排索引: “关键词” 对应 “拥有该关键词的所有文章”<br>关键词在文章中出现的位置和次数:  记录该词是文章中第几个关键词,(节约索引空间,词组查询快)<br>关键词按照字符顺序排列,可以使用二元搜索算法快速定位关键词.  </p>
-<p>| 关键词 | 文章号[出现频率] | 出现位置 |<br>| :—-: | :—-: | :—-: |<br>| he | 2[1] | 1<br>| live | 1[2] 2[1] | 2,5 2|<br>以上三列分别作为词典文件,频率文件,位置文件保存.<br>词典文件不仅保存了关键词,还保存了指向频率文件和位置文件的指针.</p>
-<p>假设查询单词”live”, Lucene先对词典二元查找,找到该词,通过指向频率文件的指针读出<br>所有文章号.返回结果.</p>
-</li>
-</ol>
 <p>Lucene的评分机制, 查询DSL, 底层索引控制.</p>
 <h2 id="Elasticsearch术语"><a href="#Elasticsearch术语" class="headerlink" title="Elasticsearch术语"></a>Elasticsearch术语</h2><pre><code>索引词(term): 能够被索引的精确值.
 文本(text): 普通的非结构化文字, 会被分析成一个个的索引词.
@@ -235,12 +223,6 @@
 <blockquote>
 <p>Elasticsearch从5.X引入text和keyword，keyword适用于不分词字段，搜索时只能完全匹配.<br>               6.X彻底移除string, “index”的值只能是boolean变量.</p>
 </blockquote>
-<h2 id="准实时索引的实现"><a href="#准实时索引的实现" class="headerlink" title="准实时索引的实现"></a>准实时索引的实现</h2><p>新收到的数据写到新的索引文件里.<br>Lucene把每次生成的倒排索引, 叫做一个段. 使用一个commit文件记录索引内所有的segment.<br>生成segment的数据来源就是内存中的buffer.</p>
-<p>1) 当前索引有3个segment可用.<br>2) 新接收的数据进入内存buffer<br>3) 内存buffer生成一个新的segment, 刷到文件系统缓存中(默认1秒间隔, Lucene即可检索到这个新的segment),<br>   再由文件系统缓存刷到磁盘, commit文件同步更新</p>
-<pre><code>curl -XPOST http://127.0.0.1:9200/logstash-2015.06.21/_settings -d&apos;
-{ “refresh_interval”: “10s” }
-</code></pre><h3 id="translog"><a href="#translog" class="headerlink" title="translog"></a>translog</h3><p>ES把数据写入内存buffer的同时,另外记录了一个translog日志.<br>在文件系统缓存刷到磁盘的过程中如果发生了异常, ES会从commit位置开始, 恢复整个translog文件中的记录, 保证数据一致性.<br>真正把segment刷到磁盘, 且commit文件进行更新时, translog文件才清空.称为flush<br>ES默认每30分钟或当translog文件大于512MB时 主动进行一次flush<br>ES默认每5秒强制刷新translog日志到磁盘上.(如果数据没备份,发生故障时确实有可能丢失5秒数据)</p>
-<h3 id="segment-merge"><a href="#segment-merge" class="headerlink" title="segment merge"></a>segment merge</h3><p>独立线程来进行segment数据归并.</p>
 
       
 
@@ -345,8 +327,8 @@
     </a>
   
   
-    <a href="/2019/04/27/Elasticsearch速查手册/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Elasticsearch</div>
+    <a href="/2019/04/27/es index/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">es index</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -373,7 +355,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lucene倒排索引"><span class="toc-number">1.</span> <span class="toc-text">Lucene倒排索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Elasticsearch术语"><span class="toc-number">2.</span> <span class="toc-text">Elasticsearch术语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API约定"><span class="toc-number">3.</span> <span class="toc-text">API约定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准实时索引的实现"><span class="toc-number">4.</span> <span class="toc-text">准实时索引的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#translog"><span class="toc-number">4.1.</span> <span class="toc-text">translog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#segment-merge"><span class="toc-number">4.2.</span> <span class="toc-text">segment merge</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Elasticsearch术语"><span class="toc-number">1.</span> <span class="toc-text">Elasticsearch术语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#API约定"><span class="toc-number">2.</span> <span class="toc-text">API约定</span></a></li></ol>
                     </div>
                 </span>
             </div>

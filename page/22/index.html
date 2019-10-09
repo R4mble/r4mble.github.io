@@ -151,31 +151,403 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Ramda中的lens源码解读" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java8查漏补缺" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/Ramda中的lens源码解读/">Ramda中的lens源码解读</a>
+      <a class="article-title" href="/2019/04/05/Java8查漏补缺/">Java8查漏补缺</a>
     </h1>
   
 
         
-        <a href="/2019/04/03/Ramda中的lens源码解读/" class="archive-article-date">
-  	<time datetime="2019-04-02T17:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+        <a href="/2019/04/05/Java8查漏补缺/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>先上源码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig (s -&gt; a) -&gt; ((a, s) -&gt; s) -&gt; Lens s a</span><br><span class="line"> * @param &#123;<span class="built_in">Function</span>&#125; getter</span><br><span class="line"> * @param &#123;<span class="built_in">Function</span>&#125; setter</span><br><span class="line"> * @<span class="keyword">return</span> &#123;Lens&#125;</span><br><span class="line"> * @see R.view, R.set, R.over, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      <span class="keyword">const</span> xLens = R.lens(R.prop(<span class="string">'x'</span>), R.assoc(<span class="string">'x'</span>));</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);            <span class="comment">//=&gt; 1</span></span><br><span class="line"> *      R.set(xLens, <span class="number">4</span>, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);          <span class="comment">//=&gt; &#123;x: 4, y: 2&#125;</span></span><br><span class="line"> *      R.over(xLens, R.negate, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; &#123;x: -1, y: 2&#125;</span></span><br><span class="line"> *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">var lens = _curry2(function lens(getter, setter) &#123;</span></span><br><span class="line"><span class="regexp">  return function(toFunctorFn) &#123;</span></span><br><span class="line"><span class="regexp">    return function(target) &#123;</span></span><br><span class="line"><span class="regexp">      return map(</span></span><br><span class="line"><span class="regexp">        function(focus) &#123;</span></span><br><span class="line"><span class="regexp">          return setter(focus, target);</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        toFunctorFn(getter(target))</span></span><br><span class="line"><span class="regexp">      );</span></span><br><span class="line"><span class="regexp">    &#125;;</span></span><br><span class="line"><span class="regexp">  &#125;;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure></p>
-<p>不得不说这文档写的真棒,我好了.<br>使用代换模型人肉解析:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> xLens = R.lens(R.prop(<span class="string">'x'</span>), R.assoc(<span class="string">'x'</span>));</span><br><span class="line">当执行完这一行时,</span><br><span class="line">xLens = <span class="function"><span class="keyword">function</span>(<span class="params">toFunctorFn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> map(</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">focus</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> R.assoc(<span class="string">'x'</span>)(focus, target);</span><br><span class="line">        &#125;,</span><br><span class="line">        toFunctorFn(R.prop(<span class="string">'x'</span>)(target))</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
-<p>同时也看下view的代码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig Lens s a -&gt; s -&gt; a</span><br><span class="line"> * @param &#123;Lens&#125; lens</span><br><span class="line"> * @param &#123;*&#125; x</span><br><span class="line"> * @<span class="keyword">return</span> &#123;*&#125;</span><br><span class="line"> * @see R.prop, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      <span class="keyword">const</span> xLens = R.lensProp(<span class="string">'x'</span>);</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; 1</span></span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">4</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; 4</span></span><br><span class="line"> *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">var view = _curry2(function view(lens, x) &#123;</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ Using `Const` effectively ignores the setter function of the `lens`,</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ leaving the value returned by the getter function unmodified.</span></span><br><span class="line"><span class="regexp">  return lens(Const)(x).value;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// `Const` is a functor that effectively ignores the function given to `map`.</span></span><br><span class="line"><span class="keyword">var</span> Const = <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;<span class="attr">value</span>: x, <span class="string">'fantasy-land/map'</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>; &#125;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="string">``</span><span class="string">`JavaScript</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> R.view(xLens, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> function(toFunctorFn) &#123;</span></span><br><span class="line"><span class="string">    return function(target) &#123;</span></span><br><span class="line"><span class="string">      return map(</span></span><br><span class="line"><span class="string">        function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, target);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        toFunctorFn(R.prop('x')(target))</span></span><br><span class="line"><span class="string">      );</span></span><br><span class="line"><span class="string">    &#125;;</span></span><br><span class="line"><span class="string">  &#125;; (Const)(x).vale</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  map(function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        Const(R.prop('x')(&#123;x: 1, y: 2&#125;)))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  map(function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        Const(1))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    1</span></span><br></pre></td></tr></table></figure>
-<p>Ramda里面有很多地方用到了这个函数_dispatchable</p>
+        <ol>
+<li><p>函数式接口里可以有继承自Object类的抽象方法.<br> 例:</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><p> 以上代码是合法的.</p>
+</li>
+<li><p>函数式接口的实例可以通过 lambda表达式, 方法引用 或者 构造方法引用 创建.</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyInterface myInterface = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">System.out.println(myInterface.getClass());</span><br><span class="line">System.out.println(myInterface.getClass().getSuperclass());</span><br><span class="line">System.out.println(myInterface.getClass().getInterfaces()[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+class sth.jdk8.Test2$$Lambda$2/1149319664
+class java.lang.Object
+interface sth.jdk8.MyInterface
+</code></pre><p> 可以看到这个函数式接口实例的父类是Object,它实现了接口MyInterface</p>
+<pre><code>通过方法引用创建函数式接口实例
+list.forEach(System.out::println);
+</code></pre></li>
+<li><p>方法引用的四种形式:<br>  类名::实例方法 所对应lambda表达式的第一个参数就是这个调用方法的对象</p>
+</li>
+<li><p>Function&lt;T, R&gt;接口<br> Represents a function that accepts one argument and produces a result.<br> 抽象方法:     R apply(T t);<br> 例:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, String&gt; function)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 默认方法: compose andThen<br> 静态方法: identity</p>
+<p> BiFunction&lt;T, U, R&gt;接口<br> 抽象方法: R apply(T t, U u);<br> 默认方法: <v> BiFunction&lt;T, U, V&gt; andThen(Function&lt;? super R, ? extends V&gt; after)</v></p>
+<p> 重要建议: equals方法 把常量放在前面,变量放在后面. 可以避免变量为null时引发的空指针异常</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Java8查漏补缺/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JavaScript教程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/JavaScript教程/">JavaScript教程</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/JavaScript教程/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>基本语法<br>    变量<br>        声明和赋值<br>            var a = 1;<br>            当只声明了变量,而没有赋值时 为 undefined</p>
+<pre><code>    变量没有类型,只有值有类型
+        var a = 42;
+        typeof a; // &quot;number&quot;
+
+        a = true;
+        typeof a; // &quot;boolean&quot;
+
+        typeof typeof 42; // &quot;string&quot;
+
+    变量提升
+        JavaScript引擎会先解析代码,获取所有被声明的变量.
+            console.log(a);
+            var a = 1;
+            //执行时相当于先声明了a,但是没有赋值,会打印出undefined
+
+标识符
+    第一个字符可以是任意Unicode字母,不能是数字, 包括 $ 和 _
+
+区块
+    对var来说,区块不构成单独的作用域
+    {
+        var a = 1;
+    }
+    a // 1
+
+逻辑控制
+    if else switch 三目运算符 while for do...while break continue 同 Java
+
+标签
+    通常和break,continue配合
+
+    top:
+        for (var i=0; i&lt;3; i++) {
+            for (var j=0; j&lt;3; j++) {
+                if (i===1 &amp;&amp; j===1) break top;
+            }
+        }
+    满足条件跳出双层循环. 如果不使用标签则只能跳出内层循环.
+</code></pre><p>数据类型<br>    number      整数和小数<br>    string<br>    boolean<br>    undefined<br>    null<br>    object<br>    symbol</p>
+<pre><code>typeof运算符
+    typeof 123 // &quot;number&quot;
+    typeof &quot;123&quot; // &quot;string&quot;
+    typeof false // &quot;boolean&quot;
+
+    函数 返回 function
+    function f() {}
+    typeof f // &quot;function&quot;
+
+    未定义变量 返回 undefined, 可以用来检测没有声明的变量
+    typeof undefined === &quot;undefined&quot;
+
+    typeof window // &quot;object&quot;
+    typeof {} // &quot;object&quot;
+    typeof [] // &quot;object&quot;
+
+    var o = {};
+    var a = [];
+
+    区分数组和对象
+    o instanceof Array //false
+    a instanceof Array //true
+
+
+    typeof null === &quot;object&quot; //这个是存在了20年的bug,应该返回null
+
+    检测null:
+        val a = null;
+        (!a &amp;&amp; typeof a === &quot;object&quot;) //true, null是假值, undefined也是假值
+
+    undefined == null //true
+
+    Number(null) //0
+    5 + null //5
+
+    Number(undefined) //NaN
+    5 + undefined // NaN
+
+    null表示空值
+    undefined表示未定义
+        1)变量声明了但没有赋值
+        2)调用函数时该提供的参数没有提供
+        3)对象没有该属性
+        4)函数没有返回值,默认返回 undefined
+
+
+布尔值
+    以下为false, 其他为true
+    undefined
+    null
+    false
+    0
+    NaN
+    &quot;&quot; 或 &apos;&apos;
+
+    空数组和空对象都是true
+
+数值
+    所有数值以64位浮点数形式存储,也就是说这个语言根本没有整数
+        1 === 1.0  true
+
+    浮点数不精确,所以
+        0.1 + 0.2 === 0.3  //false
+
+        0.3 / 0.1   //2.999999999
+
+        (0.3 - 0.2) === (0.2 - 0.1)  //false
+
+    64个二进制位: 第1位 符号位,
+                 第2位到第12位(共11位) 指数部分, 
+                 第13位到第64位(共52位) 小数部分.
+</code></pre><p>函数作用域:<br>     其它类C语言,一对花括号封闭的代码块就是一个作用域, JavaScript的作用域<br>     是通过函数来定义的.<br>     静态作用域,词法作用域,作用域的嵌套关系可以在语法分析时确定,而不必等到<br>     运行时确定.</p>
+<p>闭包:<br>    由函数及其封闭的自由变量组成的集合体.<br>    特性: 当一个函数返回它内部定义的一个函数时,就产生了闭包,闭包不但包括被返回的函数,<br>          还包括这个函数的定义环境.</p>
+<pre><code>用途: 实现嵌套的回调函数
+        由于闭包,即使外层函数已经执行完毕,其作用域内申请的变量也不会释放,因为里层
+        的函数还有可能引用到这些变量.
+     隐藏对象的细节
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/04/JavaScript教程/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Haskell实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/Haskell实现2048/">Haskell实现2048</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/Haskell实现2048/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Prelude hiding (Left, Right)</span><br><span class="line"><span class="keyword">import</span> Data.Char (toLower)</span><br><span class="line"><span class="keyword">import</span> Data.List</span><br><span class="line"><span class="keyword">import</span> System.IO</span><br><span class="line"><span class="keyword">import</span> System.Random</span><br><span class="line"><span class="keyword">import</span> Text.Printf</span><br><span class="line"><span class="keyword">import</span> System.Process</span><br><span class="line"></span><br><span class="line">data Move = Up | Down | Left | Right</span><br><span class="line">type Grid = [[Int]]</span><br><span class="line"></span><br><span class="line">start :: IO Grid</span><br><span class="line">start = do grid<span class="string">'  &lt;- addTile $ replicate 4 [0, 0, 0, 0]</span></span><br><span class="line"><span class="string">           addTile grid'</span></span><br><span class="line"></span><br><span class="line">merge :: [Int] -&gt; [Int]</span><br><span class="line">merge xs = merged ++ padding</span><br><span class="line">    where padding = replicate (length xs - length merged) <span class="number">0</span></span><br><span class="line">          merged  = combine $ filter (/= <span class="number">0</span>) xs</span><br><span class="line">          combine (x:y:xs) | x == y = x * <span class="number">2</span> : combine xs</span><br><span class="line">                           | otherwise = x  : combine (y:xs)</span><br><span class="line">          combine x = x</span><br><span class="line"></span><br><span class="line">move :: Move -&gt; Grid -&gt; Grid</span><br><span class="line">move Left  = map merge</span><br><span class="line">move Right = map (reverse . merge . reverse)</span><br><span class="line">move Up    = transpose . move Left  . transpose</span><br><span class="line">move Down  = transpose . move Right . transpose</span><br><span class="line"></span><br><span class="line">getZeroes :: Grid -&gt; [(Int, Int)]</span><br><span class="line">getZeroes grid = filter (\(row, col) -&gt; (grid!!row)!!col == 0) coordinates</span><br><span class="line">    where singleRow n = zip (replicate <span class="number">4</span> n) [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line">          coordinates = concatMap singleRow [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line"></span><br><span class="line">setSquare :: Grid -&gt; (Int, Int) -&gt; Int -&gt; Grid</span><br><span class="line">setSquare grid (row, col) val = pre ++ [mid] ++ post</span><br><span class="line">    where pre  = take row grid</span><br><span class="line">          mid  = take col (grid!!row) ++ [val] ++ drop (col + <span class="number">1</span>) (grid!!row)</span><br><span class="line">          post = drop (row + <span class="number">1</span>) grid</span><br><span class="line"></span><br><span class="line">isMoveLeft :: Grid -&gt; Bool</span><br><span class="line">isMoveLeft grid = sum allChoices &gt; <span class="number">0</span></span><br><span class="line">    where allChoices = map (length . getZeroes . flip move grid) directions</span><br><span class="line">          directions = [Left, Right, Up, Down]</span><br><span class="line"></span><br><span class="line">printGrid :: Grid -&gt; IO ()</span><br><span class="line">printGrid grid = do</span><br><span class="line">    system <span class="string">"cls"</span> -- clears the screen</span><br><span class="line">    mapM_ (putStrLn . showRow) grid</span><br><span class="line"></span><br><span class="line">showRow :: [Int] -&gt; String</span><br><span class="line">showRow = concatMap (printf <span class="string">"%5d"</span>)</span><br><span class="line"></span><br><span class="line">moves :: [(Char, Move)]</span><br><span class="line">moves = keys <span class="string">"wasd"</span> ++ keys <span class="string">"chtn"</span></span><br><span class="line">    where keys chars = zip chars [Up, Left, Down, Right]</span><br><span class="line"></span><br><span class="line">captureMove :: IO Move</span><br><span class="line">captureMove = do</span><br><span class="line">    inp &lt;- getChar</span><br><span class="line">    case lookup (toLower inp) moves of</span><br><span class="line">        Just x  -&gt; return x</span><br><span class="line">        Nothing -&gt; do putStrLn "Use WASD or CHTN as input"</span><br><span class="line">                      captureMove</span><br><span class="line"></span><br><span class="line">check2048 :: Grid -&gt; Bool</span><br><span class="line">check2048 grid = [] /= filter (== <span class="number">2048</span>) (concat grid)</span><br><span class="line">                </span><br><span class="line">addTile :: Grid -&gt; IO Grid</span><br><span class="line">addTile grid = do</span><br><span class="line">    let candidates = getZeroes grid</span><br><span class="line">    pick &lt;- choose candidates</span><br><span class="line">    val  &lt;- choose [<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>]</span><br><span class="line">    let new_grid = setSquare grid pick val</span><br><span class="line">    <span class="keyword">return</span> new_grid</span><br><span class="line"></span><br><span class="line">choose :: [a] -&gt; IO a</span><br><span class="line">choose xs = do</span><br><span class="line">    i &lt;- randomRIO (<span class="number">0</span>, length xs<span class="number">-1</span>)</span><br><span class="line">    <span class="keyword">return</span> (xs !! i)</span><br><span class="line"></span><br><span class="line">newGrid :: Grid -&gt; IO Grid</span><br><span class="line">newGrid grid = do</span><br><span class="line">    m &lt;- captureMove</span><br><span class="line">    let new_grid = move m grid</span><br><span class="line">    <span class="keyword">return</span> new_grid</span><br><span class="line"></span><br><span class="line">gameLoop :: Grid -&gt; IO ()</span><br><span class="line">gameLoop grid</span><br><span class="line">    | isMoveLeft grid = do</span><br><span class="line">        printGrid grid</span><br><span class="line">        <span class="keyword">if</span> check2048 grid</span><br><span class="line">        then putStrLn <span class="string">"You won!"</span></span><br><span class="line">        <span class="keyword">else</span> do new_grid &lt;- newGrid grid</span><br><span class="line">                <span class="keyword">if</span> grid /= new_grid</span><br><span class="line">                then do new &lt;- addTile new_grid</span><br><span class="line">                        gameLoop new</span><br><span class="line">                <span class="keyword">else</span> gameLoop grid</span><br><span class="line">    | otherwise = do</span><br><span class="line">        printGrid grid</span><br><span class="line">        putStrLn <span class="string">"Game over"</span></span><br><span class="line"></span><br><span class="line">main :: IO ()</span><br><span class="line">main = do</span><br><span class="line">    hSetBuffering stdin NoBuffering</span><br><span class="line">    grid &lt;- start</span><br><span class="line">    gameLoop grid</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Haskell//" class="article-tag-list-link color3">Haskell</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/04/Haskell实现2048/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Haskell里的Functor函子" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/Haskell里的Functor函子/">Haskell里的Functor函子</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/Haskell里的Functor函子/" class="archive-article-date">
+  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <pre><code class="haskell"><span class="keyword">import</span> Data.List
+<span class="keyword">import</span> Data.Char
+<span class="title">main</span> = <span class="keyword">do</span> line &lt;- fmap (intersperse '-' . reverse . map toUpper) getLine
+          putStrLn line
+          main
+</code></pre>
 
       
 
@@ -201,7 +573,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        			<a href="/categories/Haskell//" class="article-tag-list-link color3">Haskell</a>
         		</li>
       		
 		</ul>
@@ -210,342 +582,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/Ramda中的lens源码解读/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Array/">Array</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/Array/" class="archive-article-date">
-  	<time datetime="2019-04-02T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li><a href="https://leetcode.com/problems/move-zeroes/" target="_blank" rel="noopener">283. Move Zeroes</a><br>遍历数组时用一个索引idx存非零元素往前填充的位置<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">moveZeros</span><span class="params">(<span class="keyword">int</span> nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> (num != <span class="number">0</span>) &#123;</span><br><span class="line">            nums[idx++] = num;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (idx &lt; nums.length) &#123;</span><br><span class="line">        nums[idx++] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>2.<a href="https://leetcode.com/problems/reshape-the-matrix/" target="_blank" rel="noopener">566. Reshape the Matrix</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/Array/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-volatile&amp;synchronized&amp;Reentrantlock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/volatile&synchronized&Reentrantlock/">volatile&amp;synchronized&amp;Reentrantlock</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/volatile&synchronized&Reentrantlock/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>5.volatile<br>    缓存一致性协议: 保证了每个缓存中使用的共享变量的副本是一致的<br>        当CPU写数据时，如果发现操作的变量是共享变量，即在其他CPU中也存在该变量的副本，<br>        会发出信号通知其他CPU将该变量的缓存行置为无效状态，因此当其他CPU需要读取这个变量时，<br>        发现自己缓存中缓存该变量的缓存行是无效的，那么它就会从内存重新读取。</p>
-<pre><code>JMM: 并发编程的三个问题
-    原子性问题
-        一个操作或者多个操作,要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。
-    可见性问题
-        当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。
-    有序性问题
-        指令重排序不会影响单个线程的执行，但是会影响到线程并发执行的正确性。
-
-Java对这三个问题的解决方案
-    原子性
-        Java内存模型只保证了基本读取和赋值是原子性操作,如果要实现更大范围操作的原子性，可以通过synchronized和Lock来实现
-
-    可见性
-        Java提供了volatile关键字来保证可见性.当一个共享变量被volatile修饰时，它会保证修改的值会立即被更新到主存，
-        当有其他线程需要读取时，它会去内存中读取新值。
-
-        而普通的共享变量不能保证可见性，因为普通共享变量被修改之后，什么时候被写入主存是不确定的，
-        当其他线程去读取时，此时内存中可能还是原来的旧值，因此无法保证可见性。
-
-        通过synchronized和Lock也能够保证可见性，synchronized和Lock能保证同一时刻只有一个线程获取锁然后执行同步代码，
-        并且在释放锁之前会将对变量的修改刷新到主存当中。因此可以保证可见性。
-
-    有序性
-        通过volatile关键字来保证一定的“有序性”.  可以通过synchronized和Lock来保证有序性
-
-        Java内存模型具备一些先天的“有序性”，即不需要通过任何手段就能够得到保证的有序性，这个通常也称为 happens-before 原则
-            程序次序规则：一个线程内，按照代码顺序，书写在前面的操作先行发生于书写在后面的操作
-            锁定规则：一个unLock操作先行发生于后面对同一个锁lock操作
-            volatile变量规则：对一个变量的写操作先行发生于后面对这个变量的读操作
-            传递规则：如果操作A先行发生于操作B，而操作B又先行发生于操作C，则可以得出操作A先行发生于操作C
-            线程启动规则：Thread对象的start()方法先行发生于此线程的每个一个动作
-            线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生
-            线程终结规则：线程中所有的操作都先行发生于线程的终止检测，我们可以通过Thread.join()方法结束、Thread.isAlive()的返回值手段检测到线程已经终止执行
-            对象终结规则：一个对象的初始化完成先行发生于他的finalize()方法的开始
-
-volatile关键字的两层语义
-    保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。
-    禁止进行指令重排序。
-    (不保证原子性)
-
-        当程序执行到volatile变量的读操作或者写操作时，在其前面的操作的更改肯定全部已经进行，
-        且结果已经对后面的操作可见；在其后面的操作肯定还没有进行；
-
-        在进行指令优化时，不能将在对volatile变量访问的语句放在其后面执行，
-        也不能把volatile变量后面的语句放到其前面执行。
-
-volatile的原理和实现机制
-    加入volatile关键字时，会多出一个lock前缀指令
-    lock前缀指令实际上相当于一个内存屏障（也成内存栅栏），内存屏障会提供3个功能：
-    　　1）它确保指令重排序时不会把其后面的指令排到内存屏障之前的位置，也不会把前面的指令排到内存屏障的后面；即在执行到内存屏障这句指令时，在它前面的操作已经全部完成；
-    　　2）它会强制将对缓存的修改操作立即写入主存；
-    　　3）如果是写操作，它会导致其他CPU中对应的缓存行无效。
-
-使用volatile关键字的场景
-    对变量的写操作不依赖于当前值     该变量没有包含在具有其他变量的不变式中
-        可以被写入 volatile 变量的这些有效值独立于任何程序的状态，包括变量的当前状态。
-
-
-
-synchronized和reentrantlock异同
-
-    相同点
-        都实现了多线程同步和内存可见性语义
-        都是可重入锁
-    不同点
-        实现机制不同 
-            synchronized通过java对象头锁标记和Monitor对象实现 
-            synchronized依赖jvm内存模型保证包含共享变量的多线程内存可见性
-
-            reentrantlock通过CAS、ASQ（AbstractQueuedSynchronizer）和locksupport（用于阻塞和解除阻塞）实现 
-            reentrantlock通过ASQ的volatile state保证包含共享变量的多线程内存可见性
-
-        使用方式不同 
-            synchronized可以修饰实例方法（锁住实例对象）、静态方法（锁住类对象）、代码块（显式指定锁对象）
-            reentrantlock显式调用trylock()/lock()方法，需要在finally块中释放锁
-
-        功能丰富程度不同 
-            reentrantlock提供有限时间等候锁（设置过期时间）、可中断锁（lockInterruptibly）、condition（提供await、signal等方法）等丰富语义 
-            reentrantlock提供公平锁和非公平锁实现 synchronized不可设置等待时间、不可被中断（interrupted）            
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/并发编程//" class="article-tag-list-link color5">并发编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/volatile&synchronized&Reentrantlock/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-缓存进化史" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/缓存进化史/">缓存进化史</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/缓存进化史/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ol>
-<li>数据同步加Redis<br> 通过消息队列进行数据同步到Redis,用Java去取缓存.<br> 优点: 分布式缓存,数据更新快.<br> 缺点: 依赖Redis稳定性.</li>
-</ol>
-<p>2-3. Java Map到Guava cache<br>    进程内缓存作为一级缓存,Redis作为二级缓存.<br>    优点: 不受外部系统影响.<br>    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.</p>
-<ol start="4">
-<li><p>Guava Cache刷新<br> 设置写后刷新时间,进行刷新.</p>
-</li>
-<li><p>外部缓存异步刷新.</p>
-</li>
-</ol>
-<p>HashMap<br>    无法数据淘汰,内存会无限制增长.<br>    不需要淘汰机制时,使用HashMap做缓存.<br>LRUHashMap<br>    FIFO: 队列, 命中率不行.<br>    LRU: 最近最少使用算法, 每次访问数据放在队尾, 淘汰数据时直接淘汰队首. 不能保证热点数据存留.<br>    LFU: 最近最少频率使用, 利用额外的空间记录每个数据的使用频率,对频率最低的进行淘汰.</p>
-<pre><code>实现LRUMap: 继承LinkedHashMap,重写removeEldestEntry方法.
-缺点: 锁竞争严重,不支持过期时间,不支持自动刷新.
-</code></pre><p>Guava Cache<br>    分段锁: 锁太少竞争依然激烈, 锁太多会出现随机淘汰.根据一定的算法进行分段<br>    过期时间: expireAfterWrite 写后多久过期<br>             expireAfterAccess 读后多久过期<br>    虚引用: 两个引用队列, 记录被回收的引用，其中每个队列记录了每个被回收的Entry的hash，这样回收了之后通过这个队列中的hash值就能把以前的             Entry进行删除。<br>    删除监听器: 获取数据被淘汰的原因: 被用户删除, 被用户替代, 过期, 驱逐收集, 由于大小被淘汰.</p>
-<p>Caffeine<br>    W-TinyLfu(LFU+LRU算法变种)<br>    LFU只要数据访问模式中的概率分布随时间保持不变,命中率就非常高. 但难以淘汰某些过去访问量高,但现在访问量低的数据.<br>    基于时间周期进行衰减,使用额外空间记录数据访问频率.</p>
-<pre><code>频率记录
-    Count-Min Sketch记录访问频率, 布隆过滤器的变种.
-
-异步读写
-    使用RingBuffer
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/缓存进化史/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/04/Haskell里的Functor函子/">展开全文 >></a>
         </p>
       
 
@@ -577,7 +614,7 @@ synchronized和reentrantlock异同
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/21/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" href="/page/23/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/21/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/23/">Next &raquo;</a>
     </nav>
   
 

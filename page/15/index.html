@@ -151,210 +151,129 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-神秘的Scala implicit" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-es index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/神秘的Scala implicit/">神秘的Scala implicit</a>
+      <a class="article-title" href="/2019/04/27/es index/">es index</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/神秘的Scala implicit/" class="archive-article-date">
-  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/27/es index/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="神秘的Scala-implicit"><a href="#神秘的Scala-implicit" class="headerlink" title="神秘的Scala implicit"></a>神秘的Scala implicit</h1><h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><ul>
-<li>隐式值<br>  编译器会在方法省略隐式参数的情况下去搜索作用域内的隐式值作为缺少参数<br>  例: <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def person(implicit name: String) = name</span><br><span class="line">implicit val p = &quot;ramble&quot;</span><br><span class="line">person  // ramble</span><br></pre></td></tr></table></figure>
-</code></pre></li>
+        <ul>
+<li>创建索引</li>
 </ul>
+<pre><code>PUT /secisland
+{
+    &quot;settings&quot; : {
+        &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
+    }
+}
+三个主分片,两个副本分片
+</code></pre><ul>
+<li>修改副本分片的数量</li>
+</ul>
+<pre><code>PUT /secisland/_settings
+{
+    &quot;number_of_replicas&quot;: 1
+}
+</code></pre><ul>
+<li>创建自定义字段类型</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">PUT /secisland</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span> : &#123;</span><br><span class="line">       <span class="string">"number_of_shards"</span>: <span class="number">3</span>, <span class="string">"number_of_replicas"</span>: <span class="number">2</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"mappings"</span>: &#123;</span><br><span class="line">        <span class="string">"secilog"</span>: &#123;</span><br><span class="line">            <span class="string">"properties"</span>: &#123;</span><br><span class="line">                <span class="string">"logType"</span>: &#123;</span><br><span class="line">                    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">                    <span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /secisland/_mapping/secilog</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"properties"</span>: &#123;</span><br><span class="line">        <span class="string">"logType"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"string"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>创建了一个名为secilog的类型，类型中有一个字段，字段的名称是logType，
+字段的数据类型是string，而且这个字段是不进行分析的。
+// 创建失败,
+</code></pre><ul>
+<li>增加映射</li>
+</ul>
+<pre><code>PUT /secisland
+{
+    &quot;mappings&quot;: {
+        &quot;log&quot;: {
+            &quot;properties&quot;: {
+                &quot;message&quot;: {
+                    &quot;type&quot;: &quot;string&quot;
+                }
+            }
+        }
+    }
+}
+// 失败.
+</code></pre><p>_source属性内是原始json文档.</p>
+<p>type已过时.一个index中最好只有一种type</p>
 <ul>
-<li><p>隐式视图</p>
-<ol>
-<li><p>隐式转换为目标类型：把一种类型自动转换到另一种类型<br>例: </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def foo(msg: String) = println(msg)</span><br><span class="line">implicit def intToString(x: Int) = x.toString</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使对象调用类中本不存在的方法<br>例: </p>
- <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SwingType</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wantLearned</span></span>(sw: <span class="type">String</span>) = println(<span class="string">"兔子已经学会了"</span> + sw)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">swimming</span> </span>&#123;</span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">learningType</span></span>(s: <span class="type">AnimalType</span>) = <span class="keyword">new</span> <span class="type">SwingType</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AnimalType</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">AnimalType</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="keyword">import</span> swimming._</span><br><span class="line">    <span class="keyword">val</span> rabbit = <span class="keyword">new</span> <span class="type">AnimalType</span></span><br><span class="line">    rabbit.wantLearned(<span class="string">"蛙泳"</span>)  <span class="comment">//兔子已经学会了蛙泳</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
+<li>搜索</li>
 </ul>
-<ul>
-<li>隐式类</li>
+<pre><code>GET /megacorp/employee/_search
+</code></pre><ul>
+<li>轻量搜索</li>
 </ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/神秘的Scala implicit/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Redis-in-action" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Redis-in-action/">Redis in action</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Redis-in-action/" class="archive-article-date">
-  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Redis in action</p>
-<pre><code>4. 数据安全与性能保障
-    数据持久化到硬盘
-    数据复制到其他机器
-    处理系统故障
-    Redis事物
-    非事物型流水线
-    诊断性能问题
-
-    4.1 持久化选项
-        4.1.1 快照 snapshotting
-            将存在于某一时刻的所有数据都写入硬盘里面
-
-            如果新的快照文件创建完毕之前,Redis,系统或硬件这三者
-            之中的任意一个崩溃,那么Redis将丢失最近一次创建快照之后
-            写入的所有数据.
-            快照持久化只适用于即使丢失一部分数据也不会造成问题的应用程序
-
-            创建快照的方法:
-                客户端向Redis发送bgsave命令来创建一个快照.
-                Redis会调用fork来创建一个子进程,然后子进程负责
-                将快照写入硬盘,父进程继续处理命令请求
-
-                客户端向Redis发送save命令来创建一个快照.
-                Redis在创建完毕之前不再响应其他任何命令.
-                在没有足够内存的情况,或者等待持久化操作执行完毕
-                也无所谓的情况下 才会使用此命令.
-
-                如果用户设置了save配置选项.如save 60 10000
-                Redis从最近一次创建快照算起,当60秒之内有10000次
-                写入时,Redis自动触发bgsave
-
-                Redis接收到shutdown命令或者接收到标准TERM信号时,
-                会执行save命令.save完成后关闭.
-
-                当一个Redis服务器连接另一个Redis服务器,并向对方发送sync
-                命令来开始一次复制操作时,如果主服务器没有在执行bgsave,或者
-                并非刚刚执行完bgsave,那么主服务器会执行bgsave.
-
-            使用快照持久化的场景:
-                1.个人开发
-                    降低快照持久化带来的资源消耗.
-                    save 900 1
-                    如果距离上次生成快照超过900秒,并在此期间执行了至少
-                    一次写入操作.那么触发一次新的bgsave
-
-                2.对日志进行聚合计算
-                    恢复因故障而被中断的日志处理操作
-
-
-
-
-        4.1.2只追加文件 append-only file AOF
-            在执行写命令时,将被执行的写命令复制到硬盘里面.以记录数据的变化.
-            Redis只要从头到尾重新执行一次AOF文件包含的所有写命令,就可以
-            恢复AOF文件所记录的数据集.
-            appendonly yes
-            appendfsync选项:
-                always
-                everysec
-                no
-
-        4.1.3 重写/压缩AOF文件
-             bgrewriteaof命令会移除aof文件中的冗余命令并重写aof文件,
-             使aof文件体积尽量变小, 工作原理与bgsave相似
-
-    4.2复制
-        主服务器向多个从服务器发送更新,并使用从服务器来处理所有的读请求.
-
-        4.2.1  从服务器的配置
-                启动redis服务器时,指定一个包含slaveof host port的配置文件.
-                redis服务器会根据ip和端口来连接主服务器.
-
-                正在运行的redis服务器,可以发送slaveof no one命令使服务器
-                终止复制操作,不再接受主服务器的数据更新
-                发送 slaveof host port来让服务器开始复制一个新的主服务器.
-
-
-5.使用Redis构建支持程序
-    使用Redis记录日志
-    使用Redis实现计数器并进行数据统计
-    查询IP地址所属的城市和国家
-    服务的发现和配置
-
-6.使用Redis构建应用程序组件
-    构建两个前缀匹配自动补全程序
-
-
-    6.1 自动补全最近联系人
-
-
-8. 构建简单的社交网站
+<pre><code>GET /megacorp/_search?q=last_name:Smith
+</code></pre><ul>
+<li>查询表达式</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match&quot; : {
+            &quot;last_name&quot; : &quot;Smith&quot;
+        }
+    }
+}
+</code></pre><ul>
+<li>range过滤器</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;bool&quot;: {
+            &quot;must&quot;: {
+                &quot;match&quot; : {
+                    &quot;last_name&quot; : &quot;smith&quot; 
+                }
+            },
+            &quot;filter&quot;: {
+                &quot;range&quot; : {
+                    &quot;age&quot; : { &quot;lt&quot; : 30 } 
+                }
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>全文搜索</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match&quot; : {
+            &quot;about&quot; : &quot;rock climbing&quot;
+        }
+    }
+}    
+</code></pre><ul>
+<li>短语搜索, 精确匹配</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match_phrase&quot; : {
+            &quot;about&quot; : &quot;rock climbing&quot;
+        }
+    }
+}    
 </code></pre>
       
 
@@ -380,7 +299,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
         		</li>
       		
 		</ul>
@@ -389,7 +308,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Redis-in-action/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/es index/">展开全文 >></a>
         </p>
       
 
@@ -419,125 +338,119 @@
 
 
   
-    <article id="post-Scala实现并行框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-es doc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Scala实现并行框架/">Scala实现并行框架</a>
+      <a class="article-title" href="/2019/04/27/es doc/">es doc</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Scala实现并行框架/" class="archive-article-date">
-  	<time datetime="2019-04-05T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/27/es doc/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接收一个未求值的A,返回一个并行结果(传名函数)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//从并行结果里抽取结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//组合两个并行计算的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Par分配到另一个独立的逻辑线程中运行</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//派生组合子的一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazyUnit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = fork(unit(a))</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">Par</span>[<span class="type">A</span>] </span>= <span class="type">ExecutorService</span> =&gt; <span class="type">Future</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](s: <span class="type">ExecutorService</span>)(a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Future</span>[<span class="type">A</span>] = a(s)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Par</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = (es: <span class="type">ExecutorService</span>) =&gt; <span class="type">UnitFuture</span>(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitFuture</span>[<span class="type">A</span>](<span class="params">get: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Future</span>[<span class="type">A</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isDone</span> </span>= <span class="literal">true</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>(timeout: <span class="type">Long</span>, units: <span class="type">TimeUnit</span>) = get</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isCancelled</span> </span>= <span class="literal">false</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(evenIfRunning: <span class="type">Boolean</span>) : <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>] =</span><br><span class="line">        (es: <span class="type">ExecutorService</span>) =&gt; &#123;</span><br><span class="line">            <span class="keyword">val</span> af = a(es)</span><br><span class="line">            <span class="keyword">val</span> bf = b(es)</span><br><span class="line">            <span class="type">UnitFuture</span>(f(af.get, bf.getb))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>] =</span><br><span class="line">        es =&gt; es.submit(<span class="keyword">new</span> <span class="type">Callable</span>[<span class="type">A</span>] &#123;</span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">call</span> </span>= a(es).get</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Scala实现并行框架/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java里的for-in" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Java里的for-in/">Java里的for in</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Java里的for-in/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:42:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-         <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
-</blockquote>
-<blockquote>
-<p>答案: <code>没有</code></p>
-</blockquote>
-<p><i class="icon-reorder"></i>把for in 循环换成普通的for循环:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
-</blockquote>
-<blockquote>
-<p>答案: <code>是的</code></p>
-</blockquote>
-<blockquote>
-<p>由此可见: </p>
-<ul>
-<li><strong>for循环是值传导的,获取到的是原对象的拷贝.</strong></li>
-<li><strong>而数组索引就相当于指针,直接修改了内存中的值.</strong></li>
+        <ul>
+<li>新建文档</li>
 </ul>
-</blockquote>
-<p>所以自然地:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck java"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Arrays.stream(ele).map(e -&gt; e.inner).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-<p>当然是”fuck js”啦!</p>
-
+<pre><code>PUT /customer/_doc/1
+{
+&quot;name&quot;: &quot;John Doe&quot;
+}
+</code></pre><ul>
+<li>获取文档</li>
+</ul>
+<pre><code>GET /customer/_doc/1
+</code></pre><ul>
+<li>批量导入</li>
+</ul>
+<pre><code>curl -H &quot;Content-Type: application/json&quot; -XPOST &quot;localhost:9200/bank/_bulk?pretty&amp;refresh&quot; --data-binary &quot;@accounts.json&quot;
+curl &quot;localhost:9200/_cat/indices?v&quot;
+</code></pre><ul>
+<li>搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match_all&quot;: {}
+    },
+    &quot;sort&quot;: [
+        {
+            &quot;account_number&quot;: {
+                &quot;order&quot;: &quot;desc&quot;
+            }
+        }
+    ],
+    &quot;from&quot;: 10,
+    &quot;size&quot;: 10
+}
+from和size做分页
+</code></pre><ul>
+<li>匹配搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match&quot;: {
+            &quot;address&quot;: &quot;mill lane&quot;
+        }
+    }
+}    
+</code></pre><ul>
+<li>精确搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match_phrase&quot;: {
+            &quot;address&quot;: &quot;mill lane&quot;
+        }
+    }
+}
+</code></pre><ul>
+<li>must,should,must_not从句<br>  must: 文档必须完全匹配条件<br>  should: should下面会带一个以上的条件，至少满足一个条件，这个文档就符合should<br>  must_not: 文档必须不匹配条件</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;bool&quot;: {
+            &quot;must&quot;: [
+                {&quot;match&quot;: {&quot;age&quot;: &quot;40&quot;}}
+            ],
+            &quot;must_not&quot;: [
+                {&quot;match&quot;: {&quot;state&quot;: &quot;ID&quot;}}
+            ]
+        }
+    }
+}
+</code></pre><ul>
+<li>范围过滤器</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;bool&quot;: {
+            &quot;must&quot;: {&quot;match_all&quot;: {}},
+            &quot;filter&quot;: {
+                &quot;range&quot;: {
+                    &quot;balance&quot;: {
+                        &quot;gte&quot;: 20000,
+                        &quot;lte&quot;: 30000
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
       
 
       
@@ -545,13 +458,24 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
         		</li>
       		
 		</ul>
@@ -560,7 +484,387 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Java里的for-in/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/es doc/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Docker/">Docker</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Docker/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>利用Linux内核提供的namespace和CGroups为应用进程构架起沙箱和资源限制.<br>在沙箱容器中,应用拥有自己的设备文件,进程间通信环境,根文件系统,进程空间,<br>用户账户空间和网络资源空间.<br>进程级资源隔离, 秒级启动.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Docker//" class="article-tag-list-link color2">Docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Docker/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Elasticsearch速查手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Elasticsearch速查手册/">Elasticsearch</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Elasticsearch速查手册/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><p>创建库  </p>
+<pre><code>PUT http://127.0.0.1:9200/secisland
+</code></pre></li>
+<li><p>查看库状态    </p>
+<pre><code>GET http://127.0.0.1:9200/_cat/indices?v
+</code></pre></li>
+<li><p>插入数据</p>
+<pre><code>PUT http://127.0.0.1:9200/secisland/secilog/1
+参数:
+    {
+        &quot;computer&quot;: &quot;x1 carbon&quot;,
+        &quot;message&quot; : &quot;for coding&quot;
+    }
+</code></pre></li>
+<li><p>修改文档</p>
+<pre><code>POST http://127.0.0.1:9200/secisland/secilog/1/_update
+参数:
+    {
+        &quot;doc&quot;: {
+            &quot;computer&quot;: &quot;x1 carbon&quot;,
+            &quot;message&quot;: &quot;lenovo&quot;
+        }
+    }
+</code></pre></li>
+<li><p>查询文档</p>
+<pre><code>GET  http://127.0.0.1:9200/secisland/secilog/1/
+</code></pre></li>
+<li><p>删除文档</p>
+<pre><code>DELETE http://127.0.0.1:9200/secisland/secilog/1/
+</code></pre></li>
+<li><p>删除库</p>
+<pre><code>DELETE http://127.0.0.1:9200/secisland/
+</code></pre></li>
+</ul>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ul>
+<li><p>创建三个主分片,两个副本分片的索引</p>
+<pre><code>PUT http://127.0.0.1:9200/secisland/
+参数: 
+    {
+        &quot;settings&quot;: {
+            &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
+        }
+    }
+修改副本数量
+    PUT http://127.0.0.1:9200/secisland/_settings/
+    参数:
+     {
+        &quot;number_of_replicas&quot;: 1
+     }
+</code></pre></li>
+</ul>
+<p>创建自定义字段类型</p>
+<pre><code>PUT http://127.0.0.1:9200/secisland
+参数:
+    {
+        &quot;settings&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2},
+        &quot;mappings&quot;: {
+            &quot;secilog&quot;: 
+                {
+                    &quot;properties&quot;: 
+                        {
+                            &quot;logType&quot;: 
+                                {
+                                   &quot;type&quot;: &quot;text&quot;, 
+                                   &quot;index&quot;: &quot;not_analyzed&quot;
+                                }
+                        }
+                }
+            }
+    }
+</code></pre><h2 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h2><p>增加映射</p>
+<ul>
+<li><p>添加索引名为secisland, 文档类型为log, 其中包含字段message, 字段类型是字符串.</p>
+<pre><code>PUT http://127.0.0.1:9200/secisland/
+参数:
+{
+    &quot;mappings&quot;: {
+        &quot;log&quot;: {
+            &quot;properties&quot;: {
+                &quot;message&quot;: {&quot;type&quot;: &quot;text&quot;}
+            }
+        }
+    }
+}
+</code></pre></li>
+</ul>
+<ul>
+<li><p>向已存在的索引secisland添加文档类型为user, 包含字段name, 字段类型是keyword </p>
+<pre><code>PUT http://127.0.0.1:9200/secisland/_mapping/user
+  {
+      &quot;properties&quot;: {
+          &quot;name&quot;: {&quot;type&quot;: &quot;keyword&quot;}
+      }
+  }
+</code></pre></li>
+<li><p>多个索引设置映射</p>
+<pre><code>PUT http://127.0.0.1:9200/{index}/_mapping/{type}
+{body}
+</code></pre></li>
+<li><p>获取映射</p>
+<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog
+</code></pre></li>
+<li><p>获取字段映射</p>
+<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog/field/description
+
+只返回字段为description的内容.
+</code></pre></li>
+</ul>
+<h2 id="索引别名"><a href="#索引别名" class="headerlink" title="索引别名:"></a>索引别名:</h2><pre><code>类似数据库中的视图.
+</code></pre><ul>
+<li><p>为索引添加别名</p>
+<pre><code>PUT http://127.0.0.1:9200/_alias
+{
+    &quot;actions&quot;: {&quot;add&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
+}
+</code></pre></li>
+<li><p>删除别名</p>
+<pre><code>PUT http://127.0.0.1:9200/_alias
+{
+    &quot;actions&quot;: {&quot;remove&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
+}
+</code></pre></li>
+<li><p>创建过滤索引别名</p>
+<pre><code>PUT http://127.0.0.1:9200/_alias
+{
+    &quot;actions&quot;: {
+        &quot;add&quot;: {
+            &quot;index&quot;: &quot;test1&quot;, &quot;alias&quot;: &quot;alias2&quot;,
+            &quot;filter&quot;: {&quot;term&quot;: {&quot;user&quot;: &quot;ramble&quot;}}
+        }
+    }
+}
+</code></pre></li>
+</ul>
+<ul>
+<li><p>新建文档(不需要先创建索引)</p>
+<pre><code>PUT http://127.0.0.1:9200/blog/article/2 
+{
+    &quot;title&quot;: &quot;SB ES&quot;,
+    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
+    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
+}
+
+返回结果
+{
+    &quot;_index&quot;: &quot;blog&quot;,
+    &quot;_type&quot;: &quot;article&quot;,
+    &quot;_id&quot;: &quot;2&quot;,
+    &quot;_version&quot;: 1,
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;_shards&quot;: {
+        &quot;total&quot;: 2,
+        &quot;successful&quot;: 1,
+        &quot;failed&quot;: 0
+    },
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1
+}
+</code></pre><p>  再执行一次的话, _version, _seq_no会加一, result会变成updated</p>
+</li>
+<li><p>不指定id, ES会自动生成唯一标识符.(改用了POST方法,因为是更改而不是创建)</p>
+<pre><code>POST http://127.0.0.1:9200/blog/article
+{
+    &quot;title&quot;: &quot;SB ES&quot;,
+    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
+    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
+}
+返回结果
+{
+    &quot;_index&quot;: &quot;blog&quot;,
+    &quot;_type&quot;: &quot;article&quot;,
+    &quot;_id&quot;: &quot;_qm_l2sBFUlcgb1-d5N2&quot;,
+    &quot;_version&quot;: 1,
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;_shards&quot;: {
+        &quot;total&quot;: 2,
+        &quot;successful&quot;: 1,
+        &quot;failed&quot;: 0
+    },
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1
+}
+</code></pre></li>
+<li><p>检索文档</p>
+<pre><code>GET http://127.0.0.1:9200/blog/article/2 
+</code></pre></li>
+<li><p>更新文档</p>
+<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
+{
+    &quot;script&quot;: &quot;ctx._source.content = \&quot;new content\&quot;&quot;
+}
+只修改了content字段和version.
+</code></pre></li>
+</ul>
+<p>要更新索引中的文档, ES先获取文档,从_source属性获得数据,删除旧的<br>文件,更改_source属性,然后把它作为新的文档来索引.<br>信息一旦在Lucene的倒排索引中存储,就不能再被更改,ES通过一个带_update<br>参数的脚本来实现它.</p>
+<ul>
+<li><p>如果文档中没有该字段,使用upsert来提供该字段的默认值.</p>
+<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
+{
+    &quot;script&quot;: {
+        &quot;source&quot;: &quot;ctx._source.counter += params.count&quot;,
+        &quot;lang&quot;: &quot;painless&quot;,
+        &quot;params&quot;: {
+            &quot;count&quot;: 4
+        }
+    },
+    &quot;upsert&quot;: {&quot;counter&quot;: 0}
+}
+</code></pre></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Elasticsearch速查手册/">展开全文 >></a>
         </p>
       
 
@@ -592,7 +896,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
     </nav>
   
 

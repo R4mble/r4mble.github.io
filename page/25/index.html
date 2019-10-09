@@ -151,56 +151,120 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Weekly Contest 130" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-ramda中的lens源码解读" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Weekly Contest 130/">Weekly Contest 130</a>
+      <a class="article-title" href="/2019/04/03/ramda中的lens源码解读/">Ramda中的lens源码解读</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/Weekly Contest 130/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:01:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/03/ramda中的lens源码解读/" class="archive-article-date">
+  	<time datetime="2019-04-02T17:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1018-Binary-Prefix-Divisible-By-5"><a href="#1018-Binary-Prefix-Divisible-By-5" class="headerlink" title="1018. Binary Prefix Divisible By 5"></a><a href="https://leetcode.com/problems/binary-prefix-divisible-by-5/" target="_blank" rel="noopener">1018. Binary Prefix Divisible By 5</a></h1><h3 id="我想写对个东西怎么就这么难"><a href="#我想写对个东西怎么就这么难" class="headerlink" title="我想写对个东西怎么就这么难 -_-"></a>我想写对个东西怎么就这么难 -_-</h3><hr>
-<ol>
-<li>最开始的初始暴力想法: 把每个位置对应的数转化为题目中要求的数, 然后看是否能被5整除.<br> 简单的写了个双重循环后开始脑壳疼, 数组头部的边界条件不太好写啊, 不要然从后往前遍历.<br> 过于复杂了,看看别人的思路吧.</li>
-<li>这个规则是数组元素往二进制里面加, 思路就是就用左移并且把数组元素是0或1考虑进来.</li>
-<li> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">int</span> acc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : A) &#123;</span><br><span class="line">    acc = (acc &lt;&lt; <span class="number">1</span>) + i;</span><br><span class="line">    res.add(acc % <span class="number">5</span> == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res;</span><br></pre></td></tr></table></figure>
-<p> 按照别人的python解法仿照写的java代码,给的几个Example都没问题,点击Submit,失败.<br> 这种写法的确是符合正常思路,但是题目中给的数组长度是1到30000,而java的int只有2^31,<br> 所以int溢出了.<br> python还是爽啊,写代码跟着思路走就行,你只管岁月静好,自有动态类型替你负重前行.<br> 不过倔强的java程序员不会就此认输,悄悄地把取模移了上去: </p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">int</span> acc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : A) &#123;</span><br><span class="line">    acc = (acc * <span class="number">2</span> + i) % <span class="number">5</span>;</span><br><span class="line">    res.add(acc == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res;</span><br></pre></td></tr></table></figure>
-<p> 为什么敢移上去呢?就因为int装不下吗?并不:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">证明 (n * <span class="number">2</span> + <span class="number">1</span>) % <span class="number">5</span> 等于 ((n % <span class="number">5</span>) * <span class="number">2</span> + <span class="number">1</span>) % <span class="number">5</span></span><br><span class="line">因为</span><br><span class="line">    (a + b) % p = (a % p + b % p) % p</span><br><span class="line">    (a * b) % p = (a % p * b % p) % p</span><br><span class="line">    a % p == a % p % p</span><br><span class="line">所以</span><br><span class="line">    左边 = ((n * <span class="number">2</span>) % <span class="number">5</span> + <span class="number">1</span> % <span class="number">5</span>) % <span class="number">5</span></span><br><span class="line">        = ((((n % <span class="number">5</span>) * <span class="number">2</span>) % <span class="number">5</span>) + <span class="number">1</span>) % <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    右边 = 左边</span><br></pre></td></tr></table></figure>
-<p> 嗯…不知道这儿又可以引发多少对两种语言的思考.</p>
-</li>
-<li><p>写java的过程中同时又踩了其他的坑—–运算符优先级:<br> 乘除取模 &gt; 加减 &gt; 移位 &gt; 按位或<br> 所以 </p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">acc &lt;&lt; <span class="number">1</span> + a 问题很大</span><br><span class="line">acc &lt;&lt; <span class="number">1</span> | a 还ok</span><br><span class="line">acc &lt;&lt; <span class="number">1</span> | a % <span class="number">5</span> 问题很大</span><br></pre></td></tr></table></figure>
-</code></pre><p> 多写括号可破:</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((acc &lt;&lt; <span class="number">1</span>) | a) % <span class="number">5</span></span><br></pre></td></tr></table></figure>
-</code></pre></li>
-<li><p>从移位来考虑应当是 acc &lt;&lt; 1 | a<br> 从二进制转十进制的阶数来考虑是 acc * 2 + 1<br> 两种写法杂糅在一起感觉有些奇怪</p>
+        <p>先上源码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig (s -&gt; a) -&gt; ((a, s) -&gt; s) -&gt; Lens s a</span><br><span class="line"> * @param &#123;<span class="built_in">Function</span>&#125; getter</span><br><span class="line"> * @param &#123;<span class="built_in">Function</span>&#125; setter</span><br><span class="line"> * @<span class="keyword">return</span> &#123;Lens&#125;</span><br><span class="line"> * @see R.view, R.set, R.over, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      <span class="keyword">const</span> xLens = R.lens(R.prop(<span class="string">'x'</span>), R.assoc(<span class="string">'x'</span>));</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);            <span class="comment">//=&gt; 1</span></span><br><span class="line"> *      R.set(xLens, <span class="number">4</span>, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);          <span class="comment">//=&gt; &#123;x: 4, y: 2&#125;</span></span><br><span class="line"> *      R.over(xLens, R.negate, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; &#123;x: -1, y: 2&#125;</span></span><br><span class="line"> *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">var lens = _curry2(function lens(getter, setter) &#123;</span></span><br><span class="line"><span class="regexp">  return function(toFunctorFn) &#123;</span></span><br><span class="line"><span class="regexp">    return function(target) &#123;</span></span><br><span class="line"><span class="regexp">      return map(</span></span><br><span class="line"><span class="regexp">        function(focus) &#123;</span></span><br><span class="line"><span class="regexp">          return setter(focus, target);</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        toFunctorFn(getter(target))</span></span><br><span class="line"><span class="regexp">      );</span></span><br><span class="line"><span class="regexp">    &#125;;</span></span><br><span class="line"><span class="regexp">  &#125;;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure></p>
+<p>不得不说这文档写的真棒,我好了.<br>使用代换模型人肉解析:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> xLens = R.lens(R.prop(<span class="string">'x'</span>), R.assoc(<span class="string">'x'</span>));</span><br><span class="line">当执行完这一行时,</span><br><span class="line">xLens = <span class="function"><span class="keyword">function</span>(<span class="params">toFunctorFn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> map(</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">focus</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> R.assoc(<span class="string">'x'</span>)(focus, target);</span><br><span class="line">        &#125;,</span><br><span class="line">        toFunctorFn(R.prop(<span class="string">'x'</span>)(target))</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>同时也看下view的代码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig Lens s a -&gt; s -&gt; a</span><br><span class="line"> * @param &#123;Lens&#125; lens</span><br><span class="line"> * @param &#123;*&#125; x</span><br><span class="line"> * @<span class="keyword">return</span> &#123;*&#125;</span><br><span class="line"> * @see R.prop, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      <span class="keyword">const</span> xLens = R.lensProp(<span class="string">'x'</span>);</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; 1</span></span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">4</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; 4</span></span><br><span class="line"> *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">var view = _curry2(function view(lens, x) &#123;</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ Using `Const` effectively ignores the setter function of the `lens`,</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ leaving the value returned by the getter function unmodified.</span></span><br><span class="line"><span class="regexp">  return lens(Const)(x).value;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// `Const` is a functor that effectively ignores the function given to `map`.</span></span><br><span class="line"><span class="keyword">var</span> Const = <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;<span class="attr">value</span>: x, <span class="string">'fantasy-land/map'</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>; &#125;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="string">``</span><span class="string">`JavaScript</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> R.view(xLens, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> function(toFunctorFn) &#123;</span></span><br><span class="line"><span class="string">    return function(target) &#123;</span></span><br><span class="line"><span class="string">      return map(</span></span><br><span class="line"><span class="string">        function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, target);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        toFunctorFn(R.prop('x')(target))</span></span><br><span class="line"><span class="string">      );</span></span><br><span class="line"><span class="string">    &#125;;</span></span><br><span class="line"><span class="string">  &#125;; (Const)(x).vale</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  map(function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        Const(R.prop('x')(&#123;x: 1, y: 2&#125;)))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  map(function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        Const(1))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    1</span></span><br></pre></td></tr></table></figure>
+<p>Ramda里面有很多地方用到了这个函数_dispatchable</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/03/ramda中的lens源码解读/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/Array/">Array</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/Array/" class="archive-article-date">
+  	<time datetime="2019-04-02T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><a href="https://leetcode.com/problems/move-zeroes/" target="_blank" rel="noopener">283. Move Zeroes</a><br>遍历数组时用一个索引idx存非零元素往前填充的位置<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">moveZeros</span><span class="params">(<span class="keyword">int</span> nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> (num != <span class="number">0</span>) &#123;</span><br><span class="line">            nums[idx++] = num;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (idx &lt; nums.length) &#123;</span><br><span class="line">        nums[idx++] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<h1 id="1017-Convert-to-Base-2"><a href="#1017-Convert-to-Base-2" class="headerlink" title="1017. Convert to Base -2"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/convert-to-base-2/" target="_blank" rel="noopener">1017. Convert to Base -2</a></h1><p>考虑十进制到二进制的转换:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">base2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    String res = <span class="string">";</span></span><br><span class="line"><span class="string">    while (N != 0) &#123;</span></span><br><span class="line"><span class="string">        res = Integer.toString(N &amp; 1) + res;</span></span><br><span class="line"><span class="string">        N = N &gt;&gt; 1;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    return res == "</span><span class="string">" ? "</span><span class="number">0</span><span class="string">" : res;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></p>
-<p>每次把最后一位二进制数留下来,组成一个二进制字符串.<br>对于负二进制:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">baseNeg2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    String res = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">while</span> (N != <span class="number">0</span>) &#123;</span><br><span class="line">        res = Integer.toString(N &amp; <span class="number">1</span>) + res;</span><br><span class="line">        N = -(N &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res == <span class="string">""</span> ? <span class="string">"0"</span> : res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>对于String的优化:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">baseNeg2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    StringBuilder res = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">while</span> (N != <span class="number">0</span>) &#123;</span><br><span class="line">        res.insert(<span class="number">0</span>, Integer.toString(N &amp; <span class="number">1</span>));</span><br><span class="line">        N = -(N &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.toString().equals(<span class="string">""</span>) ? <span class="string">"0"</span> : res.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="1019-Next-Greater-Node-In-Linked-List"><a href="#1019-Next-Greater-Node-In-Linked-List" class="headerlink" title="1019. Next Greater Node In Linked List"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/next-greater-node-in-linked-list/" target="_blank" rel="noopener">1019. Next Greater Node In Linked List</a></h1><p>考查对于链表,栈,数组,线性表的组合使用.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">先把链表的东西都存到线性表来.</span><br><span class="line">遍历线性表的同时</span><br><span class="line">    若栈不为空 且 当前遍历的线性表的值a大于栈顶索引对应的值b,</span><br><span class="line">        则将要返回的数组的a项设置为b,同时出栈.</span><br><span class="line">    否则</span><br><span class="line">        把当前遍历的索引入栈.</span><br><span class="line">```         </span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">public int[] nextLargerNodes(ListNode head) &#123;</span><br><span class="line">    ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">    while (head != null) &#123;</span><br><span class="line">        list.add(head.val);</span><br><span class="line">        head = head.next;</span><br><span class="line">    &#125;</span><br><span class="line">    int[] res = new int[list.size()];</span><br><span class="line">    Stack[Integer] stack = new Stack&lt;&gt;();</span><br><span class="line">    for (int i=0; i&lt;list.size(); i++) &#123;</span><br><span class="line">        while (!stack.isEmpty() &amp;&amp; list.get(i) &gt; list.get(stack.peek())) &#123;</span><br><span class="line">            res[stack.pop()] = list.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">        stack.push(i);</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="1020-Number-of-Enclaves"><a href="#1020-Number-of-Enclaves" class="headerlink" title="1020. Number of Enclaves"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/number-of-enclaves/" target="_blank" rel="noopener">1020. Number of Enclaves</a></h1><p>神奇的dfs,关键在于构造递归结构,入参,返回值以及终止条件.</p>
-<ol>
-<li>遍历整个二维数组,只对在边上的行列进行dfs</li>
-<li>将可以被边上索引到的1都变为0.</li>
-<li>统计二维数组中剩余的1.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numEnclaves</span><span class="params">(<span class="keyword">int</span>[][] A)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;A.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;A[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i==<span class="number">0</span> || j==<span class="number">0</span> || i==A.length-<span class="number">1</span> || j==A[<span class="number">0</span>].length-<span class="number">1</span>) &#123;</span><br><span class="line">                dfs(A, i, j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;A.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;A[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (A[i][j] == <span class="number">1</span>) &#123;</span><br><span class="line">                result++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[][] a, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (i&gt;=<span class="number">0</span> &amp;&amp; i&lt;a.length &amp;&amp; j&gt;=<span class="number">0</span> &amp;&amp; j&lt;a[<span class="number">0</span>].length &amp;&amp; a[i][j]==<span class="number">0</span>) &#123;</span><br><span class="line">        a[i][j] = <span class="number">0</span>;</span><br><span class="line">        dfs(a, i+<span class="number">1</span>, j);</span><br><span class="line">        dfs(a, i-<span class="number">1</span>, j);</span><br><span class="line">        dfs(a, i, j+<span class="number">1</span>);</span><br><span class="line">        dfs(a, i, j-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
+<p>2.<a href="https://leetcode.com/problems/reshape-the-matrix/" target="_blank" rel="noopener">566. Reshape the Matrix</a></p>
 
       
 
@@ -235,7 +299,320 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/Weekly Contest 130/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/Array/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-WebSocket" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/WebSocket/">WebSocket</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/WebSocket/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>相关技术<br>    向客户端广播或者推送消息: Server-Sent Event(SSE),提供自动重连,事件ID等功能.<br>    扩充HTTP的网络协议: SPDY, 压缩HTTP首标,多路复用,工作管道.<br>    Web实时通信: Web Real-Time Communication(WebRTC)浏览器之间实时通信,实时语音和视频聊天.</p>
+<p>WebSocket<br>    事件驱动,异步编程,支持二进制数据和文本数据.    </p>
+<pre><code>构造函数: URL和protocols
+    URL可以是ws或wss, 分别用于非加密和加密流量.wss使用SSL,就是HTTPS的安全机制来保证.
+    protocols可以是XMPP,SOAP,自定义协议等.客户端定义通信协议,服务器选择一种.
+
+    客户发送带有协议名称的Sec-WebSocket-Protocol首标,服务器响应一个带有和客户请求相同的
+    协议名称的Sec-WebSockt-Protocol首标.
+
+WebSocket事件:
+    open, message, error, close
+
+二进制数据类型: ws.binaryType: Blob(多媒体文件,图像,视频,音频), ArrayBuffer(Uint8Array)
+
+WebSocket方法
+    send()
+        onopen之后,onclose之前.  当连接不可用时,抛出一个有关无效连接状态的异常.
+    close()
+        终止连接, 可选参数: code(数字型状态码), reason(文本字符串)
+
+WebSocket对象特性 
+    readyState
+        0: WebSocket.CONNECTING
+        1: WebSocket.OPEN
+        2: WebSocket.CLOSING
+        3: WebSocket.CLOSED
+    bufferedAmount
+        检查已进入队列,但尚未发送到服务器的字节数,不包括协议组帧开销或操作系统,网络硬件所进行的缓冲.
+        可以限制应用向服务器发送的速率,避免网络饱和.
+        关闭连接前也可以检查,看是否还有数据没有发送到服务器.
+    protocol
+        服务器选择的协议名,在握手完成之前为空.
+
+WebSocket初始握手
+    客户端:
+        GET /echo /HTTP/1.1
+        Host: echo.websocket.org
+        Origin: http://www.websocket.org
+        Sec-WebSocket-Key: ah43rfdidajureqf
+        Sec-WebSocket-Version: 13
+        Upgrade: websocket
+    服务器:
+        101 Switching Protocols
+        Connection: Upgrade
+        Date: Wed, 20 Jun 2012 03:23:13 GMT
+        Sec-WebSocket-Accepct: da+fdlfskjoewi
+        Server: Kaazing Gateway
+        Upgrade: WebSocket
+
+    计算响应键值
+        WebSocket服务器响应一个计算出来的键值,从客户端发送的Sec-WebSocket-Key首标中
+        取得键值,在Sec-WebSocket-Accepct首标中返回根据客户端预期计算的键值.
+
+消息格式
+</code></pre><p>消息和帧</p>
+<ol start="26">
+<li><p>Spring对WebSocket的支持<br>26.1 介绍<br>26.2 服务端的Spring WebSocket API</p>
+<pre><code>WebSocketHandler接口: WebSocket消息和生命周期事件处理器.
+    void afterConnectionEstablished(WebSocketSession session) throws Exception;
+        在WebSocket协定成功并且连接建立准备好使用时执行
+    void handleMessage(WebSocketSession session, WebSocketMessage&lt;?&gt; message) throws Exception;
+        在新消息到达时执行
+    void handleTransportError(WebSocketSession session, Throwable exception) throws Exception;
+        处理WebSocket消息传输下层错误  
+    void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception;            
+        连接关闭或者发生传输错误时执行.
+    boolean supportsPartialMessages();
+        WebSocketHandler是否处理部分消息.
+
+AbstractWebSocketHandler抽象类: 重写了handleMessage()方法,将三种message分配给三个新建的处理方法.
+                               重写了supportsPartialMessages()方法, 直接返回false
+                               其它的都是空实现.
+
+BinaryWebSocketHandler和TextWebSocketHandler:
+    继承自AbstractWebSocketHandler, 重写对方的消息处理方法, 关闭会话.                             
+
+WebSocketSession接口: WebSocket会话抽象,允许在WebSocket连接之上发送消息然后关闭它.
+    String getId();                          返回会话的独特标识符
+    URI getUri();                            返回建立WebSocket连接的URI
+    HttpHeaders getHandshakeHeaders();       返回握手请求中使用的Headers
+    Map&lt;String, Object&gt; getAttributes();     返回WebSocket会话属性
+    Principal getPrincipal();                返回包含已认证用户的姓名的Principal实例,如果用户未认证,返回null.
+    InetSocketAddress getLocalAddress();     返回请求被接受的地址
+    InetSocketAddress getRemoteAddress();    返回远程客户端的地址
+    String getAcceptedProtocol();            返回协定的子协议
+    void setTextMessageSizeLimit(int messageSizeLimit); 配置接收文本消息的最大值
+    int getTextMessageSizeLimit();           获取已配置的接收文本消息的最大值
+    void setBinaryMessageSizeLimit(int messageSizeLimit); 配置接收二进制消息的最大值
+    int getBinaryMessageSizeLimit();         获取已配置的接收二进制消息的最大值
+    List&lt;WebSocketExtension&gt; getExtensions(); 确定协定的拓展
+    void sendMessage(WebSocketMessage&lt;?&gt; message) throws IOException; 发送WebSocket消息.
+    boolean isOpen();                         返回连接是否依然开放
+    void close() throws IOException;          以1000的状态码关闭WebSocket连接(CloseStatus.NORMAL)
+    void close(CloseStatus status) throws IOException; 以给定的的状态码关闭WebSocket连接
+
+WebSocketMessage&lt;T&gt;接口: 可以在WebSocket连接上处理和发送的消息
+    T getPayload();             返回消息的负载
+    int getPayloadLength();     返回消息字节数
+    boolean isLast();           如果当前消息是客户端发送的完整的WebSocket消息的最后一部分,返回true.
+                                如果部分消息支持不可用或者未开启,返回false
+
+WebSocketConfigurer接口: 定义回调方法来配置WebSocket的请求处理.
+    void registerWebSocketHandlers(WebSocketHandlerRegistry registry);
+        注册WebSocketHandler
+
+WebSocketHandlerRegistry接口: 提供配置WebSocketHandler请求映射的方法.
+    WebSocketHandlerRegistration addHandler(WebSocketHandler webSocketHandler, String... paths);
+        在指定的URL路径上配置WebSocketHandler
+
+WebSocketHandlerRegistration接口: 提供配置WebSocket Handler的方法.
+    WebSocketHandlerRegistration addHandler(WebSocketHandler handler, String... paths);
+        添加共享相同配置(interceptors,SockJS,config)的handler.
+    WebSocketHandlerRegistration setHandshakeHandler(HandshakeHandler handshakeHandler);
+        配置HandshakeHandler
+    WebSocketHandlerRegistration addInterceptors(HandshakeInterceptor... interceptors);
+        配置握手请求的拦截器
+    WebSocketHandlerRegistration setAllowedOrigins(String... origins);
+        配置被允许的header值
+    SockJsServiceRegistration withSockJS();
+        开启SockJS fallback选项
+</code></pre><p>26.4 STOMP协议的介绍,配置,常用注解,测试</p>
+<pre><code>WebSocket子协议,定义可以发送的消息类型,格式和内容.面向文本的协议,但是消息负载可以是文本也可以是二进制.
+基于帧的协议,帧结构:
+    COMMAND
+    header1:value1
+    header2:value2
+
+    Body^@
+客户端可以使用SEND或者SUBSCRIBE命令来发送或者订阅消息,同时使用destination的header来描述消息的相关信息和
+接收地址.
+</code></pre></li>
+</ol>
+<pre><code>        Message&lt;T&gt;接口: 有headers和body的通用消息表示.
+            T getPayload();                 返回消息负载
+            MessageHeaders getHeaders();    返回消息headers
+        MessageSendingOperations接口: 发送消息到目标的操作.
+            void send(Message&lt;?&gt; message) throws MessagingException;
+                发送消息到默认目标
+            void send(D destination, Message&lt;?&gt; message) throws MessagingException;
+                发送消息到给定目标
+            void convertAndSend(Object payload) throws MessagingException;
+                转换后发送
+
+        常用注解:
+            @EnableWebSocketMessageBroker: 在WebSocket之上使用高级的消息子协议开启broker-backed消息
+            @MessageMapping: 映射Message到消息处理方法上.
+            @SendTo
+
+        常用接口和类:
+            WebSocketMessageBrokerConfigurer接口: 定义在WebSocket客户端使用STOMP消息处理的方法.
+                default void registerStompEndpoints(StompEndpointRegistry registry) {}
+                    注册STOMP端点到指定的URL
+
+            StompEndpointRegistry接口: 在WebSocket端点之上注册STOMP
+            StompWebSocketEndpointRegistration接口: 在WebSocket端点之上配置STOMP
+            SimpMessagingTemplate类: STOMP消息发送器
+
+STOMP
+    SEND帧:
+        SEND
+            destination:/queue/trade
+            content-type:application/json
+            content-length:44
+
+            {&quot;action&quot;:&quot;BUY&quot;,&quot;ticker&quot;:&quot;MMM&quot;,&quot;shares&quot;,44}^@
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/WebSocket/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-汉诺塔问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/汉诺塔问题/">汉诺塔问题</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/汉诺塔问题/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>看&lt;&lt;七周七Web框架&gt;&gt;的时候里面提到了这个问题,突然想看看怎么解决它.<br>当A有两个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C<br>当A有三个盘子,则:<br>    1 -&gt; C, 2 -&gt; B, 1 -&gt; B, 3 -&gt; C, 1 -&gt; A, 2 -&gt; C, 1 -&gt; C<br>当A有四个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C, 3 -&gt; B, 1 -&gt; A, 2 -&gt; B, 1 -&gt; B, 4 -&gt; C 然后就是三个盘子的问题</p>
+<p>Java实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Hanoi().hanoi(<span class="number">5</span>, <span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b, <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            hanoi(n - <span class="number">1</span>, a, c, b);</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">            hanoi(n - <span class="number">1</span>, b, a, c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b)</span> </span>&#123;</span><br><span class="line">        count++;</span><br><span class="line">        System.out.println(<span class="string">"第"</span> + count + <span class="string">"次: "</span> + n + <span class="string">"号盘子从"</span> + a + <span class="string">"移动到"</span> + b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/汉诺塔问题/">展开全文 >></a>
         </p>
       
 
@@ -267,7 +644,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span>
+      <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/26/">Next &raquo;</a>
     </nav>
   
 

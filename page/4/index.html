@@ -151,27 +151,46 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-深究Spring系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-精通Redis系列 (3) - 压缩列表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/">深究Spring系列 (0) - 写在前面的话</a>
+      <a class="article-title" href="/2019/09/19/精通Redis系列 (3) - 压缩列表/">精通Redis系列 (3) - 压缩列表</a>
     </h1>
   
 
         
-        <a href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
+        <a href="/2019/09/19/精通Redis系列 (3) - 压缩列表/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Spring工程师的自我修养</p>
+        <p>ziplist<br>当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.<br>列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合.</p>
+<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">zlbytes</th>
+<th style="text-align:center">zltail</th>
+<th style="text-align:center">zllen</th>
+<th style="text-align:center">entry</th>
+<th style="text-align:center">zlend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>zlbytes: 压缩列表的字节长度,占4个字节<br>zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节<br>zllen: 压缩列表的元素个数, 占2个字节<br>extry: 压缩列表存储的元素,可以是字节数组或者整数,长度不限.<br>zlend: 压缩列表的结尾, 占1个字节, 为 0xFF</p>
+<p>char* zl指向压缩列表首地址,通过以下宏命令实现压缩列表各个字段的存取<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Return total bytes a ziplist is composed of. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the offset of the last item inside the ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof(uint32_t))))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the length of a ziplist, or UINT16_MAX if the length cannot be</span></span><br><span class="line"><span class="comment"> * determined without scanning the whole ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_LENGTH(zl)      (*((uint16_t*)((zl)+sizeof(uint32_t)*2)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The size of a ziplist header: two 32 bit integers for the total</span></span><br><span class="line"><span class="comment"> * bytes count and last item offset. One 16 bit integer for the number</span></span><br><span class="line"><span class="comment"> * of items field. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_HEADER_SIZE     (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Size of the "end of ziplist" entry. Just one byte. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_END_SIZE        (sizeof(uint8_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the first entry of a ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_HEAD(zl)  ((zl)+ZIPLIST_HEADER_SIZE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last entry of a ziplist, using the</span></span><br><span class="line"><span class="comment"> * last entry offset inside the ziplist header. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_TAIL(zl)  ((zl)+intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last byte of a ziplist, which is, the</span></span><br><span class="line"><span class="comment"> * end of ziplist FF entry. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_END(zl)   ((zl)+intrev32ifbe(ZIPLIST_BYTES(zl))-1)</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="压缩列表元素的存储"><a href="#压缩列表元素的存储" class="headerlink" title="压缩列表元素的存储"></a>压缩列表元素的存储</h3><p>| previous_entry_length | encoding | content |<br>| :—-: | :—-: | :—-: |</p>
 
       
 
@@ -186,7 +205,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -195,7 +214,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (3) - 压缩列表/">展开全文 >></a>
         </p>
       
 
@@ -225,127 +244,52 @@
 
 
   
-    <article id="post-小红书系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-精通Redis系列 (2) - 跳跃表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/14/小红书系列 (0) - 写在前面的话/">小红书系列 (0) - 写在前面的话</a>
+      <a class="article-title" href="/2019/09/19/精通Redis系列 (2) - 跳跃表/">精通Redis系列 (2) - 跳跃表</a>
     </h1>
   
 
         
-        <a href="/2019/09/14/小红书系列 (0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
+        <a href="/2019/09/19/精通Redis系列 (2) - 跳跃表/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>小红书指的是&lt;&lt;Scala函数式编程&gt;&gt;这本书.<br>之前断断续续读了很久,抄了很多乱七八糟的代码,写这个系列来总结一下.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/14/小红书系列 (0) - 写在前面的话/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-小红书系列 (1) - 函数式编程初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/14/小红书系列 (1) - 函数式编程初探/">小红书系列 (1) - 函数式编程初探</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/14/小红书系列 (1) - 函数式编程初探/" class="archive-article-date">
-  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="什么是函数式编程"><a href="#什么是函数式编程" class="headerlink" title="什么是函数式编程?"></a>什么是函数式编程?</h2><p>如果非要用一个词来描述这种思想, 我大概会用”连续运算”. </p>
-<p>底层结构决定上层逻辑, 在冯·诺依曼体系中, 运算数先放到寄存器里, 再参与CPU运算. 因此在代码中的编程习惯往往是: 使用中间变量存储一步运算的结果值, 然后继续使用中间变量参与运算.</p>
-<p>而在阿隆左·丘奇的Lambda计算模型中: 接收输入, 产生输出, 输出的结果即时下一个运算的输入, 在连续运算的过程中不需要中间变量来”寄存”.</p>
-<p>当你在Java中写了很大一串连续运算的代码时, 你有可能会被同事吐槽”代码有鲜明的个人特色”. 通常在Java这种工业合作语言中, 不被建议写连续运算的主要原因是: </p>
+        <p>核心思想: 有序链表分层, 空间换时间<br>性质:</p>
 <ol>
-<li>代码写成一坨不清晰易读. </li>
-<li>不方便Bug排查. </li>
+<li>头结点中有一个64层结构, 每层结构包含指向本层的下个节点的指针, 指向本层下个节点中间所跨越的节点个数为本层的跨度.</li>
+<li>除头结点外, 层数最多的节点的层高为跳跃表的高度,</li>
+<li>每一层都是有序链表, 数据递增</li>
+<li>除头结点外, 一个元素在上层有序链表中出现, 一定会在下层有序链表中出现.</li>
+<li>跳跃表每层最后一个节点指向Null, 表示本层有序链表的结束</li>
+<li>跳跃表有一个tail指针, 指向跳跃吧的最后一个节点.</li>
+<li>最底层的有序链表包含所有节点, 最底层的节点个数为跳跃表的长度(不包括头节点)</li>
+<li>每个节点包含一个后退指针, 头结点和第一个节点指向Null</li>
 </ol>
-<p>前者还好说, 可以通过换行排版等方式让它变得清晰. 后者就是阻碍你一口气写完代码的死穴了, 因为谁也不知道这一串连续计算中哪里会出个问题, Kibana报个空指针, 然后翻代码到这一行看到一万个操作不知道哪里出的问题, 排查问题的同事估计想给你一刀.</p>
-<p>有意思的是Java8引入的函数式编程, 在对集合的操作中是鼓励链式操作的, 也就是连续运算. 同时它也提供了Option来做错误处理. 所以为了让连续运算能连续下去, 不突然崩掉而且找不到崩掉的位置, 保证每一个操作都是安全可靠的就很有必要了.那么怎么才能这么安全可靠不出问题呢? 答案就是: 无副作用.</p>
-<p>对于相同的输入总有相同的输出, 并且没有其它的副作用产生, 这便是函数式编程所追求的.</p>
-<p>典型的容易出问题的操作就是IO操作, 各种乱七八糟的因素导致IO容易崩, </p>
-<p>函数式编程就是一种范式, 一种思想. 既然如此, 什么语言都可以多多少少和它扯上关系, 来个”函数式xxx”. 不过不同的语言有不同的特性, 也就对这种范式的支持有多有少. 其中最为重要的就是一等函数这种特性吧.</p>
-<h2 id="函数式编程Demo"><a href="#函数式编程Demo" class="headerlink" title="函数式编程Demo"></a>函数式编程Demo</h2><p>更具体一点, 什么是函数式编程? 这就是函数式编程: </p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cafe</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buyCoffee</span></span>(cc: <span class="type">CreditCard</span>): (<span class="type">Coffee</span>, <span class="type">Charge</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> cup = <span class="type">Coffee</span>(<span class="number">5</span>)</span><br><span class="line">    (cup, <span class="type">Charge</span>(cc, cup.price))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buyCoffee</span></span>(cc: <span class="type">CreditCard</span>, num: <span class="type">Int</span>): (<span class="type">List</span>[<span class="type">Coffee</span>], <span class="type">Charge</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> purchases: <span class="type">List</span>[(<span class="type">Coffee</span>, <span class="type">Charge</span>)] = <span class="type">List</span>.fill(num) (buyCoffee(cc))</span><br><span class="line">    <span class="comment">// 把Coffee和Charge作为元素的列表拆分为Coffee列表和Charge列表</span></span><br><span class="line">    <span class="keyword">val</span> (coffees, charges) = purchases.unzip</span><br><span class="line">    (coffees, charges.reduce((c1, c2) =&gt; c1.combine(c2)))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 合并</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">coalesce</span></span>(charges: <span class="type">List</span>[<span class="type">Charge</span>]): <span class="type">List</span>[<span class="type">Charge</span>] = &#123;</span><br><span class="line">    charges.groupBy(_.cc).values.map(_.reduce(_ combine _)).toList</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Coffee</span>(<span class="params">price: <span class="type">Double</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">CreditCard</span>(<span class="params">name: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Charge</span>(<span class="params">cc: <span class="type">CreditCard</span>, amount: <span class="type">Double</span></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">combine</span></span>(other: <span class="type">Charge</span>): <span class="type">Charge</span> = &#123;</span><br><span class="line">    <span class="keyword">if</span> (cc == other.cc) &#123;</span><br><span class="line">      <span class="type">Charge</span>(cc, amount + other.amount)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Exception</span>(<span class="string">"can't combine charges to different cards"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Cafe</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> c = <span class="keyword">new</span> <span class="type">Cafe</span>()</span><br><span class="line">    <span class="keyword">val</span> coffee1 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"wyl"</span>))</span><br><span class="line">    <span class="keyword">val</span> coffee2 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"wyl"</span>), <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">val</span> coffee3 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"ramble"</span>), <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> charges = c.coalesce(<span class="type">List</span>[<span class="type">Charge</span>](coffee1._2, coffee2._2, coffee3._2))</span><br><span class="line"></span><br><span class="line">    println(coffee1)</span><br><span class="line">    println(coffee2)</span><br><span class="line">    println(coffee3)</span><br><span class="line">    println(charges)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>既然只是思想, 那语言不是问题. 所以上面这个例子我试着用Java实现了一遍, 没问题, 只是不太优雅. 感兴趣的可以到我的Github看看.</p>
+<h2 id="冲向源码"><a href="#冲向源码" class="headerlink" title="冲向源码"></a>冲向源码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    sds ele;</span><br><span class="line">    <span class="comment">// 用于存储排序的分值</span></span><br><span class="line">    <span class="keyword">double</span> score;</span><br><span class="line">    <span class="comment">// 回退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="comment">// 柔性数组,每个节点的数组长度不一样. 生成跳跃表节点时,随机生成一个1-64的值,值越大出现的概率越低</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">// 本层的下一个节点, 尾节点的forward指向Null</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">// forward指向的节点与本节点之间的元素个数, span值越大,跳过的节点个数越多</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">long</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="comment">// header: 头结点,level数组元素个数为64, 头结点不存储任何member和score,ele为Null,score为0,</span></span><br><span class="line">    <span class="comment">// 不计入跳跃表的总长度.头结点在初始化时,64个元素都指向Null,span值都为0</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> length;</span><br><span class="line">    <span class="keyword">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每个节点的ele存储zset的member, socre存储score, 当有序集合分值相同时,节点会按member的字典序进行排序</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zset</span> &#123;</span></span><br><span class="line">    dict *dict;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line">&#125; zset;</span><br></pre></td></tr></table></figure>
+<h3 id="跳跃表的创建"><a href="#跳跃表的创建" class="headerlink" title="跳跃表的创建"></a>跳跃表的创建</h3><h4 id="节点层高"><a href="#节点层高" class="headerlink" title="节点层高"></a>节点层高</h4><p>最小值为1, 最大值为64.<br>生成算法: level初始为1, 随机值小于p时level加1<br>    level为1的概率: 1-p<br>    level为2的概率: p(1-p)<br>    level为3的概率: (1-p) * p^2</p>
+<p>节点层高为n的概率是(1-p) * p^(n-1), p=0.25<br>节点的期望层高为1/(1-p), 即: 1.33</p>
+<h4 id="创建节点"><a href="#创建节点" class="headerlink" title="创建节点"></a>创建节点</h4><p>每个节点就是有序集合的一个元素, 创建节点时, 待创建节点的层高,分值,member等都已确定.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">zskiplistNode *<span class="title">zslCreateNode</span><span class="params">(<span class="keyword">int</span> level, <span class="keyword">double</span> score, sds ele)</span> </span>&#123;</span><br><span class="line">    zskiplistNode *zn =</span><br><span class="line">        zmalloc(<span class="keyword">sizeof</span>(*zn)+level*<span class="keyword">sizeof</span>(struct zskiplistLevel));</span><br><span class="line">    zn-&gt;score = score;</span><br><span class="line">    zn-&gt;ele = ele;</span><br><span class="line">    <span class="keyword">return</span> zn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Create a new skiplist. */</span></span><br><span class="line"><span class="function">zskiplist *<span class="title">zslCreate</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line"></span><br><span class="line">    zsl = zmalloc(<span class="keyword">sizeof</span>(*zsl));</span><br><span class="line">    zsl-&gt;level = <span class="number">1</span>;</span><br><span class="line">    zsl-&gt;length = <span class="number">0</span>;</span><br><span class="line">    zsl-&gt;header = zslCreateNode(ZSKIPLIST_MAXLEVEL,<span class="number">0</span>,<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; ZSKIPLIST_MAXLEVEL; j++) &#123;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].forward = <span class="literal">NULL</span>;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].span = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    zsl-&gt;header-&gt;backward = <span class="literal">NULL</span>;</span><br><span class="line">    zsl-&gt;tail = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> zsl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="插入节点"><a href="#插入节点" class="headerlink" title="插入节点"></a>插入节点</h4><ol>
+<li>查找要插入的位置</li>
+<li>调整跳跃表高度</li>
+<li>插入节点</li>
+<li>调整backward</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Insert a new node in the skiplist. Assumes the element does not already</span></span><br><span class="line"><span class="comment"> * exist (up to the caller to enforce that). The skiplist takes ownership</span></span><br><span class="line"><span class="comment"> * of the passed SDS string 'ele'. */</span></span><br><span class="line"><span class="function">zskiplistNode *<span class="title">zslInsert</span><span class="params">(zskiplist *zsl, <span class="keyword">double</span> score, sds ele)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入节点时, 需要更新被插入节点每层的前一个节点. 将每层需要更新的节点记录在update[i]中</span></span><br><span class="line">    <span class="comment">// x是跳跃表的头结点</span></span><br><span class="line">    zskiplistNode *update[ZSKIPLIST_MAXLEVEL], *x;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 记录当前层从header节点到update[i]节点所经历的步长, 在更新update[i]的span和设置</span></span><br><span class="line">    <span class="comment">// 新插入节点的span时用到</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> rank[ZSKIPLIST_MAXLEVEL];</span><br><span class="line">    <span class="keyword">int</span> i, level;</span><br><span class="line"></span><br><span class="line">    serverAssert(!isnan(score));</span><br><span class="line">    x = zsl-&gt;header;</span><br><span class="line">    <span class="keyword">for</span> (i = zsl-&gt;level<span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="comment">/* store rank that is crossed to reach the insert position */</span></span><br><span class="line">        rank[i] = i == (zsl-&gt;level<span class="number">-1</span>) ? <span class="number">0</span> : rank[i+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">while</span> (x-&gt;level[i].forward &amp;&amp;</span><br><span class="line">                (x-&gt;level[i].forward-&gt;score &lt; score ||</span><br><span class="line">                    (x-&gt;level[i].forward-&gt;score == score &amp;&amp;</span><br><span class="line">                    sdscmp(x-&gt;level[i].forward-&gt;ele,ele) &lt; <span class="number">0</span>)))</span><br><span class="line">        &#123;</span><br><span class="line">            rank[i] += x-&gt;level[i].span;</span><br><span class="line">            x = x-&gt;level[i].forward;</span><br><span class="line">        &#125;</span><br><span class="line">        update[i] = x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* we assume the element is not already inside, since we allow duplicated</span></span><br><span class="line"><span class="comment">     * scores, reinserting the same element should never happen since the</span></span><br><span class="line"><span class="comment">     * caller of zslInsert() should test in the hash table if the element is</span></span><br><span class="line"><span class="comment">     * already inside or not. */</span></span><br><span class="line">    level = zslRandomLevel();</span><br><span class="line">    <span class="keyword">if</span> (level &gt; zsl-&gt;level) &#123;</span><br><span class="line">        <span class="keyword">for</span> (i = zsl-&gt;level; i &lt; level; i++) &#123;</span><br><span class="line">            rank[i] = <span class="number">0</span>;</span><br><span class="line">            update[i] = zsl-&gt;header;</span><br><span class="line">            update[i]-&gt;level[i].span = zsl-&gt;length;</span><br><span class="line">        &#125;</span><br><span class="line">        zsl-&gt;level = level;</span><br><span class="line">    &#125;</span><br><span class="line">    x = zslCreateNode(level,score,ele);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; level; i++) &#123;</span><br><span class="line">        x-&gt;level[i].forward = update[i]-&gt;level[i].forward;</span><br><span class="line">        update[i]-&gt;level[i].forward = x;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* update span covered by update[i] as x is inserted here */</span></span><br><span class="line">        x-&gt;level[i].span = update[i]-&gt;level[i].span - (rank[<span class="number">0</span>] - rank[i]);</span><br><span class="line">        update[i]-&gt;level[i].span = (rank[<span class="number">0</span>] - rank[i]) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* increment span for untouched levels */</span></span><br><span class="line">    <span class="keyword">for</span> (i = level; i &lt; zsl-&gt;level; i++) &#123;</span><br><span class="line">        update[i]-&gt;level[i].span++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    x-&gt;backward = (update[<span class="number">0</span>] == zsl-&gt;header) ? <span class="literal">NULL</span> : update[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;level[<span class="number">0</span>].forward)</span><br><span class="line">        x-&gt;level[<span class="number">0</span>].forward-&gt;backward = x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        zsl-&gt;tail = x;</span><br><span class="line">    zsl-&gt;length++;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SkipList 有序数据结构<br>    在每个节点维持多个指向其他节点的指针.<br>    平均O(logN),最坏O(N)复杂度的节点查找,可以通过顺序性操作来<br>        批量处理节点.<br>    当有序集合包含的元素数量较多, 或有序集合中元素的member是比较长的字符串时,<br>    Redis使用跳表来作为有序集合键的底层实现.</p>
+<p>跳表在Redis的两个应用: 有序集合键, 集群节点中做内部数据结构</p>
+<p>zskiplist<br>    header: 指向跳表的表头节点<br>    tail: 指向跳表的表尾节点<br>    level: 记录目前跳表内,层数最大的那个节点的层数(表头节点的层数不计算在内)<br>    length: 跳表目前包含节点的数量(表头节点不计算在内)</p>
+<p>zskiplistNode<br>    level: L1代表第一层, L2代表第二层.</p>
 
       
 
@@ -354,24 +298,13 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -380,7 +313,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/14/小红书系列 (1) - 函数式编程初探/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (2) - 跳跃表/">展开全文 >></a>
         </p>
       
 
@@ -410,42 +343,45 @@
 
 
   
-    <article id="post-小红书系列 (2) - Scala与函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-精通Redis系列 (1) - 简单动态字符串" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/">小红书系列 (2) - Scala与函数式编程</a>
+      <a class="article-title" href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/">精通Redis系列 (0) - 写在前面的话</a>
     </h1>
   
 
         
-        <a href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/" class="archive-article-date">
-  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
+        <a href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Scala与Haskell"><a href="#Scala与Haskell" class="headerlink" title="Scala与Haskell"></a>Scala与Haskell</h2><blockquote>
-<p>Scala is a gateway drug to Haskell.</p>
-</blockquote>
-<p>读过&lt;&lt; Learn You a Haskell for great good&gt;&gt;这本书, Haskell确实优雅, 但同时也让人感觉过于高贵冷艳, 还是Scala读起来更舒服.</p>
-<h2 id="Scala函数式编程Demo"><a href="#Scala函数式编程Demo" class="headerlink" title="Scala函数式编程Demo"></a>Scala函数式编程Demo</h2><p>我感觉有些文章反复出现在视野, 说起函数式编程就是map, 说起范畴论就是compose.甚至还有人用几个带点函数式意味的函数后就瞧不起别人, 感觉别人都看不懂, 真是naive!  =_=</p>
-<h3 id="Demo1-阶乘"><a href="#Demo1-阶乘" class="headerlink" title="Demo1: 阶乘"></a>Demo1: 阶乘</h3><p>这个样子的代码我写过太多遍了, 尤其是在SICP的练习里.<br>同时这个例子也涉及到尾递归优化的问题, 因为递归太多, 容易爆栈, 所以要递归转迭代.<br>加上这个注解@annotation.tailrec, 也可以让编译器来做尾调用.</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">factorial</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>, acc: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) acc</span><br><span class="line">    <span class="keyword">else</span> go(n<span class="number">-1</span>, n*acc)</span><br><span class="line"></span><br><span class="line">  go(n, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Demo2-斐波那契数列"><a href="#Demo2-斐波那契数列" class="headerlink" title="Demo2: 斐波那契数列"></a>Demo2: 斐波那契数列</h3><p>写到吐的斐波那契数列, 先来一个递归的:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = </span><br><span class="line">  <span class="keyword">if</span> (n &lt; <span class="number">2</span>) n</span><br><span class="line">  <span class="keyword">else</span> fib(n<span class="number">-1</span>) + fib(n<span class="number">-2</span>)</span><br></pre></td></tr></table></figure></p>
-<p>再来个迭代的:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>, prev: <span class="type">Int</span>, cur: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) prev</span><br><span class="line">    <span class="keyword">else</span> go(n<span class="number">-1</span>, cur, prev + cur)</span><br><span class="line"></span><br><span class="line">  go(n, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>形象地说, 递归是随着一轮轮计算越变越长, 而迭代一直不变长.</p>
-<h3 id="Demo3-在数组中找到第一个匹配的元素的索引"><a href="#Demo3-在数组中找到第一个匹配的元素的索引" class="headerlink" title="Demo3: 在数组中找到第一个匹配的元素的索引"></a>Demo3: 在数组中找到第一个匹配的元素的索引</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findFirst</span></span>[<span class="type">A</span>](as: <span class="type">Array</span>[<span class="type">A</span>], p: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n &gt;= as.length) <span class="number">-1</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (p(as(n))) n</span><br><span class="line">    <span class="keyword">else</span> go(n+<span class="number">1</span>)</span><br><span class="line">  </span><br><span class="line">  go(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Demo4-检查数组是否按照给定的比较函数排序"><a href="#Demo4-检查数组是否按照给定的比较函数排序" class="headerlink" title="Demo4: 检查数组是否按照给定的比较函数排序"></a>Demo4: 检查数组是否按照给定的比较函数排序</h3><p>上次看到群里有人问这个函数怎么写, 我一时之间还想不出来该怎么写. 这种玩具代码, 真是容易忘记啊.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isSorted</span></span>[<span class="type">A</span>](as: <span class="type">Array</span>[<span class="type">A</span>], ordered: (<span class="type">A</span>,<span class="type">A</span>) =&gt; <span class="type">Boolean</span>): <span class="type">Boolean</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>): <span class="type">Boolean</span> =</span><br><span class="line">    <span class="keyword">if</span> (n+<span class="number">1</span> &gt;= as.length) <span class="literal">true</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!ordered(as[n], as[n+<span class="number">1</span>])) <span class="literal">false</span></span><br><span class="line">    <span class="keyword">else</span> go(n+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">  go(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="Demo5-函数式三连-柯西-反柯西和组合"><a href="#Demo5-函数式三连-柯西-反柯西和组合" class="headerlink" title="Demo5: 函数式三连: 柯西, 反柯西和组合"></a>Demo5: 函数式三连: 柯西, 反柯西和组合</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">curry</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>): <span class="type">A</span> =&gt; (<span class="type">B</span> =&gt; <span class="type">C</span>) =</span><br><span class="line">  a =&gt; b =&gt; f(a, b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unCurry</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: <span class="type">A</span> =&gt; <span class="type">B</span> =&gt; <span class="type">C</span>): (<span class="type">A</span>, <span class="type">B</span>) =&gt; <span class="type">C</span> =</span><br><span class="line">  (a, b) =&gt; f(a)(b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compose</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: <span class="type">B</span> =&gt; <span class="type">C</span>, g: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">A</span> =&gt; <span class="type">C</span> =</span><br><span class="line">  a =&gt; f(g(a))</span><br></pre></td></tr></table></figure>
-<p>用JavaScript来写写看:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function"><span class="params">f</span> =&gt;</span> a =&gt; <span class="function"><span class="params">b</span> =&gt;</span> f(a, b)</span><br><span class="line"><span class="keyword">const</span> unCurry = <span class="function"><span class="params">f</span> =&gt;</span> (a, b) =&gt; f(a)(b)</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> a =&gt; f(g(a))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 一些测试的例子</span></span><br><span class="line"><span class="keyword">const</span> print = <span class="built_in">console</span>.log</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b</span><br><span class="line">print(add(<span class="number">3</span>, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> curryAdd = curry(add)</span><br><span class="line">print(curryAdd(<span class="number">3</span>)(<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> unCurryAdd = unCurry(curryAdd)</span><br><span class="line">print(unCurryAdd(<span class="number">3</span>,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mul3 = <span class="function"><span class="params">a</span> =&gt;</span> a * <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> add2 = <span class="function"><span class="params">a</span> =&gt;</span> a + <span class="number">2</span></span><br><span class="line"><span class="keyword">const</span> composeAddMul = compose(add2, mul3)</span><br><span class="line">print(composeAddMul(<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> composeMulAdd = compose(mul3, add2)</span><br><span class="line">print(composeMulAdd(<span class="number">3</span>))</span><br></pre></td></tr></table></figure></p>
-<p>可以看出JavaScript算的上是键盘友好型FP选手了.</p>
-
+        <p>Simple Dynamic Strings, SDS<br>存储字符串和整型数据, 兼容C语言标准字符串处理函数, 在此基础之上保证二进制安全, 避免缓冲区溢出.</p>
+<h3 id="什么是二进制安全"><a href="#什么是二进制安全" class="headerlink" title="什么是二进制安全?"></a>什么是二进制安全?</h3><p>C语言中用”\0”表示字符串的结束, 如果字符串本身就含有”\0”字符, 字符串就会被截断, 就是非二进制安全.<br>所以C字符串不能保存图片,音频,视频,压缩文件这样的二进制数据.</p>
+<p>如果可以通过某种机制, 保证读写字符串时不损害其内容, 则称为二进制安全.<br>Redis的sds有长度统计变量len, 读写字符串不依赖”\0”终止符,保证了二进制安全.</p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><ol>
+<li>Redis3.2之前<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sds</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// buf中已占用空间</span></span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// buf中剩余可用字节数</span></span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 数据空间, 柔性数组, 通过malloc函数动态分配内存</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>64位系统中: len与free各占4字节.</p>
+<ul>
+<li>预分配冗余空间的方式来减少内存的频繁分配.字符串<br>  长度小于1M时,加倍扩容,大于1M时每次扩1M.最大长度为512M.</li>
+<li>惰性空间释放<br>当sds要缩短保存的字符串时,不立即使用内存重分配来回收缩短后多出来的字节,而是使用free记录下来.</li>
+</ul>
+<ol start="2">
+<li>改进版sds</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></span><br><span class="line"><span class="comment"> * However is here to document the layout of type 5 SDS strings. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr5</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr64</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>一般情况下结构体会按其所有变量大小的最小公倍数做字节对齐,而使用packed修饰后,结构体变为按照1字节对齐.<br>好处: 1. 节省内存; 2. 实现简单–SDS返回给上层指向内容的指针而不是结构体首地址.</p>
+<h3 id="SDS的创建"><a href="#SDS的创建" class="headerlink" title="SDS的创建"></a>SDS的创建</h3><p>sdsnewlen函数创建SDS<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init, <span class="keyword">size_t</span> initlen)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">void</span> *sh;</span><br><span class="line">    sds s;</span><br><span class="line">    <span class="keyword">char</span> type = sdsReqType(initlen);</span><br><span class="line">    <span class="comment">/* Empty strings are usually created in order to append. Use type 8</span></span><br><span class="line"><span class="comment">     * since type 5 is not good at this. */</span></span><br><span class="line">    <span class="keyword">if</span> (type == SDS_TYPE_5 &amp;&amp; initlen == <span class="number">0</span>) type = SDS_TYPE_8;</span><br><span class="line">    <span class="keyword">int</span> hdrlen = sdsHdrSize(type);</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *fp; <span class="comment">/* flags pointer. */</span></span><br><span class="line"></span><br><span class="line">    sh = s_malloc(hdrlen+initlen+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (init==SDS_NOINIT)</span><br><span class="line">        init = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!init)</span><br><span class="line">        <span class="built_in">memset</span>(sh, <span class="number">0</span>, hdrlen+initlen+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (sh == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    s = (<span class="keyword">char</span>*)sh+hdrlen;</span><br><span class="line">    fp = ((<span class="keyword">unsigned</span> <span class="keyword">char</span>*)s)<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">switch</span>(type) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5: &#123;</span><br><span class="line">            *fp = type | (initlen &lt;&lt; SDS_TYPE_BITS);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">8</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">16</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">32</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">64</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(s, init, initlen);</span><br><span class="line">    s[initlen] = <span class="string">'\0'</span>;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="释放字符串"><a href="#释放字符串" class="headerlink" title="释放字符串"></a>释放字符串</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsfree</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    s_free((<span class="keyword">char</span>*)s-sdsHdrSize(s[<span class="number">-1</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将len归零, 新的数据可以覆盖写</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsclear</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    sdssetlen(s, <span class="number">0</span>);</span><br><span class="line">    s[<span class="number">0</span>] = <span class="string">'\0'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
 
       
@@ -453,24 +389,13 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -479,7 +404,81 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-精通Redis系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/19/精通Redis系列 (0) - 写在前面的话/">精通Redis系列 (0) - 写在前面的话</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/19/精通Redis系列 (0) - 写在前面的话/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>搞完此系列, 简历上就写: 精通Redis</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 
@@ -511,7 +510,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 

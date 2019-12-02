@@ -151,57 +151,27 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Java数据结构All in One" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-深究Spring系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/08/Java数据结构All in One/">Java数据结构</a>
+      <a class="article-title" href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/">深究Spring系列 (0) - 写在前面的话</a>
     </h1>
   
 
         
-        <a href="/2019/07/08/Java数据结构All in One/" class="archive-article-date">
-  	<time datetime="2019-07-08T03:43:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-08</time>
+        <a href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>ArrayList<br>    DEFAULT_CAPACITY<br>        默认容量: 10<br>    EMPTY_ELEMENTDATA<br>        共享空数组实例<br>    DEFAULTCAPACITY_EMPTY_ELEMENTDATA<br>        使用默认大小的空实例的共享空数组实例.<br>    elementData<br>        ArrayList的容量就是这个数组缓存的长度.<br>        任何elementData是DEFAULTCAPACITY_EMPTY_ELEMENTDATA的空ArrayList在第一个<br>        元素被添加时会被扩展到EMPTY_ELEMENTDATA.</p>
-<pre><code>modCount
-    这个列表被增加和删除的次数.
-
-size
-    ArrayList包含元素的个数
-
-trimToSize()
-    把列表的容量改为列表的当前大小.
-</code></pre><p>LinkedList</p>
-<p>HashMap</p>
-<p>HashSet</p>
-<p>TreeMap</p>
-<p>TreeSet</p>
-<p>HashTable<br>    使用synchronized保证线程安全.效率低下</p>
-<pre><code>get
-
-put
-
-remove
-</code></pre><p>LinkedBlockingQueue</p>
-<p>二叉查找树<br>    节点数据大于左子树所有数据, 小于右子树所有数据.</p>
-<pre><code>二分搜索, 链式结构, 项的插入和删除不必移动其他项.
-
-搜索:
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">search</span><span class="params">(T key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> recursiveSearch(tree, key).data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">BinaryTree&lt;T&gt; <span class="title">recursiveSearch</span><span class="params">(BinaryTree&lt;T&gt; root, T key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">int</span> c = key.compareTo(root.data);</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="keyword">if</span> (c &lt; <span class="number">0</span>) <span class="keyword">return</span> recursiveSearch(root.left, key);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> recursiveSearch(root.right, key); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>插入(非递归):
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(T item)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (tree.isEmpty()) &#123;</span><br><span class="line">        tree.makeRoot(data);</span><br><span class="line">        size++;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BinaryTree&lt;T&gt; root = tree;</span><br><span class="line">    <span class="keyword">boolean</span> done = <span class="keyword">false</span>;</span><br><span class="line">    BinaryTree&lt;T&gt; newNode = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span>(!done) &#123;</span><br><span class="line">        <span class="keyword">int</span> c = item.compareTo(root.data);</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> OrderViolationException();</span><br><span class="line">        <span class="keyword">if</span> (c &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (root.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">                newNode = <span class="keyword">new</span> BinaryTree&lt;T&gt;();</span><br><span class="line">                root.left = newNode;</span><br><span class="line">                done = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                root = root.left;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (root.right == <span class="keyword">null</span>) &#123;</span><br><span class="line">                newNode = <span class="keyword">new</span> BinaryTree&lt;T&gt;();</span><br><span class="line">                root.right = newNode;</span><br><span class="line">                done = <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                root = root.right;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    newNode.data = item;</span><br><span class="line">    newNode.parent = root;</span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>删除:
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BinaryTree&lt;T&gt; <span class="title">findPredecessor</span><span class="params">(BinaryTree&lt;T&gt; node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>AVL树<br>    高度平衡的二叉查找树, 保证最坏情况搜索,插入和删除运行时间为O(log n)</p>
+        <p>Spring工程师的自我修养</p>
 
       
 
@@ -216,7 +186,7 @@ remove
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -225,7 +195,7 @@ remove
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/08/Java数据结构All in One/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 
@@ -255,122 +225,41 @@ remove
 
 
   
-    <article id="post-Markdown语法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-小红书系列 (2) - Scala与函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Markdown语法/">Markdown语法</a>
+      <a class="article-title" href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/">小红书系列 (2) - Scala与函数式编程</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Markdown语法/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="用Markdown写Markdown语法教程"><a href="#用Markdown写Markdown语法教程" class="headerlink" title="用Markdown写Markdown语法教程"></a>用Markdown写Markdown语法教程</h1><h2 id="使用-号可以标记1-6级标题"><a href="#使用-号可以标记1-6级标题" class="headerlink" title="使用#号可以标记1-6级标题"></a>使用#号可以标记1-6级标题</h2><h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><h2 id="换行"><a href="#换行" class="headerlink" title="换行"></a>换行</h2><p>换行了吗?<br>没有<br>段落的换行<br>是使用两个以上空格加上回车  </p>
-<h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p>// IDEA不支持<br><em>斜体文本</em><br><em>斜体文本</em><br><strong>粗体文本</strong><br><strong>粗体文本</strong><br><strong><em>粗斜体文本</em></strong><br><strong><em>粗斜体文本</em></strong>  </p>
-<h2 id="分隔线"><a href="#分隔线" class="headerlink" title="分隔线"></a>分隔线</h2><p>内容A</p>
-<hr>
-<p>内容B</p>
-<h2 id="删除线"><a href="#删除线" class="headerlink" title="删除线"></a>删除线</h2><p><del>sb</del></p>
-<h2 id="下划线"><a href="#下划线" class="headerlink" title="下划线"></a>下划线</h2><p><u>下划线</u></p>
-<h2 id="脚注"><a href="#脚注" class="headerlink" title="脚注"></a>脚注</h2><p>// IDEA不支持  </p>
-<p>有些人活着, 他已经死了[^鲁迅]<br>[^鲁迅]: 1923</p>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ul>
-<li>无序</li>
-<li>的</li>
-<li>列表  </li>
-</ul>
-<ol>
-<li>第一个</li>
-<li>第二个</li>
-</ol>
-<h3 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h3><p>在子列表中的选项添加四个空格</p>
-<ol>
-<li>第一个<ul>
-<li>嵌套1</li>
-<li>嵌套2</li>
-</ul>
-</li>
-<li>第二个<ul>
-<li>嵌套1</li>
-<li>嵌套2</li>
-</ul>
-</li>
-</ol>
-<h2 id="区块"><a href="#区块" class="headerlink" title="区块"></a>区块</h2><blockquote>
-<p>区块链<br>AI<br>人工智能</p>
+        <h2 id="Scala与Haskell"><a href="#Scala与Haskell" class="headerlink" title="Scala与Haskell"></a>Scala与Haskell</h2><blockquote>
+<p>Scala is a gateway drug to Haskell.</p>
 </blockquote>
-<h3 id="区块嵌套"><a href="#区块嵌套" class="headerlink" title="区块嵌套"></a>区块嵌套</h3><blockquote>
-<p>最外层</p>
-<blockquote>
-<p>第一层嵌套</p>
-<blockquote>
-<p>第二次嵌套</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<h3 id="区块中使用列表"><a href="#区块中使用列表" class="headerlink" title="区块中使用列表"></a>区块中使用列表</h3><blockquote>
-<p>列表</p>
-<ol>
-<li>第一个</li>
-<li>第二个<ul>
-<li>嵌套之嵌套</li>
-<li>嵌套之嵌套</li>
-</ul>
-</li>
-<li>第三个</li>
-</ol>
-</blockquote>
-<h3 id="列表中使用区块"><a href="#列表中使用区块" class="headerlink" title="列表中使用区块"></a>列表中使用区块</h3><p>在 &gt; 前添加四个空格的缩进</p>
-<ul>
-<li>第一个<blockquote>
-<p>Ai<br>小爱</p>
-</blockquote>
-</li>
-<li>第二个   </li>
-</ul>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>段落上的一个函数或片段的代码可以用反引号把它包起来<br>如: <code>epoll</code>函数</p>
-<h3 id="代码区块"><a href="#代码区块" class="headerlink" title="代码区块"></a>代码区块</h3><p>代码区块使用 4 个空格或者一个制表符（Tab 键）  </p>
-<pre><code>def map(fa: F[A])(f: a -&gt; b): F[B] =
-    flatMap(fa)(a -&gt; unit(f(a)))
-</code></pre><p>以上是map的flatMap实现<br>当然也可以使用三个反引号包裹.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>(fa: <span class="type">F</span>[<span class="type">A</span>])(f: a -&gt; b): <span class="type">F</span>[<span class="type">B</span>] =</span><br><span class="line">        flatMap(fa)(a -&gt; unit(f(a)))</span><br></pre></td></tr></table></figure></p>
-<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>这是一个链接<a href="www.baidu.com">百度</a></p>
-<h3 id="高级链接"><a href="#高级链接" class="headerlink" title="高级链接"></a>高级链接</h3><p>使用变量代替链接,文档末尾附带变量地址<a href="www.google.com">Google</a>  </p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>方框里的是替代文字,引号里加上加上选择性的 ‘title’ 属性的文字<br><img src="https://r4mble.github.io/images/lanmao.jpg" alt="我的头像" title="mio"></p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>用|来分隔单元格, 用-来分隔表头和其他行  </p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">name</th>
-<th style="text-align:right">age</th>
-<th style="text-align:center">gender</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">小王</td>
-<td style="text-align:right">5岁</td>
-<td style="text-align:center">男</td>
-</tr>
-<tr>
-<td style="text-align:left">小李</td>
-<td style="text-align:right">6岁</td>
-<td style="text-align:center">女</td>
-</tr>
-</tbody>
-</table>
-<p>注意: 表格开始时要有空行</p>
-<h3 id="对齐方式"><a href="#对齐方式" class="headerlink" title="对齐方式"></a>对齐方式</h3><p>-:设置为右对齐, :-设置为左对齐, :-:设置为居中</p>
-<h2 id="支持的HTML元素"><a href="#支持的HTML元素" class="headerlink" title="支持的HTML元素"></a>支持的HTML元素</h2><p>// 按键这个只是IDEA不支持<br><kbd>Ctrl</kbd>+<kbd>f</kbd> </p>
+<p>读过&lt;&lt; Learn You a Haskell for great good&gt;&gt;这本书, Haskell确实优雅, 但同时也让人感觉过于高贵冷艳, 还是Scala读起来更舒服.</p>
+<h2 id="Scala函数式编程Demo"><a href="#Scala函数式编程Demo" class="headerlink" title="Scala函数式编程Demo"></a>Scala函数式编程Demo</h2><p>我感觉有些文章反复出现在视野, 说起函数式编程就是map, 说起范畴论就是compose.甚至还有人用几个带点函数式意味的函数后就瞧不起别人, 感觉别人都看不懂, 真是naive!  =_=</p>
+<h3 id="Demo1-阶乘"><a href="#Demo1-阶乘" class="headerlink" title="Demo1: 阶乘"></a>Demo1: 阶乘</h3><p>这个样子的代码我写过太多遍了, 尤其是在SICP的练习里.<br>同时这个例子也涉及到尾递归优化的问题, 因为递归太多, 容易爆栈, 所以要递归转迭代.<br>加上这个注解@annotation.tailrec, 也可以让编译器来做尾调用.</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">factorial</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>, acc: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) acc</span><br><span class="line">    <span class="keyword">else</span> go(n<span class="number">-1</span>, n*acc)</span><br><span class="line"></span><br><span class="line">  go(n, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Demo2-斐波那契数列"><a href="#Demo2-斐波那契数列" class="headerlink" title="Demo2: 斐波那契数列"></a>Demo2: 斐波那契数列</h3><p>写到吐的斐波那契数列, 先来一个递归的:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = </span><br><span class="line">  <span class="keyword">if</span> (n &lt; <span class="number">2</span>) n</span><br><span class="line">  <span class="keyword">else</span> fib(n<span class="number">-1</span>) + fib(n<span class="number">-2</span>)</span><br></pre></td></tr></table></figure></p>
+<p>再来个迭代的:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>, prev: <span class="type">Int</span>, cur: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) prev</span><br><span class="line">    <span class="keyword">else</span> go(n<span class="number">-1</span>, cur, prev + cur)</span><br><span class="line"></span><br><span class="line">  go(n, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>形象地说, 递归是随着一轮轮计算越变越长, 而迭代一直不变长.</p>
+<h3 id="Demo3-在数组中找到第一个匹配的元素的索引"><a href="#Demo3-在数组中找到第一个匹配的元素的索引" class="headerlink" title="Demo3: 在数组中找到第一个匹配的元素的索引"></a>Demo3: 在数组中找到第一个匹配的元素的索引</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findFirst</span></span>[<span class="type">A</span>](as: <span class="type">Array</span>[<span class="type">A</span>], p: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n &gt;= as.length) <span class="number">-1</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (p(as(n))) n</span><br><span class="line">    <span class="keyword">else</span> go(n+<span class="number">1</span>)</span><br><span class="line">  </span><br><span class="line">  go(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Demo4-检查数组是否按照给定的比较函数排序"><a href="#Demo4-检查数组是否按照给定的比较函数排序" class="headerlink" title="Demo4: 检查数组是否按照给定的比较函数排序"></a>Demo4: 检查数组是否按照给定的比较函数排序</h3><p>上次看到群里有人问这个函数怎么写, 我一时之间还想不出来该怎么写. 这种玩具代码, 真是容易忘记啊.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isSorted</span></span>[<span class="type">A</span>](as: <span class="type">Array</span>[<span class="type">A</span>], ordered: (<span class="type">A</span>,<span class="type">A</span>) =&gt; <span class="type">Boolean</span>): <span class="type">Boolean</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>): <span class="type">Boolean</span> =</span><br><span class="line">    <span class="keyword">if</span> (n+<span class="number">1</span> &gt;= as.length) <span class="literal">true</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!ordered(as[n], as[n+<span class="number">1</span>])) <span class="literal">false</span></span><br><span class="line">    <span class="keyword">else</span> go(n+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">  go(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Demo5-函数式三连-柯西-反柯西和组合"><a href="#Demo5-函数式三连-柯西-反柯西和组合" class="headerlink" title="Demo5: 函数式三连: 柯西, 反柯西和组合"></a>Demo5: 函数式三连: 柯西, 反柯西和组合</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">curry</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>): <span class="type">A</span> =&gt; (<span class="type">B</span> =&gt; <span class="type">C</span>) =</span><br><span class="line">  a =&gt; b =&gt; f(a, b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unCurry</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: <span class="type">A</span> =&gt; <span class="type">B</span> =&gt; <span class="type">C</span>): (<span class="type">A</span>, <span class="type">B</span>) =&gt; <span class="type">C</span> =</span><br><span class="line">  (a, b) =&gt; f(a)(b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compose</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: <span class="type">B</span> =&gt; <span class="type">C</span>, g: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">A</span> =&gt; <span class="type">C</span> =</span><br><span class="line">  a =&gt; f(g(a))</span><br></pre></td></tr></table></figure>
+<p>用JavaScript来写写看:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function"><span class="params">f</span> =&gt;</span> a =&gt; <span class="function"><span class="params">b</span> =&gt;</span> f(a, b)</span><br><span class="line"><span class="keyword">const</span> unCurry = <span class="function"><span class="params">f</span> =&gt;</span> (a, b) =&gt; f(a)(b)</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> a =&gt; f(g(a))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 一些测试的例子</span></span><br><span class="line"><span class="keyword">const</span> print = <span class="built_in">console</span>.log</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b</span><br><span class="line">print(add(<span class="number">3</span>, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> curryAdd = curry(add)</span><br><span class="line">print(curryAdd(<span class="number">3</span>)(<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> unCurryAdd = unCurry(curryAdd)</span><br><span class="line">print(unCurryAdd(<span class="number">3</span>,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mul3 = <span class="function"><span class="params">a</span> =&gt;</span> a * <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> add2 = <span class="function"><span class="params">a</span> =&gt;</span> a + <span class="number">2</span></span><br><span class="line"><span class="keyword">const</span> composeAddMul = compose(add2, mul3)</span><br><span class="line">print(composeAddMul(<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> composeMulAdd = compose(mul3, add2)</span><br><span class="line">print(composeMulAdd(<span class="number">3</span>))</span><br></pre></td></tr></table></figure></p>
+<p>可以看出JavaScript算的上是键盘友好型FP选手了.</p>
 
       
 
@@ -379,13 +268,24 @@ remove
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Markdown语法//" class="article-tag-list-link color1">Markdown语法</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -394,7 +294,7 @@ remove
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Markdown语法/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/">展开全文 >></a>
         </p>
       
 
@@ -424,35 +324,27 @@ remove
 
 
   
-    <article id="post-Linux进程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-小红书系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux进程/">Linux进程</a>
+      <a class="article-title" href="/2019/09/14/小红书系列 (0) - 写在前面的话/">小红书系列 (0) - 写在前面的话</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Linux进程/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/09/14/小红书系列 (0) - 写在前面的话/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>进程原理<br>    对操作系统所管理的硬件资源的请求.<br>    资源包括: 磁盘IO, 网络IO, 内存, CPU, 显卡.</p>
-<pre><code>在内核空间,线程与进程没有太大区别.
-
-父子进程
-    子进程退出, 父进程要调用wait或waitpid函数等待回收子进程的资源, 否则子进程
-    就一直以僵尸状态存在.
-</code></pre><p>进程调度</p>
-<p>资源</p>
-<p>多进程与进程通信</p>
+        <p>小红书指的是&lt;&lt;Scala函数式编程&gt;&gt;这本书.<br>之前断断续续读了很久,抄了很多乱七八糟的代码,写这个系列来总结一下.</p>
 
       
 
@@ -461,13 +353,24 @@ remove
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -476,7 +379,7 @@ remove
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux进程/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/14/小红书系列 (0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 
@@ -506,29 +409,52 @@ remove
 
 
   
-    <article id="post-Lua" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-小红书系列 (3) - 函数式数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Lua/">Lua</a>
+      <a class="article-title" href="/2019/09/14/小红书系列 (3) - 函数式数据结构/">小红书系列 (3) - 函数式数据结构</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Lua/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/09/14/小红书系列 (3) - 函数式数据结构/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>元表 Metatable<br>    改变table的行为,每个行为关联了对应的元方法.<br>    如: 定义两个table的相加操作.</p>
-<p>数字:   字节, C语言整型, C语言size_t类型, Lua整型, Lua浮点型<br>        byte, uint32,   uint64,         int64,   float64   </p>
-<p>字符串: 其实就是字节数组. 分为NULL,短字符串和长字符串<br>        NULL: 用0x00表示.<br>        长度小于0xFD的字符串: 先用一个字节记录长度+1, 然后是字节数组<br>        长度大于等于0xFE的字符串: 第一个字节是0xFF,后面跟一个size_t记录长度+1,最后是字节数组<br>列表: 先用cint记录列表长度,再紧接着存储n个列表元素</p>
+        <p>其实我不懂搞这个函数式数据结构有什么意义. 本章就当做一些函数式编程的练习吧.</p>
+<h3 id="Demo1-定义链表"><a href="#Demo1-定义链表" class="headerlink" title="Demo1: 定义链表"></a>Demo1: 定义链表</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">List</span>[+<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">Nil</span> <span class="keyword">extends</span> <span class="title">List</span>[<span class="type">Nothing</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Cons</span>[+<span class="type">A</span>](<span class="params">head: <span class="type">A</span>, tail: <span class="type">List</span>[<span class="type">A</span>]</span>) <span class="keyword">extends</span> <span class="title">List</span>[<span class="type">A</span>]</span></span><br></pre></td></tr></table></figure>
+<p>这里定义了两种链表的构造器, 一个Nil, 一个普通的Cons<br>+A: 协变.   A是B的子类,那么List[A]是List[B]的子类</p>
+<h3 id="Demo2-链表的一点操作-sum-product-apply-tail-setHead-drop-dropWhile-init"><a href="#Demo2-链表的一点操作-sum-product-apply-tail-setHead-drop-dropWhile-init" class="headerlink" title="Demo2: 链表的一点操作: sum, product, apply, tail, setHead, drop, dropWhile, init"></a>Demo2: 链表的一点操作: sum, product, apply, tail, setHead, drop, dropWhile, init</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">List</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>(ints: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">Int</span> = ints <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="number">0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(x, xs) =&gt; x + sum(xs)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">product</span></span>(ds: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">Double</span> = ds <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="number">1.0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(<span class="number">0.0</span>, _) =&gt; <span class="number">0.0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(x, xs) =&gt; x * product(xs)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>[<span class="type">A</span>](as: <span class="type">A</span>*): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">        <span class="keyword">if</span> (as.isEmpty) <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">else</span> <span class="type">Cons</span>(as.head, apply(as.tail: _*))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">tail</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; sys.error(<span class="string">"tail of empty list"</span>)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(_, t) =&gt; t</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setHead</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>], head: <span class="type">A</span>): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; sys.error(<span class="string">"setHead of empty list"</span>)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(_, t) =&gt; <span class="type">Cons</span>(head, t)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除列表中的前n个元素</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">drop</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>], n: <span class="type">Int</span>): <span class="type">List</span>[<span class="type">A</span>] = </span><br><span class="line">        <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) ls</span><br><span class="line">        <span class="keyword">else</span> ls <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="type">Nil</span></span><br><span class="line">            <span class="keyword">case</span> <span class="type">Cons</span>(_, t) =&gt; drop(t, n<span class="number">-1</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除列表中的元素, 直到不符合判定</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dropWhile</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>], f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) <span class="keyword">if</span> f(h) =&gt; dropWhile(t, f)</span><br><span class="line">        <span class="keyword">case</span> _ =&gt; l</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">append</span></span>[<span class="type">A</span>](a1: <span class="type">List</span>[<span class="type">A</span>], a2: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">        a1 <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Nil</span> =&gt; a2</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Cons</span>(h, append(t, a2))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除列表中的最后一个元素</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">init</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; sys.error(<span class="string">"init of empty list"</span>)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(_, <span class="type">Nil</span>) =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Cons</span>(h, init(t))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Demo3-高阶函数类型推导改进"><a href="#Demo3-高阶函数类型推导改进" class="headerlink" title="Demo3: 高阶函数类型推导改进"></a>Demo3: 高阶函数类型推导改进</h3><p>对于这个函数来说<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dropWhile</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>], f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Cons</span>(h, t) <span class="keyword">if</span> f(h) =&gt; dropWhile(t, f)</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; l</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用的时候必须注明第二个参数f的接收参数类型,如<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dropWhile(<span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>), (x: <span class="type">Int</span>) =&gt; x &lt; <span class="number">4</span>)</span><br></pre></td></tr></table></figure></p>
+<p>可以使用参数分组来帮助类型推导: 参数组里的类型信息从左到右传递.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dropWhile</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Cons</span>(h, t) <span class="keyword">if</span> f(h) =&gt; dropWhile(t)(f)</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; l</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样, 调用函数的时候就不用注明f的接收参数类型了, 甚至可以用 _ 简写<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dropWhile(<span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>))(_ &lt; <span class="number">4</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="Demo4-泛化为高阶函数-foldRight"><a href="#Demo4-泛化为高阶函数-foldRight" class="headerlink" title="Demo4: 泛化为高阶函数 - foldRight"></a>Demo4: 泛化为高阶函数 - foldRight</h3><p>foldRight:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把f独立出来是为了让类型系统推导出f的输入类型</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foldRight</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>], z: <span class="type">B</span>)(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">B</span>): <span class="type">B</span> =</span><br><span class="line">    as <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; z</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(x, xs) =&gt; f(x, foldRight(xs, z)(f))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>(as: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">Int</span> =</span><br><span class="line">    foldRight(as, <span class="number">0</span>)(_ + _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">product</span></span>(as: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">Double</span> =</span><br><span class="line">    foldRight(as, <span class="number">1.0</span>)(_ * _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">length</span></span>(as: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Int</span> =</span><br><span class="line">    foldRight(as, <span class="number">0</span>)((_, n) =&gt; n + <span class="number">1</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="Demo5-尾递归方式-foldLeft"><a href="#Demo5-尾递归方式-foldLeft" class="headerlink" title="Demo5: 尾递归方式: foldLeft"></a>Demo5: 尾递归方式: foldLeft</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foldLeft</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>], z: <span class="type">B</span>)(f: (<span class="type">B</span>,<span class="type">A</span>) =&gt; <span class="type">B</span>): <span class="type">B</span> =</span><br><span class="line">    as <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; z</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(x, xs) =&gt; foldLeft(xs, f(z, x))(f)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>(as: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">Int</span> = </span><br><span class="line">    foldLeft(as, <span class="number">0</span>)(_ + _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">product</span></span>(as: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">Double</span> =</span><br><span class="line">    foldLeft(as, <span class="number">1.0</span>)(_ * _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">length</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Int</span> =</span><br><span class="line">    foldLeft(as, <span class="number">0</span>)((n, _) =&gt; n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverse</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    foldLeft(as, <span class="type">List</span>[<span class="type">A</span>]())((acc, h) =&gt; <span class="type">Cons</span>(h, acc))</span><br></pre></td></tr></table></figure>
+<p>由length函数的实现可以充分看出foldRight和foldLeft的区别.</p>
+<h3 id="Demo6-foldRight和foldLeft的转化"><a href="#Demo6-foldRight和foldLeft的转化" class="headerlink" title="Demo6: foldRight和foldLeft的转化"></a>Demo6: foldRight和foldLeft的转化</h3><p>由foldLeft实现foldRight:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foldRight</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>], z: <span class="type">B</span>)(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">B</span>): <span class="type">B</span> =</span><br><span class="line">    foldLeft(reverse(as), z)((b, a) =&gt; f(a, b))</span><br></pre></td></tr></table></figure></p>
+<p>使用了foldLeft和reverse, 通用的避免foldRight栈溢出的技巧.</p>
+<p>还有两个有意思的互相转化, 但并不能栈安全, 不在此贴出.</p>
+<h3 id="Demo7-用foldRight实现append"><a href="#Demo7-用foldRight实现append" class="headerlink" title="Demo7: 用foldRight实现append"></a>Demo7: 用foldRight实现append</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">append</span></span>[<span class="type">A</span>](l: <span class="type">List</span>[<span class="type">A</span>], r: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    foldRight(l, r)(<span class="type">Cons</span>(_, _))</span><br></pre></td></tr></table></figure>
+<h3 id="Demo8-连接一组列表成单个列表-concat"><a href="#Demo8-连接一组列表成单个列表-concat" class="headerlink" title="Demo8: 连接一组列表成单个列表: concat"></a>Demo8: 连接一组列表成单个列表: concat</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">concat</span></span>[<span class="type">A</span>](l: <span class="type">List</span>[<span class="type">List</span>[<span class="type">A</span>]]): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    foldRight(l, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">A</span>])(append)</span><br></pre></td></tr></table></figure>
+<h3 id="Demo9-map"><a href="#Demo9-map" class="headerlink" title="Demo9: map"></a>Demo9: map</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用foldRight实现map, 为了栈安全可以使用 用foldLeft实现的 foldRight</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">List</span>[<span class="type">B</span>] =</span><br><span class="line">    foldRight(l, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">B</span>])((h, t) =&gt; <span class="type">Cons</span>(f(h), t))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 更通用的map, 使用可变List实现, 局部变量不影响纯度</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">List</span>[<span class="type">B</span>] = &#123;</span><br><span class="line">    <span class="keyword">val</span> buf = <span class="keyword">new</span> collection.mutable.<span class="type">ListBuffer</span>[<span class="type">B</span>]</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(l: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Unit</span> = l <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; ()</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; buf += f(h); go(t)</span><br><span class="line">    &#125;</span><br><span class="line">    go(l)</span><br><span class="line">    <span class="type">List</span>(buf.toList: _*)    <span class="comment">// 把标准Scala List转化为这里定义的List</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Demo10-map应用-加一和toString"><a href="#Demo10-map应用-加一和toString" class="headerlink" title="Demo10: map应用: 加一和toString"></a>Demo10: map应用: 加一和toString</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addOne</span></span>(ns: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">Int</span>] = ns <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="type">Nil</span></span><br><span class="line">    <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Cons</span>(h+<span class="number">1</span>, addOne(t))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addOne</span></span>(l: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">Int</span>] =</span><br><span class="line">    foldRight(l, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">Int</span>])((h, t) =&gt; <span class="type">Cons</span>(h+<span class="number">1</span>, t))  </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addOne</span></span>(l: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">Int</span>] =</span><br><span class="line">    map(l)(_ + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">toString</span></span>(l: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">List</span>[<span class="type">String</span>] =</span><br><span class="line">    foldRight(l, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">String</span>])((h, t) =&gt; <span class="type">Cons</span>(h.toString, t))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">toString</span></span>(l: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">List</span>[<span class="type">String</span>] =</span><br><span class="line">    map(l)(_.toString)</span><br></pre></td></tr></table></figure>
+<h3 id="Demo11-filter"><a href="#Demo11-filter" class="headerlink" title="Demo11: filter"></a>Demo11: filter</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    as <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="keyword">if</span> (f(h)) <span class="type">Cons</span>(h, filter(t)(f)) <span class="keyword">else</span> filter(t)(f)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    foldRight(as, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">A</span>])((h, t) =&gt; <span class="keyword">if</span> (f(h)) <span class="type">Cons</span>(h, t) <span class="keyword">else</span> t)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>[<span class="type">A</span>](l: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] = &#123;</span><br><span class="line">    <span class="keyword">val</span> buf = <span class="keyword">new</span> collection.mutable.<span class="type">ListBuffer</span>[<span class="type">A</span>]</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(l: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Unit</span> = l <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; ()</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="keyword">if</span> (f(h)) buf += h; go(t)</span><br><span class="line">    &#125;</span><br><span class="line">    go(l)</span><br><span class="line">    <span class="type">List</span>(buf.toList: _*)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>和map相似</p>
+<h3 id="Demo12-flatMap"><a href="#Demo12-flatMap" class="headerlink" title="Demo12: flatMap"></a>Demo12: flatMap</h3><p>神秘的flatMap<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">flatMap</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">List</span>[<span class="type">B</span>]): <span class="type">List</span>[<span class="type">B</span>] =</span><br><span class="line">    as <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; append(f(h), flatMap(t)(f))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">flatMap</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">List</span>[<span class="type">B</span>]): <span class="type">List</span>[<span class="type">B</span>] =</span><br><span class="line">    concat(map(as)(f))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    flatMap(as)(a =&gt; <span class="keyword">if</span> (f(a)) <span class="type">List</span>(a) <span class="keyword">else</span> <span class="type">Nil</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="Demo13-zipWith"><a href="#Demo13-zipWith" class="headerlink" title="Demo13: zipWith"></a>Demo13: zipWith</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">zipWith</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](l: <span class="type">List</span>[<span class="type">A</span>], r: <span class="type">List</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>): <span class="type">List</span>[<span class="type">C</span>] =</span><br><span class="line">    (l, r) <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> (<span class="type">Nil</span>, _) =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> (_, <span class="type">Nil</span>) =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> (<span class="type">Cons</span>(h1, t1), <span class="type">Cons</span>(h2, t2)) =&gt; <span class="type">Cons</span>(f(h1, h2), zipWith(t1, t2)(f))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addList</span></span>(l: <span class="type">List</span>[<span class="type">Int</span>], r: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">Int</span>] =</span><br><span class="line">    zipWith(l, r)(_ + _)</span><br></pre></td></tr></table></figure>
+<h3 id="Demo14-序列比较-startWith和hasSubsequence"><a href="#Demo14-序列比较-startWith和hasSubsequence" class="headerlink" title="Demo14: 序列比较: startWith和hasSubsequence"></a>Demo14: 序列比较: startWith和hasSubsequence</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">startWith</span></span>[<span class="type">A</span>](l: <span class="type">List</span>[<span class="type">A</span>], prefix: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Boolean</span> = </span><br><span class="line">    (l, prefix) <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> (_, <span class="type">Nil</span>) =&gt; <span class="literal">true</span></span><br><span class="line">        <span class="keyword">case</span> (<span class="type">Cons</span>(h, t), <span class="type">Cons</span>(h2, t2)) <span class="keyword">if</span> h==h2 =&gt; startWith(t, t2)</span><br><span class="line">        <span class="keyword">case</span> _ =&gt; <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hasSubSequence</span></span>[<span class="type">A</span>](sup: <span class="type">List</span>[<span class="type">A</span>], sub: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Boolean</span> = </span><br><span class="line">    sup <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; sub == <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> _ <span class="keyword">if</span> startWith(sup, sub) =&gt; <span class="literal">true</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; hasSubSequence(t, sub)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="代数数据类型ADT-algebraic-data-type"><a href="#代数数据类型ADT-algebraic-data-type" class="headerlink" title="代数数据类型ADT(algebraic data type)"></a>代数数据类型ADT(algebraic data type)</h2><p>ADT是由一个或多个数据构造器(data constructor)所定义的数据类型, 每个构造器包含零个或多个参数.<br>数据类型(data type)是其数据构造器的累加(sum)或联合(union),每个数据构造器又是它的参数的乘积(product).</p>
+<h3 id="Demo15-定义一个二叉树和它的一些操作-size-maximum-depth-map"><a href="#Demo15-定义一个二叉树和它的一些操作-size-maximum-depth-map" class="headerlink" title="Demo15: 定义一个二叉树和它的一些操作: size, maximum, depth, map"></a>Demo15: 定义一个二叉树和它的一些操作: size, maximum, depth, map</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sealed</span> <span class="class"><span class="keyword">trait</span> <span class="title">Tree</span>[+<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Leaf</span>[<span class="type">A</span>](<span class="params">value: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Tree</span>[<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Branch</span>[<span class="type">A</span>](<span class="params">left: <span class="type">Tree</span>[<span class="type">A</span>], right: <span class="type">Tree</span>[<span class="type">A</span>]</span>) <span class="keyword">extends</span> <span class="title">Tree</span>[<span class="type">A</span>]</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">Tree</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span></span>[<span class="type">A</span>](t: <span class="type">Tree</span>[<span class="type">A</span>]): <span class="type">Int</span> = t <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Leaf</span>(_) =&gt; <span class="number">1</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Branch</span>(l, r) =&gt; <span class="number">1</span> + size(l) + size(r)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maximum</span></span>(t: <span class="type">Tree</span>[<span class="type">Int</span>]): <span class="type">Int</span> = t <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Leaf</span>(v) =&gt; v</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Branch</span>(l, r) =&gt; maximum(l) max maximum(r)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">depth</span></span>[<span class="type">A</span>](t: <span class="type">Tree</span>[<span class="type">A</span>]): <span class="type">Int</span> = t <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Leaf</span>(_) =&gt; <span class="number">0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Branch</span>(l ,r) =&gt; <span class="number">1</span> + (depth(l) max depth(r))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map</span></span>[<span class="type">A</span>,<span class="type">B</span>](t: <span class="type">Tree</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">Tree</span>[<span class="type">B</span>] = </span><br><span class="line">        t <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Leaf</span>(v) =&gt; <span class="type">Leaf</span>(f(v))</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Branch</span>(l, r) =&gt; <span class="type">Branch</span>(map(l)(f), map(r)(f))</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Demo16-fold"><a href="#Demo16-fold" class="headerlink" title="Demo16: fold"></a>Demo16: fold</h3><p>又是闪闪发光的fold:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fold</span></span>[<span class="type">A</span>, <span class="type">B</span>](t: <span class="type">Tree</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>)(g: (<span class="type">B</span>,<span class="type">B</span>) =&gt; <span class="type">B</span>): <span class="type">B</span> =</span><br><span class="line">    t <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Leaf</span>(v) =&gt; f(v)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Branch</span>(l, r) =&gt; g(fold(l)(f)(g), fold(r)(f)(g))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">size</span></span>[<span class="type">A</span>](t: <span class="type">Tree</span>[<span class="type">A</span>]): <span class="type">Int</span> =</span><br><span class="line">    fold(t)(a =&gt; <span class="number">1</span>)(<span class="number">1</span> + _ + _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maximum</span></span>(t: <span class="type">Tree</span>[<span class="type">Int</span>]): <span class="type">Int</span> =</span><br><span class="line">    fold(t)(a =&gt; a)(_ max _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">depth</span></span>[<span class="type">A</span>](t: <span class="type">Tree</span>[<span class="type">A</span>]): <span class="type">Int</span> =</span><br><span class="line">    fold(t)(a =&gt; <span class="number">0</span>)((d1, d2) =&gt; <span class="number">1</span> + (d1 max d2))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>[<span class="type">A</span>,<span class="type">B</span>](t: <span class="type">Tree</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">Tree</span>[<span class="type">B</span>] = </span><br><span class="line">    fold(t)(a =&gt; <span class="type">Leaf</span>(f(a)))(<span class="type">Branch</span>(_, _))</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -537,13 +463,24 @@ remove
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Lua//" class="article-tag-list-link color4">Lua</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -552,7 +489,7 @@ remove
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Lua/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/14/小红书系列 (3) - 函数式数据结构/">展开全文 >></a>
         </p>
       
 
@@ -584,7 +521,7 @@ remove
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
     </nav>
   
 

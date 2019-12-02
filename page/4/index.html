@@ -151,62 +151,130 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-玩转ElasticSearch系列 (1) - 架构原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TCP交钱学系列 (4) - MTU和MSS" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/">玩转Elasticsearch系列 (1) - 架构原理</a>
+      <a class="article-title" href="/2019/09/30/TCP交钱学系列 (4) - MTU和MSS/">TCP交钱学系列 (4) - MTU和MSS</a>
     </h1>
   
 
         
-        <a href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/" class="archive-article-date">
-  	<time datetime="2019-09-21T02:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-21</time>
+        <a href="/2019/09/30/TCP交钱学系列 (4) - MTU和MSS/" class="archive-article-date">
+  	<time datetime="2019-09-30T09:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Lucene倒排索引"><a href="#Lucene倒排索引" class="headerlink" title="Lucene倒排索引"></a>Lucene倒排索引</h2><p>根据属性的值来查找记录.<br>表现为: 一个关键词,它的频度,位置.</p>
-<ol>
-<li>取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点.</li>
-<li>建立倒排索引. 关键词所在的文章号,关键词的位置, 频度</li>
-<li>实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针.</li>
-<li>压缩算法. 关键词压缩: &lt;前缀长度,后缀&gt;. 数字压缩:只保存与上一个值的差值.</li>
-<li><p>查询单词时,Lucene对词典二元查找</p>
-<p>对应关系: “文章号” 对应 “文章中所有关键词”<br>倒排索引: “关键词” 对应 “拥有该关键词的所有文章”<br>关键词在文章中出现的位置和次数:  记录该词是文章中第几个关键词,(节约索引空间,词组查询快)<br>关键词按照字符顺序排列,可以使用二元搜索算法快速定位关键词.  </p>
-<p>| 关键词 | 文章号[出现频率] | 出现位置 |<br>| :—-: | :—-: | :—-: |<br>| he | 2[1] | 1<br>| live | 1[2] 2[1] | 2,5 2|<br>以上三列分别作为词典文件,频率文件,位置文件保存.<br>词典文件不仅保存了关键词,还保存了指向频率文件和位置文件的指针.</p>
-<p>假设查询单词”live”, Lucene先对词典二元查找,找到该词,通过指向频率文件的指针读出<br>所有文章号.返回结果.</p>
-</li>
-</ol>
-<h2 id="准实时索引的实现"><a href="#准实时索引的实现" class="headerlink" title="准实时索引的实现"></a>准实时索引的实现</h2><p>新收到的数据写到新的索引文件里.<br>Lucene把每次生成的倒排索引, 叫做一个段. 使用一个commit文件记录索引内所有的segment.<br>生成segment的数据来源就是内存中的buffer.</p>
-<p>1) 当前索引有3个segment可用.<br>2) 新接收的数据进入内存buffer<br>3) 内存buffer生成一个新的segment, 刷到文件系统缓存中(默认1秒间隔, Lucene即可检索到这个新的segment),<br>   再由文件系统缓存刷到磁盘, commit文件同步更新</p>
-<pre><code>curl -XPOST http://127.0.0.1:9200/logstash-2015.06.21/_settings -d&apos;
-{ “refresh_interval”: “10s” }
-</code></pre><h3 id="translog提供的磁盘同步控制"><a href="#translog提供的磁盘同步控制" class="headerlink" title="translog提供的磁盘同步控制"></a>translog提供的磁盘同步控制</h3><p>ES把数据写入内存buffer的同时,另外记录了一个translog日志.<br>在文件系统缓存刷到磁盘的过程中如果发生了异常, ES会从commit位置开始, 恢复整个translog文件中的记录, 保证数据一致性.<br>真正把segment刷到磁盘, 且commit文件进行更新时, translog文件才清空.称为flush<br>ES默认每30分钟或当translog文件大于512MB时 主动进行一次flush</p>
-<h4 id="translog的一致性"><a href="#translog的一致性" class="headerlink" title="translog的一致性"></a>translog的一致性</h4><p>ES默认每5秒强制刷新translog日志到磁盘上.(如果数据没备份,发生故障时确实有可能丢失5秒数据)</p>
-<h2 id="segment-merge的影响"><a href="#segment-merge的影响" class="headerlink" title="segment merge的影响"></a>segment merge的影响</h2><p>独立线程来进行segment数据归并, 把零散的segment归并为少量的,每个都比较大的segment文件.<br>归并后较大的segment刷到磁盘后,commit文件做出相应变更, 删除之前几个小segment,改成大segment.<br>等检索请求都从小segment转到大segment后,删除没用的segment.</p>
-<h4 id="归并线程的配置"><a href="#归并线程的配置" class="headerlink" title="归并线程的配置"></a>归并线程的配置</h4><p>归并过程: 读取segment -&gt; 归并计算 -&gt; 写segment -&gt; 刷到磁盘<br>限速机制: indices.store.throttle.max_bytes_per_sec : 20MB<br>对于SSD可以调到100MB或更高:</p>
-<pre><code>curl -XPOST http://127.0.0.1:9200/_cluster/settings -d&apos;
-{ “persistent”: {
-        &quot;indices.store.throttle.max_bytes_per_sec&quot; : &quot;100mb&quot;
-    } 
-}
-</code></pre><p>归并线程的数量: Math.min(3, Runtime.getRuntime().availableProcessors() / 2)<br>服务器CPU核数的一半大于3时启动3个归并线程, 否则启动CPU核心数一半的线程.<br>如果磁盘性能跟不上,可以降低index.merge.scheduler.max_thread_count配置, 避免IO情况恶化<br>归并策略:</p>
+        <h2 id="最大传输单元（Maximum-Transmission-Unit-MTU）"><a href="#最大传输单元（Maximum-Transmission-Unit-MTU）" class="headerlink" title="最大传输单元（Maximum Transmission Unit, MTU）"></a>最大传输单元（Maximum Transmission Unit, MTU）</h2><p>数据链路层传输的帧大小</p>
+<p>以太网的帧最小的帧是 64 字节，除去 14 字节头部和 4 字节 CRC 字段，有效荷载最小为 46 字节。<br>最大的帧是 1518 字节，除去 14 字节头部和 4 字节 CRC，有效荷载最大为 1500，这个值就是以太网的 MTU。</p>
+<p>如果传输 100KB 的数据，至少需要 （100 * 1024 / 1500) = 69 个以太网帧。</p>
+<p>netstat -i 可以查看网卡的 mtu</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/30/TCP交钱学系列 (4) - MTU和MSS/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-TCP交钱学系列 (3) - TCP首部字段" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/30/TCP交钱学系列 (3) - TCP首部字段/">TCP交钱学系列 (3) - TCP首部字段</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/30/TCP交钱学系列 (3) - TCP首部字段/" class="archive-article-date">
+  	<time datetime="2019-09-30T03:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="源端口号Source-Port-目标端口号Destination-Port"><a href="#源端口号Source-Port-目标端口号Destination-Port" class="headerlink" title="源端口号Source Port, 目标端口号Destination Port"></a>源端口号Source Port, 目标端口号Destination Port</h2><p>各占2个字节</p>
+<p>TCP报文头部没有源ip和目标ip地址</p>
+<h2 id="序列号Sequence-number"><a href="#序列号Sequence-number" class="headerlink" title="序列号Sequence number"></a>序列号Sequence number</h2><p>本报文段第一个字节的序列号, 4个字节, 32位无符号整数.</p>
+<p>序列号加报文长度, 可以确定传输的是哪一段数据.</p>
+<p>SYN报文中,序列号用于交换彼此的初始序列号,其它报文中,序列号用于保证包的顺序</p>
+<p>初始序列号(Initial Sequence Number, ISN)</p>
+<p>client ISN=1025<br>                ——-&gt;<br>                 1.SYN<br>                 SEQ=1025<br>                            Sever ISN=1118<br>                &lt;——–<br>                2.SYN+ACK<br>                SEQ=1118<br>                ACK=1025+1=1026</p>
+<pre><code>---------&gt;
+3.ACK
+SEQ=1026
+ACK=1118+1=1119
+</code></pre><h2 id="确认号-Acknowledgment-number"><a href="#确认号-Acknowledgment-number" class="headerlink" title="确认号(Acknowledgment number)"></a>确认号(Acknowledgment number)</h2><p>4个字节<br>告知对方下一个期望接收的序列号, 小于此确认号的所有字节都已收到.</p>
+<h2 id="TCP-Flags"><a href="#TCP-Flags" class="headerlink" title="TCP Flags"></a>TCP Flags</h2><p>2个字节</p>
 <ul>
-<li>index.merge.policy.floor_segment 默认2MB, 小于它的优先被归并</li>
-<li>index.merge.policy.max_merge_at_once 默认一次最多归并10个segment</li>
-<li>index.merge.policy.max_merge_at_once_explicit 默认optimize时一次最多归并30个segment</li>
-<li>index.merge.policy.max_merged_segment 默认5GB,大于它的不参与归并,optimize除外<br>增大flush间隔,让每次新生成的segment本身就比较大</li>
+<li>SYN（Synchronize）：用于发起连接数据包同步双方的初始序列号</li>
+<li>ACK（Acknowledge）：确认数据包</li>
+<li>RST（Reset）：这个标记用来强制断开连接，通常是之前建立的连接已经不在了、包不合法、或者实在无能为力处理</li>
+<li>FIN（Finish）：通知对方我发完了所有数据，准备断开连接，后面我不会再发数据包给你了。</li>
+<li>PSH（Push）：告知对方这些数据包收到以后应该马上交给上层应用，不能缓存起来</li>
 </ul>
-<p>optimize接口: 在负载较低的时间段,强制归并segment</p>
-<h2 id="routing和replica的读写过程"><a href="#routing和replica的读写过程" class="headerlink" title="routing和replica的读写过程"></a>routing和replica的读写过程</h2><h3 id="routing"><a href="#routing" class="headerlink" title="routing"></a>routing</h3><p>shard = hash(routing) % number_of_primary_shards</p>
-<p>每个数据都有一个routing参数,默认使用_id值.<br>因此: Elasticsearch索引的主分片数不能随意修改, 一旦改动存储位置计算结果就会发生改变, 索引数据将不可读.</p>
-<h3 id="副本一致性"><a href="#副本一致性" class="headerlink" title="副本一致性"></a>副本一致性</h3><h2 id="shard的allocate控制"><a href="#shard的allocate控制" class="headerlink" title="shard的allocate控制"></a>shard的allocate控制</h2><h2 id="自动发现的配置"><a href="#自动发现的配置" class="headerlink" title="自动发现的配置"></a>自动发现的配置</h2>
+<h2 id="窗口大小-Window-size-value"><a href="#窗口大小-Window-size-value" class="headerlink" title="窗口大小 Window size value"></a>窗口大小 Window size value</h2><p>2个字节<br>最大窗口大小是65535字节, 即64KB<br>TCP窗口缩放比例因子n: 0~14<br>把窗口放大2 ^ n</p>
+<h2 id="可选项"><a href="#可选项" class="headerlink" title="可选项"></a>可选项</h2><ul>
+<li>MSS：最大段大小选项，是TCP允许的从对方接收的最大报文段</li>
+<li>SACK：选择确认选项</li>
+<li>Window Scale：窗口缩放选项</li>
+</ul>
+
       
 
       
@@ -220,7 +288,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -229,7 +297,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/30/TCP交钱学系列 (3) - TCP首部字段/">展开全文 >></a>
         </p>
       
 
@@ -259,152 +327,90 @@
 
 
   
-    <article id="post-精通Redis系列 (3) - 压缩列表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TCP交钱学系列 (2) - packetdrill tcpdump" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/精通Redis系列 (3) - 压缩列表/">精通Redis系列 (3) - 压缩列表</a>
+      <a class="article-title" href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/">TCP交钱学系列 (2) - packetdrill tcpdump</a>
     </h1>
   
 
         
-        <a href="/2019/09/19/精通Redis系列 (3) - 压缩列表/" class="archive-article-date">
-  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+        <a href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/" class="archive-article-date">
+  	<time datetime="2019-09-30T03:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>ziplist<br>当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.<br>列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合.</p>
-<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">zlbytes</th>
-<th style="text-align:center">zltail</th>
-<th style="text-align:center">zllen</th>
-<th style="text-align:center">entry</th>
-<th style="text-align:center">zlend</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"></td>
-</tr>
-</tbody>
-</table>
-<p>zlbytes: 压缩列表的字节长度,占4个字节<br>zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节<br>zllen: 压缩列表的元素个数, 占2个字节<br>extry: 压缩列表存储的元素,可以是字节数组或者整数,长度不限.<br>zlend: 压缩列表的结尾, 占1个字节, 为 0xFF</p>
-<p>char* zl指向压缩列表首地址,通过以下宏命令实现压缩列表各个字段的存取<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Return total bytes a ziplist is composed of. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the offset of the last item inside the ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof(uint32_t))))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the length of a ziplist, or UINT16_MAX if the length cannot be</span></span><br><span class="line"><span class="comment"> * determined without scanning the whole ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_LENGTH(zl)      (*((uint16_t*)((zl)+sizeof(uint32_t)*2)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The size of a ziplist header: two 32 bit integers for the total</span></span><br><span class="line"><span class="comment"> * bytes count and last item offset. One 16 bit integer for the number</span></span><br><span class="line"><span class="comment"> * of items field. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_HEADER_SIZE     (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Size of the "end of ziplist" entry. Just one byte. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_END_SIZE        (sizeof(uint8_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the first entry of a ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_HEAD(zl)  ((zl)+ZIPLIST_HEADER_SIZE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last entry of a ziplist, using the</span></span><br><span class="line"><span class="comment"> * last entry offset inside the ziplist header. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_TAIL(zl)  ((zl)+intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last byte of a ziplist, which is, the</span></span><br><span class="line"><span class="comment"> * end of ziplist FF entry. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_END(zl)   ((zl)+intrev32ifbe(ZIPLIST_BYTES(zl))-1)</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="压缩列表元素的存储"><a href="#压缩列表元素的存储" class="headerlink" title="压缩列表元素的存储"></a>压缩列表元素的存储</h3><p>| previous_entry_length | encoding | content |<br>| :—-: | :—-: | :—-: |</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (3) - 压缩列表/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-深究Spring系列 (1) - 就...Get了个Bean" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/">深究Spring系列 (1) - 就...Get了个Bean</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/" class="archive-article-date">
-  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>曾听一位高级工程师吐槽: 面试者回答”Spring中Bean是如何创建的,getBean的过程是什么样的?”这个问题时, 语塞说不出话来, 最后憋出一句: “就…Get了个Bean”.<br>他说完后组内笑声此起彼伏, 我却陷入深思. 严格来讲我也不是很清楚这里面到底发生了啥.</p>
-<h2 id="Spring的领域模型"><a href="#Spring的领域模型" class="headerlink" title="Spring的领域模型"></a>Spring的领域模型</h2><ol>
-<li>容器领域模型(Context模型)<br>Spring的掌控域(或者服务域),对Spring核心领域模型(Bean模型)进行生命周期管理.</li>
-<li>核心领域模型(Bean模型)<br>Bean是应用运行时可执行的最小函数式单元,可以是一个属性单元,也可以是Java中的一个函数对象,一种对象式的为某种特殊行为而生的可复用的概念,不受职责或者大小的限制.<br>每个线程的真正执行者,整个会话生命周期的管理者,Spring对外暴露的核心实体.</li>
-<li>代理领域模型(Advisor模型)<br>Spring代理的执行依赖于Bean模型,Spring代理的生成,执行及选择都依赖于Spring自身定义的Advisor模型,只有符合Advisor模型的定义,才能生成Spring代理.</li>
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><h3 id="tcpdump-–-网络流量分析工具"><a href="#tcpdump-–-网络流量分析工具" class="headerlink" title="tcpdump – 网络流量分析工具"></a>tcpdump – 网络流量分析工具</h3><blockquote>
+<p>linux设置root密码: sudo passwd root</p>
+</blockquote>
+<ol>
+<li>tcpdump -i any<br>-i表示指定哪一个网卡，any 表示任意<br>ifconfig查看有哪些网卡</li>
 </ol>
-<p>Spring注解:<br>    AnnotationConfigApplicationContext extends GenericApplicationContext<br>                                       implements AnnotationConfigRegistry </p>
-<p><img src="/images/Spring源码/AnnotationConfigApplicationContext.png" alt="AnnotationConfigApplicationContext"><br><img src="/images/Spring源码/DefaultListableBeanFactory.png" alt="AnnotationConfigApplicationContext"></p>
-<h2 id="Spring上下文和容器"><a href="#Spring上下文和容器" class="headerlink" title="Spring上下文和容器"></a>Spring上下文和容器</h2><ol>
-<li>ApplicationContext: 整个容器的基本功能定义类. 利用代理的设计方法, 内部持有BeanFactory实例, 这个实例替它执行BeanFactory接口定义的功能.</li>
-<li>AbstractApplicationContext: 整个容器的核心处理类, 真正的Spring容器执行者, 在内部使用模板方法, 实现了高复用,高扩展,实现了Spring的启动,停止,刷新,事件推送,BeanFactory方法的默认实现及虚拟机回调的注册.</li>
-<li>GenericApplicationContext: 最容易构建Spring环境的实体类,涵盖了Spring Context的核心功能, 开箱即用.</li>
-<li><p>AnnotationConfigApplicationContext: 利用GenericApplicationContext的封装性和简便性. 传入class数组创建一个可执行的上下文实例来构造一个可运行的Spring运行环境.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//根据参数类型可以知道，其实可以传入多个annotatedClasses，但是这种情况出现的比较少</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AnnotationConfigApplicationContext</span><span class="params">(Class&lt;?&gt;... annotatedClasses)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//调用无参构造函数，会先调用父类GenericApplicationContext的构造函数</span></span><br><span class="line">		<span class="comment">//父类的构造函数里面就是初始化DefaultListableBeanFactory，并且赋值给beanFactory</span></span><br><span class="line">		<span class="comment">//本类的构造函数里面，初始化了一个读取器：AnnotatedBeanDefinitionReader reader，一个扫描器ClassPathBeanDefinitionScanner scanner</span></span><br><span class="line">		<span class="comment">//scanner的用处不是很大，它仅仅是在我们外部手动调用 .scan 等方法才有用，常规方式是不会用到scanner对象的</span></span><br><span class="line">		<span class="keyword">this</span>();</span><br><span class="line">		<span class="comment">//把传入的类进行注册，这里有两个情况，</span></span><br><span class="line">		<span class="comment">//传入传统的配置类</span></span><br><span class="line">		<span class="comment">//传入bean（虽然一般没有人会这么做</span></span><br><span class="line">		<span class="comment">//看到后面会知道spring把传统的带上@Configuration的配置类称之为FULL配置类，不带@Configuration的称之为Lite配置类</span></span><br><span class="line">		<span class="comment">//但是我们这里先把带上@Configuration的配置类称之为传统配置类，不带的称之为普通bean</span></span><br><span class="line">		register(annotatedClasses);</span><br><span class="line">		<span class="comment">//刷新</span></span><br><span class="line">		refresh();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>tcpdump -i eth3 只看网卡eth3经过的数据包</p>
+<ol start="2">
+<li>只看某个ip的网络包<br>tcpdump -i any host 220.181.38.148<br>这个ip可以是源地址也可以是目标地址</li>
+</ol>
+<p>tcpdump -i any host src 220.181.38.148<br>只抓这个ip发出的包</p>
+<p>tcpdump -i any host dst 220.181.38.148<br>只抓这个ip收到的包</p>
+<ol start="3">
+<li>只看某个端口的包<br>tcpdump -i any port 80</li>
+</ol>
+<p>tcpdump -i any dst port 80<br>只看某个ip收到的包</p>
+<ol start="4">
+<li><p>抓取某个区间内端口的包<br>tcpdump portrange 21-23</p>
 </li>
-<li><p>AbstractRefreshableApplicationContext: 继承自AbstractApplicationContext, 是XmlWebApplicationContext的核心父类,如果当前上下文持有BeanFactory,则关闭当前BeanFactory,然后为上下文生命周期的下一个阶段初始化一个新的BanFactory, 并且在创建新容器时仍然保持对其父容器的引用.</p>
+<li><p>禁用主机与端口解析: -n 与 -nn</p>
 </li>
-<li>EmbeddedWebApplicationContext: Spring Boot中新增的上下文实现类,是使用自嵌容器启动web应用的核心上下文基类.</li>
+<li><p>过滤协议<br>tcpdump -i any -nn udp   </p>
+</li>
+<li><p>用ascii格式查看包体内容: -A选项<br> 限制包大小：-s 选项<br>  -X 命令，用来同时用 HEX 和 ASCII 显示报文内容<br> -c 选项 抓取 number 个报文后退出</p>
+<p> -w 选项用来把数据报文输出到文件<br> 显示绝对的序号：-S 选项</p>
+</li>
+<li><p>过滤器</p>
+</li>
 </ol>
-<h2 id="BeanFactory的设计"><a href="#BeanFactory的设计" class="headerlink" title="BeanFactory的设计"></a>BeanFactory的设计</h2><ol>
-<li>BeanFactory: 职责定义接口, 定义了按照名称,参数,类型等几个维度获取,判断Bean实例的职能</li>
-<li>HierarchicalBeanFactory: 定义了父容器及判断当前Bean名称是否在当前Bean工厂中.</li>
-<li>ConfigurableBeanFactory: 提供了设置父容器接口,指定类加载器的职能, 并且为当前容器工厂设计Bean的定制型的解析处理器,类型处理器等,实现对BeanFactory的可配置型</li>
-<li>AutowireCapableBeanFactory: 提供了Bean的创建,注入职能, 提供了对Bean初始化前后的扩展性处理职能. 主要职责是处理在当前工厂中注册的Bean实例并使其达到可用状态</li>
-<li>ListableBeanFactory: 对Bean实例的枚举,对有某些共同特征的Bean的管理,按照Bean名称,Bean实例,Bean类型获取Bean实例</li>
-<li>ConfigurableListableBeanFactory: 集成ListableBeanFactory,AutowireCapableBeanFactory,ConfigurableBeanFactory接口所有职能,扩展了修改Bean定义信息和分析Bean的功能,实现了预实例化单例Bean及冻结当前工厂配置等功能.</li>
-<li>AbstractBeanFactory: 实现了对基本容器功能定义的模板式封装和实现. 同时实现了对Bean信息的注册, 对Bean的创建及Bean定义描述信息相关的处理使用了抽象画处理的方式并交由继承者实现.</li>
-<li>AbstractAutowireCapableBeanFactory: 解决Bean之间的依赖和注入问题,实现了Bean的创建方法.</li>
-<li>DefaultListableBeanFactory: 提供了对Bean容器的完全成熟的默认实现, 可以直接对外使用.许多依赖BeanFactory的场景都通过DefaultListableBeanFactory类来实现对Bean的管理,注入,依赖解决,创建,销毁等功能</li>
-<li>XmlBeanFactory: 集成DefaultListableBeanFactory并且内部持有XmlBeanDefinitionReader属性的Bean工厂容器(实现对XML文件定义的Bean描述信息的加载解析和处理)</li>
+<p>抓取 ip 为 10.211.55.10 到端口 3306 的数据包<br>sudo tcpdump -i any host 10.211.55.10 and dst port 3306</p>
+<p>抓取源 ip 为 10.211.55.10，目标端口除了22 以外所有的流量<br>sudo tcpdump -i any src 10.211.55.10 and not dst port 22</p>
+<p>抓取：来源 ip 为 10.211.55.10 且目标端口为 3306 或 6379 的包<br>sudo tcpdump -i any ‘src 10.211.55.10 and (dst port 3306 or 6379)’</p>
+<p>显示所有的 RST 包<br>tcpdump ‘tcp[13] &amp; 4 != 0’</p>
+<p>想过滤 SYN + ACK 包<br>tcpdump ‘tcp[13] &amp; 18 != 0’</p>
+<h3 id="packetdrill-–-Google网络工具"><a href="#packetdrill-–-Google网络工具" class="headerlink" title="packetdrill – Google网络工具"></a>packetdrill – Google网络工具</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
+<li>国内源没一个好用的, 直接梯子, 刷刷装好bison flex</li>
+<li>关掉offload机制, 不光要注释掉函数, 也要注掉函数调用</li>
+<li>make命令就是命令行直接手敲”make”, 然后Enter</li>
 </ol>
-<h2 id="Spring父子上下文和容器"><a href="#Spring父子上下文和容器" class="headerlink" title="Spring父子上下文和容器"></a>Spring父子上下文和容器</h2><p>ApplicationContext中持有BeanFactory实例<br>子容器可以共用父容器中的Bean, 父容器不能共用子容器的Bean, 因为当父容器已经启动时,子容器还没有实例化并启动.</p>
-<h2 id="Spring加载机制的设计和实现"><a href="#Spring加载机制的设计和实现" class="headerlink" title="Spring加载机制的设计和实现"></a>Spring加载机制的设计和实现</h2>
+<h4 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h4><p>packetdrill 脚本采用 c 语言和 tcpdump 混合的语法。脚本文件名一般以 .pkt 为后缀，<br>执行脚本的方式为sudo ./packetdrill test.pkt</p>
+<p>脚本的每一行可以由以下几种类型的语句构成：</p>
+<ul>
+<li>执行系统调用（system call），对比返回值是否符合预期</li>
+<li>把数据包（packet）注入到内核协议栈，模拟协议栈收到包</li>
+<li>比较内核协议栈发出的包与预期是否相符</li>
+<li>执行 shell 命令</li>
+<li>执行 python 命令</li>
+</ul>
+<p>脚本每一行都有一个时间参数用来表明执行的时间或者预期事件发生的时间，packetdrill 支持绝对时间和相对时间。绝对时间就是一个简单的数字，相对时间会在数字前面添加一个+号</p>
+<h4 id="代码环节"><a href="#代码环节" class="headerlink" title="代码环节"></a>代码环节</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span> socket(..., SOCK_STREAM, IPPROTO_TCP) = <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>解释: 脚本执行的第0s创建一个socket, 使用系统调用的方式<br>    脚本中的…表示使用packetdrill的默认值<br>    linux在每个程序的开始都有3个已经打开的文件句柄: stdin(0), sdtout(1), stderr(2)</p>
+<p>socket函数签名:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成功时返回文件描述符, 失败时返回-1</span></span><br><span class="line"><span class="keyword">int</span> socket_fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br></pre></td></tr></table></figure></p>
+<p>domain 表示套接字协议簇, AF_INET表示IPv4, AF_INET6表示IPv6.<br>type 表示套接字数据传输类型信息, 面向连接的SOCK_STREAM(默认TCP), 面向无连接的SOCK_DGRAM(默认UDP).<br>protocal 用0来表示使用默认的协议族和套接字类型</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> setsockopt(<span class="number">3</span>, SOL_SOCKET, SO_REUSEADDR, [<span class="number">1</span>], <span class="number">4</span>) = <span class="number">0</span></span><br><span class="line">+<span class="number">0</span> bind(<span class="number">3</span>, ..., ...) = <span class="number">0</span></span><br><span class="line">+<span class="number">0</span> listen(<span class="number">3</span>, <span class="number">1</span>) = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>setsockopt函数设置端口重用<br>bind函数, 使用默认端口8080<br>listen函数, 此时socket已经可以接受客户端的tcp连接.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> &lt; S <span class="number">0</span>:<span class="number">0</span>(<span class="number">0</span>) win <span class="number">4000</span> &lt;mss <span class="number">1000</span>&gt;</span><br><span class="line">+<span class="number">0</span> &gt; S. <span class="number">0</span>:<span class="number">0</span>(<span class="number">0</span>) ack <span class="number">1</span> &lt;...&gt;</span><br><span class="line">+<span class="number">.1</span> &lt; . <span class="number">1</span>:<span class="number">1</span>(<span class="number">0</span>) ack <span class="number">1</span> win <span class="number">1000</span></span><br></pre></td></tr></table></figure>
+<p>经典的三次握手</p>
+<p>‘&lt;’ 表示输入的数据包, packetdrill会构造真实的数据包, 注入到内核协议栈.<br>‘&gt;’ 表示预期协议栈会响应的包, packetdrill会检查协议栈是不是真的发出了这个包, 如果没有, 脚本就会报错停止执行.</p>
+<p>+0 &lt; S 0:0(0) win 4000 <mss 1000><br>S后面的三个0分别表示: 包的起始seq, 结束seq, 包的长度.<br>win表示发送端的接收窗口大小, SYN包的MSS选项</mss></p>
+<p>+0 &gt; S. 0:0(0) ack 1 &lt;…&gt;<br>预期协议栈立即返回SYN+ACK包, ack为上次seq+1, 表示第一个SYN包已经收到</p>
+<p>+.1 &lt; . 1:1(0) ack 1 win 1000<br>0.1秒后注入一个ACK包到协议栈, 没有携带数据, 包的长度为0.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> accept(<span class="number">3</span>, ..., ...) = <span class="number">4</span></span><br><span class="line">+<span class="number">0</span> &lt; P. <span class="number">1</span>:<span class="number">201</span>(<span class="number">200</span>) win <span class="number">4000</span></span><br><span class="line">+<span class="number">0</span> &gt; . <span class="number">1</span>:<span class="number">1</span>(<span class="number">0</span>) ack <span class="number">201</span></span><br></pre></td></tr></table></figure>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>执行脚本前创建名为tun0的虚拟网卡, 脚本执行完, tun0被销毁.<br>虚拟网卡在操作系统中/dev/net/tun文件, 每次程序通过 write 等系统调用将数据写入到这个文件 fd 时，这些数据会经过 tun0 这个虚拟网卡，将数据写入到内核协议栈，read 系统调用读取数据的过程类似。协议栈可以向操作普通网卡一样操作虚拟网卡 tun0。</p>
+
       
 
       
@@ -418,7 +424,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -427,7 +433,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/">展开全文 >></a>
         </p>
       
 
@@ -457,28 +463,27 @@
 
 
   
-    <article id="post-精通Redis系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-The Little系列(2) - The Little Schemer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/精通Redis系列 (0) - 写在前面的话/">精通Redis系列 (0) - 写在前面的话</a>
+      <a class="article-title" href="/2019/09/30/The Little系列(2) - The Little Schemer/">The Little系列(2) - The Little Schemer</a>
     </h1>
   
 
         
-        <a href="/2019/09/19/精通Redis系列 (0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+        <a href="/2019/09/30/The Little系列(2) - The Little Schemer/" class="archive-article-date">
+  	<time datetime="2019-09-30T02:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>搞完此系列, 简历上就写: 精通Redis</p>
-
+        
       
 
       
@@ -486,22 +491,22 @@
     <div class="article-info article-info-index">
       
       
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">PL</a>
         		</li>
       		
 		</ul>
 	</div>
 
+      
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (0) - 写在前面的话/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/30/The Little系列(2) - The Little Schemer/">展开全文 >></a>
         </p>
       
 
@@ -533,7 +538,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 

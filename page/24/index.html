@@ -151,549 +151,33 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-PostgreSQL Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-SICP目录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/PostgreSQL Notes/">PostgreSQL</a>
+      <a class="article-title" href="/2019/04/05/SICP目录/">计算机程序的构造和解释</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/PostgreSQL Notes/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/05/SICP目录/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:24:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
-<li>multi-version concurrency control (MVCC), Oracle中的快照隔离</li>
-<li>面向对象, 可以添加自定义函数.</li>
-<li>可拓展, 可以自定义数据类型,索引类型. </li>
-</ul>
-<h2 id="PostgreSQL与MySQL的对比"><a href="#PostgreSQL与MySQL的对比" class="headerlink" title="PostgreSQL与MySQL的对比:"></a>PostgreSQL与MySQL的对比:</h2><ol>
-<li>MySQL多表连接查询只支持Nest Loop,不支持hash join和sort merge join,子查询性能较低,不支持sequence</li>
-<li>性能优化工具和度量信息不足, 异步复制,无法通过主从做到数据零丢失</li>
-<li>在线操作功能弱.</li>
-</ol>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
-<li>基本数据类型: Integer, Numeric, String, Boolean, 二进制bytea, </li>
-<li>字符型: varchar(n), char(n), text</li>
-<li>位串类型: bit(n), bit varying(n)</li>
-<li>枚举类型: enum</li>
-<li>网络地址类型: cidr, inet, macaddr</li>
-<li>结构型: Data/Time, Array, Range, UUID</li>
-<li>文档型: JSON, XML, K-V</li>
-<li>几何型: 点, 线, 圈, 多边形</li>
-<li>定制型: 组合, 定制类型</li>
-</ul>
-<h2 id="数据完整性"><a href="#数据完整性" class="headerlink" title="数据完整性"></a>数据完整性</h2><ul>
-<li>UNIQUE, NOT NULL</li>
-<li>主键</li>
-<li>外键</li>
-<li>排除约束</li>
-<li>Explicit Locks</li>
-<li>Advisory Locks</li>
-</ul>
-<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><ul>
-<li><p>创建   </p>
-<blockquote>
-<p>   create table test_array (</p>
-<pre><code>id          integer,
-array_i     integer[],
-array_t     text[]
-</code></pre><p>  )</p>
-</blockquote>
-</li>
-<li><p>插入</p>
-<ul>
-<li>花括号表示<blockquote>
-<p>   insert into test_array(id, array_i, array_t)<br>   values (1, ‘{1,2,3}’, ‘{“a”, “b”, “c”}’);</p>
-</blockquote>
-</li>
-<li>array关键字<blockquote>
-<p>  insert into test_array(id, array_i, array_t)<br>  values (1, array[1,2,3], array[‘a’, ‘b’, ‘c’]);</p>
-</blockquote>
-</li>
-</ul>
-</li>
-<li>查询<ul>
-<li>查询数组所有元素<blockquote>
-<p>select array_i from test_array where id=1;</p>
-</blockquote>
-</li>
-<li>查询数组指定索引. 索引为1到n, n是数组长度<blockquote>
-<p>select array_i[1], array_t[3] from test_array where id=1;    </p>
-</blockquote>
-</li>
-</ul>
-</li>
-<li>追加<blockquote>
-<p>select array_append(array[1,2,3], 4);  </p>
-<pre><code>select array[1,2,3] || 4;
-</code></pre></blockquote>
-</li>
-<li>删除<br>  移除数组中所有等于给定值的元素<blockquote>
-<p>select array_remove(array[1,2,3,2], 2);  </p>
-</blockquote>
-</li>
-<li>修改      <blockquote>
-<p>update test_array set array_i[3]=4 where id=1;<br>  更新整个数组:<br>  update test_array set array_i=array[5,6,7] where id=1;</p>
-</blockquote>
-</li>
-<li><p>替换</p>
-<blockquote>
-<p>array_replace(arr, srcEle, tarEle) 替换数组元素<br>  select array_replace(array[1,2,5,4], 5, 10);<br>  =&gt; {1,2,10,4}</p>
-</blockquote>
-</li>
-<li><p>元素第一次出现的位置</p>
-<blockquote>
-<p>select array_position(array[‘a’,’b’,’c’,’d’], ‘d’);<br>  =&gt; 4   </p>
-</blockquote>
-</li>
-<li><p>to_string   </p>
-<blockquote>
-<p>array_to_string(arr, separator, replaceNull)<br>  select array_to_string(array[1,2,null,3], ‘, ‘, ‘10’);<br>  =&gt; 1,2,10,3</p>
-</blockquote>
-</li>
-<li><p>其他函数</p>
-<blockquote>
-<p>@&gt; 包含  </p>
-<pre><code>&lt;@ 被包含   
-&amp;&amp; 重叠  
-|| 串接  
-array_length 数组长度  
-</code></pre></blockquote>
-</li>
-</ul>
-<h2 id="json-jsonb"><a href="#json-jsonb" class="headerlink" title="json/jsonb"></a>json/jsonb</h2><h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><ol>
-<li>json数据类型存储格式为文本,而jsonb数据类型存储格式为二进制<br>检索json数据时必须重新解析,而jsonb类型不需要.<br>因此, json写入比jsonb快,检索比jsonb慢</li>
-<li>jsonb输出键的顺序和输入不一样, json输出键的顺序和输入完全一样</li>
-<li>jsonb类型会去掉输入数据键值的空格, json不会删掉空格.</li>
-<li>jsonb会删掉重复的键,仅保留最后一个. json会保留重复的键值.<blockquote>
-<p>推荐: 大多数场景下使用jsonb, 对json的键顺序有要求时可以使用json</p>
-</blockquote>
-</li>
-</ol>
-<ul>
-<li>创建<blockquote>
-<p>create table test_json(id serial primary key, name json);</p>
-</blockquote>
-</li>
-<li>插入<blockquote>
-<p>insert into test_json(name) values (‘{“col1”:1, “col2”:”francs”, “col3”: “male”}’);</p>
-</blockquote>
-</li>
-<li><p>查询</p>
-<blockquote>
-<p>select name -&gt; ‘col2’ from test_json where id=1;  </p>
-<pre><code>=&gt; &quot;francs&quot;  (json)
-以文本格式返回json字段键值  
-select name -&gt;&gt; &apos;col2&apos; from test_json where id=1;  
-=&gt; &quot;francs&quot; (text)
-</code></pre></blockquote>
-</li>
-<li><p>字符串是否为顶层键值</p>
-<blockquote>
-<p>select ‘{“a”:1, “b”:2}’::jsonb ? ‘a’;<br>  =&gt; true</p>
-</blockquote>
-</li>
-<li>删除json数据的键/值    <blockquote>
-<p>select ‘{“a”:1, “b”:2}’::jsonb - ‘a’;<br>  =&gt; “{“b”: 2}” (jsonb)  </p>
-<ul>
-<li>删除json数组中的值,索引从0开始.<br>select ‘[“red”, “green”, “blue”]’::jsonb -0;<br>=&gt; [“green”, “blue”]</li>
-<li>删除嵌套json使用#-加上数组形式的删除路径<br>select ‘{“name”:  “James”,  “contact”:  {“phone”:  “01234  567890”,  “fax”:<br>  “01987543210”}}’::jsonb #- ‘{contact, fax}’::text[]<br>=&gt; “{“name”: “James”, “contact”: {“phone”: “01234  567890”}}”</li>
-<li>删除嵌套的json数组: 使用text数组指明要删除的位置<br>select ‘{“name”: “James”, “aliases”: [“Jamie”, “The Jamester”, “J Man”]}’<br>:: jsonb #- ‘{alias,1}’::text[];<br>=&gt; “{“name”: “James”, “aliases”: [“Jamie”, “J Man”]}”</li>
-</ul>
-</blockquote>
-</li>
-</ul>
-<ul>
-<li>扩展最外层json对象成一组键值结果集<blockquote>
-<p>select * from json_each(‘{“a”:”foo”, “b”:”bar”}’);<br>  =&gt;key text  value json  </p>
-<pre><code>a    &quot;foo&quot;  
-b    &quot;bar&quot;  
-以文本形式返回:  
-select * from json_each_text(&apos;{&quot;a&quot;:&quot;foo&quot;, &quot;b&quot;:&quot;bar&quot;}&apos;);  
-</code></pre><p>  =&gt;key text  value text  </p>
-<pre><code>a    foo  
-b    bar  
-</code></pre></blockquote>
-</li>
-<li>把行作为json对象返回<blockquote>
-<p>select row_to_json(test_copy) from test_copy where id=1;       </p>
-</blockquote>
-</li>
-<li><p>返回最外层的json对象中的键的集合</p>
-<blockquote>
-<p>select * from json_object_keys(‘{“a”:”foo”, “b”:”bar”}’);<br>   a<br>   b  </p>
-</blockquote>
-</li>
-<li><p>jsonb追加</p>
-<blockquote>
-<p>select ‘{“name”:”francs”, “age”:”31”}’::jsonb || ‘{“gender”:”male”}’::jsonb;<br>  =&gt; “{“age”: “31”, “name”: “francs”, “gender”: “male”}” </p>
-</blockquote>
-</li>
-<li><p>更新</p>
-<ul>
-<li>覆盖更新<blockquote>
-<p>select ‘{“name”:”francs”, “age”:”31”}’ :: jsonb || ‘{“age”: “32”, “name”: “francs”}’;    </p>
-</blockquote>
-</li>
-<li>jsonb_set, true:键不存在则添加, false:键不存在则不添加<blockquote>
-<p>select jsonb_set(‘{“name”:”francs”, “age”:”31”}’ :: jsonb, ‘{age}’, ‘“32”‘::jsonb, true);<br>  注意32前后有单引号<br>=&gt; “{“age”: “32”, “name”: “francs”}”<br>select jsonb_set(‘{“name”:”francs”, “age”:”31”}’::jsonb, ‘{sex}’, ‘“male”‘::jsonb, true);<br>=&gt;  {“age”: “31”, “sex”: “male”, “name”: “francs”}</p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><ul>
-<li>varchar转为text<blockquote>
-<p>select cast(varchar ‘123’ as text);</p>
-</blockquote>
-</li>
-<li>varchar转为int4    <blockquote>
-<p>select cast(varchar ‘123’ as int4);</p>
-</blockquote>
-</li>
-<li>通过::操作符转换<blockquote>
-<p>select 1::int4, 3/2::numeric;   </p>
-</blockquote>
-</li>
-</ul>
-<h2 id="with查询"><a href="#with查询" class="headerlink" title="with查询"></a>with查询</h2><pre><code>with t as (
-    select generate_series(1,3)
-)
-select * from t;
------------
-1
-2
-3 
-</code></pre><ul>
-<li>递归查询</li>
-</ul>
-<pre><code>with recursive t (x) as (
-    select 1
-    union
-    select x + 1
-    from t
-    where x &lt; 5
-)    
-select sum(x) from t;
-</code></pre><p>层级查询实例:</p>
-<pre><code>CREATE TABLE test_area(id int4, name varchar(32), fatherid int4);
-INSERT INTO test_area VALUES (1, &apos;中国&apos;   ,0);
-INSERT INTO test_area VALUES (2, &apos;辽宁&apos;   ,1);
-INSERT INTO test_area VALUES (3, &apos;山东&apos;   ,1);
-INSERT INTO test_area VALUES (4, &apos;沈阳&apos;   ,2);
-INSERT INTO test_area VALUES (5, &apos;大连&apos;   ,2);
-INSERT INTO test_area VALUES (6, &apos;济南&apos;   ,3);
-INSERT INTO test_area VALUES (7, &apos;和平区&apos; ,4);
-INSERT INTO test_area VALUES (8, &apos;沈河区&apos; ,4);    
+        <p>计算机程序的构造和解释</p>
+<p>第1章 构造过程抽象<br>1.1 程序设计的基本元素<br>1.2 过程与它们所产生的计算<br>1.3 用高阶函数做抽象</p>
+<p>第2章 构造数据抽象<br>2.1 数据抽象导引<br>2.2 层次性数据和闭包性质<br>2.3 符号数据<br>    2.3.1 引进将任意符号作为数据的功能<br>    2.3.2 符号求导<br>2.4 抽象数据的多重表示<br>    2.4.1 复数的表示<br>2.5 带有通用型操作的系统</p>
+<p>第3章 模块化、对象和状态<br>3.1 赋值和局部状态<br>3.2 求值的环境模型<br>3.3 用变动数据做模拟<br>3.4 并发：时间是一个本质问题<br>3.5 流</p>
+<p>第4章 元语言抽象<br>4.1 元循环求值器<br>4.2 Scheme的变形——惰性求值<br>4.3 Scheme的变形——非确定性计算<br>4.4 逻辑程序设计</p>
+<p>第5章 寄存器机器里的计算<br>5.1 寄存器机器的设计<br>5.2 一个寄存器机器模拟器<br>5.3 存储分配和废料收集<br>5.4 显式控制的求值器<br>5.5 编译</p>
 
--- 找到和平区的所有父节点
-with recursive r as (
-    select * from test_area where id = 7
-    union all
-    select test_area.* from test_area, r where test_area.id = r.fatherid
-)
-select * from r order by id;
-
--- 拼接name字段, 输出&quot;中国辽宁沈阳和平区&quot;
- with recursive r as (
-        select * from test_area where id = 7
-        union all
-        select test_area.* from test_area, r where test_area.id = r.fatherid
-    )
-    select string_agg(name, &apos;&apos;) from (select name from r order by id) as n;
-
- -- 查找沈阳市及管辖的区
- with recursive r as (
-     select * from test_area where id = 4
-     union all
-     select test_area.* from test_area, r where test_area.fatherid = r.id
- )
- select * from r order by id;
-</code></pre><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
-<li>简化SQL代码,减少SQL嵌套次数,提高可读性</li>
-<li>计算一次,在主查询中多次使用</li>
-<li>不需要共享查询结果时,比视图更轻量.    </li>
-</ul>
-<h2 id="批量插入"><a href="#批量插入" class="headerlink" title="批量插入"></a>批量插入</h2><ul>
-<li>通过表数据或函数批量插入<blockquote>
-<p>insert into tbl(id, name) select id, name from user_ini;<br>insert into tbl(id, info) select generate_series(1,5), ‘batch2’;</p>
-</blockquote>
-</li>
-<li>insert into values(),(),()<blockquote>
-<p>insert into tble(id, name) values (1,’a’), (2,’b’);<br>  减少和数据库的交互,减少数据库wal日志生成,提升插入效率.</p>
-</blockquote>
-</li>
-<li>copy或\copy元命令  <blockquote>
-<p>导出<br>   copy pguser.tbl to ‘/home/pg10/tbl.txt’<br>  导入  </p>
-<pre><code>copy pguser.tbl from &apos;/home/pg10/tbl.txt&apos;  
-</code></pre></blockquote>
-</li>
-</ul>
-<h2 id="returning"><a href="#returning" class="headerlink" title="returning"></a>returning</h2><p>INSERT语句后接RETURNING属性返回插入的数据；<br>UPDATE语句后接RETURNING属性返回更新后的新值；<br>DELETE语句后接RETURNING属性返回删除的数据      </p>
-<blockquote>
-<p>insert into test_re(flag) values(‘a’) returning id;</p>
-</blockquote>
-<h2 id="upsert"><a href="#upsert" class="headerlink" title="upsert"></a>upsert</h2><p>insert … on conflict update</p>
-<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><ul>
-<li>select 连接两列合并为一列<blockquote>
-<p>select first_name  || ‘ ‘ ||  last_name as full_name, email from customer;</p>
-</blockquote>
-</li>
-<li>order by时升序NULL在最后，降序NULL在最前</li>
-<li>distinct bcolor, fcolor 这样使用distinct时会把这两列作为整体进行去重</li>
-<li><blockquote>
-<p>select distinct on (bcolor) bcolor, fcolor from t1 order by bcolor ,fcolor;     </p>
-</blockquote>
-<p>  先按照bcolor, fcolor对行进行排序，每一组重复的bcolor中选取第一个所在的行。</p>
-</li>
-<li><blockquote>
-<p>limit n offset m </p>
-</blockquote>
-<p>  跳过m个，选取n个. 注意m数量不要太大  </p>
-<p> fetch是postgresql对sql标准的实现，和limit offset功能相同</p>
-<blockquote>
-<p>OFFSET start { ROW | ROWS } FETCH { FIRST | NEXT } [ row_count ] { ROW | ROWS } ONLY        </p>
-<ul>
-<li>where in 既可以接列表，也可以接一个子查询。</li>
-<li>like匹配符： % 匹配任意个字符， _ 匹配单个字符</li>
-<li>和null做 = 比较，永远为false， 因此使用 is null 和 is not null</li>
-</ul>
-</blockquote>
-</li>
-<li><p>找到表a中有的b中没有的行: </p>
-<blockquote>
-<p>basket_a a LEFT JOIN basket_b b ON a.fruit = b.fruit WHERE b.id IS NULL;  </p>
-</blockquote>
-</li>
-<li>找到表a和表b中各自独特的行：<blockquote>
-<p>basket_a a FULL JOIN basket_b b ON a.fruit = b.fruit WHERE a.id IS NULL OR b.id IS NULL;</p>
-</blockquote>
-</li>
-<li>join 等价于 inner join</li>
-<li>self-join 查询有层级体系的数据，同一张表中比较行。</li>
-<li>json与jsonb：<ul>
-<li>json是对输入文本的完整拷贝，保留输入的空格，重复键和顺序。处理函数必须在每个执行上重新解析。存储快，读取慢。</li>
-<li>jsonb是解析输入后保存的二进制，在解析时会删除不必要的空格和重复键，顺序也会不同，使用时不用再次解析。支持索引。存储慢，读取快。</li>
-</ul>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/SQL//" class="article-tag-list-link color4">SQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/PostgreSQL Notes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Ramda碎碎念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Ramda碎碎念/">Ramda碎碎念</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/Ramda碎碎念/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>prop基于path实现.<br>    prop = (p, obj) =&gt; path([p], obj)</p>
-<pre><code>path一层层索引
-
-    R.path([&apos;a&apos;, &apos;b&apos;], {a: {b: 2}}); //=&gt; 2a
-    R.prop(&apos;x&apos;, {x: 100}); //=&gt; 100
-</code></pre><p>descend = (f, a, b) =&gt; f(a) &gt; f(b) ? -1 : f(a) &lt; f(b) ? 1 : 0<br>类似地: ascend…</p>
-<p>sort = (comparator, list) =&gt; Array.prototype.slice.call(list, 0).sort(comparator)<br>sort函数实现直接用的原生实现,不过返回了新list,而且curry了.</p>
-<p>comparator :: a -&gt; b -&gt; Int</p>
-<p>thrush combinator 接受一个值, 并将函数作用于其上.  applyTo = (x, f) =&gt; f(x)<br>    const t42 = R.applyTo(42);<br>    t42(R.identity); //=&gt; 42<br>    t42(R.add(1)); //=&gt; 43</p>
-<p>keys 返回对象最外层key    </p>
-<p>applySpec : 接受一个属性值为函数的对象,返回的函数使用传入的参数调用对象的每个属性位对应的函数，来生成相应属性的值。</p>
-<pre><code>const getMetrics = R.applySpec({
-    sum: (a,b,c) =&gt; a+b+c,
-    nested: { mul: (a,b,c) =&gt; a*b*c }
-});
-print(getMetrics(2, 5, 4)) // { sum: 11, nested: { mul: 40 } }
-
-内部函数: mapValues = (f, obj) =&gt; 
-            R.keys(obj).reduce((acc, key) =&gt; {
-                acc[key] = f(obj[key])
-                return acc
-            }, {})
-        是为了避免specs函数也包含map
-
-pluck 从列表内的每个对象元素中取出特定名称的属性，组成一个新的列表
-    pluck = (p, list) =&gt; map(prop(p), list)
-
-    var getAges = R.pluck(&apos;age&apos;);
-    getAges([{name: &apos;fred&apos;, age: 29}, {name: &apos;wilma&apos;, age: 27}]); //=&gt; [29, 27]
-
-    R.pluck(0, [[1, 2], [3, 4]]);               //=&gt; [1, 3]
-    R.pluck(&apos;val&apos;, {a: {val: 3}, b: {val: 5}}); //=&gt; {a: 3, b: 5}
-</code></pre><p>addIndex: 没咋看懂<br>adjust: 将数组中指定索引处的值替换为经函数变换的值<br>    R.adjust(1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);      //=&gt; [‘a’, ‘B’, ‘c’, ‘d’]<br>    R.adjust(-1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);     //=&gt; [‘a’, ‘b’, ‘c’, ‘D’]</p>
-<pre><code>实现: 统一索引,利用_concat新建list,将索引处值替换.
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Ramda碎碎念/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/类型系统/">类型和程序设计语言</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/03/类型系统/" class="archive-article-date">
-  	<time datetime="2019-04-03T07:50:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>多态类型,子类型,依赖类型 三个正交分支</p>
-<p>递归由函数不动点实现</p>
-<p>p355 解答</p>
-<h1 id="无类型系统"><a href="#无类型系统" class="headerlink" title="无类型系统"></a>无类型系统</h1><h2 id="无类型算术表达式"><a href="#无类型算术表达式" class="headerlink" title="无类型算术表达式"></a>无类型算术表达式</h2><p>练习3.24 p38<br>    S1 = {true,false,0}<br>    Si+1 = Si^3 + Si*3 + 3<br>    解释: 不考虑类型合不合适.<br>    得: S3有59439个元素.</p>
-<p>练习3.25 归纳证明 构造Sj Si Si+1</p>
-<h4 id="3-4-语义形式"><a href="#3-4-语义形式" class="headerlink" title="3.4 语义形式"></a>3.4 语义形式</h4><ul>
-<li>操作语义<ul>
-<li>小步语义 结构操作语义<br>定义一个简单的抽象机器来说明一个程序语言的行为.<br>用语言的项作为机器状态,对每个状态,要么通过对项做一步简化给出下一个状态,<pre><code>要么声明机器已停止.
-</code></pre></li>
-<li>大步语义 自然语义<br>  抽象机器的一个单个转换就可以将项求值为最终值.                                   </li>
-</ul>
-</li>
-<li>指称语义<br>  一个项的语义不仅是机器状态的序列,而且是某个数学对象,如一个数或一个函数.<br>  一个语言的指称语义是由一个语义域的集合和将项映射到域中元素的解释函数所组成.</li>
-<li>公理语义<br>  用规则本身作为语言的定义.一个项的语义就是关于这个项我们能证明的东西.</li>
-</ul>
-<h2 id="无类型lambda演算"><a href="#无类型lambda演算" class="headerlink" title="无类型lambda演算"></a>无类型lambda演算</h2><h2 id="项的无名称表示"><a href="#项的无名称表示" class="headerlink" title="项的无名称表示"></a>项的无名称表示</h2><h1 id="简单类型"><a href="#简单类型" class="headerlink" title="简单类型"></a>简单类型</h1><h2 id="类型算术表达式"><a href="#类型算术表达式" class="headerlink" title="类型算术表达式"></a>类型算术表达式</h2><h2 id="简单类型的lambda演算"><a href="#简单类型的lambda演算" class="headerlink" title="简单类型的lambda演算"></a>简单类型的lambda演算</h2><h2 id="简单扩展"><a href="#简单扩展" class="headerlink" title="简单扩展"></a>简单扩展</h2><h1 id="子类型化"><a href="#子类型化" class="headerlink" title="子类型化"></a>子类型化</h1><h2 id="子类型"><a href="#子类型" class="headerlink" title="子类型"></a>子类型</h2><h2 id="子类型元理论"><a href="#子类型元理论" class="headerlink" title="子类型元理论"></a>子类型元理论</h2><h1 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h1><h2 id="递归类型-1"><a href="#递归类型-1" class="headerlink" title="递归类型"></a>递归类型</h2><h2 id="递归类型元理论"><a href="#递归类型元理论" class="headerlink" title="递归类型元理论"></a>递归类型元理论</h2><h1 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h1><h2 id="类型重构"><a href="#类型重构" class="headerlink" title="类型重构"></a>类型重构</h2><h2 id="全程类型"><a href="#全程类型" class="headerlink" title="全程类型"></a>全程类型</h2><h2 id="存在类型"><a href="#存在类型" class="headerlink" title="存在类型"></a>存在类型</h2><h1 id="高阶系统"><a href="#高阶系统" class="headerlink" title="高阶系统"></a>高阶系统</h1><h2 id="高阶多态"><a href="#高阶多态" class="headerlink" title="高阶多态"></a>高阶多态</h2><h2 id="高阶子类型化"><a href="#高阶子类型化" class="headerlink" title="高阶子类型化"></a>高阶子类型化</h2>
       
 
       
@@ -713,21 +197,10 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/PL//" class="article-tag-list-link color3">PL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/类型系统/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/SICP目录/">展开全文 >></a>
         </p>
       
 
@@ -757,27 +230,145 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 
 
   
-    <article id="post-Ramda搜索关键字得到图片列表并展示" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java8查漏补缺" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">Ramda搜索关键字得到图片列表并展示</a>
+      <a class="article-title" href="/2019/04/05/Java8查漏补缺/">Java8查漏补缺</a>
     </h1>
   
 
         
-        <a href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/" class="archive-article-date">
-  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+        <a href="/2019/04/05/Java8查漏补缺/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">requirejs.config(&#123;</span><br><span class="line">    paths: &#123;</span><br><span class="line">        ramda: <span class="string">'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.13.0/ramda.min'</span>,</span><br><span class="line">        jquery: <span class="string">'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>([</span><br><span class="line">    <span class="string">'ramda'</span>,</span><br><span class="line">    <span class="string">'jquery'</span>,</span><br><span class="line">],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">_, $</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> Impure = &#123;</span><br><span class="line">            getJSON: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">callback, url</span>) </span>&#123;</span><br><span class="line">                $.getJSON(url, callback);</span><br><span class="line">            &#125;),</span><br><span class="line"></span><br><span class="line">            setHtml: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">sel, html</span>) </span>&#123;</span><br><span class="line">                $(sel).html(html)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> img = <span class="function"><span class="keyword">function</span> (<span class="params">url</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> $(<span class="string">'&lt;img /&gt;'</span>, &#123; <span class="attr">src</span>: url&#125;);</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> trace = _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">tag, x</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(tag, x);</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> url = <span class="function"><span class="keyword">function</span> (<span class="params">term</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'https://api.flickr.com/services/feeds/photos_public.gne?tags='</span> + term + <span class="string">'&amp;format=json&amp;jsoncallback=?'</span>;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> mediaUrl = _.compose(_.prop(<span class="string">'m'</span>), _.prop(<span class="string">'media'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let srcs = _.compose(_.map(mediaUrl), _.prop('items'));</span></span><br><span class="line">        <span class="comment">// let images = _.compose(_.map(img), srcs);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//上面2行有两个map, 循环了两边.  优化写法:</span></span><br><span class="line">        <span class="keyword">let</span> mediaToImg = _.compose(img, mediaUrl);</span><br><span class="line">        <span class="keyword">let</span> images = _.compose(_.map(mediaToImg), _.prop(<span class="string">'items'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> renderImages = _.compose(Impure.setHtml(<span class="string">"body"</span>), images);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> app = _.compose(Impure.getJSON(renderImages), url);</span><br><span class="line"></span><br><span class="line">        app(<span class="string">"star"</span>);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+        <ol>
+<li><p>函数式接口里可以有继承自Object类的抽象方法.<br> 例:</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><p> 以上代码是合法的.</p>
+</li>
+<li><p>函数式接口的实例可以通过 lambda表达式, 方法引用 或者 构造方法引用 创建.</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyInterface myInterface = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">System.out.println(myInterface.getClass());</span><br><span class="line">System.out.println(myInterface.getClass().getSuperclass());</span><br><span class="line">System.out.println(myInterface.getClass().getInterfaces()[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+class sth.jdk8.Test2$$Lambda$2/1149319664
+class java.lang.Object
+interface sth.jdk8.MyInterface
+</code></pre><p> 可以看到这个函数式接口实例的父类是Object,它实现了接口MyInterface</p>
+<pre><code>通过方法引用创建函数式接口实例
+list.forEach(System.out::println);
+</code></pre></li>
+<li><p>方法引用的四种形式:<br>  类名::实例方法 所对应lambda表达式的第一个参数就是这个调用方法的对象</p>
+</li>
+<li><p>Function&lt;T, R&gt;接口<br> Represents a function that accepts one argument and produces a result.<br> 抽象方法:     R apply(T t);<br> 例:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, String&gt; function)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 默认方法: compose andThen<br> 静态方法: identity</p>
+<p> BiFunction&lt;T, U, R&gt;接口<br> 抽象方法: R apply(T t, U u);<br> 默认方法: <v> BiFunction&lt;T, U, V&gt; andThen(Function&lt;? super R, ? extends V&gt; after)</v></p>
+<p> 重要建议: equals方法 把常量放在前面,变量放在后面. 可以避免变量为null时引发的空指针异常</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Java8查漏补缺/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Elm" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Elm/">Elm</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Elm/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>终端工具:<br>    elm repl<br>        交互. 编译代码到JS, 使用Node.js运行</p>
+<pre><code>elm reactor
+    运行elm项目
+
+elm make
+    构建elm项目
+        elm make Main.elm --output=main.html
+        elm make Main.elm --output=mian.js
+</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">  &lt;title&gt;Main&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">  &lt;link rel="stylesheet" href="whatever-you-want.css"&gt;</span></span><br><span class="line"><span class="regexp">  &lt;script src="main.js"&gt;&lt;/</span>script&gt;</span><br><span class="line">&lt;<span class="regexp">/head&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;body&gt;</span></span><br><span class="line"><span class="regexp">  &lt;div id="elm"&gt;&lt;/</span>div&gt;</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">  <span class="keyword">var</span> app = Elm.Main.init(&#123;</span><br><span class="line">    node: <span class="built_in">document</span>.getElementById(<span class="string">'elm'</span>)</span><br><span class="line">  &#125;);</span><br><span class="line">  &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br><span class="line"><span class="regexp">```                </span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    elm install</span></span><br><span class="line"><span class="regexp">        安装依赖.</span></span><br><span class="line"><span class="regexp">            elm install elm/</span>json</span><br><span class="line"></span><br><span class="line">语言基础:</span><br><span class="line">    值:</span><br><span class="line">        字符串拼接: ++</span><br><span class="line">        浮点数除法: <span class="regexp">/       9 /</span> <span class="number">2</span> == <span class="number">4.5</span></span><br><span class="line">        整数除法: <span class="comment">//       9 // 2 == 4</span></span><br><span class="line">    函数:</span><br><span class="line">        isNegative n = n &lt; <span class="number">0</span></span><br><span class="line">    匿名函数:</span><br><span class="line">        \n -&gt; n &lt; <span class="number">0</span></span><br><span class="line">    数据结构:</span><br><span class="line">        List, Tuples, Records</span><br><span class="line">        Record更新: &#123; model | content = newContent &#125;</span><br><span class="line"></span><br><span class="line">Elm架构:</span><br><span class="line">    Model:  应用状态</span><br><span class="line">    Update: 更新状态</span><br><span class="line">    View:   展示状态</span><br><span class="line"></span><br><span class="line"><span class="string">``</span><span class="string">`elm</span></span><br><span class="line"><span class="string">import Html exposing (..)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- MODEL</span></span><br><span class="line"><span class="string">type alias Model = &#123; ... &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- UPDATE   a set of messages that we will get from the UI</span></span><br><span class="line"><span class="string">type Msg = Reset | ...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">update : Msg -&gt; Model -&gt; Model</span></span><br><span class="line"><span class="string">update msg model =</span></span><br><span class="line"><span class="string">  case msg of</span></span><br><span class="line"><span class="string">    Reset -&gt; ...</span></span><br><span class="line"><span class="string">    ...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-- VIEW</span></span><br><span class="line"><span class="string">view : Model -&gt; Html Msg</span></span><br><span class="line"><span class="string">view model =</span></span><br><span class="line"><span class="string">  ...</span></span><br></pre></td></tr></table></figure>
+<p>用户输入: Buttons, Text Fields, Check Boxes, Radio Buttons.</p>
+<pre><code>             Html
+Elm         -----&gt;
+</code></pre><p>Browser.sandbox         Runtime System — DOM<br>                &lt;—–<br>                  Msg</p>
+<pre><code>             Html
+            Cmd/Sub
+Elm         -----&gt;                 --- HTTP
+</code></pre><p>Browser.element         Runtime System — DOM<br>                &lt;—–                 — Randomness<br>                  Msg                  — Current Time</p>
+<p>command the runtime system to make an HTTP request or<br>    generate a random number.<br>subscribe to the current time.</p>
+<p>Json处理:<br>    单个属性读取:<br>        nameDecoder = field “name” string<br>    嵌套属性读取:<br>        gifDecoder = field “data” (field “image_url” string)<br>    多个属性读取:<br>        type alias Person = {name : String, age : Int}<br>        personDecoder = map2 Person (field “name” string) (field “age” int)</p>
+<p> 与JavaScript的互操作<br>    Flags<br>    Ports</p>
+<p>页面跳转:<br>    Browser.application</p>
+
       
 
       
@@ -802,7 +393,7 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        			<a href="/categories/Elm//" class="article-tag-list-link color4">Elm</a>
         		</li>
       		
 		</ul>
@@ -811,7 +402,86 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Elm/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Caffeine Cache" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Caffeine Cache/">Caffeine Cache</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Caffeine Cache/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Cache接口: 定义通用缓存操作的接口<br>    获取缓存的名字<br>    获取底层的缓存提供者</p>
+<p>CacheManager接口: spring的核心缓存管理服务提供接口<br>    获取给定名字的缓存<br>    获取此缓存管理器的所有缓存名字集合</p>
+<p>ApplicationListener接口: 事件监听器, 观察者模式.<br>    void onApplicationEvent(E event); 处理事件</p>
+<p>ContextRefreshedEvent类: 当ApplicationContext初始化或者刷新时该事件触发</p>
+<p>CacheRefreshNotifier类:<br>    利用PostgreSQL的Notify/Listen机制,配合触发器函数notify_data_change(), 监听表数据的增删改,对缓存进行同步刷新</p>
+<p>注解:<br>    @EnableCaching: 开启缓存管理<br>    @Cacheable: 执行方法的结果可以被缓存<br>    @CacheEvict: 方法会触发清除缓存操作</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Caffeine Cache/">展开全文 >></a>
         </p>
       
 
@@ -843,7 +513,7 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/23/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/25/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/23/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/25/">Next &raquo;</a>
     </nav>
   
 

@@ -349,62 +349,46 @@
 
 
   
-    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes CheetSheet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
+      <a class="article-title" href="/2019/04/24/Kubernetes CheetSheet/">Kubernetes CheetSheet</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+        <a href="/2019/04/24/Kubernetes CheetSheet/" class="archive-article-date">
+  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><pre><code>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.
-</code></pre><h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><pre><code>类从加载到卸载的生命周期7个阶段: 
-    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)
-    解析可以在初始化之后开始.
+        <ol>
+<li><p>获取指定namespace下的pod列表<br>kubectl -n clink-plus get po<br>kubectl -n clink-plus get pod<br>kubectl -n clink-plus get pods<br>最精缩版:<br>kubectlclink-plus get po</p>
+</li>
+<li><p>获取指定pod的信息<br>kubectlclink-plus get po clink2-app-56568b6ff4-dtvwl</p>
+</li>
+</ol>
+<p>加了IP和Node的:<br>kubectlclink-plus get po clink2-app-56568b6ff4-dtvwl -o wide</p>
+<p>以yaml格式展示(巨详细,可以看到镜像的版本):<br>kubectlclink-plus get po clink2-app-56568b6ff4-dtvwl -o yaml</p>
+<p>使用describe<br>kubectlclink-plus describe pod clink2-app-56568b6ff4-dtvwl</p>
+<ol start="3">
+<li><p>显示node的详细信息<br>kubectl describe node cn-beijing.i-2ze938t1plplf6q7hdvg</p>
+</li>
+<li><p>登录pod<br>kubectlclink-plus exec clink2-agent-647c888dfb-s6qv6 -it bash<br>退出bash: exit</p>
+</li>
+<li><p>看日志<br>kubectlclink-plus log -f clink2-chat-record-7fcbc899cc-r7v27</p>
+</li>
+</ol>
+<p>查看configmap(里面有redis用的几号库)<br>kubectl -n clink-plus get cm<br>kubectl -n clink-plus edit cm clink2-chat-weixin-env</p>
+<p>部署节点数<br>kubectl -n clink-plus edit deploy clink2-chat-weixin</p>
 
-5种必须对类进行初始化的情况:
-    1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
-    2. 使用reflect包方法对类进行反射调用时.
-    3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
-    4. 虚拟机启动时用户指定要执行的主类
-    5. 动态语言支持
-
-不会触发初始化的引用--被动引用:
-    1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
-    2. 通过数组定义来引用类,不会触发类的初始化
-        package org.fenixsoft.classloading
-            SuperClass[] sca = new SuperClass[10];
-        类org.fenixsoft.classloading.SuperClass不会被初始化.
-        但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
-            创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
-            数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
-    3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
-
-对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.
-</code></pre><h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><pre><code>加载
-    1. 通过一个类的全限定名来获取定义此类的二进制字节流
-    2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
-    3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
-验证
-
-准备
-
-解析
-
-初始化
-</code></pre><h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2>
       
 
       
@@ -418,7 +402,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
         		</li>
       		
 		</ul>
@@ -427,7 +411,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/Kubernetes CheetSheet/">展开全文 >></a>
         </p>
       
 
@@ -457,19 +441,19 @@
 
 
   
-    <article id="post-JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JVM故障排查" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JWT/">JWT</a>
+      <a class="article-title" href="/2019/04/24/JVM故障排查/">JVM故障排查</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/JWT/" class="archive-article-date">
+        <a href="/2019/04/24/JVM故障排查/" class="archive-article-date">
   	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
@@ -477,47 +461,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>了解JWT相关知识</p>
-<pre><code>JWT组成: 
-    Header.Payload.Signature
-    头部.负载.签名
-
-头部:
-    {
-       &quot;alg&quot;: &quot;HS256&quot;,
-        &quot;typ&quot;: &quot;JWT&quot;
-    }
-    alg表示签名的算法，默认是HMAC SHA256, typ表示这个令牌的类型.
-
-负载:
-    iss (issuer)：签发人
-    exp (expiration time)：过期时间
-    sub (subject)：主题
-    aud (audience)：受众
-    nbf (Not Before)：生效时间
-    iat (Issued At)：签发时间
-    jti (JWT ID)：编号
-
-签名: 对前两部分的签名,防止数据篡改.
-    HMACSHA256(
-        base64UrlEncode(header) + &quot;.&quot; +
-        base64UrlEncode(payload),
-        secret)
-把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用&quot;点&quot;（.）分隔
-</code></pre></li>
-</ol>
-<p>Spring中使用JWT:</p>
-<pre><code>1. 编写由登录对象转为token和由token获取登录对象的方法.
-2. 继承OncePerRequestFilter,重写doFilterInternal方法,对每一次请求进行token检查.
-3. 使用@AuthenticationPrincipal注解, 根据前端传过来的header获取登录对象.
-</code></pre><ol start="2">
-<li>postgresql的具体使用:<pre><code>读取数组属性:
-    1. 定义ArrayTypeHandelr继承BaseTypeHandler,重写get,set方法
-    2. 指定mybatis的类型处理器包的位置为ArrayTypeHandelr所在包.
-    3. 定义数组属性所在类型的resultMap.
-</code></pre></li>
-</ol>
+        <h2 id="jps-JVM-Process-Status-Tool"><a href="#jps-JVM-Process-Status-Tool" class="headerlink" title="jps (JVM Process Status Tool)"></a>jps (JVM Process Status Tool)</h2><p>列出正在运行的虚拟机进程<br>-v 输出虚拟机进程启动时JVM参数</p>
+<h2 id="jstat-JVM-Statistics-Monitoring-Tool"><a href="#jstat-JVM-Statistics-Monitoring-Tool" class="headerlink" title="jstat (JVM Statistics Monitoring Tool)"></a>jstat (JVM Statistics Monitoring Tool)</h2><p>监视虚拟机各种运行状态信息</p>
 
       
 
@@ -532,7 +477,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -541,7 +486,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JWT/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/JVM故障排查/">展开全文 >></a>
         </p>
       
 

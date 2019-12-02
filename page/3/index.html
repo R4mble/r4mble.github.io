@@ -151,6 +151,105 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-SICP in JS系列(1) - 模块化,对象和状态" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/">SICP in JS系列(1) - 模块化,对象和状态</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/" class="archive-article-date">
+  	<time datetime="2019-10-10T02:11:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>synthesis n. 综合, 综合法</li>
+<li>coherent adj. 条理清楚的, 连贯的; 前后一致的</li>
+<li>extent n. 长度, 面积, 范围</li>
+<li>dictate vt. 指示; 指定; 指令</li>
+<li>prominent 显著的; 突出的</li>
+<li>linguistic adj. 语言的, 语言学的, 语言研究的</li>
+<li>grapple 抓住；格斗</li>
+<li>exploit vt. 开发，开拓；剥削；开采 n. 勋绩；功绩</li>
+<li>deposit n. 存款；保证金；沉淀物 vt. 存放；使沉积 vi. 沉淀</li>
+<li>elapse  时间过去；消逝<br>adequate adj. 充分的, 足够的 适当的, 胜任的<br>consequence n. 结果, 后果 重要(性), 重大<br>thicket n. 丛林；灌木丛；错综复杂</li>
+</ul>
+<p>两种构建系统的方式:</p>
+<ol>
+<li>基于对象的, 对象的行为会随着时间而变化</li>
+<li>基于流的, 信息流从系统流过.</li>
+</ol>
+<p>基于对象最适合高内聚,低耦合的系统.</p>
+<p>“如果想构建随时间变化的系统,那就需要变量”</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> balance = <span class="number">100</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">withdraw</span>(<span class="params">amount</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (balance &gt;= amount) &#123;</span><br><span class="line">        balance = balance - amount</span><br><span class="line">        <span class="keyword">return</span> balance</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Insufficient funds"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把balance内含进去:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_withdraw =</span><br><span class="line">    balance =&gt;</span><br><span class="line">        amount =&gt; </span><br><span class="line">            balance &gt;= amount</span><br><span class="line">            ? balance -= amount</span><br><span class="line">            : <span class="string">"Insufficient funds"</span></span><br></pre></td></tr></table></figure></p>
+<p>整一个bank<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account = <span class="function"><span class="params">balance</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> withdraw =</span><br><span class="line">            amount =&gt;</span><br><span class="line">                balance &gt;= amount</span><br><span class="line">                    ? balance -= amount</span><br><span class="line">                    : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> deposit =</span><br><span class="line">        amount =&gt; balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">m</span> =&gt;</span></span><br><span class="line">            m === <span class="string">"withdraw"</span></span><br><span class="line">                ? withdraw</span><br><span class="line">                : m === <span class="string">"deposit"</span></span><br><span class="line">                    ? deposit</span><br><span class="line">                    : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-1"><a href="#Exercise-3-1" class="headerlink" title="Exercise 3.1"></a>Exercise 3.1</h3><p>搞个累加器<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_accumulator = <span class="function"><span class="params">init</span> =&gt;</span> num =&gt; init += num</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-2"><a href="#Exercise-3-2" class="headerlink" title="Exercise 3.2"></a>Exercise 3.2</h3><p>函数调用次数统计<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_monitored = <span class="function"><span class="params">f</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> counter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> exec = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">        counter += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> f(arg)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">arg</span> =&gt;</span></span><br><span class="line">        arg === <span class="string">"how many calls?"</span></span><br><span class="line">            ? counter</span><br><span class="line">            : arg === <span class="string">"reset count"</span></span><br><span class="line">                ? counter = <span class="number">0</span></span><br><span class="line">                : exec(arg)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-3"><a href="#Exercise-3-3" class="headerlink" title="Exercise 3.3"></a>Exercise 3.3</h3><p>给之前的bank加个密码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account_password = <span class="function">(<span class="params">balance, password</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> withdraw =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance &gt;= amount</span><br><span class="line">                ? balance -= amount</span><br><span class="line">                : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> deposit =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">pd, m</span>) =&gt;</span></span><br><span class="line">                pd === password</span><br><span class="line">                    ? m === <span class="string">"withdraw"</span></span><br><span class="line">                        ? withdraw</span><br><span class="line">                        : m === <span class="string">"deposit"</span></span><br><span class="line">                            ? deposit</span><br><span class="line">                            : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">                    : <span class="function"><span class="params">num</span> =&gt;</span> <span class="string">"incorrect password"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-4"><a href="#Exercise-3-4" class="headerlink" title="Exercise 3.4"></a>Exercise 3.4</h3><p>连续输错7次密码, 自动报警<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account_call_cops = <span class="function">(<span class="params">balance, password</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> wrong_time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> withdraw =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance &gt;= amount</span><br><span class="line">                ? balance -= amount</span><br><span class="line">                : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> deposit =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> call_the_cops = <span class="function"><span class="params">()</span> =&gt;</span> <span class="string">"How dare you!"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> normal = <span class="function"><span class="params">m</span> =&gt;</span> &#123;</span><br><span class="line">        wrong_time = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> m === <span class="string">"withdraw"</span></span><br><span class="line">                ? withdraw</span><br><span class="line">                : m === <span class="string">"deposit"</span></span><br><span class="line">                    ? deposit</span><br><span class="line">                    : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">pd, m</span>) =&gt;</span></span><br><span class="line">        pd === password</span><br><span class="line">            ? normal(m)</span><br><span class="line">            : <span class="function"><span class="params">num</span> =&gt;</span></span><br><span class="line">                ++wrong_time &gt; <span class="number">7</span></span><br><span class="line">                    ? call_the_cops()</span><br><span class="line">                    : <span class="string">"incorrect password"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Japanese系列(1) - 香菜sweets parade" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1629,85 +1728,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/10/07/Japanese系列(0) - 50音图/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-TypeScript文档" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/07/TypeScript文档/">TypeScript文档</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/07/TypeScript文档/" class="archive-article-date">
-  	<time datetime="2019-10-07T04:29:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>就闲着无聊, 来点script.</p>
-<h2 id="神奇的-for-in-和-for-of"><a href="#神奇的-for-in-和-for-of" class="headerlink" title="神奇的 for in 和 for of"></a>神奇的 for in 和 for of</h2><p>for..in迭代的是对象的 键 的列表，而for..of则迭代对象的键对应的值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> list = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> list) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i); <span class="comment">// "0", "1", "2",</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> list) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i); <span class="comment">// "4", "5", "6"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>for..in可以操作任何对象；它提供了查看对象属性的一种方法。 但是 for..of关注于迭代对象的值<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> pets = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="string">"Cat"</span>, <span class="string">"Dog"</span>, <span class="string">"Hamster"</span>]);</span><br><span class="line">pets[<span class="string">"species"</span>] = <span class="string">"mammals"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> pet <span class="keyword">in</span> pets) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(pet); <span class="comment">// "species"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> pet <span class="keyword">of</span> pets) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(pet); <span class="comment">// "Cat", "Dog", "Hamster"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="没看人用过的-Symbol"><a href="#没看人用过的-Symbol" class="headerlink" title="没看人用过的 Symbol"></a>没看人用过的 Symbol</h2><p>symbol类型的值是通过Symbol构造函数创建的, 不可改变且唯一</p>
-<h2 id="有点意思的特性"><a href="#有点意思的特性" class="headerlink" title="有点意思的特性"></a>有点意思的特性</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x = <span class="number">3</span></span><br><span class="line">print(x = x <span class="number">-3</span>)</span><br><span class="line">print(x)</span><br></pre></td></tr></table></figure>
-<p>修改和赋值合并</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/TypeScript//" class="article-tag-list-link color1">TypeScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/07/TypeScript文档/">展开全文 >></a>
         </p>
       
 

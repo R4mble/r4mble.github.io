@@ -151,171 +151,70 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java线程池ThreadPoolExecutor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>阿里巴巴<br>一面（36分钟）芝麻信用<br>1.HashMap和Hashtable区别<br><img src="HashMap&amp;Hashtable&amp;ConcurrentHashMap.md" alt="HashMap&amp;Hashtable&amp;ConcurrentHashMap"></p>
-<p>2.为什么产生死锁<br>线程A持有锁a等待获取锁b, 线程B持有锁b等待获取锁a</p>
-<ul>
-<li>竞争资源: 1.可剥夺资源:某进程获得这类资源后,该资源可以被其他进程或系统剥夺, 如CPU和主存<pre><code>2. 不可剥夺资源: 当系统把这类资源分配给某进程后, 再不能强行收回, 只能在进程用完后自行释放, 如磁带机,打印机等
-3. 临时资源: 硬件中断,信号,消息,缓存区内的消息等
-</code></pre>  产生死锁的竞争资源: 不可剥夺资源, 临时资源</li>
-</ul>
-<p>死锁产生的4个必要条件:<br>    1.互斥条件: 进程要求对所分配的资源进行排它性控制，即在一段时间内某资源仅为一进程所占用。<br>    2.请求和保持条件: 当进程因请求资源而阻塞时，对已获得的资源保持不放。<br>    3.不剥夺条件: 进程已获得的资源在未使用完之前，不能剥夺，只能在使用完时由自己释放。<br>    4.环路等待条件: 在发生死锁时，必然存在一个进程–资源的环形链。</p>
-<p>解决死锁的方法:<br>    1.资源一次性分配: 一次性分配所有资源，这样就不会再有请求了：（破坏请求条件）<br>    2.只要有一个资源得不到分配, 也不给这个进程分配其他的资源（破坏请保持条件）<br>    3.可剥夺资源: 当某进程获得了部分资源,但得不到其他资源,则释放已占有的资源（破坏不可剥夺条件）<br>    4.资源有序分配法: 系统给每类资源赋予一个编号,每一个进程按编号递增的顺序请求进程,释放则相反(破坏环路等待条件)</p>
-<p>死锁检测: Jstack命令 JConsole工具</p>
-<p>3.jvm类加载<br><img src="JVM类加载机制.md" alt="JVM类加载机制"></p>
-<p>4.java反射获取私有属性，改变值</p>
-<p>Class类: 代表类的实体<br>Field类: 代表类的成员变量<br>Method类: 代表类的方法<br>Constructor类: 代表类的构造方法<br>        Class&lt;?&gt; classBook = Class.forName(“reflect.Book”);<br>        Object objectBook = classBook.newInstance();<br>        Field fieldTag = classBook.getDeclaredField(“tag”);<br>        fieldTag.setAccessible(true);<br>        fieldTag.set(objectBook, “interesting”);</p>
-<pre><code>System.out.println(objectBook);
-</code></pre><p>5.反射用途</p>
-<ul>
-<li>根据类名创建实例(类名可以从配置文件读取)</li>
-<li>用Method.invoke执行方法</li>
-</ul>
-<p>6.所用数据库<br>PostgreSQL MySQl</p>
-<ul>
-<li>MySQL的text字段要区分small text, middle text, large text, PostgreSQL没有这个限制,text可以支持各种大小</li>
-<li>MySQL需要utf8mb4显示emoji, PG不用</li>
-<li>PG有jsonb</li>
-</ul>
-<p>7.项目难点，问题<br>8.如何解决项目中遇到的问题<br>9.项目中遇到最自豪的地方<br>10.会什么算法</p>
-<p>二面（44分钟）支付宝创新<br>1.讲项目<br>2.数据库乐观锁使用</p>
-<p>事务的四个特性: 原子性,一致性,隔离性,持久性 ACID<br>              一致性由主键,外键约束保证, 持久性由预写日志和数据库管理系统的恢复子系统保证, 原子性和隔离性由事务管理器和MVCC来控制</p>
-<p>非预期现象: 脏读,不可重复读,幻读,序列化异常<br>脏读: 第一个事务读到了第二个事务已经修改但还未提交的数据, 当第二个事务不提交并执行ROLLBACK后, 第一个事务读到的数据是不正确的, 即脏读<br>不可重复读: 一个事务第一次读取数据后,被读取的数据被另一个已经提交的事务进行了修改,事务再次读取这些数据时发现数据已经被另一个事务修改,<br>            两次查询结果不一致, 即不可重复读<br>幻读: 一个事务两次查询的结果集记录数不一致. 幻读可以认为是受INSERT DELETE影响的不可重复读的一种特殊场景</p>
-<p>四种隔离级别: 读未提交,读已提交,可重复读,可序列化<br>读未提交: 所有事务都可以看到其他未提交事务的执行结果, 性能不比其他隔离级别好, 很少用<br>读已提交: PG的默认隔离级别,一个事务只能看见已提交事务<br>可重复读: 确保同一个事务的多个实例在并发读取数据时, 会看到同样的数据行.<br>可序列化: 强制事务排序, 在每个读的数据行上加上共享锁, 可能导致大量的超时现象和锁竞争</p>
-<p>并发控制模型: 基于锁的并发控制, 基于多版本的并发控制<br>基于锁的并发控制: 排他锁: 被加锁的对象只能被持有锁的事务读取和修改, 其他事务无法在该对象上加其他锁,也不能读取和修改该对象<br>               共享锁: 被加锁的对象可以被持锁事务读取, 但不能被修改, 其他事务也可以在上面再加共享锁.</p>
-<p>封锁对象的大小被称为封锁粒度: 可以是逻辑单元: 属性值,属性值的集合,元组,关系,索引项,整个索引项甚至整个数据库<br>                         也可以是物理单元: 页(数据页或索引页), 物理记录等</p>
-<p>基于多版本的并发控制: MVCC, 乐观锁:<br>    每一个写操作创建一个新的版本, 当事务发出一个读操作时,并发控制管理器选择一个版本进行读取.<br>    即: 为数据增加一个版本标识, 读取时连同版本号一起读出, 更新时对版本号加一.</p>
-<pre><code>一个事务无论运行多长时间, 在同一个事务里都能看到一致的数据.
-根据事务开始的时间不同,同一个时刻不同事务看到的相同表里的数据可能不同.
-</code></pre><p>PG为每一个事务分配一个递增的,int32的整型数作为唯一事务id, 称为xid.<br>每一行记录有4个与事务可见性相关的隐藏列: xmin,xmax,cmin,cmax<br>cmin,cmax分别是插入和删除该元组的命令在事务中的命令序列标识<br>xmin,xmax与事务对其他事务的可见性相关,用于同一个事务中的可见性判断</p>
-<p>插入一行数据时, PG会将插入这行数据的事务的xid存储在xmin中.<br>a.由回滚的事务或未提交的事务创建的行对于其他事物都是不可见的<br>b.无论提交成功或回滚的事务,xid都会递增</p>
-<p>一个事务元组的xmin小于另一个事务的xmin,那么另一个事务对这个事务是不可见的</p>
-<p>3.状态机<br>State<br>Event<br>Action<br>Transition</p>
-<p>4.如何解决状态机不对问题</p>
-<p>5.如何分库分表<br>对于因为表多而数据多,适合垂直切分,把关系紧密的表切分出来放到一个server上;<br>对于表不多数据多, 适合水平切分, 把表按照某种规则(如按ID散列)切分到多个数据库(server)上.</p>
-<p>要解决的问题:<br>    事务问题: 1.使用分布式事务   2.由应用程序和数据库共同控制<br>    跨节点Join: 分两次查询<br>    跨节点count,order by, group by: 在各个节点得到结果后在应用程序端进行合并<br>    数据迁移,容量规划,扩容: 对2的倍数取余（如对4取余得1的数对2取余也是1）  ,可以向前兼容.<br>    ID: 不能依赖自增主键.<br>        UUID: 长,占用空间大, 建立索引和基于索引进行查询都有性能问题.<br>        Sequence表 (table_name, next_id): 该表容易成为系统性能瓶颈,一旦该表失效,整个程序都崩; 读写1:1<br>        Twitter分布式自增ID算法Snowflake:   1位未使用(可用作long的符号位) + 毫秒级时间41位 + 机器ID 10位 + 毫秒内序列12位<br>                                         每秒产生26万ID</p>
-<p>6.MySQL极限<br>7.HashMap源码<br><img src="HashMap&amp;Hashtable&amp;ConcurrentHashMap.md" alt="HashMap"></p>
-<p>8.设计一个线程安全的HashMap</p>
-<ul>
-<li>所有public方法加上synchronized, Hashtable思路, Collections.synchronizedMap()</li>
-<li>每个桶都加一个锁</li>
-<li>锁分离: 把桶均匀分成16部分, 每个部分加一个锁, JDK7的ConcurrentHashMap思路</li>
-<li>CAS指令, 链表太长转换为红黑树</li>
-</ul>
-<p>9.快排的实现，时间复杂度和空间复杂度<br><img src="./快排.md" alt="快排"></p>
-<p>10.会什么算法<br>11.如何把项目变成SOA架构</p>
-<p>12.Spring源码，最深刻的模块，aop用途</p>
-<p>13.JVM内存模型</p>
-<p>14.垃圾回收机制<br>15.项目中查看垃圾回收</p>
-<p>三面(33分钟)菜鸟国际<br>1.项目中的权限管理<br>2.登录状态如何储存<br>3.session和cookie的区别,session如何管理<br>4.HashMap底层结构<br>5.synchronized关键字的用法<br>6.synchronized修饰类方法和普通方法的锁区别,获取类锁之后还能获取对象锁吗<br>7.类加载器的双亲委派模型的作用,能重复加载某个类吗<br>8.类加载器的类的缓存,key是什么<br>9.介绍Redis<br>10.如何将数据分布在不同的Redis<br>11.有了解过取余算法?<br>12.spring的apo实现<br>13.字节码结构<br>14.浏览器输入网址过程,结合springmvc</p>
-<p>四面(36分钟)菜鸟国际供应链<br>1.HashMap在大量哈希冲突该怎么处理<br>2.红黑树比BST优点<br>3.MySQL为什么使用B+树<br>4.多个索引会有多份数据吗<br>5.数据库的隔离级别和解决的问题<br>6.数据库默认隔离级别,一定会产生幻读吗,怎么解决<br>7.输入网址到展示的整个过程,结合springmvc来讲<br>8.负载均衡的算法<br>9.哈弗曼编码,如何解决译码问题<br>10.实习会对工作有影响吗<br>11.用英文介绍一个项目<br>12.如何查看系统负载<br>13.描述一个解决问题的过程<br>14.如何把文件从服务器复制到本地,用什么命令</p>
-<p>五面（27分钟）菜鸟技术部<br>1.当时怎么找到百度这个机会的<br>2.项目中用的哪些技术<br>3.项目如何设计流程流转，如果是你的话该怎么设计<br>4.MySQL使用的索引结构，查找效率<br>5.MySQL查询优化<br>6.MySQL慢查询开启，语句分析<br>7.HashMap查找效率<br>8.JVM内存模型<br>9.设计模式，策略模式的使用场景<br>10.如何确保单例线程安全<br>11.Spring的bean的默认范围<br>12.对Netty的了解<br>13.未来发展规划<br>14.如何让代码可读性更加复杂</p>
-<p>六面（22分钟）HR面<br>1.说一下发展方向<br>2.说一下经验不足导致的问题<br>3.说一下挑战杯的工作内容<br>4.说一下你给挑战杯项目的主要贡献<br>5.实习时间<br>6.拿到了哪些offer，你是怎么考虑的<br>7.为什么不选择腾讯<br>8.腾讯技术栈和阿里技术栈的区别</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/笔记/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
+      <header class="article-header">
         
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-WebRTC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="getUserMedia-浏览器获取用户的摄像头-麦克风"><a href="#getUserMedia-浏览器获取用户的摄像头-麦克风" class="headerlink" title="getUserMedia() 浏览器获取用户的摄像头,麦克风"></a>getUserMedia() 浏览器获取用户的摄像头,麦克风</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> constraints = &#123;<span class="attr">audio</span>: <span class="literal">false</span>, <span class="attr">video</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> video = <span class="built_in">document</span>.querySelector(<span class="string">"video"</span>);</span><br><span class="line"></span><br><span class="line">navigator.mediaDevices.getUserMedia(constraints)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span> (<span class="params">stream</span>) </span>&#123;</span><br><span class="line">        video.srcObject = stream</span><br><span class="line">        video.onloadedmetadata = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            video.play()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(<span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"getUserMedia error: "</span>, err);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/WebRTC/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Java线程池ThreadPoolExecutor/">Java线程池ThreadPoolExecutor</a>
+    </h1>
   
-    <article id="post-SpringCloud - 重新定义SpringCloud实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+
+        
+        <a href="/2020/04/14/Java线程池ThreadPoolExecutor/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>单体应用架构 -&gt; 分布式架构 -&gt; SOA -&gt; 微服务</p>
-<p>分布式架构: 按照业务垂直切分, 每个应用都是单体架构, 通过API互相调用<br>SOA: 服务提供者(Provider)和服务消费者(Consumer), Dubbo<br>微服务: Martin’s SOA</p>
-<p>中间件: 向下屏蔽异构的硬件,软件,网络等计算资源, 向上提供应用开发,运行,维护等全生命周期的统一计算环境与管理.<br>常见的中间件: 服务治理中间件,配置中心,全链路监控,分布式事务,分布式定时任务,消息中间件,API网关,分布式缓存,数据库中间件.</p>
-<p>Spring Cloud是一个中间件.<br>包括: 服务注册与发现,配置中心,全链路监控,API网关,熔断器</p>
-<p>Feign: 一个声明式的Web</p>
+        <pre><code>目的
+    线程是稀缺资源，不能频繁的创建。
+    解耦作用；线程的创建与执行完全分开，方便维护。
+    应当将其放入一个池子中，可以给其他任务进行复用。
+    提高线程的可管理性：线程池可以统一管理、分配、调优和监控
+    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗
+    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    
 
+四个构造函数,其中的一些参数: 
+    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
+                            除非将allowCoreThreadTimeOut设置为true。
+
+    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
+                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
+
+    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
+
+    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
+                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
+
+    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
+                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
+
+    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
+
+    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
+                                        会调用RejectedExecutionHandler的rejectedExecution方法。
+
+线程池规则
+
+    下面都假设任务队列没有大小限制：
+
+        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
+
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
+
+    任务队列大小有限时
+
+        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
+        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
+</code></pre>
       
 
       
@@ -324,10 +223,21 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/SpringCloud - 重新定义SpringCloud实战/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Java线程池ThreadPoolExecutor/">展开全文 >></a>
         </p>
       
 
@@ -360,6 +270,21 @@
     <article id="post-Kubernetes权威指南-从Docker到Kubernetes实践全接触" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">Kubernetes</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><ul>
@@ -388,10 +313,199 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-express" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/express/">express</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/express/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>其实nodejs写起来挺爽的~</p>
+<h1 id="mvc"><a href="#mvc" class="headerlink" title="mvc"></a>mvc</h1><ol>
+<li><p>__dirname<br>常量: 当前目录</p>
+</li>
+<li><p>path.join(<strong>dirname, ‘public’)<br>路径拼接<br>path.join(</strong>dirname, ‘..’, ‘controllers’);<br>两个点表示返回上一层</p>
+</li>
+<li><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">app.response.message = <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sess = <span class="keyword">this</span>.req.session;</span><br><span class="line">  sess.messages = sess.messages || [];</span><br><span class="line">  sess.messages.push(msg);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>给response定义一个message函数, 把msg存到session里</p>
+<ol start="4">
+<li><p>!module.parent<br>用于在没有require语句的情况下直接运行某段代码，如果有require语句，则不执行</p>
+</li>
+<li><p>app.use([path,] callback [, callback…])<br>这个callback既可以是router对象又可以是函数</p>
+</li>
+</ol>
+<p>app.use(‘/home’,router)<br>router路由对象中的路由都会匹配到”/home”路由后面</p>
+<p>app.use(express.static(‘public’));<br>传递一个包含静态资源的目录给express.static中间件用于立即开始提供文件</p>
+<p>app.use(methodOverride(‘_method’));<br>把表单的post请求改写成put, 通过在url里加参数: ?_method=put</p>
+<p>app.use(express.urlencoded({ extended: true }))<br>解析请求体</p>
+<ol start="6">
+<li>!null=true<br>!undefined=true<br>!’’=true<br>!!a 的意思就是 a不为null 且 a不为undefined 且 a不为空字符串</li>
+</ol>
+<ol start="7">
+<li><h1 id="模板引擎-template-engine"><a href="#模板引擎-template-engine" class="headerlink" title="模板引擎 template engine"></a>模板引擎 template engine</h1>我之前是用的jade, 那种缩进式风格深得我意.<br>express官方Example里用的是ejs.<br>设置模板引擎: <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.set(<span class="string">'view engine'</span>, <span class="string">'ejs'</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/FontEnd//" class="article-tag-list-link color3">FontEnd</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/express/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-css心得" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/css心得/">css心得</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/css心得/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p>怎么裁减图片<br>给图片加个div, div的宽高比img小, 并且overflow: hidden, 就能把多的盖住</p>
+</li>
+<li><p>怎么让图片弹性布局<br>display: flex;<br>flex-wrap: wrap;</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/FontEnd//" class="article-tag-list-link color3">FontEnd</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/css心得/">展开全文 >></a>
         </p>
       
 
@@ -692,6 +806,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

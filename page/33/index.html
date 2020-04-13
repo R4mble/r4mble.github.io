@@ -151,79 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Scala实现并行框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Scala实现并行框架/">Scala实现并行框架</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Scala实现并行框架/" class="archive-article-date">
-  	<time datetime="2019-04-05T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接收一个未求值的A,返回一个并行结果(传名函数)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//从并行结果里抽取结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//组合两个并行计算的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Par分配到另一个独立的逻辑线程中运行</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//派生组合子的一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazyUnit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = fork(unit(a))</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">Par</span>[<span class="type">A</span>] </span>= <span class="type">ExecutorService</span> =&gt; <span class="type">Future</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](s: <span class="type">ExecutorService</span>)(a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Future</span>[<span class="type">A</span>] = a(s)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Par</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = (es: <span class="type">ExecutorService</span>) =&gt; <span class="type">UnitFuture</span>(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitFuture</span>[<span class="type">A</span>](<span class="params">get: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Future</span>[<span class="type">A</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isDone</span> </span>= <span class="literal">true</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>(timeout: <span class="type">Long</span>, units: <span class="type">TimeUnit</span>) = get</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isCancelled</span> </span>= <span class="literal">false</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(evenIfRunning: <span class="type">Boolean</span>) : <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>] =</span><br><span class="line">        (es: <span class="type">ExecutorService</span>) =&gt; &#123;</span><br><span class="line">            <span class="keyword">val</span> af = a(es)</span><br><span class="line">            <span class="keyword">val</span> bf = b(es)</span><br><span class="line">            <span class="type">UnitFuture</span>(f(af.get, bf.getb))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>] =</span><br><span class="line">        es =&gt; es.submit(<span class="keyword">new</span> <span class="type">Callable</span>[<span class="type">A</span>] &#123;</span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">call</span> </span>= a(es).get</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Scala实现并行框架/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-Java里的for-in" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -706,6 +633,87 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 
 
   
+    <article id="post-Spring Cloud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Spring Cloud/">Spring Cloud</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Spring Cloud/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Spring Cloud<br>    Spring Cloud Config<br>        配置管理工具包<br>    Spring Cloud Netflix<br>        包含Netflix OSS的基础组件:<br>            Eureka: 云端服务管理,基于REST<br>            Hystrix: 断路器,容错机制,降级机制<br>            Zuul: 动态路由,监控,安全,过滤<br>            Ribbon: 云端负载均衡<br>            Feign: REST客户端</p>
+<p>Ribbon<br>    负载均衡器:<br>        功能:<br>            维护服务器的IP,DNS名称等<br>            根据特定的逻辑在服务器列表中循环<br>        子模块:<br>            Rule: 逻辑组件,决定从服务器列表中返回哪个服务器实例.<br>                默认使用RoundRobinRule,轮询服务器列表.<br>                AvailabilityFilteringRule: 忽略无法连接的服务器,忽略并发数过高的服务器.<br>                WeightedResponseTimeRule: 根据服务器的响应时间,设置权重值.<br>                ZoneAvoidanceRule: 根据区域(机架,机房),可用服务器为基础选择服务器.<br>                BestAvailableRule: 忽略短路的服务器,选择并发数较低的服务器.<br>                RandomRule: 随机选.<br>                RetryRule: 如果使用RoundRobinRule选择的服务器无法连接,重新选择服务器.</p>
+<pre><code>Ping: 使用定时器来确保服务器网络可以连接.每隔一段时间Ping服务器,判断是否存活.
+
+
+ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,也可以
+            动态指定,通过动态指定时会有后台的线程来刷新该列表.
+</code></pre><p>Feign   调用REST服务<br>    使用JDK的动态代理,生成的代理类将请求的信息封装,交给feign.Client接口发送请求,该接口的默认实现类<br>    最终使用java.net.HttpURLConnection来发送HTTP请求.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Spring Cloud/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/32/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="page-number current">33</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/34/">Next &raquo;</a>
@@ -977,6 +985,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

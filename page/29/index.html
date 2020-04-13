@@ -151,6 +151,193 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-es index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/es index/">es index</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/es index/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>创建索引</li>
+</ul>
+<pre><code>PUT /secisland
+{
+    &quot;settings&quot; : {
+        &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
+    }
+}
+三个主分片,两个副本分片
+</code></pre><ul>
+<li>修改副本分片的数量</li>
+</ul>
+<pre><code>PUT /secisland/_settings
+{
+    &quot;number_of_replicas&quot;: 1
+}
+</code></pre><ul>
+<li>创建自定义字段类型</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">PUT /secisland</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span> : &#123;</span><br><span class="line">       <span class="string">"number_of_shards"</span>: <span class="number">3</span>, <span class="string">"number_of_replicas"</span>: <span class="number">2</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"mappings"</span>: &#123;</span><br><span class="line">        <span class="string">"secilog"</span>: &#123;</span><br><span class="line">            <span class="string">"properties"</span>: &#123;</span><br><span class="line">                <span class="string">"logType"</span>: &#123;</span><br><span class="line">                    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">                    <span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /secisland/_mapping/secilog</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"properties"</span>: &#123;</span><br><span class="line">        <span class="string">"logType"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"string"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>创建了一个名为secilog的类型，类型中有一个字段，字段的名称是logType，
+字段的数据类型是string，而且这个字段是不进行分析的。
+// 创建失败,
+</code></pre><ul>
+<li>增加映射</li>
+</ul>
+<pre><code>PUT /secisland
+{
+    &quot;mappings&quot;: {
+        &quot;log&quot;: {
+            &quot;properties&quot;: {
+                &quot;message&quot;: {
+                    &quot;type&quot;: &quot;string&quot;
+                }
+            }
+        }
+    }
+}
+// 失败.
+</code></pre><p>_source属性内是原始json文档.</p>
+<p>type已过时.一个index中最好只有一种type</p>
+<ul>
+<li>搜索</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+</code></pre><ul>
+<li>轻量搜索</li>
+</ul>
+<pre><code>GET /megacorp/_search?q=last_name:Smith
+</code></pre><ul>
+<li>查询表达式</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match&quot; : {
+            &quot;last_name&quot; : &quot;Smith&quot;
+        }
+    }
+}
+</code></pre><ul>
+<li>range过滤器</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;bool&quot;: {
+            &quot;must&quot;: {
+                &quot;match&quot; : {
+                    &quot;last_name&quot; : &quot;smith&quot; 
+                }
+            },
+            &quot;filter&quot;: {
+                &quot;range&quot; : {
+                    &quot;age&quot; : { &quot;lt&quot; : 30 } 
+                }
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>全文搜索</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match&quot; : {
+            &quot;about&quot; : &quot;rock climbing&quot;
+        }
+    }
+}    
+</code></pre><ul>
+<li>短语搜索, 精确匹配</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match_phrase&quot; : {
+            &quot;about&quot; : &quot;rock climbing&quot;
+        }
+    }
+}    
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/es index/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-es doc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -327,385 +514,6 @@ from和size做分页
 
 
   
-    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Elasticsearch速查手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Elasticsearch速查手册/">Elasticsearch</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/27/Elasticsearch速查手册/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li><p>创建库  </p>
-<pre><code>PUT http://127.0.0.1:9200/secisland
-</code></pre></li>
-<li><p>查看库状态    </p>
-<pre><code>GET http://127.0.0.1:9200/_cat/indices?v
-</code></pre></li>
-<li><p>插入数据</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/secilog/1
-参数:
-    {
-        &quot;computer&quot;: &quot;x1 carbon&quot;,
-        &quot;message&quot; : &quot;for coding&quot;
-    }
-</code></pre></li>
-<li><p>修改文档</p>
-<pre><code>POST http://127.0.0.1:9200/secisland/secilog/1/_update
-参数:
-    {
-        &quot;doc&quot;: {
-            &quot;computer&quot;: &quot;x1 carbon&quot;,
-            &quot;message&quot;: &quot;lenovo&quot;
-        }
-    }
-</code></pre></li>
-<li><p>查询文档</p>
-<pre><code>GET  http://127.0.0.1:9200/secisland/secilog/1/
-</code></pre></li>
-<li><p>删除文档</p>
-<pre><code>DELETE http://127.0.0.1:9200/secisland/secilog/1/
-</code></pre></li>
-<li><p>删除库</p>
-<pre><code>DELETE http://127.0.0.1:9200/secisland/
-</code></pre></li>
-</ul>
-<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ul>
-<li><p>创建三个主分片,两个副本分片的索引</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/
-参数: 
-    {
-        &quot;settings&quot;: {
-            &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
-        }
-    }
-修改副本数量
-    PUT http://127.0.0.1:9200/secisland/_settings/
-    参数:
-     {
-        &quot;number_of_replicas&quot;: 1
-     }
-</code></pre></li>
-</ul>
-<p>创建自定义字段类型</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland
-参数:
-    {
-        &quot;settings&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2},
-        &quot;mappings&quot;: {
-            &quot;secilog&quot;: 
-                {
-                    &quot;properties&quot;: 
-                        {
-                            &quot;logType&quot;: 
-                                {
-                                   &quot;type&quot;: &quot;text&quot;, 
-                                   &quot;index&quot;: &quot;not_analyzed&quot;
-                                }
-                        }
-                }
-            }
-    }
-</code></pre><h2 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h2><p>增加映射</p>
-<ul>
-<li><p>添加索引名为secisland, 文档类型为log, 其中包含字段message, 字段类型是字符串.</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/
-参数:
-{
-    &quot;mappings&quot;: {
-        &quot;log&quot;: {
-            &quot;properties&quot;: {
-                &quot;message&quot;: {&quot;type&quot;: &quot;text&quot;}
-            }
-        }
-    }
-}
-</code></pre></li>
-</ul>
-<ul>
-<li><p>向已存在的索引secisland添加文档类型为user, 包含字段name, 字段类型是keyword </p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/_mapping/user
-  {
-      &quot;properties&quot;: {
-          &quot;name&quot;: {&quot;type&quot;: &quot;keyword&quot;}
-      }
-  }
-</code></pre></li>
-<li><p>多个索引设置映射</p>
-<pre><code>PUT http://127.0.0.1:9200/{index}/_mapping/{type}
-{body}
-</code></pre></li>
-<li><p>获取映射</p>
-<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog
-</code></pre></li>
-<li><p>获取字段映射</p>
-<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog/field/description
-
-只返回字段为description的内容.
-</code></pre></li>
-</ul>
-<h2 id="索引别名"><a href="#索引别名" class="headerlink" title="索引别名:"></a>索引别名:</h2><pre><code>类似数据库中的视图.
-</code></pre><ul>
-<li><p>为索引添加别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {&quot;add&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
-}
-</code></pre></li>
-<li><p>删除别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {&quot;remove&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
-}
-</code></pre></li>
-<li><p>创建过滤索引别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {
-        &quot;add&quot;: {
-            &quot;index&quot;: &quot;test1&quot;, &quot;alias&quot;: &quot;alias2&quot;,
-            &quot;filter&quot;: {&quot;term&quot;: {&quot;user&quot;: &quot;ramble&quot;}}
-        }
-    }
-}
-</code></pre></li>
-</ul>
-<ul>
-<li><p>新建文档(不需要先创建索引)</p>
-<pre><code>PUT http://127.0.0.1:9200/blog/article/2 
-{
-    &quot;title&quot;: &quot;SB ES&quot;,
-    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
-    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
-}
-
-返回结果
-{
-    &quot;_index&quot;: &quot;blog&quot;,
-    &quot;_type&quot;: &quot;article&quot;,
-    &quot;_id&quot;: &quot;2&quot;,
-    &quot;_version&quot;: 1,
-    &quot;result&quot;: &quot;created&quot;,
-    &quot;_shards&quot;: {
-        &quot;total&quot;: 2,
-        &quot;successful&quot;: 1,
-        &quot;failed&quot;: 0
-    },
-    &quot;_seq_no&quot;: 0,
-    &quot;_primary_term&quot;: 1
-}
-</code></pre><p>  再执行一次的话, _version, _seq_no会加一, result会变成updated</p>
-</li>
-<li><p>不指定id, ES会自动生成唯一标识符.(改用了POST方法,因为是更改而不是创建)</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article
-{
-    &quot;title&quot;: &quot;SB ES&quot;,
-    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
-    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
-}
-返回结果
-{
-    &quot;_index&quot;: &quot;blog&quot;,
-    &quot;_type&quot;: &quot;article&quot;,
-    &quot;_id&quot;: &quot;_qm_l2sBFUlcgb1-d5N2&quot;,
-    &quot;_version&quot;: 1,
-    &quot;result&quot;: &quot;created&quot;,
-    &quot;_shards&quot;: {
-        &quot;total&quot;: 2,
-        &quot;successful&quot;: 1,
-        &quot;failed&quot;: 0
-    },
-    &quot;_seq_no&quot;: 0,
-    &quot;_primary_term&quot;: 1
-}
-</code></pre></li>
-<li><p>检索文档</p>
-<pre><code>GET http://127.0.0.1:9200/blog/article/2 
-</code></pre></li>
-<li><p>更新文档</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
-{
-    &quot;script&quot;: &quot;ctx._source.content = \&quot;new content\&quot;&quot;
-}
-只修改了content字段和version.
-</code></pre></li>
-</ul>
-<p>要更新索引中的文档, ES先获取文档,从_source属性获得数据,删除旧的<br>文件,更改_source属性,然后把它作为新的文档来索引.<br>信息一旦在Lucene的倒排索引中存储,就不能再被更改,ES通过一个带_update<br>参数的脚本来实现它.</p>
-<ul>
-<li><p>如果文档中没有该字段,使用upsert来提供该字段的默认值.</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
-{
-    &quot;script&quot;: {
-        &quot;source&quot;: &quot;ctx._source.counter += params.count&quot;,
-        &quot;lang&quot;: &quot;painless&quot;,
-        &quot;params&quot;: {
-            &quot;count&quot;: 4
-        }
-    },
-    &quot;upsert&quot;: {&quot;counter&quot;: 0}
-}
-</code></pre></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Elasticsearch速查手册/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-DDIA系列(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -777,6 +585,109 @@ from和size做分页
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/27/DDIA系列(1)/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Category-Theory-for-Programmers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Category-Theory-for-Programmers/">Category Theory for Programmers</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Category-Theory-for-Programmers/" class="archive-article-date">
+  	<time datetime="2019-04-27T10:02:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Category-The-Essence-of-Composition"><a href="#Category-The-Essence-of-Composition" class="headerlink" title="Category: The Essence of Composition"></a>Category: The Essence of Composition</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><blockquote>
+<p>A category consists of objects and arrows  that go between them.<br>    范畴与组合互为本质:<br>        The essence of a category is composition.</p>
+</blockquote>
+<pre><code>The essence of composition is a category.
+</code></pre><hr>
+<h2 id="组合的性质"><a href="#组合的性质" class="headerlink" title="组合的性质:"></a>组合的性质:</h2><pre><code>    1. Associativity
+        (伏笔:  Associativity is pretty obvious when dealing with functions, 
+                but it may be not as obvious in other categories.)
+    2. Identity
+
+组合是编程的本质
+</code></pre><hr>
+<pre><code>Challenges 
+  实现identity和compose
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Function</span>&lt;<span class="title">T</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">R <span class="title">apply</span><span class="params">(T t)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> &lt;V&gt; <span class="function">Function&lt;V, R&gt; <span class="title">compose</span><span class="params">(Function&lt;? <span class="keyword">super</span> V, ? extends T&gt; before)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(before);</span><br><span class="line">        <span class="keyword">return</span> (V v) -&gt; apply(before.apply(v));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &lt;T&gt; <span class="function">Function&lt;T, T&gt; <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> t -&gt; t;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>测试
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IdentityTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(id).compose(f2).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute2</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(f2).compose(id).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="keyword">new</span> IdentityTest().compute(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        <span class="keyword">int</span> res2 = <span class="keyword">new</span> IdentityTest().compute2(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        System.out.println(res);</span><br><span class="line">        System.out.println(res2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用JavaScript来实现<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> identity = <span class="function"><span class="params">x</span> =&gt;</span> x</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> x =&gt; f(g(x))</span><br></pre></td></tr></table></figure></p>
+<p>测试<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add5 = <span class="function"><span class="params">x</span> =&gt;</span> x + <span class="number">5</span></span><br><span class="line"><span class="keyword">const</span> multi2 = <span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(compose(identity, compose(add5, multi2))(<span class="number">5</span>))</span><br><span class="line"><span class="built_in">console</span>.log(compose(add5, compose(identity, multi2))(<span class="number">5</span>))</span><br></pre></td></tr></table></figure></p>
+<h1 id="Types-and-Functions"><a href="#Types-and-Functions" class="headerlink" title="Types and Functions"></a>Types and Functions</h1><h1 id="Categories-Great-and-Small"><a href="#Categories-Great-and-Small" class="headerlink" title="Categories Great and Small"></a>Categories Great and Small</h1><h1 id="Kleisli-Categories"><a href="#Kleisli-Categories" class="headerlink" title="Kleisli Categories"></a>Kleisli Categories</h1><h1 id="Products-and-Coproducts"><a href="#Products-and-Coproducts" class="headerlink" title="Products and Coproducts"></a>Products and Coproducts</h1><h1 id="Simple-Algebraic-Data-Types"><a href="#Simple-Algebraic-Data-Types" class="headerlink" title="Simple Algebraic Data Types"></a>Simple Algebraic Data Types</h1><h1 id="Functors"><a href="#Functors" class="headerlink" title="Functors"></a>Functors</h1><h1 id="Functoriality"><a href="#Functoriality" class="headerlink" title="Functoriality"></a>Functoriality</h1><h1 id="Function-Types"><a href="#Function-Types" class="headerlink" title="Function Types"></a>Function Types</h1><h1 id="Natural-Transformations"><a href="#Natural-Transformations" class="headerlink" title="Natural Transformations"></a>Natural Transformations</h1><h1 id="Declarative-Programming"><a href="#Declarative-Programming" class="headerlink" title="Declarative Programming"></a>Declarative Programming</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Free-Monoids"><a href="#Free-Monoids" class="headerlink" title="Free Monoids"></a>Free Monoids</h1><h1 id="Representable-Functors"><a href="#Representable-Functors" class="headerlink" title="Representable Functors"></a>Representable Functors</h1><h1 id="The-Yoneda-Lemma"><a href="#The-Yoneda-Lemma" class="headerlink" title="The Yoneda Lemma"></a>The Yoneda Lemma</h1><h1 id="Yoneda-Embedding"><a href="#Yoneda-Embedding" class="headerlink" title="Yoneda Embedding"></a>Yoneda Embedding</h1><h1 id="Morphisms"><a href="#Morphisms" class="headerlink" title="Morphisms"></a>Morphisms</h1><h1 id="Adjunctions"><a href="#Adjunctions" class="headerlink" title="Adjunctions"></a>Adjunctions</h1><h1 id="Free-Forgetful-Adjunctions"><a href="#Free-Forgetful-Adjunctions" class="headerlink" title="Free/Forgetful Adjunctions"></a>Free/Forgetful Adjunctions</h1><h1 id="Monads-Programmer’s-Definition"><a href="#Monads-Programmer’s-Definition" class="headerlink" title="Monads: Programmer’s Definition"></a>Monads: Programmer’s Definition</h1><h1 id="Monads-and-Effects"><a href="#Monads-and-Effects" class="headerlink" title="Monads and Effects"></a>Monads and Effects</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Category-Theory-for-Programmers/">展开全文 >></a>
         </p>
       
 
@@ -1077,6 +988,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

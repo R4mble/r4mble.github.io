@@ -236,85 +236,6 @@
 
 
   
-    <article id="post-Python-流畅的Python系列(1) - Python数据模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/">Python-流畅的Python系列(1) - Python数据模型</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/" class="archive-article-date">
-  	<time datetime="2019-12-12T08:58:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&lt;&lt;流畅的Python&gt;&gt;</p>
-<h1 id="Python数据模型"><a href="#Python数据模型" class="headerlink" title="Python数据模型"></a>Python数据模型</h1><ol>
-<li>Python风格:<br>一副牌:<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> choice</span><br><span class="line"></span><br><span class="line">man = (<span class="string">'Ali'</span>, <span class="number">30</span>)</span><br><span class="line">print(man[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">Animal = namedtuple(<span class="string">'Animal'</span>, <span class="string">'name age type'</span>)</span><br><span class="line">perry = Animal(name=<span class="string">'perry'</span>, age=<span class="number">31</span>, type=<span class="string">'cat'</span>)</span><br><span class="line">print(perry)</span><br><span class="line">print(perry.age)</span><br><span class="line">print(perry._asdict()[<span class="string">'name'</span>])</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Card = namedtuple(<span class="string">'Card'</span>, [<span class="string">'rank'</span>, <span class="string">'suit'</span>])</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FrenchDeck</span>:</span></span><br><span class="line">    ranks = [str(n) <span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">2</span>, <span class="number">11</span>)] + list(<span class="string">'JQKA'</span>)</span><br><span class="line">    suits = <span class="string">'spades diamonds clubs hearts'</span>.split()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self._cards = [Card(rank, suit) <span class="keyword">for</span> suit <span class="keyword">in</span> self.suits</span><br><span class="line">                                        <span class="keyword">for</span> rank <span class="keyword">in</span> self.ranks]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self._cards)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, position)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self._cards[position]</span><br><span class="line"></span><br><span class="line">beer_card = Card(<span class="string">'7'</span>, <span class="string">'diamonds'</span>)</span><br><span class="line">print(beer_card)</span><br><span class="line">deck = FrenchDeck()</span><br><span class="line">print(len(deck))</span><br><span class="line">print(deck[<span class="number">0</span>])</span><br><span class="line">print(deck[<span class="number">15</span>])</span><br><span class="line">print(deck[<span class="number">-1</span>])</span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(choice(deck))</span><br><span class="line">print(deck[:<span class="number">3</span>])</span><br><span class="line"><span class="comment"># 每隔13张牌拿一张</span></span><br><span class="line">print(deck[<span class="number">12</span>::<span class="number">13</span>])</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现了__getitem__方法, FrenchDeck是可迭代的</span></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> deck:</span><br><span class="line">    print(card)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> reversed(deck):</span><br><span class="line">    print(card)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 集合类没有实现__contain__方法, in运算符会按顺序做迭代搜索</span></span><br><span class="line">print(Card(<span class="string">'5'</span>, <span class="string">'beats'</span>) <span class="keyword">in</span> deck)</span><br><span class="line">print(Card(<span class="string">'5'</span>, <span class="string">'hearts'</span>) <span class="keyword">in</span> deck)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line">suit_values = dict(spades=<span class="number">3</span>, hearts=<span class="number">2</span>, diamonds=<span class="number">1</span>, clubs=<span class="number">0</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spades_high</span><span class="params">(card)</span>:</span></span><br><span class="line">    rank_value = FrenchDeck.ranks.index(card.rank)</span><br><span class="line">    <span class="keyword">return</span> rank_value * len(suit_values) + suit_values[card.suit]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> sorted(deck, key=spades_high):</span><br><span class="line">    print(card)</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>可以, 这很Python~</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> hypot</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Vector</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x=<span class="number">0</span>, y=<span class="number">0</span>)</span>:</span></span><br><span class="line">        self.x = x</span><br><span class="line">        self.y = y</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Vector(%r, %r)'</span> % (self.x, self.y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__abs__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> hypot(self.x, self.y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__bool__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> bool(abs(self))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__add__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">        x = self.x + other.x</span><br><span class="line">        y = self.y + other.y</span><br><span class="line">        <span class="keyword">return</span> Vector(x, y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__mul__</span><span class="params">(self, other: int)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Vector(self.x * other, self.y * other)</span><br><span class="line"></span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>) + Vector(<span class="number">3</span>, <span class="number">5</span>))</span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>) * <span class="number">3</span>)</span><br><span class="line">print(abs(Vector(<span class="number">1</span>, <span class="number">2</span>)))</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Python//" class="article-tag-list-link color2">Python</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-Python-流畅的Python系列(2) - 数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -368,6 +289,85 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Python-流畅的Python系列(1) - Python数据模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/">Python-流畅的Python系列(1) - Python数据模型</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/" class="archive-article-date">
+  	<time datetime="2019-12-12T08:58:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&lt;&lt;流畅的Python&gt;&gt;</p>
+<h1 id="Python数据模型"><a href="#Python数据模型" class="headerlink" title="Python数据模型"></a>Python数据模型</h1><ol>
+<li>Python风格:<br>一副牌:<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> choice</span><br><span class="line"></span><br><span class="line">man = (<span class="string">'Ali'</span>, <span class="number">30</span>)</span><br><span class="line">print(man[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">Animal = namedtuple(<span class="string">'Animal'</span>, <span class="string">'name age type'</span>)</span><br><span class="line">perry = Animal(name=<span class="string">'perry'</span>, age=<span class="number">31</span>, type=<span class="string">'cat'</span>)</span><br><span class="line">print(perry)</span><br><span class="line">print(perry.age)</span><br><span class="line">print(perry._asdict()[<span class="string">'name'</span>])</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Card = namedtuple(<span class="string">'Card'</span>, [<span class="string">'rank'</span>, <span class="string">'suit'</span>])</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FrenchDeck</span>:</span></span><br><span class="line">    ranks = [str(n) <span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">2</span>, <span class="number">11</span>)] + list(<span class="string">'JQKA'</span>)</span><br><span class="line">    suits = <span class="string">'spades diamonds clubs hearts'</span>.split()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self._cards = [Card(rank, suit) <span class="keyword">for</span> suit <span class="keyword">in</span> self.suits</span><br><span class="line">                                        <span class="keyword">for</span> rank <span class="keyword">in</span> self.ranks]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self._cards)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, position)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self._cards[position]</span><br><span class="line"></span><br><span class="line">beer_card = Card(<span class="string">'7'</span>, <span class="string">'diamonds'</span>)</span><br><span class="line">print(beer_card)</span><br><span class="line">deck = FrenchDeck()</span><br><span class="line">print(len(deck))</span><br><span class="line">print(deck[<span class="number">0</span>])</span><br><span class="line">print(deck[<span class="number">15</span>])</span><br><span class="line">print(deck[<span class="number">-1</span>])</span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(choice(deck))</span><br><span class="line">print(deck[:<span class="number">3</span>])</span><br><span class="line"><span class="comment"># 每隔13张牌拿一张</span></span><br><span class="line">print(deck[<span class="number">12</span>::<span class="number">13</span>])</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现了__getitem__方法, FrenchDeck是可迭代的</span></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> deck:</span><br><span class="line">    print(card)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> reversed(deck):</span><br><span class="line">    print(card)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 集合类没有实现__contain__方法, in运算符会按顺序做迭代搜索</span></span><br><span class="line">print(Card(<span class="string">'5'</span>, <span class="string">'beats'</span>) <span class="keyword">in</span> deck)</span><br><span class="line">print(Card(<span class="string">'5'</span>, <span class="string">'hearts'</span>) <span class="keyword">in</span> deck)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line">suit_values = dict(spades=<span class="number">3</span>, hearts=<span class="number">2</span>, diamonds=<span class="number">1</span>, clubs=<span class="number">0</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spades_high</span><span class="params">(card)</span>:</span></span><br><span class="line">    rank_value = FrenchDeck.ranks.index(card.rank)</span><br><span class="line">    <span class="keyword">return</span> rank_value * len(suit_values) + suit_values[card.suit]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> sorted(deck, key=spades_high):</span><br><span class="line">    print(card)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>可以, 这很Python~</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> hypot</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Vector</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x=<span class="number">0</span>, y=<span class="number">0</span>)</span>:</span></span><br><span class="line">        self.x = x</span><br><span class="line">        self.y = y</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Vector(%r, %r)'</span> % (self.x, self.y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__abs__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> hypot(self.x, self.y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__bool__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> bool(abs(self))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__add__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">        x = self.x + other.x</span><br><span class="line">        y = self.y + other.y</span><br><span class="line">        <span class="keyword">return</span> Vector(x, y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__mul__</span><span class="params">(self, other: int)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Vector(self.x * other, self.y * other)</span><br><span class="line"></span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>) + Vector(<span class="number">3</span>, <span class="number">5</span>))</span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>) * <span class="number">3</span>)</span><br><span class="line">print(abs(Vector(<span class="number">1</span>, <span class="number">2</span>)))</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Python//" class="article-tag-list-link color2">Python</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/">展开全文 >></a>
         </p>
       
 
@@ -753,6 +753,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

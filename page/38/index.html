@@ -151,173 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-MyBatis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/MyBatis/">MyBatis</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/MyBatis/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="MyBatis实操经验"><a href="#MyBatis实操经验" class="headerlink" title="MyBatis实操经验"></a>MyBatis实操经验</h2><h2 id="MyBatis整体架构"><a href="#MyBatis整体架构" class="headerlink" title="MyBatis整体架构"></a>MyBatis整体架构</h2><ul>
-<li><p>基础支持层</p>
-<ul>
-<li>数据源模块（连接池功能，检测连接状态）</li>
-<li>事务管理模块，缓存模块（一级、二级缓存，运行在同一个JVM）</li>
-<li>Binding模块（将用户自定义的Mapper接口与映射配置文件关联起来）</li>
-<li>反射模块（封装java原生的反射，提供优化，缓存了类的元数据，提高反射性能）</li>
-<li>类型转换模块（别名机制，JDBC类型和Java类型的转换）</li>
-<li>日志模块（集成第三方日志模块）</li>
-<li>资源加载模块（对类加载器进行封装，确定类加载器的使用顺序</li>
-<li>提供了加载类文件和其他资源文件的功能）</li>
-<li>解析器模块（对XPath进行封装，为解析config文件提供支持；为处理动态SQL语句中的占位符提供支持）</li>
-</ul>
-</li>
-<li><p>核心处理层</p>
-<ul>
-<li>配置解析（加载mybatis-config.xml、*Mapper.xml和Mapper接口中的注解信息，解析后形成相应的对象保存到Configuration对象中，利用该对象创建SqlSessionFactory）</li>
-<li>参数映射，SQL解析，SQL执行（Executor维护一级、二级缓存，提供事务管理的相关操作，将数据库相关操作委托给StatementHandler完成。StatementHandler通过<pre><code>ParameterHandler完成SQL语句的实参绑定，然后通过java.sql.Statement对象执行SQL语句并得到结果集ResultSet，最后通过ResultSetHandler完成结果集映射，得到结果并返回），结果集映射，插件（拦截SQL语句进行重写）。
-</code></pre></li>
-</ul>
-</li>
-<li><p>接口层：SqlSession</p>
-</li>
-<li><p>解析器模块, XML解析方式</p>
-<ul>
-<li>DOM(Document Object Model)<ul>
-<li>树形结构解析，将整个XML文档读入内存构建DOM树：文档节点、元素节点、属性节点、文本节点、注释节点。</li>
-<li>易于编程、节点间导航和修改数据，资源消耗大。</li>
-</ul>
-</li>
-<li>SAX(Simple API for XML)<ul>
-<li>基于事件模型解析，推模式。解析到某类型节点时会触发注册在该类型节点上的回调函数。</li>
-<li>流式处理，需要自己维护节点之间的关系。</li>
-</ul>
-</li>
-<li>StAX(Streaming API for XML)<ul>
-<li>拉模式，应用程序通过调用解析器推进解析进程。<ul>
-<li>两套API：基于指针的，效率高但抽象程度低；基于迭代器的，应用程序把XML文档当做一系列事件对象来处理，效率低但抽象程度高。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>MyBatis在初始化过程中使用DOM解析方式。XPath是一种查询XML文档的语言。</p>
-</blockquote>
-<blockquote>
-<p>Java基本类型有默认值，在动态SQL部分属性判断总不为空，因此在实体类中使用包装类型。<br>Java中的byte[]对应数据库中的BOLB、LONGVARBINARY等<br>insert标签包含flushCache属性，默认为true，语句被调用时清空一、二级缓存。<br>给参数配置@Param注解后，MyBatis自动将参数封装为Map类型，@Param注解值作为Map中的key。</p>
-</blockquote>
-<p>动态SQL：</p>
-<ul>
-<li>if：用在where语句中，通过判断参数值来决定是否使用某个查询条件；用在update语句中判断是否更新某一个字段；用在insert语句中判断是否插入某个字段的值。</li>
-<li>choose(when、otherwise)：实现if…else逻辑</li>
-<li>trim(where、set)：<ul>
-<li>where: 如果该标签有返回值，就插入一个where，如果where后面的字符串是以and和or开头，则将它们剔除。</li>
-<li>set： 如果该标签有返回值，就插入一个set，如果set后面的字符串是以逗号结尾，则将逗号剔除。</li>
-<li>如果set元素中没有内容，set后面连着where，会产生SQL错误，因此需要在set标签最后加上id = #{id}</li>
-</ul>
-</li>
-<li>trim: <ul>
-<li>prefix: 当trim元素包含内容时，给内容增加prefix指定的前缀</li>
-<li>suffix: 当trim元素包含内容时，给内容增加suffix指定的前缀</li>
-<li>prefixOverrides: 当trim元素包含内容时，会把内容中匹配的前缀字符串去掉</li>
-<li>suffixOverrides: 当trim元素包含内容时，会把内容中匹配的后缀字符串去掉</li>
-</ul>
-</li>
-<li>foreach：${} 配合 in 的方式不能防止sql注入。可以用#{} 配合 foreach<ul>
-<li>collection: 要迭代循环的属性</li>
-<li>item：变量名</li>
-<li>index：索引属性名，List中为当前索引值，Map中为key</li>
-<li>open：整个循环内容开头的字符串</li>
-<li>close：整个循环内容结尾的字符串</li>
-<li>separator：每次循环的分隔符</li>
-<li>collection的属性设置<ul>
-<li>只有一个数组参数或者集合参数</li>
-<li>批量插入</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>bind： 防止sql注入。创建变量并绑定到上下文中。</li>
-</ul>
-<p>${} 与 #{}</p>
-<pre><code>#{}：解析为一个JDBC预编译语句的参数标记符，参数占位符。
-${}: 仅仅为String替换，在动态SQL解析阶段进行变量替换。
-</code></pre><p>高级查询<br>    高级结果映射</p>
-<pre><code>存储过程
-
-枚举或其他对象
-</code></pre><p>缓存配置<br>    一级缓存    </p>
-<pre><code>二级缓存
-</code></pre><p>@SpringBootTest 注解必须要加<br>路径前面的/不能省略<br>@RequestBody 在实体类上加上 @JsonRootName(value = “user”)<br>这么写json {“user”:{“email”:”<a href="mailto:sanshi.30@qq.com" target="_blank" rel="noopener">sanshi.30@qq.com</a>“,”username”:”Ramble”,”password”:”1234567”}}</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MyBatis//" class="article-tag-list-link color3">MyBatis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/MyBatis/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-Ramda碎碎念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -436,19 +269,19 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 
 
   
-    <article id="post-Nodejs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Ramda里的柯西化实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Nodejs/">nodejs</a>
+      <a class="article-title" href="/2019/04/04/Ramda里的柯西化实现/">Ramda里的柯西化实现</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Nodejs/" class="archive-article-date">
+        <a href="/2019/04/04/Ramda里的柯西化实现/" class="archive-article-date">
   	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
 </a>
         
@@ -456,23 +289,12 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Nodejs适合I/O密集型应用,而不适合计算密集型应用(模板渲染, 压缩/解压缩, 加/解密).<br>数据密集型实时应用程序(data-intensive real-time): 在线协作的白板, 多人在线游戏<br>应用场景: 1.JSON APIs, Node.js非阻塞IO模型和对JSON的支持</p>
-<pre><code>2. 单页面,多Ajax请求应用, 处理大量异步请求. 如Gmail
-3. UNIX命令行工具, Node.js可以大量生产子进程,并以流的方式输出
-4. 流式数据, 传统Web应用会把HTTP请求和响应看成原子事件, 而Node.js可以使用流式数据, 如实时文件上传系统transloadit
-5. 准实时应用系统: 聊天系统,微博系统. JS的GC会使系统停止工作, 导致响应时间不平滑
-</code></pre><p>Node.js优点: 事件驱动, 异步编程, 非阻塞IO</p>
-<p>Node standard library: http, net, stream, events, buffer…<br>Node bindings: JavaScript通过bindings调用C++,相互交换数据<br>基础构件: V8(JavaScript VM), libuv(提供跨平台,线程池,事件池,异步IO能力),<br>        C-ares(提供异步处理DNS相关能力), http_parser,OpenSSL,zlib(提供HTTP解析,SSL,数据压缩等能力)</p>
-<p>全局变量:<br>    process:<br>        process.argv 命令行参数数组,第一个元素是node,第二个是脚本名称,之后是运行参数<br>        process.stdout<br>        process.stdin<br>        process.nextTick(callback) 为事件循环设置一项任务,Node.js会在下次事件循环调响应<br>                                                      时调用callback.<br>                    目的: 缩短事件的执行时间<br>        process.platform<br>        process.pid<br>        process.execPath<br>        process.memoryUsage()    </p>
-<pre><code>util:
-    util.inherits 
-event:
-    EventEmitter.on(event, listener)
-    EventEmitter.emit(event, [args])
-    EventEmitter.once(event, listener) 单次监听器,触发后解除.
-    EventEmitter.removeListener(event, listener)
-    EventEmitter.removeAllListener(event)
-</code></pre>
+        <p>先说R.__ (两个下划线)<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> __ = &#123;<span class="string">'@@functional/placeholder'</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"></span><br><span class="line"> *      <span class="keyword">const</span> greet = R.replace(<span class="string">'&#123;name&#125;'</span>, R.__, <span class="string">'Hello, &#123;name&#125;!'</span>);</span><br><span class="line"> *      greet(<span class="string">'Alice'</span>); <span class="comment">//=&gt; 'Hello, Alice!'</span></span><br></pre></td></tr></table></figure></p>
+<p>R.__是一个含有@@functional/placeholder属性的对象, 那么它是怎么起到占位符作用的呢?</p>
+<p>看下这个函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_isPlaceholder</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">         <span class="keyword">typeof</span> a === <span class="string">'object'</span> &amp;&amp;</span><br><span class="line">         a[<span class="string">'@@functional/placeholder'</span>] === <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个函数的作用就是检查一个对象的@@functional/placeholder属性是否为true.</p>
+<p>第一个curry函数:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_curry1</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>.length === <span class="number">0</span> || _isPlaceholder(a)) &#123;</span><br><span class="line">      <span class="keyword">return</span> f1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
       
 
       
@@ -480,6 +302,17 @@ event:
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
@@ -495,7 +328,7 @@ event:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Nodejs/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/04/Ramda里的柯西化实现/">展开全文 >></a>
         </p>
       
 
@@ -578,6 +411,105 @@ event:
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/04/PostgreSQL指南-内幕探索系列(1)/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/03/类型系统/">类型和程序设计语言</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/03/类型系统/" class="archive-article-date">
+  	<time datetime="2019-04-03T07:50:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>多态类型,子类型,依赖类型 三个正交分支</p>
+<p>递归由函数不动点实现</p>
+<p>p355 解答</p>
+<h1 id="无类型系统"><a href="#无类型系统" class="headerlink" title="无类型系统"></a>无类型系统</h1><h2 id="无类型算术表达式"><a href="#无类型算术表达式" class="headerlink" title="无类型算术表达式"></a>无类型算术表达式</h2><p>练习3.24 p38<br>    S1 = {true,false,0}<br>    Si+1 = Si^3 + Si*3 + 3<br>    解释: 不考虑类型合不合适.<br>    得: S3有59439个元素.</p>
+<p>练习3.25 归纳证明 构造Sj Si Si+1</p>
+<h4 id="3-4-语义形式"><a href="#3-4-语义形式" class="headerlink" title="3.4 语义形式"></a>3.4 语义形式</h4><ul>
+<li>操作语义<ul>
+<li>小步语义 结构操作语义<br>定义一个简单的抽象机器来说明一个程序语言的行为.<br>用语言的项作为机器状态,对每个状态,要么通过对项做一步简化给出下一个状态,<pre><code>要么声明机器已停止.
+</code></pre></li>
+<li>大步语义 自然语义<br>  抽象机器的一个单个转换就可以将项求值为最终值.                                   </li>
+</ul>
+</li>
+<li>指称语义<br>  一个项的语义不仅是机器状态的序列,而且是某个数学对象,如一个数或一个函数.<br>  一个语言的指称语义是由一个语义域的集合和将项映射到域中元素的解释函数所组成.</li>
+<li>公理语义<br>  用规则本身作为语言的定义.一个项的语义就是关于这个项我们能证明的东西.</li>
+</ul>
+<h2 id="无类型lambda演算"><a href="#无类型lambda演算" class="headerlink" title="无类型lambda演算"></a>无类型lambda演算</h2><h2 id="项的无名称表示"><a href="#项的无名称表示" class="headerlink" title="项的无名称表示"></a>项的无名称表示</h2><h1 id="简单类型"><a href="#简单类型" class="headerlink" title="简单类型"></a>简单类型</h1><h2 id="类型算术表达式"><a href="#类型算术表达式" class="headerlink" title="类型算术表达式"></a>类型算术表达式</h2><h2 id="简单类型的lambda演算"><a href="#简单类型的lambda演算" class="headerlink" title="简单类型的lambda演算"></a>简单类型的lambda演算</h2><h2 id="简单扩展"><a href="#简单扩展" class="headerlink" title="简单扩展"></a>简单扩展</h2><h1 id="子类型化"><a href="#子类型化" class="headerlink" title="子类型化"></a>子类型化</h1><h2 id="子类型"><a href="#子类型" class="headerlink" title="子类型"></a>子类型</h2><h2 id="子类型元理论"><a href="#子类型元理论" class="headerlink" title="子类型元理论"></a>子类型元理论</h2><h1 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h1><h2 id="递归类型-1"><a href="#递归类型-1" class="headerlink" title="递归类型"></a>递归类型</h2><h2 id="递归类型元理论"><a href="#递归类型元理论" class="headerlink" title="递归类型元理论"></a>递归类型元理论</h2><h1 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h1><h2 id="类型重构"><a href="#类型重构" class="headerlink" title="类型重构"></a>类型重构</h2><h2 id="全程类型"><a href="#全程类型" class="headerlink" title="全程类型"></a>全程类型</h2><h2 id="存在类型"><a href="#存在类型" class="headerlink" title="存在类型"></a>存在类型</h2><h1 id="高阶系统"><a href="#高阶系统" class="headerlink" title="高阶系统"></a>高阶系统</h1><h2 id="高阶多态"><a href="#高阶多态" class="headerlink" title="高阶多态"></a>高阶多态</h2><h2 id="高阶子类型化"><a href="#高阶子类型化" class="headerlink" title="高阶子类型化"></a>高阶子类型化</h2>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/PL//" class="article-tag-list-link color3">PL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/03/类型系统/">展开全文 >></a>
         </p>
       
 
@@ -878,6 +810,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

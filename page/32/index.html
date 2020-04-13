@@ -151,94 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-动态规划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/08/动态规划/">动态规划</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/08/动态规划/" class="archive-article-date">
-  	<time datetime="2019-04-08T07:20:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="斐波那契数列"><a href="#斐波那契数列" class="headerlink" title="斐波那契数列"></a>斐波那契数列</h1><h2 id="70-Climbing-Stairs"><a href="#70-Climbing-Stairs" class="headerlink" title="70. Climbing Stairs"></a><a href="https://leetcode.com/problems/climbing-stairs" target="_blank" rel="noopener">70. Climbing Stairs</a></h2><p>主要的难点在于想清楚: 走到第 i 个楼梯的方法数为走到第 i-1 和第 i-2 个楼梯的方法数之和<br>第i-1个楼梯到第i个楼梯只有这一种方法,<br>第i-2个楼梯到第i个楼梯要么直接走2个台阶上去, 一步一步走上去的那种方法已经被算在了前一种方法里.<br>即: dp[i] = dp[i-1] + dp[i-2]<br>可以比较容易地写出下面这种递归的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> climbStairs(n - <span class="number">1</span>) + climbStairs(n - <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>不过这个是树形递归的方法, 有很多重复计算.(在LeetCode里面跑会超时)<br>迭代的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">1</span>, pre2 = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>; i&lt;n; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = pre1 + pre2;</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="198-House-Robber"><a href="#198-House-Robber" class="headerlink" title="198. House Robber"></a><a href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">198. House Robber</a></h2><p>要想清楚: 抢到第 i 个住户时的最大抢劫量为 抢到第i-2个用户的钱加上第i个用户的钱<br>                                       抢到第i-1个用户的钱<br>                                这二者的最大值.<br>即: dp[i] = max(dp[i-2] + nums[i], dp[i-1])<br>容易写出下面的递归写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.length == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums.length == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(nums[<span class="number">0</span>], nums[<span class="number">1</span>]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(rob(Arrays.copyOf(nums, nums.length - <span class="number">2</span>)) + nums[nums.length - <span class="number">1</span>],</span><br><span class="line">                rob(Arrays.copyOf(nums, nums.length - <span class="number">1</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>和上面的一样,也会超时.<br>迭代的写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">0</span>, pre2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = Math.max(pre1 + nums[i], pre2);</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/08/动态规划/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-JavaScript函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -591,6 +503,79 @@
 
 
   
+    <article id="post-Scala实现并行框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Scala实现并行框架/">Scala实现并行框架</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Scala实现并行框架/" class="archive-article-date">
+  	<time datetime="2019-04-05T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接收一个未求值的A,返回一个并行结果(传名函数)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//从并行结果里抽取结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//组合两个并行计算的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Par分配到另一个独立的逻辑线程中运行</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//派生组合子的一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazyUnit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = fork(unit(a))</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">Par</span>[<span class="type">A</span>] </span>= <span class="type">ExecutorService</span> =&gt; <span class="type">Future</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](s: <span class="type">ExecutorService</span>)(a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Future</span>[<span class="type">A</span>] = a(s)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Par</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = (es: <span class="type">ExecutorService</span>) =&gt; <span class="type">UnitFuture</span>(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitFuture</span>[<span class="type">A</span>](<span class="params">get: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Future</span>[<span class="type">A</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isDone</span> </span>= <span class="literal">true</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>(timeout: <span class="type">Long</span>, units: <span class="type">TimeUnit</span>) = get</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isCancelled</span> </span>= <span class="literal">false</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(evenIfRunning: <span class="type">Boolean</span>) : <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>] =</span><br><span class="line">        (es: <span class="type">ExecutorService</span>) =&gt; &#123;</span><br><span class="line">            <span class="keyword">val</span> af = a(es)</span><br><span class="line">            <span class="keyword">val</span> bf = b(es)</span><br><span class="line">            <span class="type">UnitFuture</span>(f(af.get, bf.getb))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>] =</span><br><span class="line">        es =&gt; es.submit(<span class="keyword">new</span> <span class="type">Callable</span>[<span class="type">A</span>] &#123;</span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">call</span> </span>= a(es).get</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Scala实现并行框架/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
@@ -862,6 +847,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

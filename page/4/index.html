@@ -151,95 +151,27 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Java中的垃圾回收算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-WebRTC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>docker exec -it mysql /bin/bash</p>
-<p>可达性分析<br>    通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，<br>    当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。</p>
-<pre><code>GC Roots
-    1)虚拟机栈（栈帧中的本地变量表）中引用的对象
-    2）方法区中的类静态属性引用的对象。
-    3）方法区中的常量引用的对象
-    4）本地方法栈中JNI（通常说的Native方法）引用的对象
-</code></pre><p>标记清除法<br>    标记阶段和清除阶段<br>    可能产生的最大的问题就是空间碎片</p>
-<p>复制算法<br>    将原有的内存空间分为两块相同的存储空间，每次只使用一块，在垃圾回收时，<br>    将正在使用的内存块中存活对象复制到未使用的那一块内存空间中，之后清除正在使用的内存块中的所有对象，完成垃圾回收。</p>
-<p> 标记压缩算法<br>    在标记清除算法的基础上做了优化,将所有的存活对象压缩到内存空间的一端，之后，清理边界外所有的空间。</p>
-<p>通常新生代回收的频率很高，但是每次回收的时间都很短，而老年代回收的频率比较低，但是被消耗很多的时间</p>
-<p>为了支持高频率的新生代回收，虚拟机可能使用一种叫做卡表的数据结构，卡表为一个比特位集合，<br>每一个比特位可以用来表示老年代的某一区域中的所有对象是否持有新生代对象的引用，<br>新生代GC时，可以不用花大量时间扫描所有老年代对象，来确定每一个对象的引用关系，而可以先扫描卡表，只有当卡表的标记为1时，<br>才需要扫描给定区域的老年代对象，而卡表为0的所在区域的老年代对象，一定不含有新生代对象的引用。</p>
-<p>分区算法<br>    将整个堆空间划分为连续的不同小区间</p>
-<pre><code>相同的条件下，堆空间越大，一次GC所需的时间就越长，从而产生的停顿时间就越长。为了更好的控制GC产生的停顿时间，
-将一块大的内存区域分割成多个小块，
-根据目标的停顿时间，每次合理的回收若干个小区间，而不是整个堆空间，从而减少一个GC的停顿时间。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/Java中的垃圾回收算法/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
+      <header class="article-header">
         
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-Java中的ThreadLocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/WebRTC/">WebRTC</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/WebRTC/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。</p>
-<p>首先，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，<br>键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。</p>
-<p>　　 初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，<br>并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。</p>
-<p>　　  然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。</p>
-<p>join的作用<br>    调用某个线程的这个方法时，这个方法会挂起调用线程，直到被调用线程结束执行，调用线程才会继续执行。</p>
-<pre><code>join逻辑
-
-    Parent 调用 child.join()，child.join() 再调用 child.join(0) （此时 Parent 会获得 child 实例作为锁，其他线程可以进入 child.join() ，但不可以进入 child.join(0)， 
-    因为无法获取锁）。child.join(0) 会不断地检查 child 线程是否是 Active。
-
-    如果 child 线程是 Active，则循环调用 child.wait(0)（为了防止 Spurious wakeup, 需要将 wait(0) 放入 for 循环体中；此时 Parent 会释放 child 实例锁，
-    其他线程可以竞争锁并进入 child.join(0)。我们可以得知，可以有多个线程等待某个线程执行完毕）。
-
-    一旦 child 线程不为 Active （状态为 TERMINATED）, child.join(0) 会直接返回到 child.join(), 
-    child.join() 会直接返回到 Parent 父线程，Parent 父线程就可以继续运行下去了。
-</code></pre><p>1）实际的通过ThreadLocal创建的副本是存储在每个线程自己的threadLocals中的；</p>
-<p>　　  为何threadLocals的类型ThreadLocalMap的键值为ThreadLocal对象，因为每个线程中可有多个threadLocal变量，就像上面代码中的longLocal和stringLocal；</p>
-<p>　　  在进行get之前，必须先set，否则会报空指针异常；</p>
-<p>　　  如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法。</p>
-<p>最常见的ThreadLocal使用场景为 用来解决 数据库连接、Session管理等</p>
-<p>实现:<br>    内部类<br>        ThreadLocalMap<br>            内部类<br>                Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt;<br>        public T get()</p>
+        <h1 id="getUserMedia-浏览器获取用户的摄像头-麦克风"><a href="#getUserMedia-浏览器获取用户的摄像头-麦克风" class="headerlink" title="getUserMedia() 浏览器获取用户的摄像头,麦克风"></a>getUserMedia() 浏览器获取用户的摄像头,麦克风</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> constraints = &#123;<span class="attr">audio</span>: <span class="literal">false</span>, <span class="attr">video</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> video = <span class="built_in">document</span>.querySelector(<span class="string">"video"</span>);</span><br><span class="line"></span><br><span class="line">navigator.mediaDevices.getUserMedia(constraints)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span> (<span class="params">stream</span>) </span>&#123;</span><br><span class="line">        video.srcObject = stream</span><br><span class="line">        video.onloadedmetadata = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            video.play()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(<span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"getUserMedia error: "</span>, err);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
       
 
@@ -252,7 +184,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/Java中的ThreadLocal/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/WebRTC/">展开全文 >></a>
         </p>
       
 
@@ -284,6 +216,21 @@
   
     <article id="post-java中==和equals的区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/java中==和equals的区别/">java中==和equals的区别</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/java中==和equals的区别/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
@@ -325,10 +272,21 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/java中==和equals的区别/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/java中==和equals的区别/">展开全文 >></a>
         </p>
       
 
@@ -358,55 +316,141 @@
 
 
   
-    <article id="post-Java线程池ThreadPoolExecutor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-flutter痛苦翻来覆去系列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/flutter痛苦翻来覆去系列/">flutter痛苦翻来覆去系列</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/flutter痛苦翻来覆去系列/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code>目的
-    线程是稀缺资源，不能频繁的创建。
-    解耦作用；线程的创建与执行完全分开，方便维护。
-    应当将其放入一个池子中，可以给其他任务进行复用。
-    提高线程的可管理性：线程池可以统一管理、分配、调优和监控
-    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗
-    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    
+        <ol>
+<li><p>hello, Simple Material App</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'package:flutter/material.dart'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(MaterialApp(</span><br><span class="line">    title: <span class="string">'Simple Material App'</span>,</span><br><span class="line">    home: Scaffold(</span><br><span class="line">      appBar: AppBar(</span><br><span class="line">        title: Text(<span class="string">'Complex Material App'</span>),</span><br><span class="line">      ),</span><br><span class="line">      body: Container(</span><br><span class="line">        child: Center(</span><br><span class="line">          child: Text(<span class="string">"Hello Fultter~"</span>),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  ));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li></li>
+</ol>
 
-四个构造函数,其中的一些参数: 
-    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
-                            除非将allowCoreThreadTimeOut设置为true。
+      
 
-    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
-                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Flutter//" class="article-tag-list-link color3">Flutter</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
-    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
 
-    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
-                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/flutter痛苦翻来覆去系列/">展开全文 >></a>
+        </p>
+      
 
-    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
-                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
 
-    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
 
-    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
-                                        会调用RejectedExecutionHandler的rejectedExecution方法。
 
-线程池规则
 
-    下面都假设任务队列没有大小限制：
 
-        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
-        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
-        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
+  
+    <article id="post-区块链初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/区块链初探/">区块链初探</a>
+    </h1>
+  
 
-        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
-        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
-
-    任务队列大小有限时
-
-        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
-        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
-</code></pre>
+        
+        <a href="/2020/04/14/区块链初探/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>不务正业就是我的正业</p>
+</blockquote>
+<h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><ol>
+<li>DApp (Decentralized Application)</li>
+</ol>
+<p>去中心化应用, 开启了区块链3.0时代</p>
+<ol start="2">
+<li>底层区块链开发平台</li>
+</ol>
+<p>以太坊: 有智能合约功能的公共区块链平台，它允许任何人在上面中建立和使用通过区块链技术运行的分布式应用，编程语言为solidity</p>
+<p>eos: 允许开发者在其协议顶端创建区块链应用的新平台，与 ETH 相比，运行速度更快更稳定，主要解决了高交易频率的问题，每秒交易可达百亿次，且可同时运行上千个 APP ，编程语言为 c++。</p>
+<p>fibos: 由 fibjs+eos 设计的一个全新的区块链 js 开发平台，相比以上两者做到兼顾速度、稳定之外，对开发者更友好。</p>
+<h2 id="区块链"><a href="#区块链" class="headerlink" title="区块链"></a>区块链</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Block <span class="keyword">struct</span> &#123;</span><br><span class="line">    Number <span class="keyword">string</span></span><br><span class="line">    PreHash <span class="keyword">string</span></span><br><span class="line">    Hash <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">    Create <span class="keyword">int64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="共识算法"><a href="#共识算法" class="headerlink" title="共识算法"></a>共识算法</h2><ol>
+<li>PoW 比特币(BTC),区块链1.0<br>Proof of Word, 工作量证明, 多劳多得<blockquote>
+<p>比特币挖矿: 通过计算符合某一个比特币区块头的哈希散列值争夺记账权. 该矿工挖出的区块被串接入主链.</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>优点: 1)机制独特: 挖矿难度系数自动调整,区块奖励逐步减半.<pre><code>2)早参与早获利
+3) 公平
+</code></pre></li>
+<li>缺点: 1) 算力浪费资源<pre><code>2) 算力集中,不符合去中心化
+3) 难度变大
+4) 安全性
+5) 51%算力攻击        
+</code></pre></li>
+</ul>
+<p>PoS 以太坊(ETH),区块链2.0<br>Proof of Stake 股权证明</p>
+<blockquote>
+<p>点点币(PPCoin) 没有挖矿,通过转账交易方式,用”利息”方式新增货币,</p>
+</blockquote>
+<p>DPoS 柚子(EOS), 区块链3.0<br>Delegated Proof of Stake 股份授权证明机制. 见证者节点<br>PBEF 拜占庭容错, 联盟链常用</p>
+<h2 id="链的分叉"><a href="#链的分叉" class="headerlink" title="链的分叉"></a>链的分叉</h2>
       
 
       
@@ -418,7 +462,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/Java线程池ThreadPoolExecutor/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/区块链初探/">展开全文 >></a>
         </p>
       
 
@@ -719,6 +763,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

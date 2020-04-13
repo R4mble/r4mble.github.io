@@ -151,99 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-精通Redis系列 (3) - 压缩列表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/精通Redis系列 (3) - 压缩列表/">精通Redis系列 (3) - 压缩列表</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/19/精通Redis系列 (3) - 压缩列表/" class="archive-article-date">
-  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ziplist<br>当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.<br>列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合.</p>
-<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">zlbytes</th>
-<th style="text-align:center">zltail</th>
-<th style="text-align:center">zllen</th>
-<th style="text-align:center">entry</th>
-<th style="text-align:center">zlend</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"></td>
-</tr>
-</tbody>
-</table>
-<p>zlbytes: 压缩列表的字节长度,占4个字节<br>zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节<br>zllen: 压缩列表的元素个数, 占2个字节<br>extry: 压缩列表存储的元素,可以是字节数组或者整数,长度不限.<br>zlend: 压缩列表的结尾, 占1个字节, 为 0xFF</p>
-<p>char* zl指向压缩列表首地址,通过以下宏命令实现压缩列表各个字段的存取<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Return total bytes a ziplist is composed of. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the offset of the last item inside the ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof(uint32_t))))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the length of a ziplist, or UINT16_MAX if the length cannot be</span></span><br><span class="line"><span class="comment"> * determined without scanning the whole ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_LENGTH(zl)      (*((uint16_t*)((zl)+sizeof(uint32_t)*2)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The size of a ziplist header: two 32 bit integers for the total</span></span><br><span class="line"><span class="comment"> * bytes count and last item offset. One 16 bit integer for the number</span></span><br><span class="line"><span class="comment"> * of items field. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_HEADER_SIZE     (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Size of the "end of ziplist" entry. Just one byte. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_END_SIZE        (sizeof(uint8_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the first entry of a ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_HEAD(zl)  ((zl)+ZIPLIST_HEADER_SIZE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last entry of a ziplist, using the</span></span><br><span class="line"><span class="comment"> * last entry offset inside the ziplist header. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_TAIL(zl)  ((zl)+intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last byte of a ziplist, which is, the</span></span><br><span class="line"><span class="comment"> * end of ziplist FF entry. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_END(zl)   ((zl)+intrev32ifbe(ZIPLIST_BYTES(zl))-1)</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="压缩列表元素的存储"><a href="#压缩列表元素的存储" class="headerlink" title="压缩列表元素的存储"></a>压缩列表元素的存储</h3><p>| previous_entry_length | encoding | content |<br>| :—-: | :—-: | :—-: |</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (3) - 压缩列表/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-The Little系列(1) - A Little Java, A Few Patterns" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -443,6 +350,98 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/16/小红书系列 (5) - 非严格求值/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Kafka" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/16/Kafka/">Kafka</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/16/Kafka/" class="archive-article-date">
+  	<time datetime="2019-09-16T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>“100个Hello World”, 这是我看到有人在网络骂战中攻击别人博客时用到的话.<br>说者无心,听者有意. 立即反思自己的博客是不是有一天也会被评价为”100个Hello World”.<br>程序员的焦虑程度往往比其它职业更严重, 从入行开始就有的终身学习, 随时会被淘汰.<br>害怕自己不是有十年经验, 而是一个经验用了十年.<br>最后还有个35岁的deadline.<br>所以为啥要写博客?<br>一方面是为了抵抗遗忘. 不管你对一个知识点理解的有多深刻, 曾经掌握的有多娴熟, 时间会无情地磨掉<br>你的记忆. 所以写写博客, 当个速查手册, 也是个存档, 要用到的时候翻一翻就能快速想起当年掌握它的时候<br>学会的点点滴滴.<br>另一方面是作为读书笔记, 读书的时候有个东西记一下, 能提升读书时的专注度.<br>遗憾的是看别人博客的时候并不会有这些感觉, 他读过的书写过的代码你没有感触<br>看别人的博客, 一般都是期待有博主特殊的见解: </p>
+<p>凡事总有个Hello World, 而且大部分技术80%以上的时间都是只是用它提供的最简单的一点功能.<br>来嘛, 100个Hello World.<br>Hello ~</p>
+<h2 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h2><ul>
+<li><p>消息系统<br>系统解耦, 冗余存储, 流量削峰, 缓冲, 异步通信, 扩展性, 可恢复性, 消息顺序性保障, 回溯消费</p>
+</li>
+<li><p>存储系统<br>消息持久化到磁盘, 降低了数据丢失的风险.</p>
+</li>
+<li><p>流式处理平台<br>为流式处理框架提供数据来源, 提供完整的流失处理类库, 如窗口,连接,变换和聚合等</p>
+</li>
+</ul>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>Zookeeper: 管理集群元数据, 选举控制器<br>Producer将消息发送到Broker的特定主题,Broker将消息存储到磁盘中,Consumer从Broker订阅主题并消费消息.<br>Consumer使用拉模式从服务端拉取消息,并且保存消费的具体位置.当消费者宕机后恢复上线时可以根据之前保存的消费位置重新拉取<br>需要的消息进行消费, 这样就不会造成消息丢失.</p>
+<p>主题可以分为多个分区,可以在多个broker上,不同分区包含的消息不同.</p>
+<blockquote>
+<p>Kafka保证分区有序而不是主题有序.</p>
+</blockquote>
+<ul>
+<li>多副本机制<br>同一分区的不同副本保存的是相同的消息. 副本之间一主多从, leader负责读写, follower只负责与leader消息同步,<br>当leader故障时,从follower中重新选举新的leader.</li>
+</ul>
+<p>所有副本统称AR, 与leader副本保持一定程度同步的副本(包括leader在内)组成ISR, 与leader同步滞后过多的副本组成OSR<br>AR = ISR + OSR<br>正常情况下, ORS为空集.<br>leader负责维护follower副本的ISR和OSR转移, leader故障时从ISR中选举.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/16/Kafka/">展开全文 >></a>
         </p>
       
 
@@ -743,6 +742,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

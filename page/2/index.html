@@ -151,30 +151,76 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-沪江网校新标日语(2)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Golang东一榔头西一棒槌系列(3) -集合" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/">Golang东一榔头西一棒槌系列(3) -集合</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="名词1-は-名词2-です"><a href="#名词1-は-名词2-です" class="headerlink" title="[名词1] は [名词2]　です"></a>[名词1] は [名词2]　です</h1><p>李さん　は　中国人　です<br>ri sa nn ha chu u go ku ji　nn　de su<br>りさんはちゅうごくじんです</p>
-<p>私　は　中国人　です<br>wa ta shi ha chu u go ku ji nn de su<br>わたしはちゅうごくじんです</p>
-<p>私　は　学生　です<br>wa ta shi ha ga ku se i de su<br>わたしはがくせいです</p>
-<h1 id="名词1-は-名词2-では-ありません"><a href="#名词1-は-名词2-では-ありません" class="headerlink" title="[名词1] は [名词2]　では　ありません"></a>[名词1] は [名词2]　では　ありません</h1><p>では：口语中说成 　じゃ　ja</p>
-<p>森さん　は　学生　では　ありません<br>mo ri sa nn ha ga ku se i de ha a ri ma se nn<br>もりさんはがくせいではありません</p>
-<p>私は日本人ではありません<br>wa ta shi ha ni ho nn ji nn de ha a ri ma se nn<br>わたしはにほんじんではありません</p>
-<p>私は日本人じゃありません<br>wa ta shi ha ni ho nn ji nn ja a ri ma se<br>わたしはにほんじんじゃありませ</p>
-<h1 id="名词1-は-名词2-ですか"><a href="#名词1-は-名词2-ですか" class="headerlink" title="[名词1] は [名词2]　ですか"></a>[名词1] は [名词2]　ですか</h1><p>疑问句句尾使用句号</p>
-<p>林さんは日本人ですか。<br>ha ya shi sa nn ha ni ho nn ji nn de su ka<br>はやしさんはにほんじんですか。</p>
-<p>ー　はい、日本人です。<br>ー　いいえ、日本人ではありません。中国人です。</p>
-<p>金さんは中国人ですか。<br>ki nn sa nn ha chu u go ku ji nn de su ka<br>きんさんはちゅうごくじんですか</p>
-<p>ー　いいえ、中国人ではありません。韓国人です。</p>
-<p>回答方式<br>ー　はい、そうです。</p>
-<p>ー　いいえ、違います。<br>いいえ、ちがいまう</p>
-<p>ー　分かりません。<br>わかりません</p>
-<h1 id="名词1-の-名词2"><a href="#名词1-の-名词2" class="headerlink" title="[名词1] の [名词2]"></a>[名词1] の [名词2]</h1><p>大学の学生<br>da i ga ku no ga ku se i<br>だいがくのがくせい</p>
-<p>あの人は私の父です<br>a no hi to ha wa ta shi no chi chi de su<br>あのひとはわたしのちちです</p>
-<p>ー　私は李です。小野さんですか。<br>わたしはりです。おのさんですか。</p>
-<p>ー　はい、そうです。小野です。</p>
+        <h1 id="array-数组"><a href="#array-数组" class="headerlink" title="array 数组"></a>array 数组</h1><pre><code>// 声明一个int类型数组
+var arr [10]int
+
+// 省略长度, go会自动根据元素算长度
+a := [...]int{3,4,4}
+
+// 二位数组
+doubleArray := [2][4]int{{1, 2, 3, 4}, {5, 6, 7, 8}}
+</code></pre><p>长度也是数组类型的一部分, [3]int和[4]int是不同的类型<br>数组作为参数时, 传入的是该数组的副本, 而不是指针.</p>
+<h1 id="slice-“动态数组”-引用类型-指向一个底层array"><a href="#slice-“动态数组”-引用类型-指向一个底层array" class="headerlink" title="slice “动态数组”,引用类型,指向一个底层array"></a>slice “动态数组”,引用类型,指向一个底层array</h1><pre><code>// 声明一个slice, (少了长度)
+var fslice []int
+
+// 声明两个含有byte的slice
+var a, b [] byte
+
+var ar = [10]byte{0,1,2,3,4,5,6,7,8,9}
+
+// a指向数组的第三个元素开始, 到第5个元素结束, a就是[2 3 4]
+a = ar[2:5]
+</code></pre><p>slice通过arr[i:j]来获取, i是数组的开始位置,j是结束位置,不包含arr[j],长度是j-i</p>
+<p>slice默认开始位置是0, 结束位置是数组长度<br>即: arr[:n]等价于arr[0:n]<br>    arr[n:]等价于arr[n:len(arr)]<br>从一个数组直接获取slice, 可以用arr[:]</p>
+<p>slice的最大长度cap: slice开始位置到数组最后位置的长度, len(arr) - i<br>对slice的slice可以在cap范围内扩展<br>slice的元素变了, 对它切片的slice元素也会相应改变</p>
+<p>append: 向slice里追加一个或多个元素, 返回一个slice(不改变原slice)<br>乱七八糟警告: append函数会改变slice所引用的数组的内容! 同时会影响到引用同一个数组的其他slice<br>            当slice没有剩余空间的时候, 将动态分配新的数组空间, 返回的slice数组将指向这个空间,<br>             原数组内容保持不变, 其他引用此数组的slice不受影响</p>
+<h1 id="map"><a href="#map" class="headerlink" title="map"></a>map</h1><pre><code>// 声明一个key是字符串,值是int的map, 这种声明需要在使用之前使用make初始化
+var numbers map[string] int
+
+// 声明map
+numbers := make(map[string]int)
+
+// 赋值
+numbers[&quot;one&quot;] = 1
+</code></pre><ul>
+<li>map是无序的</li>
+<li>map长度不固定, 是引用类型, 两个map指向一个底层, 一个改变另一个也改变</li>
+<li>内置len函数返回map拥有key的数量</li>
+</ul>
+<pre><code>// 初始化一个map
+rating := map[string]float32 {&quot;c&quot;: 4, &quot;go&quot;: 3.4, &quot;c++&quot;: 1.3} 
+
+// 如果不存在则ok为false, 存在ok为true
+cSharp, ok := rating[&quot;c#&quot;]
+if ok {
+    fmt.Println(&quot;c# is in the map and its rating is &quot;, cSharp)
+} else {
+    fmt.Println(&quot;C# is not found&quot;)
+}
+
+// 删除map中key为c的元素
+delete(rating, &quot;c&quot;)
+</code></pre><h1 id="内建函数make和new"><a href="#内建函数make和new" class="headerlink" title="内建函数make和new"></a>内建函数make和new</h1><p>make用于内建类型(map,slice,channel)的内存分配<br>new用于各种类型的内存分配, 返回一个指针, 指向新分配的类型T的零值</p>
 
       
 
@@ -187,7 +233,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/沪江网校新标日语(2)/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/">展开全文 >></a>
         </p>
       
 
@@ -217,37 +263,47 @@
 
 
   
-    <article id="post-沪江网校新标日语(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java中的ThreadLocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Java中的ThreadLocal/">Java线程池ThreadPoolExecutor</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Java中的ThreadLocal/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>私<br>wa ta shi<br>わたし<br>我</p>
-<p>あなた　<br>a na ta<br>你</p>
-<p>あの人<br>a no hi to<br>あのひと<br>那个人</p>
-<p>~さん<br>sa nn<br>姓氏之后</p>
-<p>~らやん<br>ra ya nn<br>小孩子或亲近的女孩子</p>
-<p>~君<br>ku nn<br>くん<br>年龄相当或年轻的男性</p>
-<p>日本<br>ni ho nn<br>にほん</p>
-<p>日本人<br>ni ho nn ji nn<br>にほんじん</p>
-<p>中国<br>chu u go ku<br>ちゅうごく</p>
-<p>中国人<br>chu u go ku ji nn<br>ちゅごくじん</p>
-<p>韓国<br>ka nn ko ku<br>かんこく</p>
-<p>韓国人<br>ka nn ko ku ji nn</p>
-<p>先生<br>se nn se i<br>せんせい<br>老师,律师,艺术家,领导人,专家</p>
-<p>学生<br>ga ku se i<br>がくせい<br>大学生</p>
-<p>大学<br>da i ga ku<br>だいがく</p>
-<p>学 ga ku<br>生 se i</p>
-<p>会社<br>ka i sha<br>かいしゃ<br>公司</p>
-<p>会社員<br>ka i sha i nn<br>かいしゃいん<br>公司职员</p>
-<p>社員<br>sha i nn<br>しゃいん<br>职员</p>
-<p>企業<br>ki gyou<br>きぎょう</p>
-<p>企画<br>ki ka ku<br>策划</p>
-<p>はい<br>ha i<br>是</p>
-<p>いいえ<br>i i e<br>不是</p>
-<p>そうです<br>so u de su<br>是的</p>
-<p>違います<br>chi ga i ma su<br>ちがいます<br>不是</p>
-<p>分かりません<br>wa ka ri ma se nn<br>わかりません<br>不知道</p>
+        <p>ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。</p>
+<p>首先，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，<br>键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。</p>
+<p>　　 初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，<br>并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。</p>
+<p>　　  然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。</p>
+<p>join的作用<br>    调用某个线程的这个方法时，这个方法会挂起调用线程，直到被调用线程结束执行，调用线程才会继续执行。</p>
+<pre><code>join逻辑
+
+    Parent 调用 child.join()，child.join() 再调用 child.join(0) （此时 Parent 会获得 child 实例作为锁，其他线程可以进入 child.join() ，但不可以进入 child.join(0)， 
+    因为无法获取锁）。child.join(0) 会不断地检查 child 线程是否是 Active。
+
+    如果 child 线程是 Active，则循环调用 child.wait(0)（为了防止 Spurious wakeup, 需要将 wait(0) 放入 for 循环体中；此时 Parent 会释放 child 实例锁，
+    其他线程可以竞争锁并进入 child.join(0)。我们可以得知，可以有多个线程等待某个线程执行完毕）。
+
+    一旦 child 线程不为 Active （状态为 TERMINATED）, child.join(0) 会直接返回到 child.join(), 
+    child.join() 会直接返回到 Parent 父线程，Parent 父线程就可以继续运行下去了。
+</code></pre><p>1）实际的通过ThreadLocal创建的副本是存储在每个线程自己的threadLocals中的；</p>
+<p>　　  为何threadLocals的类型ThreadLocalMap的键值为ThreadLocal对象，因为每个线程中可有多个threadLocal变量，就像上面代码中的longLocal和stringLocal；</p>
+<p>　　  在进行get之前，必须先set，否则会报空指针异常；</p>
+<p>　　  如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法。</p>
+<p>最常见的ThreadLocal使用场景为 用来解决 数据库连接、Session管理等</p>
+<p>实现:<br>    内部类<br>        ThreadLocalMap<br>            内部类<br>                Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt;<br>        public T get()</p>
 
       
 
@@ -257,10 +313,21 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/沪江网校新标日语(1)/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Java中的ThreadLocal/">展开全文 >></a>
         </p>
       
 
@@ -290,19 +357,42 @@
 
 
   
-    <article id="post-互联网音视频" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java内存结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Java内存结构/">Java内存区域</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Java内存结构/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="SIP-Session-Initiation-Protocol-会话初始协议"><a href="#SIP-Session-Initiation-Protocol-会话初始协议" class="headerlink" title="SIP   Session Initiation Protocol     会话初始协议"></a>SIP   Session Initiation Protocol     会话初始协议</h1><p>多媒体通信协议, Client/Server协议<br>基于文本的应用层控制协议，用于创建、修改和释放一个或多个参与者的会话。<br>SIP 是一种源于互联网的IP语音会话控制协议，具有灵活、易于实现、便于扩展等特点。</p>
-<p>四个主要组件: SIP用户代理, SIP注册服务器, SIP代理服务器, SIP重定向服务器</p>
-<p>SIP消息: 请求消息和响应消息</p>
-<h1 id="WebRTC-Web-Real-Time-Communication"><a href="#WebRTC-Web-Real-Time-Communication" class="headerlink" title="WebRTC    Web Real-Time Communication"></a>WebRTC    Web Real-Time Communication</h1><p>支持网页浏览器进行实时语音对话或视频对话的API<br>浏览器能够以点对点 (peer-to-peer) 方式直接与其他浏览器交换实时媒体</p>
-<h1 id="Janus"><a href="#Janus" class="headerlink" title="Janus"></a>Janus</h1><p>支持WebRTC的SFU</p>
-<h1 id="SFU-Selective-Forwarding-Unit"><a href="#SFU-Selective-Forwarding-Unit" class="headerlink" title="SFU       Selective Forwarding Unit"></a>SFU       Selective Forwarding Unit</h1><p>只负责转发流，不负责合流，压力很小。这样的模式可以依托CDN进行分布式的部署，不过拉流的方数限于客户端的带宽和处理能力</p>
-<h1 id="MCU-multi-control-unit"><a href="#MCU-multi-control-unit" class="headerlink" title="MCU       multi control unit"></a>MCU       multi control unit</h1><p>一台多媒体信息交换机，进行多点呼叫和连接，实现视频广播、视频选择、音频混合、数据广播等功能，完成各终端信号的汇接与切换</p>
-<p>多方推流在MCU上进行合流，在拉流的时候只有一路合流，这样的好处是无论几方推流，拉流只有一路，下行带宽比较小。<br>问题: 只要推流方一多，MCU的压力就比较大，而且分布式的部署也比较难，成本又很高</p>
+        <h1 id="Java内存区域"><a href="#Java内存区域" class="headerlink" title="Java内存区域"></a>Java内存区域</h1><h2 id="线程共享"><a href="#线程共享" class="headerlink" title="线程共享"></a>线程共享</h2><ul>
+<li><p>方法区<br>  又称Non-Heap（非堆），主要用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，<br>  根据Java 虚拟机规范的规定，当方法区无法满足内存分配需求时，将抛出OutOfMemoryError 异常。<br>  在方法区中存在一个叫运行时常量池(Runtime Constant Pool）的区域，它主要用于存放编译器生成的各种字面量和符号引用，<br>  这些内容将在类加载后存放到运行时常量池中，以便后续使用。</p>
+</li>
+<li><p>堆<br>  在虚拟机启动时创建，是Java 虚拟机所管理的内存中最大的一块，主要用于存放对象实例，几乎所有的对象实例都在这里分配内存，<br>  Java 堆是垃圾收集器管理的主要区域，因此很多时候也被称做GC 堆，如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，<br>  将会抛出OutOfMemoryError 异常。</p>
+</li>
+<li><p>直接内存</p>
+</li>
+</ul>
+<h2 id="线程私有"><a href="#线程私有" class="headerlink" title="线程私有"></a>线程私有</h2><ul>
+<li><p>虚拟机栈<br>  与线程同时创建，总数与线程关联，代表Java方法执行的内存模型。每个方法执行时都会创建一个栈桢来存储方法的的变量表、<br>  操作数栈、动态链接方法、返回值、返回地址等信息。每个方法从调用直结束就对于一个栈桢在虚拟机栈中的入栈和出栈过程</p>
+</li>
+<li><p>本地方法栈<br>  与虚拟机用到的 Native 方法相关</p>
+</li>
+<li><p>程序计数器<br>  一小块内存空间，主要代表当前线程所执行的字节码行号指示器。字节码解释器工作时，<br>  通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。</p>
+</li>
+</ul>
 
       
 
@@ -312,10 +402,21 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/互联网音视频/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Java内存结构/">展开全文 >></a>
         </p>
       
 
@@ -345,12 +446,95 @@
 
 
   
-    <article id="post-邓小平传" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Golang东一榔头西一棒槌系列(4) -指针与函数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">Golang东一榔头西一棒槌系列(4) -指针与函数</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h1><pre><code>// 和号: 取变量地址
+s := &quot;Hello&quot;
+fmt.Println(&amp;s)
+
+//     星号: 访问内存地址
+fmt.Println(*&amp;s)
+
+// 指针类型声明, int型指针
+x *int
+</code></pre><h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><pre><code>func addUp(x int, y int) int  {
+    return x + y
+}
+
+// 返回多个值
+func getPrize() (int, string)  {
+    i := 2
+    s := &quot;goldfish&quot;
+    return i, s
+}
+
+// 不定参函数, numbers是包含所有参数的切片
+func sumNumbers(numbers...int) int  {
+    total := 0
+    for _, number := range numbers {
+        total += number
+    }
+    return total
+}
+
+// 具名返回值, 在返回值声明里指定变量名
+func sayHi() (x, y string)  {
+    x = &quot;hello&quot;
+    y = &quot;world&quot;
+    return x, y
+}
+
+// 具名返回值无需显式地返回相应变量名, naked return
+// 必须是返回值都是 具名返回值
+func sayHi() (x, y string)  {
+    x = &quot;hello&quot;
+    y = &quot;world&quot;
+    return
+}
+
+// 递归函数
+func feedMe(portion int, eaten int) int {
+    eaten = portion + eaten
+    if eaten &gt;= 5 {
+        fmt.Println(&quot;enough&quot;)
+        return eaten
+    }
+    fmt.Println(&quot;not enough&quot;)
+    return feedMe(portion, eaten)
+}
+
+// 函数赋给变量
+fn := func() {fmt.Println(&quot;I&apos;m a fun&quot;)}
+fn()
+
+// 函数做为参数
+func main() {
+    fn := func() string { return &quot;I&apos;m a fun&quot;}
+    fmt.Println(fn2(fn))
+}
+// 接收的f的类型是 func() string
+func fn2(f func() string) string {
+    return f()
+}
+</code></pre>
       
 
       
@@ -362,7 +546,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/邓小平传/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">展开全文 >></a>
         </p>
       
 
@@ -663,6 +847,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
               </li>
             
             <div class="clearfix"></div>

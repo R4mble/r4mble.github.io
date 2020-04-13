@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="新手村毕业总结Demo1: 架子当x变化的时候, 页面不会变; message变化时, 页面会变12345678910111213141516&amp;lt;div id=&apos;app&apos;&amp;gt;    &amp;#123;&amp;#123;message&amp;#125;&amp;#125;&amp;lt;/div&amp;gt;&amp;lt;script&amp;gt;    let x = &apos;hello&apos;    const app = new Vue(&amp;#123">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-02T15:42:10.720Z">
+<meta property="og:updated_time" content="2019-12-02T15:41:44.394Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vue新手村毕业总结">
 <meta name="twitter:description" content="新手村毕业总结Demo1: 架子当x变化的时候, 页面不会变; message变化时, 页面会变12345678910111213141516&amp;lt;div id=&apos;app&apos;&amp;gt;    &amp;#123;&amp;#123;message&amp;#125;&amp;#125;&amp;lt;/div&amp;gt;&amp;lt;script&amp;gt;    let x = &apos;hello&apos;    const app = new Vue(&amp;#123">
@@ -184,8 +184,8 @@
 <h2 id="Demo8-阻止修改属性-响应系统无法再追踪变化-Object-freeze-obj"><a href="#Demo8-阻止修改属性-响应系统无法再追踪变化-Object-freeze-obj" class="headerlink" title="Demo8: 阻止修改属性,响应系统无法再追踪变化: Object.freeze(obj)"></a>Demo8: 阻止修改属性,响应系统无法再追踪变化: Object.freeze(obj)</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123;foo&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button v-on:click="foo = 'baz'"&gt;Change it&lt;/</span>button&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    let obj = &#123;</span></span><br><span class="line"><span class="regexp">        foo: 'bar'</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/ 有了这行代码, 点击无效</span></span><br><span class="line"><span class="regexp">    Object.freeze(obj)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: obj</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
 <h2 id="Demo9-侦听器-watch方法"><a href="#Demo9-侦听器-watch方法" class="headerlink" title="Demo9: 侦听器 $watch方法"></a>Demo9: 侦听器 $watch方法</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#example'</span>,</span><br><span class="line">  data: data</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">vm.$watch(<span class="string">'a'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">newValue, oldValue</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 这个回调将在 `vm.a` 改变后调用</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h2 id="Demo10-生命周期方法-created-mounted-updated-destroyed"><a href="#Demo10-生命周期方法-created-mounted-updated-destroyed" class="headerlink" title="Demo10: 生命周期方法: created,mounted,updated,destroyed"></a>Demo10: 生命周期方法: created,mounted,updated,destroyed</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            a: 1</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        created: function () &#123;</span></span><br><span class="line"><span class="regexp">            console.log('a is ' + this.a)</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="Demo11-只渲染一次v-once"><a href="#Demo11-只渲染一次v-once" class="headerlink" title="Demo11: 只渲染一次v-once"></a>Demo11: 只渲染一次v-once</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 单个元素 --&gt;</span><br><span class="line">&lt;span v-once&gt;This will never change: &#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">&lt;!-- 有子元素 --&gt;</span></span><br><span class="line"><span class="regexp">&lt;div v-once&gt;</span></span><br><span class="line"><span class="regexp">  &lt;h1&gt;comment&lt;/</span>h1&gt;</span><br><span class="line">  &lt;p&gt;&#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br><span class="line">&lt;!-- 组件 --&gt;</span><br><span class="line">&lt;my-component v-once :comment=<span class="string">"msg"</span>&gt;&lt;/my-component&gt;</span><br><span class="line">&lt;!-- `v-for` 指令--&gt;</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">  &lt;li v-for="i in list" v-once&gt;&#123;&#123;i&#125;&#125;&lt;/li&gt;</span><br><span class="line">&lt;/ul&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="Demo12-渲染原始html-v-html"><a href="#Demo12-渲染原始html-v-html" class="headerlink" title="Demo12: 渲染原始html v-html"></a>Demo12: 渲染原始html v-html</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;Using mustaches: &#123;&#123; rawHtml &#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">&lt;p&gt;Using v-html directive: &lt;span v-html="rawHtml"&gt;&lt;/</span>span&gt;&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="Demo11-只渲染一次v-once"><a href="#Demo11-只渲染一次v-once" class="headerlink" title="Demo11: 只渲染一次v-once"></a>Demo11: 只渲染一次v-once</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 单个元素 --&gt;</span><br><span class="line">&lt;span v-once&gt;This will never change: &#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">&lt;!-- 有子元素 --&gt;</span></span><br><span class="line"><span class="regexp">&lt;div v-once&gt;</span></span><br><span class="line"><span class="regexp">  &lt;h1&gt;comment&lt;/</span>h1&gt;</span><br><span class="line">  &lt;p&gt;&#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br><span class="line">&lt;!-- 组件 --&gt;</span><br><span class="line">&lt;my-component v-once :comment=<span class="string">"msg"</span>&gt;&lt;<span class="regexp">/my-component&gt;</span></span><br><span class="line"><span class="regexp">&lt;!-- `v-for` 指令--&gt;</span></span><br><span class="line"><span class="regexp">&lt;ul&gt;</span></span><br><span class="line"><span class="regexp">  &lt;li v-for="i in list" v-once&gt;&#123;&#123;i&#125;&#125;&lt;/</span>li&gt;</span><br><span class="line">&lt;<span class="regexp">/ul&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Demo12-渲染原始html-v-html"><a href="#Demo12-渲染原始html-v-html" class="headerlink" title="Demo12: 渲染原始html v-html"></a>Demo12: 渲染原始html v-html</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;Using mustaches: &#123;&#123; rawHtml &#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">&lt;p&gt;Using v-html directive: &lt;span v-html="rawHtml"&gt;&lt;/</span>span&gt;&lt;<span class="regexp">/p&gt;</span></span><br></pre></td></tr></table></figure>
 <h2 id="Demo13-计算属性computed"><a href="#Demo13-计算属性computed" class="headerlink" title="Demo13: 计算属性computed"></a>Demo13: 计算属性computed</h2><p>只要 message 还没有发生改变，多次访问 reversedMessage 计算属性会立即返回之前的计算结果，而不必再次执行函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p&gt;message: &#123;&#123;message&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p&gt;reversed message: &#123;&#123;reversedMessage&#125;&#125;&lt;/</span>p&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            message: 'hello'</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        computed: &#123;</span></span><br><span class="line"><span class="regexp">            /</span><span class="regexp">/ 计算属性的getter</span></span><br><span class="line"><span class="regexp">            reversedMessage: function () &#123;</span></span><br><span class="line"><span class="regexp">                return this.message.split('').reverse().join('')</span></span><br><span class="line"><span class="regexp">            &#125;</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/ setter</span></span><br><span class="line"><span class="regexp">    computed: &#123;</span></span><br><span class="line"><span class="regexp">        fullName: &#123;</span></span><br><span class="line"><span class="regexp">            /</span><span class="regexp">/ getter</span></span><br><span class="line"><span class="regexp">            get: function () &#123;</span></span><br><span class="line"><span class="regexp">              return this.firstName + ' ' + this.lastName</span></span><br><span class="line"><span class="regexp">            &#125;,</span></span><br><span class="line"><span class="regexp">            /</span><span class="regexp">/ setter</span></span><br><span class="line"><span class="regexp">            set: function (newValue) &#123;</span></span><br><span class="line"><span class="regexp">                var names = newValue.split(' ')</span></span><br><span class="line"><span class="regexp">                this.firstName = names[0]</span></span><br><span class="line"><span class="regexp">                this.lastName = names[names.length - 1]</span></span><br><span class="line"><span class="regexp">            &#125;</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure></p>
 <h2 id="Demo14-使用axios-防抖-watch的例子"><a href="#Demo14-使用axios-防抖-watch的例子" class="headerlink" title="Demo14: 使用axios, 防抖, watch的例子"></a>Demo14: 使用axios, 防抖, watch的例子</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p&gt;Ask a yes/no question:</span><br><span class="line">        &lt;input v-model=<span class="string">"question"</span>&gt;</span><br><span class="line">    &lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p&gt;&#123;&#123;answer&#125;&#125;&lt;/</span>p&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            question: '',</span></span><br><span class="line"><span class="regexp">            answer: 'I cannot give you an answer until you ask a question'</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        watch: &#123;</span></span><br><span class="line"><span class="regexp">          question: function (newQuestion, oldQuestion) &#123;</span></span><br><span class="line"><span class="regexp">              this.answer = 'Waiting for you to stop typing...'</span></span><br><span class="line"><span class="regexp">              this.debouncedGetAnswer()</span></span><br><span class="line"><span class="regexp">          &#125;</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        created: function() &#123;</span></span><br><span class="line"><span class="regexp">            this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        methods: &#123;</span></span><br><span class="line"><span class="regexp">            getAnswer: function () &#123;</span></span><br><span class="line"><span class="regexp">                if (!this.question.includes('?')) &#123;</span></span><br><span class="line"><span class="regexp">                    this.answer = 'Question usually contain a question mark...'</span></span><br><span class="line"><span class="regexp">                    return</span></span><br><span class="line"><span class="regexp">                &#125;</span></span><br><span class="line"><span class="regexp">                this.answer = 'Thinking...'</span></span><br><span class="line"><span class="regexp">                var vm = this</span></span><br><span class="line"><span class="regexp">                axios.get('https:/</span><span class="regexp">/yesno.wtf/</span>api<span class="string">')</span></span><br><span class="line"><span class="string">                    .then(function (response) &#123;</span></span><br><span class="line"><span class="string">                        vm.answer = _.capitalize(response.data.answer)</span></span><br><span class="line"><span class="string">                    &#125;)</span></span><br><span class="line"><span class="string">                    .catch(function (error) &#123;</span></span><br><span class="line"><span class="string">                        vm.answer = '</span><span class="built_in">Error</span>! could not reach the api<span class="string">' + error</span></span><br><span class="line"><span class="string">                    &#125;)</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;)</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
 <h2 id="Demo11"><a href="#Demo11" class="headerlink" title="Demo11:"></a>Demo11:</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -456,15 +456,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -472,15 +464,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,123 +472,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -612,11 +480,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,7 +496,7 @@ MathJax.Hub.Queue(function() {
         </div>
         <ul class="search-ul">
           <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
-            缺失模块。<br>1、请确保node版本大于6.2<br>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br> npm i hexo-generator-json-content --save<br><br>
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
             3、在根目录_config.yml里添加配置：
 <pre style="font-size: 12px;" q-show="jsonFail">
   jsonContent:

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
@@ -240,6 +240,75 @@
 
 
   
+    <article id="post-Emacs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Emacs/">Emacs</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Emacs/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>M-&lt;：整个文章的首部<br>M-&gt;：整个文章的尾部</p>
+<p>C-v 向下翻一页<br>M-v 向上翻一页</p>
+<p>C-u：是输入数字的命令，比如C-u 8 C-f 相当于向右移动8行，C-u 8 i 输入8个i<br>C-d: 删除当前行</p>
+<p>M-d：删除下一个单词<br>M-del: 删除上一个单词</p>
+<p>C-k：从当前位置，删除到整个行末尾</p>
+<p>M-u 使从光标位置到单词结尾处的字母变成大写<br>M-c 使从光标位置开始的单词的首字母变为大写</p>
+<p>C-@    设置开始标记<br>M-w    复制标记区内容<br>C-y    帖粘</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/Emacs/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Golang东一榔头西一棒槌系列(5) -控制流程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -302,19 +371,19 @@
 
 
   
-    <article id="post-邓小平传" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Golang东一榔头西一棒槌系列(4) -指针与函数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/邓小平传/">邓小平传</a>
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">Golang东一榔头西一棒槌系列(4) -指针与函数</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/邓小平传/" class="archive-article-date">
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -322,7 +391,75 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h1><pre><code>// 和号: 取变量地址
+s := &quot;Hello&quot;
+fmt.Println(&amp;s)
+
+//     星号: 访问内存地址
+fmt.Println(*&amp;s)
+
+// 指针类型声明, int型指针
+x *int
+</code></pre><h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><pre><code>func addUp(x int, y int) int  {
+    return x + y
+}
+
+// 返回多个值
+func getPrize() (int, string)  {
+    i := 2
+    s := &quot;goldfish&quot;
+    return i, s
+}
+
+// 不定参函数, numbers是包含所有参数的切片
+func sumNumbers(numbers...int) int  {
+    total := 0
+    for _, number := range numbers {
+        total += number
+    }
+    return total
+}
+
+// 具名返回值, 在返回值声明里指定变量名
+func sayHi() (x, y string)  {
+    x = &quot;hello&quot;
+    y = &quot;world&quot;
+    return x, y
+}
+
+// 具名返回值无需显式地返回相应变量名, naked return
+// 必须是返回值都是 具名返回值
+func sayHi() (x, y string)  {
+    x = &quot;hello&quot;
+    y = &quot;world&quot;
+    return
+}
+
+// 递归函数
+func feedMe(portion int, eaten int) int {
+    eaten = portion + eaten
+    if eaten &gt;= 5 {
+        fmt.Println(&quot;enough&quot;)
+        return eaten
+    }
+    fmt.Println(&quot;not enough&quot;)
+    return feedMe(portion, eaten)
+}
+
+// 函数赋给变量
+fn := func() {fmt.Println(&quot;I&apos;m a fun&quot;)}
+fn()
+
+// 函数做为参数
+func main() {
+    fn := func() string { return &quot;I&apos;m a fun&quot;}
+    fmt.Println(fn2(fn))
+}
+// 接收的f的类型是 func() string
+func fn2(f func() string) string {
+    return f()
+}
+</code></pre>
       
 
       
@@ -334,76 +471,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/邓小平传/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Emacs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Emacs/">Emacs</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/Emacs/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>M-&lt;：整个文章的首部<br>M-&gt;：整个文章的尾部</p>
-<p>C-v 向下翻一页<br>M-v 向上翻一页</p>
-<p>C-u：是输入数字的命令，比如C-u 8 C-f 相当于向右移动8行，C-u 8 i 输入8个i<br>C-d: 删除当前行</p>
-<p>M-d：删除下一个单词<br>M-del: 删除上一个单词</p>
-<p>C-k：从当前位置，删除到整个行末尾</p>
-<p>M-u 使从光标位置到单词结尾处的字母变成大写<br>M-c 使从光标位置开始的单词的首字母变为大写</p>
-<p>C-@    设置开始标记<br>M-w    复制标记区内容<br>C-y    帖粘</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Emacs/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">展开全文 >></a>
         </p>
       
 
@@ -543,15 +611,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -559,15 +619,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -575,123 +627,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -699,11 +635,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -715,7 +651,7 @@ MathJax.Hub.Queue(function() {
         </div>
         <ul class="search-ul">
           <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
-            缺失模块。<br>1、请确保node版本大于6.2<br>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br> npm i hexo-generator-json-content --save<br><br>
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
             3、在根目录_config.yml里添加配置：
 <pre style="font-size: 12px;" q-show="jsonFail">
   jsonContent:

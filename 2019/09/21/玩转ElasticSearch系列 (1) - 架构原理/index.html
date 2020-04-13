@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="Lucene倒排索引根据属性的值来查找记录.表现为: 一个关键词,它的频度,位置.  取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点. 建立倒排索引. 关键词所在的文章号,关键词的位置, 频度 实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针. 压缩算法. 关键词压缩: &amp;lt;前缀长度,后缀&amp;gt;. 数字压缩:只保存与上一个值的差值. 查询单词时,L">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-13T12:44:00.518Z">
+<meta property="og:updated_time" content="2020-04-13T12:43:33.450Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="玩转Elasticsearch系列 (1) - 架构原理">
 <meta name="twitter:description" content="Lucene倒排索引根据属性的值来查找记录.表现为: 一个关键词,它的频度,位置.  取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点. 建立倒排索引. 关键词所在的文章号,关键词的位置, 频度 实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针. 压缩算法. 关键词压缩: &amp;lt;前缀长度,后缀&amp;gt;. 数字压缩:只保存与上一个值的差值. 查询单词时,L">
@@ -326,7 +326,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lucene倒排索引"><span class="toc-number">1.</span> <span class="toc-text">Lucene倒排索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准实时索引的实现"><span class="toc-number">2.</span> <span class="toc-text">准实时索引的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#translog提供的磁盘同步控制"><span class="toc-number">2.1.</span> <span class="toc-text">translog提供的磁盘同步控制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#translog的一致性"><span class="toc-number">2.1.1.</span> <span class="toc-text">translog的一致性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#segment-merge的影响"><span class="toc-number">3.</span> <span class="toc-text">segment merge的影响</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#归并线程的配置"><span class="toc-number">3.0.1.</span> <span class="toc-text">归并线程的配置</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#routing和replica的读写过程"><span class="toc-number">4.</span> <span class="toc-text">routing和replica的读写过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#routing"><span class="toc-number">4.1.</span> <span class="toc-text">routing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#副本一致性"><span class="toc-number">4.2.</span> <span class="toc-text">副本一致性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shard的allocate控制"><span class="toc-number">5.</span> <span class="toc-text">shard的allocate控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动发现的配置"><span class="toc-number">6.</span> <span class="toc-text">自动发现的配置</span></a></li>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lucene倒排索引"><span class="toc-number">1.</span> <span class="toc-text">Lucene倒排索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准实时索引的实现"><span class="toc-number">2.</span> <span class="toc-text">准实时索引的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#translog提供的磁盘同步控制"><span class="toc-number">2.1.</span> <span class="toc-text">translog提供的磁盘同步控制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#translog的一致性"><span class="toc-number">2.1.1.</span> <span class="toc-text">translog的一致性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#segment-merge的影响"><span class="toc-number">3.</span> <span class="toc-text">segment merge的影响</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#归并线程的配置"><span class="toc-number">3.0.1.</span> <span class="toc-text">归并线程的配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#routing和replica的读写过程"><span class="toc-number">4.</span> <span class="toc-text">routing和replica的读写过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#routing"><span class="toc-number">4.1.</span> <span class="toc-text">routing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#副本一致性"><span class="toc-number">4.2.</span> <span class="toc-text">副本一致性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shard的allocate控制"><span class="toc-number">5.</span> <span class="toc-text">shard的allocate控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动发现的配置"><span class="toc-number">6.</span> <span class="toc-text">自动发现的配置</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -471,15 +471,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -487,15 +479,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -503,123 +487,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -627,11 +495,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -643,7 +511,7 @@ MathJax.Hub.Queue(function() {
         </div>
         <ul class="search-ul">
           <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
-            缺失模块。<br>1、请确保node版本大于6.2<br>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br> npm i hexo-generator-json-content --save<br><br>
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
             3、在根目录_config.yml里添加配置：
 <pre style="font-size: 12px;" q-show="jsonFail">
   jsonContent:

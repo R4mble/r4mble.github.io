@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
@@ -357,19 +357,19 @@ delete(rating, &quot;c&quot;)
 
 
   
-    <article id="post-Java内存结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java线程池ThreadPoolExecutor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Java内存结构/">Java内存区域</a>
+      <a class="article-title" href="/2020/04/14/Java线程池ThreadPoolExecutor/">Java线程池ThreadPoolExecutor</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Java内存结构/" class="archive-article-date">
+        <a href="/2020/04/14/Java线程池ThreadPoolExecutor/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -377,23 +377,50 @@ delete(rating, &quot;c&quot;)
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Java内存区域"><a href="#Java内存区域" class="headerlink" title="Java内存区域"></a>Java内存区域</h1><h2 id="线程共享"><a href="#线程共享" class="headerlink" title="线程共享"></a>线程共享</h2><ul>
-<li><p>方法区<br>  又称Non-Heap（非堆），主要用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，<br>  根据Java 虚拟机规范的规定，当方法区无法满足内存分配需求时，将抛出OutOfMemoryError 异常。<br>  在方法区中存在一个叫运行时常量池(Runtime Constant Pool）的区域，它主要用于存放编译器生成的各种字面量和符号引用，<br>  这些内容将在类加载后存放到运行时常量池中，以便后续使用。</p>
-</li>
-<li><p>堆<br>  在虚拟机启动时创建，是Java 虚拟机所管理的内存中最大的一块，主要用于存放对象实例，几乎所有的对象实例都在这里分配内存，<br>  Java 堆是垃圾收集器管理的主要区域，因此很多时候也被称做GC 堆，如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，<br>  将会抛出OutOfMemoryError 异常。</p>
-</li>
-<li><p>直接内存</p>
-</li>
-</ul>
-<h2 id="线程私有"><a href="#线程私有" class="headerlink" title="线程私有"></a>线程私有</h2><ul>
-<li><p>虚拟机栈<br>  与线程同时创建，总数与线程关联，代表Java方法执行的内存模型。每个方法执行时都会创建一个栈桢来存储方法的的变量表、<br>  操作数栈、动态链接方法、返回值、返回地址等信息。每个方法从调用直结束就对于一个栈桢在虚拟机栈中的入栈和出栈过程</p>
-</li>
-<li><p>本地方法栈<br>  与虚拟机用到的 Native 方法相关</p>
-</li>
-<li><p>程序计数器<br>  一小块内存空间，主要代表当前线程所执行的字节码行号指示器。字节码解释器工作时，<br>  通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。</p>
-</li>
-</ul>
+        <pre><code>目的
+    线程是稀缺资源，不能频繁的创建。
+    解耦作用；线程的创建与执行完全分开，方便维护。
+    应当将其放入一个池子中，可以给其他任务进行复用。
+    提高线程的可管理性：线程池可以统一管理、分配、调优和监控
+    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗
+    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    
 
+四个构造函数,其中的一些参数: 
+    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
+                            除非将allowCoreThreadTimeOut设置为true。
+
+    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
+                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
+
+    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
+
+    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
+                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
+
+    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
+                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
+
+    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
+
+    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
+                                        会调用RejectedExecutionHandler的rejectedExecution方法。
+
+线程池规则
+
+    下面都假设任务队列没有大小限制：
+
+        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
+
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
+
+    任务队列大小有限时
+
+        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
+        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
+</code></pre>
       
 
       
@@ -416,7 +443,7 @@ delete(rating, &quot;c&quot;)
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Java内存结构/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Java线程池ThreadPoolExecutor/">展开全文 >></a>
         </p>
       
 
@@ -446,19 +473,19 @@ delete(rating, &quot;c&quot;)
 
 
   
-    <article id="post-Golang东一榔头西一棒槌系列(4) -指针与函数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes权威指南-从Docker到Kubernetes实践全接触" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">Golang东一榔头西一棒槌系列(4) -指针与函数</a>
+      <a class="article-title" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">Kubernetes</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/" class="archive-article-date">
+        <a href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -466,75 +493,24 @@ delete(rating, &quot;c&quot;)
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h1><pre><code>// 和号: 取变量地址
-s := &quot;Hello&quot;
-fmt.Println(&amp;s)
+        <h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><ul>
+<li>拥有唯一指定的名称 (如mysql-server)</li>
+<li>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP, Service IP 或 VIP.</li>
+<li>能够提供某种远程服务能力</li>
+<li>被映射到提供这种服务能力的一组容器应用上</li>
+</ul>
+<p>Service与Pod之间通过Label关联, 给运行MySQL的Pod贴上name=mysql的标签, 给Service定义Label Selector,<br>MySQL Service的标签选择器的选择条件为name=mysql</p>
+<p>一个Node上运行着几百个Pod</p>
+<p>一个Pod里有一个Pause容器和多个业务容器</p>
+<h2 id="例子-运行在Tomcat里的WebApp"><a href="#例子-运行在Tomcat里的WebApp" class="headerlink" title="例子: 运行在Tomcat里的WebApp"></a>例子: 运行在Tomcat里的WebApp</h2><p>两个容器: WebApp容器和MySQL容器<br>webapp需要访问mysql容器</p>
+<ul>
+<li>docker时代: 把mysql容器的ip地址通过环境变量注入到webapp中, 把webapp的8080端口映射到宿主机的8080端口</li>
+<li>kubernetes时代: </li>
+</ul>
+<ol>
+<li>为mysql服务创建RC(Replication Controller)定义文件 mysql-rc.yaml</li>
+</ol>
 
-//     星号: 访问内存地址
-fmt.Println(*&amp;s)
-
-// 指针类型声明, int型指针
-x *int
-</code></pre><h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><pre><code>func addUp(x int, y int) int  {
-    return x + y
-}
-
-// 返回多个值
-func getPrize() (int, string)  {
-    i := 2
-    s := &quot;goldfish&quot;
-    return i, s
-}
-
-// 不定参函数, numbers是包含所有参数的切片
-func sumNumbers(numbers...int) int  {
-    total := 0
-    for _, number := range numbers {
-        total += number
-    }
-    return total
-}
-
-// 具名返回值, 在返回值声明里指定变量名
-func sayHi() (x, y string)  {
-    x = &quot;hello&quot;
-    y = &quot;world&quot;
-    return x, y
-}
-
-// 具名返回值无需显式地返回相应变量名, naked return
-// 必须是返回值都是 具名返回值
-func sayHi() (x, y string)  {
-    x = &quot;hello&quot;
-    y = &quot;world&quot;
-    return
-}
-
-// 递归函数
-func feedMe(portion int, eaten int) int {
-    eaten = portion + eaten
-    if eaten &gt;= 5 {
-        fmt.Println(&quot;enough&quot;)
-        return eaten
-    }
-    fmt.Println(&quot;not enough&quot;)
-    return feedMe(portion, eaten)
-}
-
-// 函数赋给变量
-fn := func() {fmt.Println(&quot;I&apos;m a fun&quot;)}
-fn()
-
-// 函数做为参数
-func main() {
-    fn := func() string { return &quot;I&apos;m a fun&quot;}
-    fmt.Println(fn2(fn))
-}
-// 接收的f的类型是 func() string
-func fn2(f func() string) string {
-    return f()
-}
-</code></pre>
       
 
       
@@ -543,10 +519,21 @@ func fn2(f func() string) string {
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">展开全文 >></a>
         </p>
       
 
@@ -686,15 +673,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -702,15 +681,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -718,123 +689,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -842,11 +697,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -858,7 +713,7 @@ MathJax.Hub.Queue(function() {
         </div>
         <ul class="search-ul">
           <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
-            缺失模块。<br>1、请确保node版本大于6.2<br>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br> npm i hexo-generator-json-content --save<br><br>
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
             3、在根目录_config.yml里添加配置：
 <pre style="font-size: 12px;" q-show="jsonFail">
   jsonContent:

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="一切以服务为中心, 一切围绕服务运转.自动化.一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发调度流程,最终在选定的目标节点上启动相应数量的服务实例副本. 核心组件:  etcd: 保存整个集群的状态, 所有资源对象的数据 apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制 controller manager">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-13T12:43:59.935Z">
+<meta property="og:updated_time" content="2020-04-13T12:43:33.436Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kubernetes">
 <meta name="twitter:description" content="一切以服务为中心, 一切围绕服务运转.自动化.一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发调度流程,最终在选定的目标节点上启动相应数量的服务实例副本. 核心组件:  etcd: 保存整个集群的状态, 所有资源对象的数据 apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制 controller manager">
@@ -188,7 +188,7 @@
 <blockquote>
 <p>kubectl get nodes</p>
 </blockquote>
-<h2 id="启动Mysql应用"><a href="#启动Mysql应用" class="headerlink" title="启动Mysql应用"></a>启动Mysql应用</h2><p>mysql-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">mysql</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line"><span class="attr">    replicas:</span> <span class="number">1</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line"><span class="attr">    selector:</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">mysql</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line"><span class="attr">    template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line"><span class="attr">        metadata:</span></span><br><span class="line"><span class="attr">            labels:</span></span><br><span class="line"><span class="attr">            app:</span> <span class="string">mysql</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line"><span class="attr">        spec:</span></span><br><span class="line"><span class="attr">            containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line"><span class="attr">            - name:</span> <span class="string">mysql</span>   <span class="comment"># 容器名称</span></span><br><span class="line"><span class="attr">            image:</span> <span class="string">mysql</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line"><span class="attr">            ports:</span></span><br><span class="line"><span class="attr">            - containerPort:</span> <span class="number">3306</span> <span class="comment"># 容器应用监听的端口号</span></span><br><span class="line"><span class="attr">            env:</span>                   <span class="comment"># 注入容器内的环境变量</span></span><br><span class="line"><span class="attr">            - name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line"><span class="attr">            value:</span> <span class="string">"123456"</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="启动Mysql应用"><a href="#启动Mysql应用" class="headerlink" title="启动Mysql应用"></a>启动Mysql应用</h2><p>mysql-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">1</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">mysql</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mysql</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">mysql</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">3306</span> <span class="comment"># 容器应用监听的端口号</span></span><br><span class="line">            <span class="attr">env:</span>                   <span class="comment"># 注入容器内的环境变量</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">            <span class="attr">value:</span> <span class="string">"123456"</span></span><br></pre></td></tr></table></figure></p>
 <p>将RC文件发布到Kubenetes集群:</p>
 <blockquote>
 <p>kubectl create -f mysql-rc.yaml</p>
@@ -205,7 +205,7 @@
 <blockquote>
 <p>docker ps | grep mysql</p>
 </blockquote>
-<p>创建Kubernetes Service:<br>mysql-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line"><span class="attr">    name:</span> <span class="string">mysql</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="attr">        - port:</span> <span class="number">3306</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line"><span class="attr">    selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">mysql</span></span><br></pre></td></tr></table></figure></p>
+<p>创建Kubernetes Service:<br>mysql-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">3306</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span></span><br></pre></td></tr></table></figure></p>
 <p>创建Service:</p>
 <blockquote>
 <p>kubectl create -f mysql-svc.yaml</p>
@@ -214,10 +214,10 @@
 <blockquote>
 <p>kubectl get svc</p>
 </blockquote>
-<h2 id="启动Tomcat应用"><a href="#启动Tomcat应用" class="headerlink" title="启动Tomcat应用"></a>启动Tomcat应用</h2><p>创建myweb-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">myweb</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line"><span class="attr">    replicas:</span> <span class="number">2</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line"><span class="attr">    selector:</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">myweb</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line"><span class="attr">    template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line"><span class="attr">        metadata:</span></span><br><span class="line"><span class="attr">            labels:</span></span><br><span class="line"><span class="attr">            app:</span> <span class="string">myweb</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line"><span class="attr">        spec:</span></span><br><span class="line"><span class="attr">            containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line"><span class="attr">            - name:</span> <span class="string">myweb</span>   <span class="comment"># 容器名称</span></span><br><span class="line"><span class="attr">            image:</span> <span class="string">kubeguide/tomcat-app:v1</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line"><span class="attr">            ports:</span></span><br><span class="line"><span class="attr">            - containerPort:</span> <span class="number">8080</span> <span class="comment"># 容器应用监听的端口号</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="启动Tomcat应用"><a href="#启动Tomcat应用" class="headerlink" title="启动Tomcat应用"></a>启动Tomcat应用</h2><p>创建myweb-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">2</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">myweb</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">myweb</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">kubeguide/tomcat-app:v1</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span> <span class="comment"># 容器应用监听的端口号</span></span><br></pre></td></tr></table></figure></p>
 <p>RC的创建和验证:</p>
 <blockquote>
-<p>kubectl create -f myweb-rc.yaml<br>创建myweb-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line"><span class="attr">    name:</span> <span class="string">myweb</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line"><span class="attr">    type:</span> <span class="string">NodePort</span>      <span class="comment"># 此Service开启了NodePort方式的外网访问模式</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="attr">        - port:</span> <span class="number">8080</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line"><span class="attr">          nodePort:</span> <span class="number">30001</span></span><br><span class="line"><span class="attr">    selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line"><span class="attr">        app:</span> <span class="string">myweb</span></span><br></pre></td></tr></table></figure></p>
+<p>kubectl create -f myweb-rc.yaml<br>创建myweb-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">NodePort</span>      <span class="comment"># 此Service开启了NodePort方式的外网访问模式</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">          <span class="attr">nodePort:</span> <span class="number">30001</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span></span><br></pre></td></tr></table></figure></p>
 </blockquote>
 <blockquote>
 <p>kubectl create -f myweb-svc.yaml</p>
@@ -378,18 +378,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/04/24/算法4/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/04/24/Kubernetes CheetSheet/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          算法4
+          Kubernetes CheetSheet
         
       </div>
     </a>
   
   
-    <a href="/2019/04/24/Kubernetes CheetSheet/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Kubernetes CheetSheet</div>
+    <a href="/2019/04/24/JVM故障排查/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">JVM故障排查</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -561,15 +561,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -577,15 +569,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -593,123 +577,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -717,11 +585,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -733,7 +601,7 @@ MathJax.Hub.Queue(function() {
         </div>
         <ul class="search-ul">
           <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
-            缺失模块。<br>1、请确保node版本大于6.2<br>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br> npm i hexo-generator-json-content --save<br><br>
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
             3、在根目录_config.yml里添加配置：
 <pre style="font-size: 12px;" q-show="jsonFail">
   jsonContent:

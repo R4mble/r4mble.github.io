@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
@@ -151,19 +151,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Lua" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux性能优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Lua/">Lua</a>
+      <a class="article-title" href="/2019/06/29/Linux性能优化/">Linux性能优化</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Lua/" class="archive-article-date">
+        <a href="/2019/06/29/Linux性能优化/" class="archive-article-date">
   	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
@@ -171,9 +171,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>元表 Metatable<br>    改变table的行为,每个行为关联了对应的元方法.<br>    如: 定义两个table的相加操作.</p>
-<p>数字:   字节, C语言整型, C语言size_t类型, Lua整型, Lua浮点型<br>        byte, uint32,   uint64,         int64,   float64   </p>
-<p>字符串: 其实就是字节数组. 分为NULL,短字符串和长字符串<br>        NULL: 用0x00表示.<br>        长度小于0xFD的字符串: 先用一个字节记录长度+1, 然后是字节数组<br>        长度大于等于0xFE的字符串: 第一个字节是0xFF,后面跟一个size_t记录长度+1,最后是字节数组<br>列表: 先用cint记录列表长度,再紧接着存储n个列表元素</p>
+        <p>计算CPU每秒定时中断的次数:<br>cat /proc/interrupts | grep timer; sleep 10; cat /proc/interrupts | grep timer<br>    结果:<br>          CPU0        CPU1<br>    LOC: 2142174276 2150800894<br>    LOC: 2142179825 2150806783<br>CPU0: (2142179825 - 2142174276) / 10 = 555次中断 / 秒<br>CPU1: (2150806783 - 2150800894) / 10 = 589次中断 / 秒</p>
+<p>(我的腾讯云: 357次中断 / 秒)</p>
+<p>虚拟内存统计: vmstat [-n] [-s] [delay [count]]<br>    参数说明:<br>            delay: vmstat采样的间隔时间<br>            count: 采样次数<br>            -s: 更详细的信息<br>    功能: 正在运行的进程个数, CPU的使用情况, CPU接收的中断个数, 调度器执行的上下文切换次数<br>    模式: 采样模式和平均模式. 不指定参数则运行于平均模式,显示从系统启动以来所有统计数据的均值.<br>          指定延迟后, 第一个采样仍是系统启动以来的均值,之后按延迟秒数采样系统并显示.<br>    直接运行vmstat的结果:<br>procs ———–memory———- —swap– —–io—- -system– ——cpu—–<br> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st<br> 1  0      0 198800  68680 488468    0    0     2     7    0    0  0  0 99  0  0<br>    结果说明<br>        r: 当前可运行的进程数, 已经准备好. 理想的话, 可运行进程数应与可用CPU的数量相等<br>        b: 等待IO完成的被阻塞进程数<br>        forks: 创建新进程的次数<br>        in: 系统发生中断的次数<br>        cs: 系统发生上下文切换的次数<br>        us: 用户进程消耗总CPU时间的百分比<br>        sy: 系统代码消耗的总CPU时间百分比<br>        wa: 等待IO消耗的CPU时间百分比<br>        id: 系统空闲的消耗总CPU时间百分比</p>
+<pre><code>把结果输出到文件: vmstat 1 | tee /tmp/output
+</code></pre><p>把占用CPU最多的进程按降序排列: top [d delay] [C] [H] [i] [n iter] [b]<br>        (默认每3秒更新一次)<br>    两种模式选项: 命令行模式, 运行时模式<br>    参数说明: i 不显示未使用任何cpu的进程<br>             H 显示应用程序所有的单个线程</p>
 
       
 
@@ -188,7 +190,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Lua//" class="article-tag-list-link color4">Lua</a>
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
         		</li>
       		
 		</ul>
@@ -197,7 +199,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Lua/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Linux性能优化/">展开全文 >></a>
         </p>
       
 
@@ -478,19 +480,19 @@
 
 
   
-    <article id="post-Micrometer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Maven" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Micrometer/">Meter</a>
+      <a class="article-title" href="/2019/06/29/Maven/">Maven</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Micrometer/" class="archive-article-date">
+        <a href="/2019/06/29/Maven/" class="archive-article-date">
   	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
@@ -498,32 +500,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>记录 Java 应用性能指标</p>
-<p>计量器注册表 MeterRegistry<br>    创建和维护计量器.</p>
-<pre><code>基于内存的计量器注册表实现: 
-    SimpleMeterRegistry 不支持导出数据到监控系统
-
-可以组合多个计量器注册表的实现类
-    CompositeMeterRegistry 运行同时发布数据到多个监控系统
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompositeMeterRegistryExample</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CompositeMeterRegistry registry = <span class="keyword">new</span> CompositeMeterRegistry();</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry());</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry(<span class="keyword">new</span> MyConfig(), Clock.SYSTEM));</span><br><span class="line"> </span><br><span class="line">    Counter counter = registry.counter(<span class="string">"simple"</span>);</span><br><span class="line">    counter.increment();</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> <span class="keyword">implements</span> <span class="title">SimpleConfig</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">prefix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"my"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>静态的全局计量器注册表对象 
-    Metrics.globalRegistry 组合注册表
-</code></pre><pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalRegistryExample</span> </span>{
-
-  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
-    Metrics.addRegistry(<span class="keyword">new</span> SimpleMeterRegistry());
-    Counter counter = Metrics.counter(<span class="string">"simple"</span>);
-    counter.increment();
-  }
-}
-</code></pre>
-<p>计量器 Meter<br>    需要收集的性能指标数据.</p>
-<pre><code>计量器名称和标签
-    每个计量器在创建时都可以指定一系列标签。标签以名值对的形式出现。监控系统使用标签对数据进行过滤。除了每个计量器独有的标签之外，每个计量器注册表还可以添加通用标签。所有该注册表导出的数据都会带上这些通用标签。
-</code></pre><p>计数器 Counter<br>    单个只允许增加的值.    </p>
-<p>计量仪 Gauge<br>    单个变化的值. Gauge对象既可以从计量器注册表中创建,也可以使用<br>    Gauge.builder()构建.</p>
-<p>计时器 Timer<br>    记录事件的持续时间.</p>
-<p>集成SpringBoot</p>
+        <h2 id="scope"><a href="#scope" class="headerlink" title="scope"></a>scope</h2><ul>
+<li><p>compile<br>（默认scope),也就是说这个项目在编译，测试，运行阶段都需要这个artifact对应的jar包在classpath中。</p>
+</li>
+<li><p>provided<br>这个provided是目标容器已经provide这个artifact。换句话说，它只影响到编译，测试阶段。<br>在编译测试阶段，我们需要这个artifact对应的jar包在classpath中，而在运行阶段，假定目标的容器（比如我们这里的liferay容器）已经提供了这个jar包，<br>所以无需我们这个artifact对应的jar包了。</p>
+</li>
+</ul>
 
       
 
@@ -538,7 +520,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Meter//" class="article-tag-list-link color1">Meter</a>
+        			<a href="/categories/Maven//" class="article-tag-list-link color1">Maven</a>
         		</li>
       		
 		</ul>
@@ -547,7 +529,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Micrometer/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Maven/">展开全文 >></a>
         </p>
       
 
@@ -687,15 +669,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -703,15 +677,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -719,123 +685,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -843,11 +693,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -859,7 +709,7 @@ MathJax.Hub.Queue(function() {
         </div>
         <ul class="search-ul">
           <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
-            缺失模块。<br>1、请确保node版本大于6.2<br>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br> npm i hexo-generator-json-content --save<br><br>
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
             3、在根目录_config.yml里添加配置：
 <pre style="font-size: 12px;" q-show="jsonFail">
   jsonContent:

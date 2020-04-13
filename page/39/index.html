@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
@@ -329,19 +329,19 @@
 
 
   
-    <article id="post-TCP粘包和拆包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Reentrantlock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/TCP粘包和拆包/">TCP粘包和拆包</a>
+      <a class="article-title" href="/2019/04/02/Reentrantlock/">ReentrantLock</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/TCP粘包和拆包/" class="archive-article-date">
+        <a href="/2019/04/02/Reentrantlock/" class="archive-article-date">
   	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
@@ -349,20 +349,55 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>TCP是没有界限的一串数据，它会根据TCP缓冲区的实际情况进行包的划分。<br>一个完整的包会被TCP拆分为多个包进行发送，多个小包也可能会被封装为一个<br>大的数据包发送， 这就是TCP粘包和拆包问题。</p>
-<p>发生的原因：<br>    1.应用程序write写入的字节大小大于套接口发送缓冲区大小。<br>    2.进行MSS大小的TCP分段<br>    3.以太网帧的payload大于MTU进行IP分片</p>
-<p>底层无法保证数据包不被拆分，只能通过上层应用协议栈设计来解决。<br>    解决方案：<br>        1.消息定长，如每个报文固定大小为200字节，不够的话空位补空格<br>        2.在包尾增加回车换行符进行分割，如FTP协议<br>        3.将消息分为消息头和消息体，消息头中包含表示消息总长度的字段。<br>            通常为消息头的第一个字段使用int32来表示消息的总长度。</p>
-<p>Netty解决TCP粘包问题<br>    LineBasedFrameDecoder:<br>        依次遍历ByteBuf中的可读字节，判断是否有\n或\r\n，如果有，就以此为结束标志，<br>        从可读索引到结束位置区间的字节就组成了一行。<br>        它是以换行符为结束标志的解码器，支持携带结束符或者不携带结束符两种解码方式，<br>        同时支持配置单行的最大长度。如果连续读到最大长度后仍然没有发现换行符，就会抛出<br>        异常，同时忽略之前读到的异常码流。</p>
-<pre><code>StringDecoder:
-    将接收到的对象转换成字符串，然后继续调用后面的Handler。
+        <blockquote>
+<p>可重入锁: 一个线程可以连续两次获得同一把锁. 如果不允许重入那么同一个线程在第二次获得锁时将会和自己产生死锁, 程序会卡死在第二次申请锁的过程中.<br>  如果一个线程多次获得锁, 那么在释放锁时也必须释放相同的次数, 如果释放多了会得到java.lang.illegalMonitorStateException异常, 释放少了<br>  线程还持有锁, 其他线程无法进入临界区.</p>
+</blockquote>
+<ol>
+<li>中断响应<br>synchronized不可被中断, 如果一个线程在等待锁, 要么获得锁继续执行, 要么保持等待.</li>
+</ol>
+<ul>
+<li>lock<br>  1) 如果该锁没有被另一个线程保持, 则获取该锁并立即返回, 将锁的保持计数设置为1<br>  2) 如果当前线程已经保持该锁, 则将保持计数加1, 并且该方法立即返回<br>  3) 如果该锁被另一个线程保持, 出于线程调度的目的, 禁用当前线程, 并且在获得锁之前, 该线程一直处于休眠状态, 此时锁保持技术被设置为1</li>
+<li><p>lockInterruptibly<br>  1) 如果当前线程未被中断, 则获取锁<br>  2) 如果该锁没有被另一个线程保持, 则获取该锁并立即返回, 将锁的保持计数设置为1<br>  3) 如果当前线程已经保持该锁, 则将保持计数加1, 并且该方法立即返回<br>  4)  如果该锁被另一个线程保持, 出于线程调度的目的, 禁用当前线程, 并且在获得锁或者其他某个线程中断当前线程之前,</p>
+<pre><code>该线程一直处于休眠状态, 此时锁保持技术被设置为1
+</code></pre><p>  (获得锁, 但优先响应中断)</p>
+</li>
+<li>tryLock<br>  获得锁, 如果成功返回true, 失败返回false, 不等待.</li>
+</ul>
+<ol start="2">
+<li><p>锁申请等待超时        </p>
+</li>
+<li><p>公平锁</p>
+</li>
+</ol>
+<p>ReentrantLock的实现包含的元素:</p>
+<ol>
+<li>原子状态, 使用CAS操作来存储当前锁的状态, 判断锁是否已经被别的线程持有了</li>
+<li>等待队列, 所有没有请求到锁的线程, 会进入队列进行等待, 待有线程释放锁之后, 系统从等待队列中唤醒一个线程, 继续工作</li>
+<li>阻塞原语park()和unpark(), 用来挂起和恢复线程, 没有得到锁的线程将被挂起.</li>
+</ol>
+<h2 id="Condition"><a href="#Condition" class="headerlink" title="Condition"></a>Condition</h2><p>Object.wait() 和 Object.notify() 和 synchronized关键字一起使用.</p>
+<p>ReentrantLock的newCondition()方法生成一个与当前重入锁绑定的Condition实例.</p>
+<p>await()方法使当前线程等待,释放当前锁,当其他线程使用signal()或signalAll()方法时,线程重新获得锁并继续执行. 当线程被中断时跳出等待.<br>awaitUninterruptibly(), 与await()方法基本相同, 但不会在等待过程中响应中断.</p>
+<p>ReentrantLock有lockInterruptibly()方法  </p>
+<p>synchronized和ReentrantLock异同</p>
+<pre><code>相同点
+    都实现了多线程同步和内存可见性语义
+    都是可重入锁
+不同点
+    实现机制不同 
+        synchronized通过java对象头锁标记和Monitor对象实现 
+        synchronized依赖jvm内存模型保证包含共享变量的多线程内存可见性
 
+        ReentrantLock通过CAS、ASQ（AbstractQueuedSynchronizer）和locksupport（用于阻塞和解除阻塞）实现 
+        ReentrantLock通过ASQ的volatile state保证包含共享变量的多线程内存可见性
 
-LineBasedFrameDecoder + StringDecoder组合就是按行切换的文本解码器。
+    使用方式不同 
+        synchronized可以修饰实例方法（锁住实例对象）、静态方法（锁住类对象）、代码块（显式指定锁对象）
+        ReentrantLock显式调用trylock()/lock()方法，需要在finally块中释放锁
 
-指定分隔符：
-DelimiterBasedFrameDecoder + StringDecoder
-定长：
-FixedLengthFrameDecoder + StringDecoder
+    功能丰富程度不同 
+        ReentrantLock提供有限时间等候锁（设置过期时间）、可中断锁（lockInterruptibly）、condition（提供await、signal等方法）等丰富语义 
+        ReentrantLock提供公平锁和非公平锁实现 synchronized不可设置等待时间、不可被中断（interrupted）    
 </code></pre>
       
 
@@ -377,7 +412,7 @@ FixedLengthFrameDecoder + StringDecoder
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        			<a href="/categories/并发编程//" class="article-tag-list-link color5">并发编程</a>
         		</li>
       		
 		</ul>
@@ -386,7 +421,7 @@ FixedLengthFrameDecoder + StringDecoder
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/TCP粘包和拆包/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/Reentrantlock/">展开全文 >></a>
         </p>
       
 
@@ -634,15 +669,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -650,15 +677,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -666,123 +685,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -790,11 +693,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -806,7 +709,7 @@ MathJax.Hub.Queue(function() {
         </div>
         <ul class="search-ul">
           <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
-            缺失模块。<br>1、请确保node版本大于6.2<br>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br> npm i hexo-generator-json-content --save<br><br>
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
             3、在根目录_config.yml里添加配置：
 <pre style="font-size: 12px;" q-show="jsonFail">
   jsonContent:

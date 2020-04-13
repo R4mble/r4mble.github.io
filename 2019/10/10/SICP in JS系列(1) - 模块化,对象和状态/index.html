@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="synthesis n. 综合, 综合法 coherent adj. 条理清楚的, 连贯的; 前后一致的 extent n. 长度, 面积, 范围 dictate vt. 指示; 指定; 指令 prominent 显著的; 突出的 linguistic adj. 语言的, 语言学的, 语言研究的 grapple 抓住；格斗 exploit vt. 开发，开拓；剥削；开采 n. 勋绩；功绩 dep">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-02T15:40:30.819Z">
+<meta property="og:updated_time" content="2019-10-10T15:10:42.242Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SICP in JS系列(1) - 模块化,对象和状态">
 <meta name="twitter:description" content="synthesis n. 综合, 综合法 coherent adj. 条理清楚的, 连贯的; 前后一致的 extent n. 长度, 面积, 范围 dictate vt. 指示; 指定; 指令 prominent 显著的; 突出的 linguistic adj. 语言的, 语言学的, 语言研究的 grapple 抓住；格斗 exploit vt. 开发，开拓；剥削；开采 n. 勋绩；功绩 dep">
@@ -192,7 +192,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> balance = <span class="number">100</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">withdraw</span>(<span class="params">amount</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (balance &gt;= amount) &#123;</span><br><span class="line">        balance = balance - amount</span><br><span class="line">        <span class="keyword">return</span> balance</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Insufficient funds"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>把balance内含进去:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_withdraw =</span><br><span class="line">    balance =&gt;</span><br><span class="line">        amount =&gt; </span><br><span class="line">            balance &gt;= amount</span><br><span class="line">            ? balance -= amount</span><br><span class="line">            : <span class="string">"Insufficient funds"</span></span><br></pre></td></tr></table></figure></p>
 <p>整一个bank<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account = <span class="function"><span class="params">balance</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> withdraw =</span><br><span class="line">            amount =&gt;</span><br><span class="line">                balance &gt;= amount</span><br><span class="line">                    ? balance -= amount</span><br><span class="line">                    : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> deposit =</span><br><span class="line">        amount =&gt; balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">m</span> =&gt;</span></span><br><span class="line">            m === <span class="string">"withdraw"</span></span><br><span class="line">                ? withdraw</span><br><span class="line">                : m === <span class="string">"deposit"</span></span><br><span class="line">                    ? deposit</span><br><span class="line">                    : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="Exercise-3-1"><a href="#Exercise-3-1" class="headerlink" title="Exercise 3.1"></a>Exercise 3.1</h3><p>搞个累加器<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_accumulator = <span class="function"><span class="params">init</span> =&gt;</span> num =&gt; init += num</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-1"><a href="#Exercise-3-1" class="headerlink" title="Exercise 3.1"></a>Exercise 3.1</h3><p>搞个累加器<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_accumulator = <span class="function"><span class="params">init</span> =&gt;</span> <span class="function"><span class="params">num</span> =&gt;</span> init += num</span><br></pre></td></tr></table></figure></p>
 <h3 id="Exercise-3-2"><a href="#Exercise-3-2" class="headerlink" title="Exercise 3.2"></a>Exercise 3.2</h3><p>函数调用次数统计<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_monitored = <span class="function"><span class="params">f</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> counter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> exec = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">        counter += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> f(arg)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">arg</span> =&gt;</span></span><br><span class="line">        arg === <span class="string">"how many calls?"</span></span><br><span class="line">            ? counter</span><br><span class="line">            : arg === <span class="string">"reset count"</span></span><br><span class="line">                ? counter = <span class="number">0</span></span><br><span class="line">                : exec(arg)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="Exercise-3-3"><a href="#Exercise-3-3" class="headerlink" title="Exercise 3.3"></a>Exercise 3.3</h3><p>给之前的bank加个密码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account_password = <span class="function">(<span class="params">balance, password</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> withdraw =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance &gt;= amount</span><br><span class="line">                ? balance -= amount</span><br><span class="line">                : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> deposit =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">pd, m</span>) =&gt;</span></span><br><span class="line">                pd === password</span><br><span class="line">                    ? m === <span class="string">"withdraw"</span></span><br><span class="line">                        ? withdraw</span><br><span class="line">                        : m === <span class="string">"deposit"</span></span><br><span class="line">                            ? deposit</span><br><span class="line">                            : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">                    : <span class="function"><span class="params">num</span> =&gt;</span> <span class="string">"incorrect password"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="Exercise-3-4"><a href="#Exercise-3-4" class="headerlink" title="Exercise 3.4"></a>Exercise 3.4</h3><p>连续输错7次密码, 自动报警<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account_call_cops = <span class="function">(<span class="params">balance, password</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> wrong_time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> withdraw =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance &gt;= amount</span><br><span class="line">                ? balance -= amount</span><br><span class="line">                : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> deposit =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> call_the_cops = <span class="function"><span class="params">()</span> =&gt;</span> <span class="string">"How dare you!"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> normal = <span class="function"><span class="params">m</span> =&gt;</span> &#123;</span><br><span class="line">        wrong_time = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> m === <span class="string">"withdraw"</span></span><br><span class="line">                ? withdraw</span><br><span class="line">                : m === <span class="string">"deposit"</span></span><br><span class="line">                    ? deposit</span><br><span class="line">                    : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">pd, m</span>) =&gt;</span></span><br><span class="line">        pd === password</span><br><span class="line">            ? normal(m)</span><br><span class="line">            : <span class="function"><span class="params">num</span> =&gt;</span></span><br><span class="line">                ++wrong_time &gt; <span class="number">7</span></span><br><span class="line">                    ? call_the_cops()</span><br><span class="line">                    : <span class="string">"incorrect password"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -462,15 +462,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Cache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Array</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -478,15 +470,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Elm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -494,123 +478,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">2048</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">HashMap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Functor</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Monad</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Markdown语法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Meter</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">PostgreSQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Ramda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">柯西</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Spark</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Scala</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Tree</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">lambda演算</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">二进制操作</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">lens</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">类型系统</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -618,11 +486,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -634,7 +502,7 @@ MathJax.Hub.Queue(function() {
         </div>
         <ul class="search-ul">
           <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
-            缺失模块。<br>1、请确保node版本大于6.2<br>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br> npm i hexo-generator-json-content --save<br><br>
+            缺失模块。<br/>1、请确保node版本大于6.2<br/>2、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
             3、在根目录_config.yml里添加配置：
 <pre style="font-size: 12px;" q-show="jsonFail">
   jsonContent:

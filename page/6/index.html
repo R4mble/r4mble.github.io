@@ -151,109 +151,62 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Logstash" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Golang东一榔头西一棒槌系列(3) -集合" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
     <div class="article-entry" itemprop="articleBody">
       
-        
-      
+        <h1 id="array-数组"><a href="#array-数组" class="headerlink" title="array 数组"></a>array 数组</h1><pre><code>// 声明一个int类型数组
+var arr [10]int
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
+// 省略长度, go会自动根据元素算长度
+a := [...]int{3,4,4}
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/21/Logstash/">展开全文 >></a>
-        </p>
-      
+// 二位数组
+doubleArray := [2][4]int{{1, 2, 3, 4}, {5, 6, 7, 8}}
+</code></pre><p>长度也是数组类型的一部分, [3]int和[4]int是不同的类型<br>数组作为参数时, 传入的是该数组的副本, 而不是指针.</p>
+<h1 id="slice-“动态数组”-引用类型-指向一个底层array"><a href="#slice-“动态数组”-引用类型-指向一个底层array" class="headerlink" title="slice “动态数组”,引用类型,指向一个底层array"></a>slice “动态数组”,引用类型,指向一个底层array</h1><pre><code>// 声明一个slice, (少了长度)
+var fslice []int
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
+// 声明两个含有byte的slice
+var a, b [] byte
 
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+var ar = [10]byte{0,1,2,3,4,5,6,7,8,9}
 
+// a指向数组的第三个元素开始, 到第5个元素结束, a就是[2 3 4]
+a = ar[2:5]
+</code></pre><p>slice通过arr[i:j]来获取, i是数组的开始位置,j是结束位置,不包含arr[j],长度是j-i</p>
+<p>slice默认开始位置是0, 结束位置是数组长度<br>即: arr[:n]等价于arr[0:n]<br>    arr[n:]等价于arr[n:len(arr)]<br>从一个数组直接获取slice, 可以用arr[:]</p>
+<p>slice的最大长度cap: slice开始位置到数组最后位置的长度, len(arr) - i<br>对slice的slice可以在cap范围内扩展<br>slice的元素变了, 对它切片的slice元素也会相应改变</p>
+<p>append: 向slice里追加一个或多个元素, 返回一个slice(不改变原slice)<br>乱七八糟警告: append函数会改变slice所引用的数组的内容! 同时会影响到引用同一个数组的其他slice<br>            当slice没有剩余空间的时候, 将动态分配新的数组空间, 返回的slice数组将指向这个空间,<br>             原数组内容保持不变, 其他引用此数组的slice不受影响</p>
+<h1 id="map"><a href="#map" class="headerlink" title="map"></a>map</h1><pre><code>// 声明一个key是字符串,值是int的map, 这种声明需要在使用之前使用make初始化
+var numbers map[string] int
 
+// 声明map
+numbers := make(map[string]int)
 
-
-  
-    <article id="post-玩转ElasticSearch系列 (1) - 架构原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/">玩转Elasticsearch系列 (1) - 架构原理</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/" class="archive-article-date">
-  	<time datetime="2019-09-21T02:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Lucene倒排索引"><a href="#Lucene倒排索引" class="headerlink" title="Lucene倒排索引"></a>Lucene倒排索引</h2><p>根据属性的值来查找记录.<br>表现为: 一个关键词,它的频度,位置.</p>
-<ol>
-<li>取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点.</li>
-<li>建立倒排索引. 关键词所在的文章号,关键词的位置, 频度</li>
-<li>实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针.</li>
-<li>压缩算法. 关键词压缩: &lt;前缀长度,后缀&gt;. 数字压缩:只保存与上一个值的差值.</li>
-<li><p>查询单词时,Lucene对词典二元查找</p>
-<p>对应关系: “文章号” 对应 “文章中所有关键词”<br>倒排索引: “关键词” 对应 “拥有该关键词的所有文章”<br>关键词在文章中出现的位置和次数:  记录该词是文章中第几个关键词,(节约索引空间,词组查询快)<br>关键词按照字符顺序排列,可以使用二元搜索算法快速定位关键词.  </p>
-<p>| 关键词 | 文章号[出现频率] | 出现位置 |<br>| :—-: | :—-: | :—-: |<br>| he | 2[1] | 1<br>| live | 1[2] 2[1] | 2,5 2|<br>以上三列分别作为词典文件,频率文件,位置文件保存.<br>词典文件不仅保存了关键词,还保存了指向频率文件和位置文件的指针.</p>
-<p>假设查询单词”live”, Lucene先对词典二元查找,找到该词,通过指向频率文件的指针读出<br>所有文章号.返回结果.</p>
-</li>
-</ol>
-<h2 id="准实时索引的实现"><a href="#准实时索引的实现" class="headerlink" title="准实时索引的实现"></a>准实时索引的实现</h2><p>新收到的数据写到新的索引文件里.<br>Lucene把每次生成的倒排索引, 叫做一个段. 使用一个commit文件记录索引内所有的segment.<br>生成segment的数据来源就是内存中的buffer.</p>
-<p>1) 当前索引有3个segment可用.<br>2) 新接收的数据进入内存buffer<br>3) 内存buffer生成一个新的segment, 刷到文件系统缓存中(默认1秒间隔, Lucene即可检索到这个新的segment),<br>   再由文件系统缓存刷到磁盘, commit文件同步更新</p>
-<pre><code>curl -XPOST http://127.0.0.1:9200/logstash-2015.06.21/_settings -d&apos;
-{ “refresh_interval”: “10s” }
-</code></pre><h3 id="translog提供的磁盘同步控制"><a href="#translog提供的磁盘同步控制" class="headerlink" title="translog提供的磁盘同步控制"></a>translog提供的磁盘同步控制</h3><p>ES把数据写入内存buffer的同时,另外记录了一个translog日志.<br>在文件系统缓存刷到磁盘的过程中如果发生了异常, ES会从commit位置开始, 恢复整个translog文件中的记录, 保证数据一致性.<br>真正把segment刷到磁盘, 且commit文件进行更新时, translog文件才清空.称为flush<br>ES默认每30分钟或当translog文件大于512MB时 主动进行一次flush</p>
-<h4 id="translog的一致性"><a href="#translog的一致性" class="headerlink" title="translog的一致性"></a>translog的一致性</h4><p>ES默认每5秒强制刷新translog日志到磁盘上.(如果数据没备份,发生故障时确实有可能丢失5秒数据)</p>
-<h2 id="segment-merge的影响"><a href="#segment-merge的影响" class="headerlink" title="segment merge的影响"></a>segment merge的影响</h2><p>独立线程来进行segment数据归并, 把零散的segment归并为少量的,每个都比较大的segment文件.<br>归并后较大的segment刷到磁盘后,commit文件做出相应变更, 删除之前几个小segment,改成大segment.<br>等检索请求都从小segment转到大segment后,删除没用的segment.</p>
-<h4 id="归并线程的配置"><a href="#归并线程的配置" class="headerlink" title="归并线程的配置"></a>归并线程的配置</h4><p>归并过程: 读取segment -&gt; 归并计算 -&gt; 写segment -&gt; 刷到磁盘<br>限速机制: indices.store.throttle.max_bytes_per_sec : 20MB<br>对于SSD可以调到100MB或更高:</p>
-<pre><code>curl -XPOST http://127.0.0.1:9200/_cluster/settings -d&apos;
-{ “persistent”: {
-        &quot;indices.store.throttle.max_bytes_per_sec&quot; : &quot;100mb&quot;
-    } 
-}
-</code></pre><p>归并线程的数量: Math.min(3, Runtime.getRuntime().availableProcessors() / 2)<br>服务器CPU核数的一半大于3时启动3个归并线程, 否则启动CPU核心数一半的线程.<br>如果磁盘性能跟不上,可以降低index.merge.scheduler.max_thread_count配置, 避免IO情况恶化<br>归并策略:</p>
-<ul>
-<li>index.merge.policy.floor_segment 默认2MB, 小于它的优先被归并</li>
-<li>index.merge.policy.max_merge_at_once 默认一次最多归并10个segment</li>
-<li>index.merge.policy.max_merge_at_once_explicit 默认optimize时一次最多归并30个segment</li>
-<li>index.merge.policy.max_merged_segment 默认5GB,大于它的不参与归并,optimize除外<br>增大flush间隔,让每次新生成的segment本身就比较大</li>
+// 赋值
+numbers[&quot;one&quot;] = 1
+</code></pre><ul>
+<li>map是无序的</li>
+<li>map长度不固定, 是引用类型, 两个map指向一个底层, 一个改变另一个也改变</li>
+<li>内置len函数返回map拥有key的数量</li>
 </ul>
-<p>optimize接口: 在负载较低的时间段,强制归并segment</p>
-<h2 id="routing和replica的读写过程"><a href="#routing和replica的读写过程" class="headerlink" title="routing和replica的读写过程"></a>routing和replica的读写过程</h2><h3 id="routing"><a href="#routing" class="headerlink" title="routing"></a>routing</h3><p>shard = hash(routing) % number_of_primary_shards</p>
-<p>每个数据都有一个routing参数,默认使用_id值.<br>因此: Elasticsearch索引的主分片数不能随意修改, 一旦改动存储位置计算结果就会发生改变, 索引数据将不可读.</p>
-<h3 id="副本一致性"><a href="#副本一致性" class="headerlink" title="副本一致性"></a>副本一致性</h3><h2 id="shard的allocate控制"><a href="#shard的allocate控制" class="headerlink" title="shard的allocate控制"></a>shard的allocate控制</h2><h2 id="自动发现的配置"><a href="#自动发现的配置" class="headerlink" title="自动发现的配置"></a>自动发现的配置</h2>
+<pre><code>// 初始化一个map
+rating := map[string]float32 {&quot;c&quot;: 4, &quot;go&quot;: 3.4, &quot;c++&quot;: 1.3} 
+
+// 如果不存在则ok为false, 存在ok为true
+cSharp, ok := rating[&quot;c#&quot;]
+if ok {
+    fmt.Println(&quot;c# is in the map and its rating is &quot;, cSharp)
+} else {
+    fmt.Println(&quot;C# is not found&quot;)
+}
+
+// 删除map中key为c的元素
+delete(rating, &quot;c&quot;)
+</code></pre><h1 id="内建函数make和new"><a href="#内建函数make和new" class="headerlink" title="内建函数make和new"></a>内建函数make和new</h1><p>make用于内建类型(map,slice,channel)的内存分配<br>new用于各种类型的内存分配, 返回一个指针, 指向新分配的类型T的零值</p>
+
       
 
       
@@ -262,21 +215,10 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/13/Golang东一榔头西一棒槌系列(3) -集合/">展开全文 >></a>
         </p>
       
 
@@ -306,27 +248,17 @@
 
 
   
-    <article id="post-玩转ElasticSearch系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-flutter痛苦翻来覆去系列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/21/玩转ElasticSearch系列 (0) - 写在前面的话/">玩转ElasticSearch系列 (0) - 写在前面的话</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/21/玩转ElasticSearch系列 (0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-09-21T02:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-21</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>就是个垃圾</p>
+        <ol>
+<li><p>hello, Simple Material App</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'package:flutter/material.dart'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(MaterialApp(</span><br><span class="line">    title: <span class="string">'Simple Material App'</span>,</span><br><span class="line">    home: Scaffold(</span><br><span class="line">      appBar: AppBar(</span><br><span class="line">        title: Text(<span class="string">'Complex Material App'</span>),</span><br><span class="line">      ),</span><br><span class="line">      body: Container(</span><br><span class="line">        child: Center(</span><br><span class="line">          child: Text(<span class="string">"Hello Fultter~"</span>),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  ));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li></li>
+</ol>
 
       
 
@@ -336,21 +268,10 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/ElasticSearch//" class="article-tag-list-link color4">ElasticSearch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/21/玩转ElasticSearch系列 (0) - 写在前面的话/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/13/flutter痛苦翻来覆去系列/">展开全文 >></a>
         </p>
       
 
@@ -380,59 +301,38 @@
 
 
   
-    <article id="post-深究Spring系列 (1) - 就...Get了个Bean" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-express" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/">深究Spring系列 (1) - 就...Get了个Bean</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/" class="archive-article-date">
-  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>曾听一位高级工程师吐槽: 面试者回答”Spring中Bean是如何创建的,getBean的过程是什么样的?”这个问题时, 语塞说不出话来, 最后憋出一句: “就…Get了个Bean”.<br>他说完后组内笑声此起彼伏, 我却陷入深思. 严格来讲我也不是很清楚这里面到底发生了啥.</p>
-<h2 id="Spring的领域模型"><a href="#Spring的领域模型" class="headerlink" title="Spring的领域模型"></a>Spring的领域模型</h2><ol>
-<li>容器领域模型(Context模型)<br>Spring的掌控域(或者服务域),对Spring核心领域模型(Bean模型)进行生命周期管理.</li>
-<li>核心领域模型(Bean模型)<br>Bean是应用运行时可执行的最小函数式单元,可以是一个属性单元,也可以是Java中的一个函数对象,一种对象式的为某种特殊行为而生的可复用的概念,不受职责或者大小的限制.<br>每个线程的真正执行者,整个会话生命周期的管理者,Spring对外暴露的核心实体.</li>
-<li>代理领域模型(Advisor模型)<br>Spring代理的执行依赖于Bean模型,Spring代理的生成,执行及选择都依赖于Spring自身定义的Advisor模型,只有符合Advisor模型的定义,才能生成Spring代理.</li>
-</ol>
-<p>Spring注解:<br>    AnnotationConfigApplicationContext extends GenericApplicationContext<br>                                       implements AnnotationConfigRegistry </p>
-<p><img src="/images/Spring源码/AnnotationConfigApplicationContext.png" alt="AnnotationConfigApplicationContext"><br><img src="/images/Spring源码/DefaultListableBeanFactory.png" alt="AnnotationConfigApplicationContext"></p>
-<h2 id="Spring上下文和容器"><a href="#Spring上下文和容器" class="headerlink" title="Spring上下文和容器"></a>Spring上下文和容器</h2><ol>
-<li>ApplicationContext: 整个容器的基本功能定义类. 利用代理的设计方法, 内部持有BeanFactory实例, 这个实例替它执行BeanFactory接口定义的功能.</li>
-<li>AbstractApplicationContext: 整个容器的核心处理类, 真正的Spring容器执行者, 在内部使用模板方法, 实现了高复用,高扩展,实现了Spring的启动,停止,刷新,事件推送,BeanFactory方法的默认实现及虚拟机回调的注册.</li>
-<li>GenericApplicationContext: 最容易构建Spring环境的实体类,涵盖了Spring Context的核心功能, 开箱即用.</li>
-<li><p>AnnotationConfigApplicationContext: 利用GenericApplicationContext的封装性和简便性. 传入class数组创建一个可执行的上下文实例来构造一个可运行的Spring运行环境.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//根据参数类型可以知道，其实可以传入多个annotatedClasses，但是这种情况出现的比较少</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AnnotationConfigApplicationContext</span><span class="params">(Class&lt;?&gt;... annotatedClasses)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//调用无参构造函数，会先调用父类GenericApplicationContext的构造函数</span></span><br><span class="line">		<span class="comment">//父类的构造函数里面就是初始化DefaultListableBeanFactory，并且赋值给beanFactory</span></span><br><span class="line">		<span class="comment">//本类的构造函数里面，初始化了一个读取器：AnnotatedBeanDefinitionReader reader，一个扫描器ClassPathBeanDefinitionScanner scanner</span></span><br><span class="line">		<span class="comment">//scanner的用处不是很大，它仅仅是在我们外部手动调用 .scan 等方法才有用，常规方式是不会用到scanner对象的</span></span><br><span class="line">		<span class="keyword">this</span>();</span><br><span class="line">		<span class="comment">//把传入的类进行注册，这里有两个情况，</span></span><br><span class="line">		<span class="comment">//传入传统的配置类</span></span><br><span class="line">		<span class="comment">//传入bean（虽然一般没有人会这么做</span></span><br><span class="line">		<span class="comment">//看到后面会知道spring把传统的带上@Configuration的配置类称之为FULL配置类，不带@Configuration的称之为Lite配置类</span></span><br><span class="line">		<span class="comment">//但是我们这里先把带上@Configuration的配置类称之为传统配置类，不带的称之为普通bean</span></span><br><span class="line">		register(annotatedClasses);</span><br><span class="line">		<span class="comment">//刷新</span></span><br><span class="line">		refresh();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+        <p>其实nodejs写起来挺爽的~</p>
+<h1 id="mvc"><a href="#mvc" class="headerlink" title="mvc"></a>mvc</h1><ol>
+<li><p>__dirname<br>常量: 当前目录</p>
 </li>
-<li><p>AbstractRefreshableApplicationContext: 继承自AbstractApplicationContext, 是XmlWebApplicationContext的核心父类,如果当前上下文持有BeanFactory,则关闭当前BeanFactory,然后为上下文生命周期的下一个阶段初始化一个新的BanFactory, 并且在创建新容器时仍然保持对其父容器的引用.</p>
+<li><p>path.join(<strong>dirname, ‘public’)<br>路径拼接<br>path.join(</strong>dirname, ‘..’, ‘controllers’);<br>两个点表示返回上一层</p>
 </li>
-<li>EmbeddedWebApplicationContext: Spring Boot中新增的上下文实现类,是使用自嵌容器启动web应用的核心上下文基类.</li>
+<li><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">app.response.message = <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sess = <span class="keyword">this</span>.req.session;</span><br><span class="line">  sess.messages = sess.messages || [];</span><br><span class="line">  sess.messages.push(msg);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<h2 id="BeanFactory的设计"><a href="#BeanFactory的设计" class="headerlink" title="BeanFactory的设计"></a>BeanFactory的设计</h2><ol>
-<li>BeanFactory: 职责定义接口, 定义了按照名称,参数,类型等几个维度获取,判断Bean实例的职能</li>
-<li>HierarchicalBeanFactory: 定义了父容器及判断当前Bean名称是否在当前Bean工厂中.</li>
-<li>ConfigurableBeanFactory: 提供了设置父容器接口,指定类加载器的职能, 并且为当前容器工厂设计Bean的定制型的解析处理器,类型处理器等,实现对BeanFactory的可配置型</li>
-<li>AutowireCapableBeanFactory: 提供了Bean的创建,注入职能, 提供了对Bean初始化前后的扩展性处理职能. 主要职责是处理在当前工厂中注册的Bean实例并使其达到可用状态</li>
-<li>ListableBeanFactory: 对Bean实例的枚举,对有某些共同特征的Bean的管理,按照Bean名称,Bean实例,Bean类型获取Bean实例</li>
-<li>ConfigurableListableBeanFactory: 集成ListableBeanFactory,AutowireCapableBeanFactory,ConfigurableBeanFactory接口所有职能,扩展了修改Bean定义信息和分析Bean的功能,实现了预实例化单例Bean及冻结当前工厂配置等功能.</li>
-<li>AbstractBeanFactory: 实现了对基本容器功能定义的模板式封装和实现. 同时实现了对Bean信息的注册, 对Bean的创建及Bean定义描述信息相关的处理使用了抽象画处理的方式并交由继承者实现.</li>
-<li>AbstractAutowireCapableBeanFactory: 解决Bean之间的依赖和注入问题,实现了Bean的创建方法.</li>
-<li>DefaultListableBeanFactory: 提供了对Bean容器的完全成熟的默认实现, 可以直接对外使用.许多依赖BeanFactory的场景都通过DefaultListableBeanFactory类来实现对Bean的管理,注入,依赖解决,创建,销毁等功能</li>
-<li>XmlBeanFactory: 集成DefaultListableBeanFactory并且内部持有XmlBeanDefinitionReader属性的Bean工厂容器(实现对XML文件定义的Bean描述信息的加载解析和处理)</li>
+<p>给response定义一个message函数, 把msg存到session里</p>
+<ol start="4">
+<li><p>!module.parent<br>用于在没有require语句的情况下直接运行某段代码，如果有require语句，则不执行</p>
+</li>
+<li><p>app.use([path,] callback [, callback…])<br>这个callback既可以是router对象又可以是函数</p>
+</li>
 </ol>
-<h2 id="Spring父子上下文和容器"><a href="#Spring父子上下文和容器" class="headerlink" title="Spring父子上下文和容器"></a>Spring父子上下文和容器</h2><p>ApplicationContext中持有BeanFactory实例<br>子容器可以共用父容器中的Bean, 父容器不能共用子容器的Bean, 因为当父容器已经启动时,子容器还没有实例化并启动.</p>
-<h2 id="Spring加载机制的设计和实现"><a href="#Spring加载机制的设计和实现" class="headerlink" title="Spring加载机制的设计和实现"></a>Spring加载机制的设计和实现</h2>
+<p>app.use(‘/home’,router)<br>router路由对象中的路由都会匹配到”/home”路由后面</p>
+<p>app.use(express.static(‘public’));<br>传递一个包含静态资源的目录给express.static中间件用于立即开始提供文件</p>
+<p>app.use(methodOverride(‘_method’));<br>把表单的post请求改写成put, 通过在url里加参数: ?_method=put</p>
+<p>app.use(express.urlencoded({ extended: true }))<br>解析请求体</p>
+<ol start="6">
+<li>!null=true<br>!undefined=true<br>!’’=true<br>!!a 的意思就是 a不为null 且 a不为undefined 且 a不为空字符串</li>
+</ol>
+<ol start="7">
+<li><h1 id="模板引擎-template-engine"><a href="#模板引擎-template-engine" class="headerlink" title="模板引擎 template engine"></a>模板引擎 template engine</h1>我之前是用的jade, 那种缩进式风格深得我意.<br>express官方Example里用的是ejs.<br>设置模板引擎: <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.set(<span class="string">'view engine'</span>, <span class="string">'ejs'</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+
       
 
       
@@ -441,21 +341,64 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/13/express/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Emacs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>M-&lt;：整个文章的首部<br>M-&gt;：整个文章的尾部</p>
+<p>C-v 向下翻一页<br>M-v 向上翻一页</p>
+<p>C-u：是输入数字的命令，比如C-u 8 C-f 相当于向右移动8行，C-u 8 i 输入8个i<br>C-d: 删除当前行</p>
+<p>M-d：删除下一个单词<br>M-del: 删除上一个单词</p>
+<p>C-k：从当前位置，删除到整个行末尾</p>
+<p>M-u 使从光标位置到单词结尾处的字母变成大写<br>M-c 使从光标位置开始的单词的首字母变为大写</p>
+<p>C-@    设置开始标记<br>M-w    复制标记区内容<br>C-y    帖粘</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/13/Emacs/">展开全文 >></a>
         </p>
       
 
@@ -487,7 +430,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -499,7 +442,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -748,6 +691,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

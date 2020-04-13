@@ -151,160 +151,27 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Ramda碎碎念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Essentials-of-Programming-Languages" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Ramda碎碎念/">Ramda碎碎念</a>
+      <a class="article-title" href="/2019/05/04/Essentials-of-Programming-Languages/">Essentials of Programming Languages</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Ramda碎碎念/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/05/04/Essentials-of-Programming-Languages/" class="archive-article-date">
+  	<time datetime="2019-05-03T19:42:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>prop基于path实现.<br>    prop = (p, obj) =&gt; path([p], obj)</p>
-<pre><code>path一层层索引
-
-    R.path([&apos;a&apos;, &apos;b&apos;], {a: {b: 2}}); //=&gt; 2a
-    R.prop(&apos;x&apos;, {x: 100}); //=&gt; 100
-</code></pre><p>descend = (f, a, b) =&gt; f(a) &gt; f(b) ? -1 : f(a) &lt; f(b) ? 1 : 0<br>类似地: ascend…</p>
-<p>sort = (comparator, list) =&gt; Array.prototype.slice.call(list, 0).sort(comparator)<br>sort函数实现直接用的原生实现,不过返回了新list,而且curry了.</p>
-<p>comparator :: a -&gt; b -&gt; Int</p>
-<p>thrush combinator 接受一个值, 并将函数作用于其上.  applyTo = (x, f) =&gt; f(x)<br>    const t42 = R.applyTo(42);<br>    t42(R.identity); //=&gt; 42<br>    t42(R.add(1)); //=&gt; 43</p>
-<p>keys 返回对象最外层key    </p>
-<p>applySpec : 接受一个属性值为函数的对象,返回的函数使用传入的参数调用对象的每个属性位对应的函数，来生成相应属性的值。</p>
-<pre><code>const getMetrics = R.applySpec({
-    sum: (a,b,c) =&gt; a+b+c,
-    nested: { mul: (a,b,c) =&gt; a*b*c }
-});
-print(getMetrics(2, 5, 4)) // { sum: 11, nested: { mul: 40 } }
-
-内部函数: mapValues = (f, obj) =&gt; 
-            R.keys(obj).reduce((acc, key) =&gt; {
-                acc[key] = f(obj[key])
-                return acc
-            }, {})
-        是为了避免specs函数也包含map
-
-pluck 从列表内的每个对象元素中取出特定名称的属性，组成一个新的列表
-    pluck = (p, list) =&gt; map(prop(p), list)
-
-    var getAges = R.pluck(&apos;age&apos;);
-    getAges([{name: &apos;fred&apos;, age: 29}, {name: &apos;wilma&apos;, age: 27}]); //=&gt; [29, 27]
-
-    R.pluck(0, [[1, 2], [3, 4]]);               //=&gt; [1, 3]
-    R.pluck(&apos;val&apos;, {a: {val: 3}, b: {val: 5}}); //=&gt; {a: 3, b: 5}
-</code></pre><p>addIndex: 没咋看懂<br>adjust: 将数组中指定索引处的值替换为经函数变换的值<br>    R.adjust(1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);      //=&gt; [‘a’, ‘B’, ‘c’, ‘d’]<br>    R.adjust(-1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);     //=&gt; [‘a’, ‘b’, ‘c’, ‘D’]</p>
-<pre><code>实现: 统一索引,利用_concat新建list,将索引处值替换.
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Ramda碎碎念/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/类型系统/">类型和程序设计语言</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/03/类型系统/" class="archive-article-date">
-  	<time datetime="2019-04-03T07:50:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>多态类型,子类型,依赖类型 三个正交分支</p>
-<p>递归由函数不动点实现</p>
-<p>p355 解答</p>
-<h1 id="无类型系统"><a href="#无类型系统" class="headerlink" title="无类型系统"></a>无类型系统</h1><h2 id="无类型算术表达式"><a href="#无类型算术表达式" class="headerlink" title="无类型算术表达式"></a>无类型算术表达式</h2><p>练习3.24 p38<br>    S1 = {true,false,0}<br>    Si+1 = Si^3 + Si*3 + 3<br>    解释: 不考虑类型合不合适.<br>    得: S3有59439个元素.</p>
-<p>练习3.25 归纳证明 构造Sj Si Si+1</p>
-<h4 id="3-4-语义形式"><a href="#3-4-语义形式" class="headerlink" title="3.4 语义形式"></a>3.4 语义形式</h4><ul>
-<li>操作语义<ul>
-<li>小步语义 结构操作语义<br>定义一个简单的抽象机器来说明一个程序语言的行为.<br>用语言的项作为机器状态,对每个状态,要么通过对项做一步简化给出下一个状态,<pre><code>要么声明机器已停止.
-</code></pre></li>
-<li>大步语义 自然语义<br>  抽象机器的一个单个转换就可以将项求值为最终值.                                   </li>
-</ul>
-</li>
-<li>指称语义<br>  一个项的语义不仅是机器状态的序列,而且是某个数学对象,如一个数或一个函数.<br>  一个语言的指称语义是由一个语义域的集合和将项映射到域中元素的解释函数所组成.</li>
-<li>公理语义<br>  用规则本身作为语言的定义.一个项的语义就是关于这个项我们能证明的东西.</li>
-</ul>
-<h2 id="无类型lambda演算"><a href="#无类型lambda演算" class="headerlink" title="无类型lambda演算"></a>无类型lambda演算</h2><h2 id="项的无名称表示"><a href="#项的无名称表示" class="headerlink" title="项的无名称表示"></a>项的无名称表示</h2><h1 id="简单类型"><a href="#简单类型" class="headerlink" title="简单类型"></a>简单类型</h1><h2 id="类型算术表达式"><a href="#类型算术表达式" class="headerlink" title="类型算术表达式"></a>类型算术表达式</h2><h2 id="简单类型的lambda演算"><a href="#简单类型的lambda演算" class="headerlink" title="简单类型的lambda演算"></a>简单类型的lambda演算</h2><h2 id="简单扩展"><a href="#简单扩展" class="headerlink" title="简单扩展"></a>简单扩展</h2><h1 id="子类型化"><a href="#子类型化" class="headerlink" title="子类型化"></a>子类型化</h1><h2 id="子类型"><a href="#子类型" class="headerlink" title="子类型"></a>子类型</h2><h2 id="子类型元理论"><a href="#子类型元理论" class="headerlink" title="子类型元理论"></a>子类型元理论</h2><h1 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h1><h2 id="递归类型-1"><a href="#递归类型-1" class="headerlink" title="递归类型"></a>递归类型</h2><h2 id="递归类型元理论"><a href="#递归类型元理论" class="headerlink" title="递归类型元理论"></a>递归类型元理论</h2><h1 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h1><h2 id="类型重构"><a href="#类型重构" class="headerlink" title="类型重构"></a>类型重构</h2><h2 id="全程类型"><a href="#全程类型" class="headerlink" title="全程类型"></a>全程类型</h2><h2 id="存在类型"><a href="#存在类型" class="headerlink" title="存在类型"></a>存在类型</h2><h1 id="高阶系统"><a href="#高阶系统" class="headerlink" title="高阶系统"></a>高阶系统</h1><h2 id="高阶多态"><a href="#高阶多态" class="headerlink" title="高阶多态"></a>高阶多态</h2><h2 id="高阶子类型化"><a href="#高阶子类型化" class="headerlink" title="高阶子类型化"></a>高阶子类型化</h2>
+        <h1 id="Inductive-Sets-of-Data"><a href="#Inductive-Sets-of-Data" class="headerlink" title="Inductive Sets of Data"></a>Inductive Sets of Data</h1><h1 id="Data-Abstraction"><a href="#Data-Abstraction" class="headerlink" title="Data Abstraction"></a>Data Abstraction</h1><h1 id="Expressions"><a href="#Expressions" class="headerlink" title="Expressions"></a>Expressions</h1><h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><h1 id="Continuation-Passing-Interpreters"><a href="#Continuation-Passing-Interpreters" class="headerlink" title="Continuation-Passing Interpreters"></a>Continuation-Passing Interpreters</h1><h1 id="Continuation-Passing-Style"><a href="#Continuation-Passing-Style" class="headerlink" title="Continuation-Passing Style"></a>Continuation-Passing Style</h1><h1 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h1><h1 id="Modules"><a href="#Modules" class="headerlink" title="Modules"></a>Modules</h1><h1 id="Objects-and-Classes"><a href="#Objects-and-Classes" class="headerlink" title="Objects and Classes"></a>Objects and Classes</h1>
       
 
       
@@ -338,7 +205,7 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/类型系统/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/05/04/Essentials-of-Programming-Languages/">展开全文 >></a>
         </p>
       
 
@@ -368,63 +235,30 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 
 
   
-    <article id="post-lambda演算" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-加密算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/lambda演算/">lambda演算入门</a>
+      <a class="article-title" href="/2019/04/30/加密算法/">计算的本质</a>
     </h1>
   
 
         
-        <a href="/2019/04/03/lambda演算/" class="archive-article-date">
-  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
+        <a href="/2019/04/30/加密算法/" class="archive-article-date">
+  	<time datetime="2019-04-30T05:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>来写一写lambda演算里的东西,主要是用代换模型人肉parse.</p>
-<h2 id="求值"><a href="#求值" class="headerlink" title="求值"></a>求值</h2><pre><code>一个&quot;λ&quot;一个&quot;.&quot;, 极简函数写法,
-比function,=&gt;,-&gt;,lambda() (),def [] {}等等各种写法不知道高到哪里去了.
-例子:
-    (λx.(λy.x))a 求值结果为λy.a 
-    就是把a带进去,返回一个&quot;输入y返回a&quot;的函数.
-</code></pre><h2 id="布尔逻辑"><a href="#布尔逻辑" class="headerlink" title="布尔逻辑"></a>布尔逻辑</h2><pre><code>T 表示为：λx.λy.x      它接收两个参数x和y,返回x, 也就是说它返回前面的那个参数
-F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它返回后面的那个参数
-这样一来, if函数就是λbtf, 等价于λb.λt.λf.btf
-         if函数接收三个参数,分别是判断条件b,
-                                当b为True时: (λx.λy.x)(t)(f)  返回的语句t 
-                                和b为False时: (λx.λy.y)(t)(f) 返回的语句f
+        <p>对称加密算法: DES AES<br>非对称加密算法: RSA(数字签名,身份认证)</p>
+<p>分组密码: 加密时将明文分成固定长度的组(网络加密)<br>流密码: 又称序列密码, 每次加密一位或者一个字节的明文. RC4</p>
+<p>Base64算法: 解决电子邮件只能传输ASCII码字符问题</p>
 
-         布尔逻辑运算符与或非分别是:
-         与: λab.IFabF  接收两个参数a和b, 如果a是True,那就返回前一个也就是b,与的结果和b的取值一样
-                                         如果a是False,那就返回后一个就是False
-         或: λab.IFaTb  接收两个参数a和b, 如果a是True,那就返回前一个也就是True
-                                         如果a是False,那就返回后一个就是b,或的结果和b的取值一样
-         非: λa.IFaFT   接收一个参数a, 如果a是True,那就返回前一个也就是False
-                                      如果a是False,那就返回后一个也就是True
-</code></pre><h2 id="数"><a href="#数" class="headerlink" title="数"></a>数</h2><pre><code>0=λf.λx.x
-1=λf.λx.fx
-2=λf.λx.f(fx)
-3=λf.λx.f(f(fx))
-后继函数S=λn.λf.λx.f((nf)x)
-加法: ADD = λab.(aS)b
-      举例: 0和0相加:  ((λf.λx.x)(λn.λf.λx.f((nf)x)))(λf.λx.x)
-                     = (λx.x)(λf.λx.x)
-                     = λf.λx.x
-                     = 0
-            1和2相加: (λf.λx.fx)(λn.λf.λx.f((nf)x))(λf.λx.f(fx))
-                     = (λn.λf.λx.f((nf)x))(λf.λx.f(fx))
-                     = λf.λx.f(((λf.λx.f(fx))f)x)
-                     = λf.λx.f((λx.f(fx))x)
-                     = λf.λx.f(f(fx))
-                     = 3
-</code></pre>
       
 
       
@@ -437,80 +271,7 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/lambda演算/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Ramda搜索关键字得到图片列表并展示" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">Ramda搜索关键字得到图片列表并展示</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/" class="archive-article-date">
-  	<time datetime="2019-04-03T06:31:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">requirejs.config(&#123;</span><br><span class="line">    paths: &#123;</span><br><span class="line">        ramda: <span class="string">'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.13.0/ramda.min'</span>,</span><br><span class="line">        jquery: <span class="string">'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>([</span><br><span class="line">    <span class="string">'ramda'</span>,</span><br><span class="line">    <span class="string">'jquery'</span>,</span><br><span class="line">],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> (<span class="params">_, $</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> Impure = &#123;</span><br><span class="line">            getJSON: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">callback, url</span>) </span>&#123;</span><br><span class="line">                $.getJSON(url, callback);</span><br><span class="line">            &#125;),</span><br><span class="line"></span><br><span class="line">            setHtml: _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">sel, html</span>) </span>&#123;</span><br><span class="line">                $(sel).html(html)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> img = <span class="function"><span class="keyword">function</span> (<span class="params">url</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> $(<span class="string">'&lt;img /&gt;'</span>, &#123; <span class="attr">src</span>: url&#125;);</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> trace = _.curry(<span class="function"><span class="keyword">function</span> (<span class="params">tag, x</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(tag, x);</span><br><span class="line">            <span class="keyword">return</span> x;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> url = <span class="function"><span class="keyword">function</span> (<span class="params">term</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'https://api.flickr.com/services/feeds/photos_public.gne?tags='</span> + term + <span class="string">'&amp;format=json&amp;jsoncallback=?'</span>;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> mediaUrl = _.compose(_.prop(<span class="string">'m'</span>), _.prop(<span class="string">'media'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// let srcs = _.compose(_.map(mediaUrl), _.prop('items'));</span></span><br><span class="line">        <span class="comment">// let images = _.compose(_.map(img), srcs);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//上面2行有两个map, 循环了两边.  优化写法:</span></span><br><span class="line">        <span class="keyword">let</span> mediaToImg = _.compose(img, mediaUrl);</span><br><span class="line">        <span class="keyword">let</span> images = _.compose(_.map(mediaToImg), _.prop(<span class="string">'items'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> renderImages = _.compose(Impure.setHtml(<span class="string">"body"</span>), images);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> app = _.compose(Impure.getJSON(renderImages), url);</span><br><span class="line"></span><br><span class="line">        app(<span class="string">"star"</span>);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -522,7 +283,7 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
         		</li>
       		
 		</ul>
@@ -531,7 +292,276 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/30/加密算法/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-计算的本质" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/30/计算的本质/">计算的本质</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/30/计算的本质/" class="archive-article-date">
+  	<time datetime="2019-04-30T05:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Ruby基础"><a href="#Ruby基础" class="headerlink" title="Ruby基础"></a>Ruby基础</h1><h2 id="值"><a href="#值" class="headerlink" title="值"></a>值</h2><blockquote>
+<p>面向表达式的语言,每一段有效代码执行后都要产生一个值</p>
+</blockquote>
+<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><ul>
+<li>布尔Boolean, 数值number,字符串string</li>
+<li>符号: 表示一个名字,一个轻量级,不可变的值,作为字符串的简单化,非内存密集化的替身. :symbol</li>
+<li>特殊值nil<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2></li>
+<li>数组字面量: 逗号分隔外加方括号 例: numbers = [‘zero’, ‘two’]</li>
+<li>范围range: 例: ages = 18..30</li>
+<li>散列hash: 例: fruit = {‘a’ =&gt; ‘apple’, ‘b’ =&gt; ‘banana’}</li>
+<li>proc: 未经求值的Ruby代码,匿名函数或lambda函数.例:multiply = -&gt; x, y {x * y}<h2 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h2></li>
+<li>if,case,while 都有end<h2 id="对象和方法"><a href="#对象和方法" class="headerlink" title="对象和方法"></a>对象和方法</h2></li>
+<li>每个值都是一个对象</li>
+<li>o = Object.new</li>
+<li>方法结束要有end<h2 id="类和模块"><a href="#类和模块" class="headerlink" title="类和模块"></a>类和模块</h2></li>
+<li>类结束要有end</li>
+<li>继承: class MultiplyingCalculator &lt; Calculator</li>
+<li>子类中的方法可以通过 super 关键字调用超类的同名方法</li>
+<li>共享方法定义的方式是在模块（module）中声明它们，这样它们就能被任意类包括进去<h2 id="其它特性"><a href="#其它特性" class="headerlink" title="其它特性"></a>其它特性</h2></li>
+<li>赋值声明局部变量</li>
+<li>数组给多个变量同时赋值 width, height, depth = [1000, 2250, 250]</li>
+<li>字符串插值 &gt;&gt; “hello #{‘dlrow’.reverse}” =&gt; “hello world”</li>
+<li>检查对象 inspect方法</li>
+<li>打印字符串 puts</li>
+<li>可变参数方法 * <ul>
+<li>在发送消息的时候， * 运算符还可以把每一个数组元素当作单个参数处理</li>
+<li>并行赋值</li>
+</ul>
+</li>
+<li>代码块 <ul>
+<li>方法可以带一个隐式代码块参数 </li>
+<li>yield关键字表示对代码块中那段代码的调用</li>
+<li>代码块可以带参数 { |n| puts “#{n}: hello” }</li>
+</ul>
+</li>
+<li>枚举类型<ul>
+<li>(1..10).select(&amp;:even?) =&gt; [2, 4, 6, 8, 10]</li>
+<li>flat_map, inject </li>
+</ul>
+</li>
+<li>结构体<ul>
+<li>class Point &lt; Struct.new(:x, :y)  自动生成x,y属性和getter setter</li>
+<li>比较两个结构体的属性是否相等</li>
+</ul>
+</li>
+<li>给内置对象扩展方法    </li>
+<li>定义常量 <ul>
+<li>任何以大写字母开头的变量都是常量</li>
+</ul>
+</li>
+<li>删除常量<br>  一个顶层常量可以通过给 Object 发送消息 remove_const<br>  来删除，同时还要把常量名作为符号（symbol）对象传进去<br>  Object.send(:remove_const, :NUMBERS)</li>
+</ul>
+<hr>
+<h1 id="程序和机器"><a href="#程序和机器" class="headerlink" title="程序和机器"></a>程序和机器</h1><p>detect：（find的别名函数） 返回列表中第一个符合条件的元素</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/PL//" class="article-tag-list-link color3">PL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/30/计算的本质/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-编程的数学原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/28/编程的数学原理/">编程的数学原理</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/28/编程的数学原理/" class="archive-article-date">
+  	<time datetime="2019-04-28T04:32:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="群-group"><a href="#群-group" class="headerlink" title="群(group)"></a>群(group)</h1><p>群是一个集合G与其上定义的某种二元关系运算.</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
+<li>消去公理: 对任何a ∈ G, 都存在一个逆元a<sup>-1</sup>使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e</li>
+</ol>
+<p>例子: 整数加法群, 整数模5加法群</p>
+<h1 id="幺半群-monoid"><a href="#幺半群-monoid" class="headerlink" title="幺半群(monoid)"></a>幺半群(monoid)</h1><p>幺半群是一个集合S和其上定义的二元运算</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
+</ol>
+<p>例子: 字符串的拼接, 列表的连接</p>
+<h1 id="半群-semigroup"><a href="#半群-semigroup" class="headerlink" title="半群(semigroup)"></a>半群(semigroup)</h1><p>半群是一个集合S和其上定义的二元运算</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+</ol>
+<p>例子: 全体正整数构成的加法半群, 乘法半群; 全体偶数构成的加法半群, 乘法半群</p>
+<h2 id="群的性质"><a href="#群的性质" class="headerlink" title="群的性质"></a>群的性质</h2><blockquote>
+<p>群的单位元是惟一的<br>群中的任意元素a,都存在且仅存在一个逆元使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e<br>有限群的每个元素都有有限的阶<br>    对群的一个元a,能够满足a<sup>m</sup> = e的最小整数m叫做a的阶<br>    如果m不存在,则称a的阶是无限的.</p>
+</blockquote>
+<p>存在从某个集合A到另一个集合B的映射f<br>a和b是A中的两个元, f(a)和f(b)是它们在B中的像<br>考虑在A上的二元封闭运算产生的元a · b,在映射下在B中的像f(a · b)<br>如果对B上的二元封闭运算总有<br>    f(a) · f(b) = f(a · b)</p>
+<p>则称f是从A到B的同态映射<br>如果f是满射(即B中所有元素都在A中有原像),则称为同态满射<br>例:奇偶判定函数odd: Z -&gt; Bool,接受一个整数,如果是奇数返回True,否则返回False<br>    布尔集合{True,False  }在逻辑或运算下构成一个群</p>
+<p> 如果f不仅是满射,还是单射,那么它就是一一映射.称f是从A到B的同构映射,简称同构,记做A ≌ B<br>    例: a=2,f(a)=4<br>        b=3,f(b)=9<br>        ab=6,f(ab)=f(a)f(b)=36</p>
+<h2 id="范畴Category"><a href="#范畴Category" class="headerlink" title="范畴Category"></a>范畴Category</h2><p>一个范畴C包括一组对象（Object），记为A,B,C,…，和一组箭头<br>（Arrow），记为f,g,h,…。它们之上定义了以下四种操作：</p>
+<ul>
+<li>成为源和目标</li>
+<li>id</li>
+<li>组合<br>两条公理:</li>
+<li>结合</li>
+<li>单位元<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">Monoid</span> <span class="type">String</span> <span class="keyword">where</span></span></span><br><span class="line">    e = <span class="string">""</span></span><br><span class="line">    (*) = (++)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>字符串幺半群(S, ++, “”)<br>    r ++ (s ++ t) = (r ++ s) ++ t<br>    “” ++ s = s = s ++ “”<br>字符集幺半群(C, ∪, {})<br>自然数幺半群(N, +, 0)</p>
+<p>S到C的态射: 把串中用到的字符组成一个字符集 S -&gt; C  φ: s -&gt; {c | c ∈ s}<br>    φ(s ++ r) = φ(s) ∪ φ(r)<br>    φ(“”) = {}<br>C到N的态射: 集合的大小映射为自然数,空集的大小映射为0 C −→ N  ψ : c → |c|<br>    ψ(s) ∪ ψ(r) = ψ(s + r)<br>    {} = ψ(0)</p>
+<p>S -&gt; C -&gt; N<br>幺半群范畴Mon,对象是幺半群,箭头是态射,恒等箭头是从一个幺半群到它自己的态射</p>
+<p>只有一个对象的幺半群范畴:<br>    对象是字符串幺半群(S, ++, “”), 箭头是前缀映射,单位元是空串””</p>
+<p>预序 preset</p>
+<ul>
+<li>自反性 任何集合中的元素a都有a ≤ a；</li>
+<li>传递性 若a ≤ b且b ≤ c，则a ≤ c；<br>在预序基础上满足 </li>
+<li>反对称性 若a ≤ b且b ≤ a，则a = b；<br>称为偏序 poset</li>
+</ul>
+<p>偏序集例子: 族谱, {x,y,z}的所有子集在包含关系下</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/28/编程的数学原理/">展开全文 >></a>
         </p>
       
 
@@ -563,7 +593,7 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/26/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/28/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/26/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/28/">Next &raquo;</a>
     </nav>
   
 
@@ -575,7 +605,7 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -824,6 +854,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

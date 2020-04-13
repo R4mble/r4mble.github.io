@@ -151,20 +151,353 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-The Little系列(1) - A Little Java, A Few Patterns" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-flutter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/17/The Little系列(1) - A Little Java, A Few Patterns/">The Little系列(1) - A Little Java, A Few Patterns</a>
+      <a class="article-title" href="/2020/01/15/flutter/">flutter</a>
     </h1>
   
 
         
-        <a href="/2019/09/17/The Little系列(1) - A Little Java, A Few Patterns/" class="archive-article-date">
-  	<time datetime="2019-09-17T09:40:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-17</time>
+        <a href="/2020/01/15/flutter/" class="archive-article-date">
+  	<time datetime="2020-01-15T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="android-x-适配问题"><a href="#android-x-适配问题" class="headerlink" title="android x 适配问题"></a>android x 适配问题</h1><h1 id="cached-network-image有问题"><a href="#cached-network-image有问题" class="headerlink" title="cached_network_image有问题"></a>cached_network_image有问题</h1><p>Compiler message:<br>../../../.pub-cache/hosted/pub.flutter-io.cn/cached_network_image-1.1.3/lib/src/cached_network_image_provider.dart:42:24: Error: The method ‘CachedNetworkImageProvider.load’ has fewer positional arguments than those of overridden method ‘ImageProvider.load’.<br>  ImageStreamCompleter load(CachedNetworkImageProvider key) {<br>                       ^<br>../../software/flutter/packages/flutter/lib/src/painting/image_provider.dart:403:24: Context: This is the overridden method (‘load’).<br>  ImageStreamCompleter load(T key, DecoderCallback decode);<br>                       ^<br>Exception: Errors during snapshot creation: null</p>
+<p>将cached_network_image的版本号升级到2.0.0-rc<br>  flutter_cache_manager: ^1.1.2</p>
+<h1 id="过滤掉提示重复的文件"><a href="#过滤掉提示重复的文件" class="headerlink" title="过滤掉提示重复的文件"></a>过滤掉提示重复的文件</h1><p>Execution failed for task ‘:app:transformResourcesWithMergeJavaResForDebug’.</p>
+<p>More than one file was found with OS independent path ‘META-INF/proguard/androidx-annotations.pro’</p>
+<p>在build.gradle文件的android节点下增加packagingOptions，过滤掉提示重复的文件。</p>
+<p>packagingOptions {<br>       exclude ‘META-INF/proguard/androidx-annotations.pro’<br>}</p>
+<h1 id="申请网络权限"><a href="#申请网络权限" class="headerlink" title="申请网络权限"></a>申请网络权限</h1><p>  <uses-permission android:name="android.permission.READ_PHONE_STATE"><br>  <uses-permission android:name="android.permission.INTERNET"><br>  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"><br>  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission></uses-permission></uses-permission></uses-permission></p>
+<h1 id="kotlin依赖在阿里云拉不下来"><a href="#kotlin依赖在阿里云拉不下来" class="headerlink" title="kotlin依赖在阿里云拉不下来"></a>kotlin依赖在阿里云拉不下来</h1><p>使.gradle下的init.gradle文件失效, 到google去拉 </p>
+<h1 id="Aapt2Exception"><a href="#Aapt2Exception" class="headerlink" title="Aapt2Exception"></a>Aapt2Exception</h1><p>Error: java.util.concurrent.ExecutionException: com.android.builder.internal.aapt.v2.Aapt2Exception: AAPT2 error: check logs for details</p>
+<p>在项目的gradle.properties中添加: android.enableAapt2=false</p>
+<h1 id="依赖不好使"><a href="#依赖不好使" class="headerlink" title="依赖不好使"></a>依赖不好使</h1><ol>
+<li><p>指定分支<br>zefyr:<br>   git:</p>
+<pre><code>url: git://github.com/memspace/zefyr.git
+ref: fix-text-input-connection-closed
+path: packages/zefyr
+</code></pre></li>
+<li><p>自己手动改<br>../../.pub-cache/hosted/pub.dartlang.org/zefyr-0.8.0/lib/src/widgets/input.dart</p>
+</li>
+</ol>
+<h1 id="Flutter导航"><a href="#Flutter导航" class="headerlink" title="Flutter导航"></a>Flutter导航</h1><h2 id="Dart语言"><a href="#Dart语言" class="headerlink" title="Dart语言"></a>Dart语言</h2><p>Isolate</p>
+<h2 id="基础组件"><a href="#基础组件" class="headerlink" title="基础组件:"></a>基础组件:</h2><p>Widget<br>图片和Icon<br>按钮<br>进度指示器<br>输入框和表单<br>单选框和复选框</p>
+<h2 id="布局类组件"><a href="#布局类组件" class="headerlink" title="布局类组件"></a>布局类组件</h2><h3 id="线性布局-Row-Column"><a href="#线性布局-Row-Column" class="headerlink" title="线性布局(Row,Column)"></a>线性布局(Row,Column)</h3><p>布局沿水平方向,主轴就是水平方向,纵轴即垂直方向<br>布局沿垂直方向,主轴就是垂直方向,纵轴即水平方向<br>主轴对齐: MainAxisAligment<br>纵轴对齐: CrossAxisAligment</p>
+<h3 id="弹性布局-Flex"><a href="#弹性布局-Flex" class="headerlink" title="弹性布局(Flex)"></a>弹性布局(Flex)</h3><p>允许子组件按照一定比例来分配父容器空间.</p>
+<h3 id="流式布局-Wrap-Flow"><a href="#流式布局-Wrap-Flow" class="headerlink" title="流式布局(Wrap,Flow)"></a>流式布局(Wrap,Flow)</h3><p>超出屏幕显示范围会自动折行的布局成为流式布局.</p>
+<h3 id="层叠布局-Stack-Positioned"><a href="#层叠布局-Stack-Positioned" class="headerlink" title="层叠布局(Stack,Positioned)"></a>层叠布局(Stack,Positioned)</h3><p>对齐与相对定位(Align)</p>
+<h2 id="容器类组件"><a href="#容器类组件" class="headerlink" title="容器类组件"></a>容器类组件</h2><p>填充(Padding)<br>尺寸限制类容器(ConstrainedBox)<br>装饰容器(DecoratedBox)<br>变换(Transform)<br>Container容器<br>Scaffold<br>TabBar<br>底部导航<br>剪裁(Clip)</p>
+<h2 id="可滚动组件"><a href="#可滚动组件" class="headerlink" title="可滚动组件"></a>可滚动组件</h2><p>SingleChildScrollView<br>ListView<br>GridView<br>CustomScrollView<br>滚动监听及控制</p>
+<h2 id="功能性组件"><a href="#功能性组件" class="headerlink" title="功能性组件"></a>功能性组件</h2><p>导航返回拦截(WillPopScope)<br>数据共享(InheritedWidget)<br>跨组件状态共享(Provider)<br>颜色和主题(Theme)<br>异步UI更新(FutureBuilder,StreamBuilder)<br>对话框(AlertDialog)</p>
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>插值器: 设置属性值从初始值到结束值的变化规律<br>估值器: 设置属性值从初始值到结束值的变化具体数值<br>动画类型: </p>
+<ol>
+<li>补间(Tween)动画: 定义开始点,结束点,时间和速度等参数,框架自动计算</li>
+<li>基于物理的动画: 模拟真实世界的行为</li>
+</ol>
+<p>相关类: </p>
+<ol>
+<li>Animation: 动画核心类<br>abstract, 知道动画的当前状态(开始,停止或向前或是后移动),但不知道显示内容<br>本身和UI渲染没有任何关系, 可以通过访问其value属性获取动画的当前值.</li>
+<li>AnimationController: 动画管理类<br>在给定的持续时间内线性生成0.0到1.0的值,不使用的时候要做dispose处理<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// duration: 动画执行的时间, vsync: 防止动画离屏之后继续消耗资源</span></span><br><span class="line">AnimationController(duration: <span class="built_in">Duration</span>(milliseconds: <span class="number">2000</span>), vsync: <span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>TickerProvider: 获取每一帧刷新的通知,作用是给动画添加了一个动起来的引擎</p>
+<ol start="3">
+<li><p>CurvedAnimation: 定义非线性曲线动画</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CurvedAnimation(parent: controller, curve: Curves.easeIn)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Tween: 补间对象,用于计算动画使用的数据范围之间的插值</p>
+</li>
+<li><p>Listeners和StatusListeners: 监听动画状态改变</p>
+</li>
+</ol>
+<p>Hero动画<br>交织动画<br>动画过渡组件</p>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><h2 id="网络IO"><a href="#网络IO" class="headerlink" title="网络IO"></a>网络IO</h2><p>Dio</p>
+<h2 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h2><p>Element和BuildContext<br>RenderObject和RenderBox</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">flutter</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/15/flutter/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Android" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/11/Android/">Android</a>
+    </h1>
+  
+
+        
+        <a href="/2020/01/11/Android/" class="archive-article-date">
+  	<time datetime="2020-01-11T04:41:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Content Provider: 获取其他应用的信息<br>Service: 从后台计算,下载,处理的结果<br>BroadCast Reciever: 获取广播信息<br>Intent: 组件之间通信</p>
+<h1 id="Android控件架构"><a href="#Android控件架构" class="headerlink" title="Android控件架构"></a>Android控件架构</h1><h1 id="View的测量与绘制"><a href="#View的测量与绘制" class="headerlink" title="View的测量与绘制"></a>View的测量与绘制</h1><h1 id="ViewGroup的测量与绘制"><a href="#ViewGroup的测量与绘制" class="headerlink" title="ViewGroup的测量与绘制"></a>ViewGroup的测量与绘制</h1><h1 id="自定义控件的三种方式"><a href="#自定义控件的三种方式" class="headerlink" title="自定义控件的三种方式"></a>自定义控件的三种方式</h1><h1 id="事件的拦截机制"><a href="#事件的拦截机制" class="headerlink" title="事件的拦截机制"></a>事件的拦截机制</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/11/Android/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-CTM系列(2) - 声明式计算模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/24/CTM系列(2) - 声明式计算模型/">CTM系列(2) - 声明式计算模型</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/24/CTM系列(2) - 声明式计算模型/" class="archive-article-date">
+  	<time datetime="2019-12-24T08:19:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="声明式计算模型-p31-74-p108"><a href="#声明式计算模型-p31-74-p108" class="headerlink" title="声明式计算模型 p31(74) - p108"></a>声明式计算模型 p31(74) - p108</h2><blockquote>
+<p>encompass 包含</p>
+</blockquote>
+<p>编程有三件事:</p>
+<ol>
+<li>计算模型: 定义了编程语言的语句怎样被抽象机器执行.</li>
+<li>编程模型: 编程技巧和设计原则的集合</li>
+<li>推断技巧集合: 正确性</li>
+</ol>
+<p>(我被我的蹩脚翻译恶心吐了, 此后使用英文吧)</p>
+<p>The first and simplest computation model – declarative programming (stateless programming)</p>
+<p>encompasses the core ideas of two main declarative paradigms: functional and logic programming.</p>
+<blockquote>
+<p>embryonic 未成熟的</p>
+</blockquote>
+<h3 id="2-1-define-the-syntax-and-semantics-of-practical-programming-languages"><a href="#2-1-define-the-syntax-and-semantics-of-practical-programming-languages" class="headerlink" title="2.1 define the syntax and semantics of practical programming languages"></a>2.1 define the syntax and semantics of practical programming languages</h3><p>syntax: “grammer”<br>semantics: “meaning”</p>
+<p>Extended Backus-Naur<br>Form (EBNF)<br>扩展的巴科斯范式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;digit&gt; ::= 0|1|2|3|4|5|6|7|8|9</span><br><span class="line">&lt;int&gt; ::= &lt;digit&gt; &#123; &lt;digit&gt; &#125;</span><br><span class="line">大括号表示可以重复任意次v</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>Precedence 优先级</p>
+</blockquote>
+<p>context-free 和 content-sensitive 语法</p>
+<p>语法的歧义: 2*3+4的两种解析方法<br>解决办法: 1. 设定优先级, 把优先级高的放到解析树离根更远的地方</p>
+<pre><code>2. 实用结合律, 对于2-3-4, 是左结合还是右结合
+</code></pre><blockquote>
+<p>affirmative 肯定的<br>linguistic 语言的</p>
+</blockquote>
+<p>用the kernel language approach来定义编程语言的语意</p>
+<ol>
+<li>定义一个简单核心语言</li>
+<li>把编程语言翻译到那个简单语言: 语言的抽象和语法糖 </li>
+</ol>
+<blockquote>
+<p>axiomatic 公理<br>clutter 杂乱<br>evolve 逐步发展<br>analogous 相似的</p>
+</blockquote>
+<p>总结: 讲了编程语言的syntax(语法)和semantics(语义),<br>(读完感觉没啥收获, 这个是最打击人的.完全没有读下去的兴趣了.<br>还是跟英文有关系吧, 这节的定位应当就是那种介绍背景的, 泛泛而谈, 让读者知道有这回事就行.<br>我来读就是做英文阅读理解, 连读11页, 就像万里长征过草地,爬雪山, 忍着困意和乏味读完了, 发现: 就这? 就这? 就这?)</p>
+<h3 id="2-2-data-structures-single-assignment-store-and-its-contents-partial-values-and-dataflow-variables"><a href="#2-2-data-structures-single-assignment-store-and-its-contents-partial-values-and-dataflow-variables" class="headerlink" title="2.2 data structures: single-assignment store and its contents, partial values and dataflow variables"></a>2.2 data structures: single-assignment store and its contents, partial values and dataflow variables</h3><p>p87<br>声明式模型使用single-assignment store – 变量可以initially unbound, 也可以bound to one value</p>
+<h4 id="Declaratice-variables"><a href="#Declaratice-variables" class="headerlink" title="Declaratice variables"></a>Declaratice variables</h4><p>这个和SICP里面讲的那个变量替换应该是一回事.<br>一旦绑定, variable就是value了.</p>
+<blockquote>
+<p>indistinguishable 无法分辨的;</p>
+</blockquote>
+<h4 id="Value-store"><a href="#Value-store" class="headerlink" title="Value store"></a>Value store</h4><p>Standard ML, Haskell, Scheme使用value store (不可变)<br>C++, Java使用cell store (可变)</p>
+<p>而本书使用 sigle-assignment store. 原因:</p>
+<ol>
+<li>想使用partial values, 举例: a procedure can return an output by binding an unbound variable argument.</li>
+<li>声明式并发</li>
+<li>想扩展这个模型用于relational(logic) programming 和 constraint programming</li>
+<li>性能好, 比如尾递归和不同的list</li>
+</ol>
+<h4 id="Value-creation"><a href="#Value-creation" class="headerlink" title="Value creation"></a>Value creation</h4><p>如果变量已经被绑定, single-assignment 操作会检查这两个value是否适配, 如果不适配就会报错.</p>
+<h4 id="Value-identifiers"><a href="#Value-identifiers" class="headerlink" title="Value identifiers"></a>Value identifiers</h4><h4 id="Partial-values"><a href="#Partial-values" class="headerlink" title="Partial values"></a>Partial values</h4><p>含有未知数的值</p>
+<h4 id="Variable-variable-binding"><a href="#Variable-variable-binding" class="headerlink" title="Variable-variable binding"></a>Variable-variable binding</h4><h4 id="Dataflow-variable"><a href="#Dataflow-variable" class="headerlink" title="Dataflow variable"></a>Dataflow variable</h4><h3 id="2-3-defines-the-kernel-language-syntax"><a href="#2-3-defines-the-kernel-language-syntax" class="headerlink" title="2.3 defines the kernel language syntax"></a>2.3 defines the kernel language syntax</h3><h3 id="2-4-defines-the-kernel-language-semantics-in-terms-of-a-simple-abstract-machine"><a href="#2-4-defines-the-kernel-language-semantics-in-terms-of-a-simple-abstract-machine" class="headerlink" title="2.4 defines the kernel language semantics in terms of a simple abstract machine"></a>2.4 defines the kernel language semantics in terms of a simple abstract machine</h3><h3 id="2-5-defines-a-practical-programming-language-on-top-of-the-kernel-language"><a href="#2-5-defines-a-practical-programming-language-on-top-of-the-kernel-language" class="headerlink" title="2.5 defines a practical programming language on top of the kernel language"></a>2.5 defines a practical programming language on top of the kernel language</h3><h3 id="2-6-exception-handling"><a href="#2-6-exception-handling" class="headerlink" title="2.6 exception handling"></a>2.6 exception handling</h3><h3 id="2-7-advanced-topics"><a href="#2-7-advanced-topics" class="headerlink" title="2.7 advanced topics"></a>2.7 advanced topics</h3>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/24/CTM系列(2) - 声明式计算模型/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-CTM系列(1) - 介绍编程概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/22/CTM系列(1) - 介绍编程概念/">CTM系列(1) - 介绍编程概念</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/22/CTM系列(1) - 介绍编程概念/" class="archive-article-date">
+  	<time datetime="2019-12-22T12:44:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-22</time>
 </a>
         
       </header>
@@ -172,252 +505,88 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>前言: 此书教你怎么在面向对象的语言中使用函数式设计</p>
+<p>这是我编程思想的第二次飞跃, 特别是对最小表达力原则的理解.         – 阿莱克西斯</p>
 </blockquote>
-<h1 id="Modern-Toys"><a href="#Modern-Toys" class="headerlink" title="Modern Toys"></a>Modern Toys</h1><p>Java, 2000年的新玩具, 2019年的巨无霸.<br>值得一提的是嵌套构造器, 有点函数式的味道.</p>
-<h1 id="Methods-to-Our-Madness"><a href="#Methods-to-Our-Madness" class="headerlink" title="Methods to Our Madness"></a>Methods to Our Madness</h1><p>有意思的来了: </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 烤串儿</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Shish</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 串儿里面是不是只有洋葱</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">onlyOnions</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">// 串儿是不是纯素食</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isVegetarian</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 洋葱</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Onion</span> <span class="keyword">extends</span> <span class="title">Shish</span> </span>&#123;</span><br><span class="line">    Shish s;</span><br><span class="line"></span><br><span class="line">    Onion(Shish s) &#123;</span><br><span class="line">        <span class="keyword">this</span>.s = s;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">onlyOnions</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.onlyOnions();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isVegetarian</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.isVegetarian();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 土豆</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tomato</span> <span class="keyword">extends</span> <span class="title">Shish</span> </span>&#123;</span><br><span class="line">    Shish s;</span><br><span class="line"></span><br><span class="line">    Tomato(Shish s) &#123;</span><br><span class="line">        <span class="keyword">this</span>.s = s;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">onlyOnions</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isVegetarian</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.isVegetarian();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 羊肉</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lamb</span> <span class="keyword">extends</span> <span class="title">Shish</span> </span>&#123;</span><br><span class="line">    Shish s;</span><br><span class="line"></span><br><span class="line">    Lamb(Shish s) &#123;</span><br><span class="line">        <span class="keyword">this</span>.s = s;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">onlyOnions</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isVegetarian</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 串儿</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Skewer</span> <span class="keyword">extends</span> <span class="title">Shish</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">onlyOnions</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isVegetarian</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>核心层: Skewer, 它的onlyOnions方法相当于初始值: true<br>其他附加层: onlyOnions方法返回false, 因为加了它们就不是onlyOnions了<br>Onion: 返回它的构造器传入的Shish的onlyOnions方法值. 委托给别人来决定.</p>
-<p>另一个例子: Kebab和Shish这个很相似,除了提高词汇量不值一提.<br>最后一个例子: Point也是讲抽象类的语法.</p>
-<h1 id="What’s-New"><a href="#What’s-New" class="headerlink" title="What’s New"></a>What’s New</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">PL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/17/The Little系列(1) - A Little Java, A Few Patterns/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-The Little系列(0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/17/The Little系列(0) - 写在前面的话/">The Little系列(0) - 写在前面的话</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/17/The Little系列(0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-09-17T09:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>The Little系列指的是Daniel P. Friedman写的一系列书, 包括&lt;&lt; A Little Java, A Few Patterns&gt;&gt;, &lt;&lt; The Little Schemer&gt;&gt;, &lt;&lt; The Little Typer&gt;&gt;, &lt;&lt; The Little Prover&gt;&gt;, &lt;&lt; The Little MLer&gt;&gt;, &lt;&lt; The Seasoned Schemer&gt;&gt;,<br> &lt;&lt; The Reasoned Schemer&gt;&gt;等书籍.<br>这套书的风格就是对话式教学, 别人对这套书的评价很高, 我却觉得絮絮叨叨的看着难受. 蟹六跪而二螯，非蛇鳝之穴无可寄托者，用心躁也。既然益处多多, 还是用心去读一读吧. 我决定边做笔记边啃下来这本书. 途中遇到不认识的单词也顺手记下来, 就当英文阅读理解了.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">PL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/17/The Little系列(0) - 写在前面的话/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-小红书系列 (5) - 非严格求值" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/16/小红书系列 (5) - 非严格求值/">小红书系列 (5) - 非严格求值</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/16/小红书系列 (5) - 非严格求值/" class="archive-article-date">
-  	<time datetime="2019-09-16T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Demo1-Stream定义："><a href="#Demo1-Stream定义：" class="headerlink" title="Demo1: Stream定义："></a>Demo1: Stream定义：</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Stream</span>[+<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">Empty</span> <span class="keyword">extends</span> <span class="title">Stream</span>[<span class="type">Nothing</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Cons</span>[+<span class="type">A</span>](<span class="params">h: (</span>) <span class="title">=&gt;</span> <span class="title">A</span>, <span class="title">t</span></span>: () =&gt; <span class="type">Stream</span>[<span class="type">A</span>]) <span class="keyword">extends</span> <span class="type">Stream</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Stream</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cons</span></span>[<span class="type">A</span>](hd: =&gt; <span class="type">A</span>, tl: =&gt; <span class="type">Stream</span>[<span class="type">A</span>]): <span class="type">Stream</span>[<span class="type">A</span>] = &#123;</span><br><span class="line">        <span class="comment">// 对惰性求值的head和tail做缓存, 避免重复求值</span></span><br><span class="line">        <span class="keyword">lazy</span> <span class="keyword">val</span> head = hd</span><br><span class="line">        <span class="keyword">lazy</span> <span class="keyword">val</span> tail = tl</span><br><span class="line">        <span class="type">Cons</span>(() =&gt; head, () =&gt; tail)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">empty</span></span>[<span class="type">A</span>]: <span class="type">Stream</span>[<span class="type">A</span>] = <span class="type">Empty</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>[<span class="type">A</span>](as: <span class="type">A</span>*): <span class="type">Stream</span>[<span class="type">A</span>] =</span><br><span class="line">        <span class="keyword">if</span> (as.isEmpty) empty <span class="keyword">else</span> cons(as.head, apply(as.tail: _*))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">headOption</span></span>: <span class="type">Option</span>[<span class="type">A</span>] = <span class="keyword">this</span> <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Empty</span> =&gt; <span class="type">None</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Some</span>(h())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/16/小红书系列 (5) - 非严格求值/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Kafka" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/16/Kafka/">Kafka</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/16/Kafka/" class="archive-article-date">
-  	<time datetime="2019-09-16T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>“100个Hello World”, 这是我看到有人在网络骂战中攻击别人博客时用到的话.<br>说者无心,听者有意. 立即反思自己的博客是不是有一天也会被评价为”100个Hello World”.<br>程序员的焦虑程度往往比其它职业更严重, 从入行开始就有的终身学习, 随时会被淘汰.<br>害怕自己不是有十年经验, 而是一个经验用了十年.<br>最后还有个35岁的deadline.<br>所以为啥要写博客?<br>一方面是为了抵抗遗忘. 不管你对一个知识点理解的有多深刻, 曾经掌握的有多娴熟, 时间会无情地磨掉<br>你的记忆. 所以写写博客, 当个速查手册, 也是个存档, 要用到的时候翻一翻就能快速想起当年掌握它的时候<br>学会的点点滴滴.<br>另一方面是作为读书笔记, 读书的时候有个东西记一下, 能提升读书时的专注度.<br>遗憾的是看别人博客的时候并不会有这些感觉, 他读过的书写过的代码你没有感触<br>看别人的博客, 一般都是期待有博主特殊的见解: </p>
-<p>凡事总有个Hello World, 而且大部分技术80%以上的时间都是只是用它提供的最简单的一点功能.<br>来嘛, 100个Hello World.<br>Hello ~</p>
-<h2 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h2><ul>
-<li><p>消息系统<br>系统解耦, 冗余存储, 流量削峰, 缓冲, 异步通信, 扩展性, 可恢复性, 消息顺序性保障, 回溯消费</p>
-</li>
-<li><p>存储系统<br>消息持久化到磁盘, 降低了数据丢失的风险.</p>
-</li>
-<li><p>流式处理平台<br>为流式处理框架提供数据来源, 提供完整的流失处理类库, 如窗口,连接,变换和聚合等</p>
-</li>
-</ul>
-<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>Zookeeper: 管理集群元数据, 选举控制器<br>Producer将消息发送到Broker的特定主题,Broker将消息存储到磁盘中,Consumer从Broker订阅主题并消费消息.<br>Consumer使用拉模式从服务端拉取消息,并且保存消费的具体位置.当消费者宕机后恢复上线时可以根据之前保存的消费位置重新拉取<br>需要的消息进行消费, 这样就不会造成消息丢失.</p>
-<p>主题可以分为多个分区,可以在多个broker上,不同分区包含的消息不同.</p>
+<h1 id="Concepts-Techniques-and-Models-of-Computer-Programming"><a href="#Concepts-Techniques-and-Models-of-Computer-Programming" class="headerlink" title="Concepts, Techniques, and Models of Computer Programming"></a>Concepts, Techniques, and Models of Computer Programming</h1><p>(我常常读英文书, 读完前言就算完事了)</p>
 <blockquote>
-<p>Kafka保证分区有序而不是主题有序.</p>
+<p>前言: (大概是盲人摸象)<br>六盲人摸象<br>第一位: 大象就像绳子(rope), 细长(slender), 柔韧(flexible)<br>第二位: 并不, 大象像树, 坚壮地(sturdily)种在地上.<br>第三位: 大象像墙<br>第四位: 大象是装满水的管子<br>第五位: 真是奇怪零碎(piecemeal)的野兽啊<br>第六位: 确实奇怪, 不过肯定有潜在的协调, 一起来深入调查下</p>
 </blockquote>
-<ul>
-<li>多副本机制<br>同一分区的不同副本保存的是相同的消息. 副本之间一主多从, leader负责读写, follower只负责与leader消息同步,<br>当leader故障时,从follower中重新选举新的leader.</li>
-</ul>
-<p>所有副本统称AR, 与leader副本保持一定程度同步的副本(包括leader在内)组成ISR, 与leader同步滞后过多的副本组成OSR<br>AR = ISR + OSR<br>正常情况下, ORS为空集.<br>leader负责维护follower副本的ISR和OSR转移, leader故障时从ISR中选举.</p>
+<p>– 传统印第安故事</p>
+<p>metaphor 隐喻<br>tackle this immensity 解决这种巨大问题<br>criterium 准则<br>advocate 拥护<br>judicious 审慎而明智的<br>merits 优点<br>pioneer 先锋<br>inherently 天性地<br>Omission 省略</p>
+<p>学一些具有代表性的编程语言是学会计算机编程的一种方法, 本书介绍计算模型.</p>
+<p>connotation 含义<br>unbiased 公正的<br>complement 补充</p>
+<p>本书目标: 以一种统一的原则学习编程.</p>
+<h2 id="介绍编程概念-p3-p24"><a href="#介绍编程概念-p3-p24" class="headerlink" title="介绍编程概念(p3 ~ p24)"></a>介绍编程概念(p3 ~ p24)</h2><ol>
+<li>一个计算器<br> 下载了个Mozart system, 用的emacs, 有点像Racket的那个工具.</li>
+<li><p>变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">V=9999*9999</span><br><span class="line">&#123;Browse V*V&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>函数<br>阶乘</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">fun &#123;Fact N&#125;</span><br><span class="line">   if N==0 then 1 else N*&#123;Fact N-1&#125; end</span><br><span class="line">end</span><br><span class="line">&#123;Browse &#123;Fact 5&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>c-M-x 同时按下ctrl alt x</p>
+<p>算组合: C 10 7<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">fun &#123;Comb N R&#125;</span><br><span class="line">   &#123;Fact N&#125; div (&#123;Fact R&#125; * &#123;Fact N-R&#125;)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;Comb 10 7&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<ol start="4">
+<li><p>列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">H = 5</span><br><span class="line">T = [6 7 8]</span><br><span class="line">&#123;Browse H|T&#125;</span><br><span class="line">&#123;Browse T.1&#125;</span><br><span class="line">&#123;Browse T.2&#125;</span><br><span class="line"></span><br><span class="line">declare</span><br><span class="line">L = [5 6 7 8]</span><br><span class="line">case L of H|T then &#123;Browse H&#125; &#123;Browse T&#125; end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>列表的函数<br>Pascal三角:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">            1</span><br><span class="line">         1     1</span><br><span class="line">      1     2     1</span><br><span class="line">   1     3     3     1   </span><br><span class="line">1     4     6     4     1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">1210 + 0121 -&gt; 1331</span><br><span class="line">13310 + 01331 -&gt; 14641</span><br><span class="line"></span><br><span class="line">declare Pascal AddList ShiftLeft ShiftRight</span><br><span class="line"></span><br><span class="line">fun &#123;Pascal N&#125;</span><br><span class="line">   if N==1 then [1]</span><br><span class="line">   else </span><br><span class="line">      &#123;AddList &#123;ShiftLeft &#123;Pascal N-1&#125;&#125;</span><br><span class="line">               &#123;ShiftRight &#123;Pascal N-1&#125;&#125;&#125;</span><br><span class="line">   end</span><br><span class="line">end         </span><br><span class="line"></span><br><span class="line">fun &#123;ShiftLeft L&#125;</span><br><span class="line">   case L of H|T then</span><br><span class="line">   	H|&#123;ShiftLeft T&#125;</span><br><span class="line">   else [0] end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun &#123;ShiftRight L&#125; 0|L end</span><br><span class="line"></span><br><span class="line">fun &#123;AddList L1 L2&#125;</span><br><span class="line">   case L1 of H1|T1 then</span><br><span class="line">      case L2 of H2|T2 then</span><br><span class="line">	 H1+H2|&#123;AddList T1 T2&#125;</span><br><span class="line">      end</span><br><span class="line">   else nil end</span><br><span class="line">end </span><br><span class="line"></span><br><span class="line">fun &#123;FastPascal N&#125;</span><br><span class="line">   if N==1 then [1]</span><br><span class="line">   else L in</span><br><span class="line">      L=&#123;FastPascal N-1&#125;</span><br><span class="line">      &#123;AddList &#123;ShiftLeft L&#125; &#123;ShiftRight L&#125;</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;ShiftLeft [1 2 34]&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;ShiftRight [1 2 34]&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;Pascal 20&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="6">
+<li>正确性<br>数学归纳法</li>
+<li>复杂度<br>上面那个Pascal函数很慢, 计算Pascal 30要很久, 因为算Pascal 30就要算两次Pascal 29, 依次类推要算2^29次.<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fun &#123;FastPascal N&#125;</span><br><span class="line">   if N==1 then [1]</span><br><span class="line">   else L in</span><br><span class="line">      L=&#123;FastPascal N-1&#125;</span><br><span class="line">      &#123;AddList &#123;ShiftLeft L&#125; &#123;ShiftRight L&#125;</span><br><span class="line">   end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>Pascal时间复杂度是2^n, FastPascal时间复杂度是n^2<br>proportional 成比例的</p>
+<ol start="8">
+<li><p>延迟计算</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">declare Ints</span><br><span class="line"></span><br><span class="line">fun lazy &#123;Ints N&#125;</span><br><span class="line">   N | &#123;Ints N+1&#125;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun lazy &#123;PascalList Row&#125;</span><br><span class="line">   Row | &#123;PascalList</span><br><span class="line">	  &#123;AddList &#123;ShiftLeft Row&#125; </span><br><span class="line">              &#123;ShiftRight Row&#125;&#125;&#125;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">declare L = &#123;PascalList [1]&#125;</span><br><span class="line">&#123;Browse L.1&#125;</span><br><span class="line">&#123;Browse L.2.1&#125;</span><br><span class="line">&#123;Browse L.2.2.1&#125;</span><br><span class="line">&#123;Browse L.2.2.2.1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fun &#123;PascalList2 N Row&#125;</span><br><span class="line">   if N==1 then [Row]</span><br><span class="line">   else</span><br><span class="line">      Row | &#123;PascalList2 N-1</span><br><span class="line">	     &#123;AddList &#123;ShiftLeft Row&#125;</span><br><span class="line">	              &#123;ShiftRight Row&#125;&#125;&#125;</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">&#123;Browse &#123;PascalList2 10 [1]&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>高阶函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">declare FastPacal Add ShiftRight ShiftLeft</span><br><span class="line"></span><br><span class="line">fun &#123;ShiftLeft L&#125;</span><br><span class="line">   case L of H|T then</span><br><span class="line">   	H|&#123;ShiftLeft T&#125;</span><br><span class="line">   else [0] end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun &#123;ShiftRight L&#125; 0|L end</span><br><span class="line"></span><br><span class="line">fun &#123;GenericPascal Op N&#125;</span><br><span class="line">   if N==1 then [1]</span><br><span class="line">   else L in L=&#123;GenericPascal Op N-1&#125;</span><br><span class="line">      &#123;OpList Op &#123;ShiftLeft L&#125; &#123;ShiftRight L&#125;&#125;</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun &#123;OpList Op L1 L2&#125;</span><br><span class="line">   case L1 of H1|T1 then</span><br><span class="line">      case L2 of H2|T2 then</span><br><span class="line">	 &#123;Op H1 H2&#125;|&#123;OpList Op T1 T2&#125;</span><br><span class="line">      end</span><br><span class="line">   else nil end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun &#123;Add X Y&#125; X+Y end</span><br><span class="line"></span><br><span class="line">fun &#123;FastPacal N&#125; &#123;GenericPascal Add N&#125; end</span><br><span class="line"></span><br><span class="line">fun &#123;Xor X Y&#125; if X==Y then 0 else 1 end end</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;FastPacal 30&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;GenericPascal Xor 7&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>并发</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">thread P in</span><br><span class="line">   P=&#123;Pascal 30&#125;</span><br><span class="line">   &#123;Browse P&#125;</span><br><span class="line">end</span><br><span class="line">&#123;Browse 99*99&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据流</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">declare X in</span><br><span class="line">thread &#123;Delay 10000&#125; X=99 end</span><br><span class="line">&#123;Browse start&#125;</span><br><span class="line">&#123;Browse X*X&#125;</span><br><span class="line"></span><br><span class="line">declare X in</span><br><span class="line">thread &#123;Browse start&#125; &#123;Browse X*X&#125;  end</span><br><span class="line">&#123;Delay 5000&#125; X=99</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>数据流的两个优秀特性: 1.计算的正确性独立于它们被分配给不同线程的方式, 2.计算不发出错误, 只是等待</p>
+<p>aesthetic 审美的<br>civilized 举止得体的<br>radically 彻底地</p>
+<ol start="12">
+<li><p>状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">C = &#123;NewCell 0&#125;</span><br><span class="line">C := @C + 1</span><br><span class="line">&#123;Browse @C&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">local C in</span><br><span class="line">   C = &#123;NewCell 0&#125;</span><br><span class="line">   fun &#123;Bump&#125;</span><br><span class="line">      C := @C + 1</span><br><span class="line">      @C</span><br><span class="line">   end</span><br><span class="line"></span><br><span class="line">   fun &#123;Read&#125;</span><br><span class="line">      @C</span><br><span class="line">   end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>encapsulation 封装</p>
+<ol start="14">
+<li><p>类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">fun &#123;NewCounter&#125;</span><br><span class="line">C Bump Read in</span><br><span class="line">   C = &#123;NewCell 0&#125;</span><br><span class="line">   fun &#123;Bump&#125;</span><br><span class="line">      C := @C + 1</span><br><span class="line">      @C</span><br><span class="line">   end</span><br><span class="line"></span><br><span class="line">   fun &#123;Read&#125;</span><br><span class="line">      @C</span><br><span class="line">   end</span><br><span class="line">   counter(bump:Bump read:Read)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">declare</span><br><span class="line">Ctr1 = &#123;NewCounter&#125;</span><br><span class="line">Ctr2 = &#123;NewCounter&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;Ctr1.bump&#125;&#125;</span><br><span class="line">&#123;Browse &#123;Ctr1.bump&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;Ctr2.bump&#125;&#125;</span><br><span class="line">&#123;Browse &#123;Ctr2.bump&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不确定性和时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">C = &#123;NewCell 0&#125;</span><br><span class="line">thread I in</span><br><span class="line">   I = @C</span><br><span class="line">   C := I + 1</span><br><span class="line">end</span><br><span class="line">thread J in</span><br><span class="line">   J = @C</span><br><span class="line">   C := J + 1</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">&#123;Delay 3000&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse @C&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>不要同时使用状态和并发. 如果非要用, 就设计使它们的交互被限制在程序的一小部分.<br>(书上那两个例子, 我跑起来都没有遇到问题..)</p>
+<ol start="16">
+<li><p>原子性<br>如果没有中间状态被观察到, 那么这个操作就是原子的.<br>使用锁:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">C = &#123;NewCell 0&#125;</span><br><span class="line">L = &#123;NewLock&#125;</span><br><span class="line">thread</span><br><span class="line">   lock L then I in</span><br><span class="line">      I = @C</span><br><span class="line">      C := I + 1</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">thread</span><br><span class="line">   lock L then J in</span><br><span class="line">      J = @C</span><br><span class="line">      C := J + 1</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">&#123;Delay 3000&#125;</span><br><span class="line">&#123;Browse @C&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接下来…</p>
+</li>
+<li>练习 P.24(67)<ol>
+<li>算下2^100, 不用函数<br>(这个sb语言, 变量不能用小写字母, V1不能是v1)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">declare V1 V2 V4 V8 V16 V32 V64</span><br><span class="line">V1 = 2</span><br><span class="line">V2 = V1*V1</span><br><span class="line">V4 = V2*V2</span><br><span class="line">V8 = V4*V4</span><br><span class="line">V16 = V8*V8</span><br><span class="line">V32 = V16*V16</span><br><span class="line">V64 = V32*V32</span><br><span class="line">V100 = V64*V32*V4 </span><br><span class="line"></span><br><span class="line">&#123;Browse V100&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ol>
 
       
 
@@ -426,13 +595,24 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
+        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -441,7 +621,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/16/Kafka/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/12/22/CTM系列(1) - 介绍编程概念/">展开全文 >></a>
         </p>
       
 
@@ -473,7 +653,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
     </nav>
   
 
@@ -485,7 +665,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -734,6 +914,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

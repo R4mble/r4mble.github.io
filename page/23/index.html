@@ -151,197 +151,36 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spark实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux进程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spark实战/">Spark实战</a>
+      <a class="article-title" href="/2019/06/29/Linux进程/">Linux进程</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Spark实战/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/06/29/Linux进程/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Spark<br>    快速: Spark有一个Directed Acyclic Graph(DAG有向无环图)执行引擎,支持循环数据流和内存计算.</p>
-<pre><code>Spark Core
-    任务调度,内存管理,故障恢复,存储系统的交互
-    核心思想: 将数据集缓存在内存中,用Lineage机制来进行容错
+        <p>进程原理<br>    对操作系统所管理的硬件资源的请求.<br>    资源包括: 磁盘IO, 网络IO, 内存, CPU, 显卡.</p>
+<pre><code>在内核空间,线程与进程没有太大区别.
 
-    RDD
-        自动容错,位置感知调度,可伸缩性
-        容错性方式:
-            数据检查点(传输成本高), 记录数据的更新(只支持粗粒度的转换)
+父子进程
+    子进程退出, 父进程要调用wait或waitpid函数等待回收子进程的资源, 否则子进程
+    就一直以僵尸状态存在.
+</code></pre><p>进程调度</p>
+<p>资源</p>
+<p>多进程与进程通信</p>
 
-    编程接口,2类API
-        Transformations (懒策略, 只有在action提交时才被触发执行)
-            map, filter, union, sample, join
-        Actions
-            count, collect, save, reduce, lookup
-
-    依赖关系
-        窄依赖
-            一个父RDD最多被一个子RDD引用,如 map, filter, union
-        宽依赖
-           一个父RDD被多个子RDD引用,如groupByKey
-
-    Stage DAG
-        Spark提交Job生成多个Stage, Stage之间存在依赖, 这些依赖关系构成了DAG
-        对于窄依赖,spark尽量把RDD转换放在一个Stage中
-        对于宽依赖,spark将Stage定义为ShuffleMapStage,以便向MapOutputTracker
-            注册shuffle操作. Spark将shuffle操作定义为stage的边界.
-
-Spark Streaming
-    对实时数据流进行高通量,容错处理的流式处理系统,可以对多种数据源(Kafka,Flume)
-      进行map,reduce,join,window等操作,并将结果保存到外部文件系统,数据库等.
-
-     原理: 将Stream数据分成小的时间片段,以类似batch批量处理的方式来处理这一小部分数据
-
-GraphX
-    提供了一套图算法工具包,方便用户对图进行分析
-        分布式图计算框架
-            图存储模式
-                边分割
-                    每个顶点存储一次,但有的边会被打断分到两台机器
-                    好处: 节省存储空间
-                    坏处: 对一条两个顶点被分到不同的机器上的边来说,要跨机器通信
-                            传输数据,内网通信流量大
-
-                点分割
-                    每条边存储一次.邻居多的点会被复制到多台机器上,增加了存储开销
-                       引发数据同步问题
-
-            图计算模型
-                BSP(Bulk Synchronous Parallel)计算模式
-                    一次计算过程由一系列全局超步组成,每一个超步由并发计算,通信和
-                    栅栏同步三个步骤组成. 同步完成标志着这个超步的完成以及下一个
-                    超步的开始.
-
-                 Pregel模型
-                    消息通信范式. 只需要实现一个顶点更新函数, 让框架在遍历
-                    顶点时进行调用.
-
-                 GAS模型
-                    共享内存.Gather,Apply,Scatter
-
-
-Spark SQL
-
-MLlib
-    二元分类
-        监督学习.如判断邮件是否是垃圾邮件. 返回一个模型,对标签未知的新个体进行
-        潜在标签预测.
-
-        两个适用于二元分类的标准模型家族
-            线性支持向量机(SVMs)
-            逻辑回归
-
-            输入一个正则项参数和多个梯度下降相关参数
-
-
-    线性回归
-        监督学习.
-
-    聚类
-        非监督学习.KMeans
-    协同过滤
-        用于推荐系统. 交替最小二乘法.
-
-    梯度下降优化基础算法
-    朴素贝叶斯算法
-    决策树的解析
-
-Spark整体流程
-    Client(提交应用) -&gt; Master(找到Worker,启动Driver) -&gt; Driver -&gt; RDD Graph (由DAGScheduler转化为有向无环图) -&gt; TaskScheduler -&gt; Executor
-
-Spark算子
-    Value型Transformation
-        输入分区与输出分区一对一
-            map
-            flatMap
-            mapPartitions
-            glom
-
-        输入分区与输出分区多对一
-            union
-            cartesian 笛卡尔积
-
-        输入分区与输出分区多对多
-            groupBy
-
-        输出分区为输入分区子集
-            filter
-            distinct
-            subtract
-            sample
-            takeSample
-
-        一对一 Cache型
-            cache
-            persist
-
-
-    Key-Value型Transformation
-
-    Action型,会触发SparkContext提交Job
-        无输出
-            foreach
-        HDFS
-            saveAsTextFile
-            saveAsObjectFile
-        Scala
-            collect
-            collectAsMap
-            reduceByKeyLocally  先reduce再collectAsMap
-            lookup
-            count
-            top
-            reduce
-            fold
-            aggregate
-
-
-Spark工作机制
-    Spark主要模块
-        调度与任务分配
-            RDD的Action触发Job提交,生成RDD DAG,由DAGScheduler转化为
-              Stage DAG,每个Stage中产生相应的Task集合,TaskScheduler将
-              任务分发到Executor执行.Executor创建线程池,并发执行
-              每个任务对应相应的一个数据块,使用
-              用户定义的函数处理数据块.
-
-              对RDD的块管理通过BlockManager完成.
-
-            层次
-                应用
-
-                Job
-
-                Stage
-
-                Task
-            算法
-                FIFO
-                FAIR
-
-        I/O模块
-            将数据以块为单位管理
-
-        通信控制模块
-            AKKA框架
-
-        容错模块
-            Lineage Checkpoint
-        Shuffle模块
-</code></pre><h1 id="Spark-SQL"><a href="#Spark-SQL" class="headerlink" title="Spark SQL"></a>Spark SQL</h1><h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1>
       
 
       
@@ -355,7 +194,7 @@ Spark工作机制
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
         		</li>
       		
 		</ul>
@@ -364,7 +203,7 @@ Spark工作机制
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spark实战/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Linux进程/">展开全文 >></a>
         </p>
       
 
@@ -394,105 +233,29 @@ Spark工作机制
 
 
   
-    <article id="post-Netty-in-action" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Lua" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Netty-in-action/">Netty in action</a>
+      <a class="article-title" href="/2019/06/29/Lua/">Lua</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Netty-in-action/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:36:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/06/29/Lua/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Netty   异步和事件驱动</p>
-<pre><code>Netty核心组件:
-        Bootstrap 和 ServerBootstrap
-            提供了一个用于应用程序网络层配置的容器
-
-            Bootstrap
-                连接远程主机,有1个EventLoopGroup
-
-            ServerBootstrap 绑定本地端口
-                在服务器监听一个端口轮询客户端的Bootstrap或DatagramChannel是否
-                    连接服务器.   调用Bootstrap类的connect方法,也可以先bind()
-                    再connect(),之后使用的Channel包含在bind()返回的ChannelFuture中
-                一个ServerBootstrap有2个Channel集合.(EventLoopGroup)
-                    1.包含一个单例ServerChannel,代表持有一个绑定了本地端口的socket
-                    2.包含所有创建的Channel,处理服务器所接收到的客户端进来的连接.
-
-        Channel
-            代表了一个用于连接到实体如硬件设备,文件,网络套接字或程序组件,能够执行一个或多个不同的IO操作的开放连接.
-            底层网络传输API必须提供给应用I/O操作的接口.如读/写/绑定等.
-            定义了与socket丰富交互的操作集:bind,close,config,connect,
-                isActive,isOpen,isWritable,read,write.
-
-        ChannelHandler
-            支持很多协议,提供用于数据处理的容器. 应用程序的核心
-            由特定事件触发
-            ChannelInboundHandler
-                数据从远程主机到用户应用程序
-            ChannelOutboundHandler
-                数据从用户应用程序到远程主机
-            体现了关注点分离的设计原则,并简化业务逻辑的迭代开发的要求.
-                    每一个方法覆盖到hook在活动周期适当的点.
-                    覆盖channelRead0因为需要处理所有接收到的数据
-                    覆盖exceptionCaught可以应对任何Throwable的子类型,
-                    这种情况记录并关闭所有可能处于未知状态的连接.
-            每一个Channel都有一个关联的ChannelPipeline,它代表了ChannelHandler实例
-            的链.适配器处理的实现是将一个处理方法转发到链中的下一个处理器.
-            因此提供至少一个实现exceptionCaught的ChannelHandler
-            ChannelHandler给不同类型的事件调用应用程序实现或扩展ChannelHandler挂接到事件生命周期和提供自定义应用逻辑
-
-        Callback 回调   回调事件由接口ChannelHandler的实现来处理
-            // 一旦一个新的连接建立, channelActive方法就会被调用
-            public class ConnectHandler extends ChannelInboundHandlerAdapter {
-                @Override
-                public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                    System.out.println(&quot;Client &quot; + ctx.channel().remoteAddress() + &quot; connected&quot;);
-                }
-            }
-
-        ChannelFuture
-            Netty所有的I/O操作都是异步的,当操作完成时可以被通知.
-            一个未来执行操作结果的占位符.
-
-        ChannelPipeline
-            提供一个容器给ChannelHandler链并提供一个API用于管理沿着链入站
-            和出站事件的流动.
-            每个Channel都有自己的ChannelPipeline,当Channel创建时自动创建
-
-            实现了ChannelHandler的抽象ChannelInitializer.
-            ChannelInitializer子类通过ServerBootstrap注册.
-            当它的方法initChannel()被调用时,这个对象将安装自定义的ChannelHandler集到
-            pipeline. 当这个操作完成时,ChannelInitializer子类从ChannelPipeline
-            自动删除自身.
-
-        EventLoop
-            处理Channel的I/O操作. 一个单一的EventLoop会处理多个Channel事件.
-            一个EventLoopGroup可以含有多于一个的EventLoop和提供了一种迭代用于
-            检索清单中的下一个.
-
-
-        Channel Event 和 I/O
-            Netty 非阻塞,事件驱动的网络框架
-                使用多线程处理I/O事件.
-                Netty的设计保证程序处理事件不会有同步. 不需要在Channel之间共享ChannelHandler实例
-
-                一个EventLoopGroup有一个或多个EventLoop,一个EventLoop作为一个线程给Channel执行工作
-
-                当创建一个Channel,Netty通过一个单独的EventLoop实例来注册该Channel的通道的使用寿命.
-                所有Channel的I/O始终用相同的线程来执行,所以不需要同步Netty的I/O操作.
-</code></pre><p>引导服务器<br>    监听和接收进来的连接请求<br>    配置Channel来通知一个关于入站消息的EchoServerHandler实例</p>
+        <p>元表 Metatable<br>    改变table的行为,每个行为关联了对应的元方法.<br>    如: 定义两个table的相加操作.</p>
+<p>数字:   字节, C语言整型, C语言size_t类型, Lua整型, Lua浮点型<br>        byte, uint32,   uint64,         int64,   float64   </p>
+<p>字符串: 其实就是字节数组. 分为NULL,短字符串和长字符串<br>        NULL: 用0x00表示.<br>        长度小于0xFD的字符串: 先用一个字节记录长度+1, 然后是字节数组<br>        长度大于等于0xFE的字符串: 第一个字节是0xFF,后面跟一个size_t记录长度+1,最后是字节数组<br>列表: 先用cint记录列表长度,再紧接着存储n个列表元素</p>
 
       
 
@@ -501,24 +264,13 @@ Spark工作机制
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Netty//" class="article-tag-list-link color1">Netty</a>
+        			<a href="/categories/Lua//" class="article-tag-list-link color4">Lua</a>
         		</li>
       		
 		</ul>
@@ -527,7 +279,7 @@ Spark工作机制
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Netty-in-action/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Lua/">展开全文 >></a>
         </p>
       
 
@@ -557,27 +309,53 @@ Spark工作机制
 
 
   
-    <article id="post-Git技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Micrometer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Git技巧/">Git技巧</a>
+      <a class="article-title" href="/2019/06/29/Micrometer/">Meter</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Git技巧/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/06/29/Micrometer/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line">git技巧</span><br><span class="line"></span><br><span class="line">后悔药系列:</span><br><span class="line">    撤销存入暂存区操作</span><br><span class="line">    git reset head &lt;filename&gt; </span><br><span class="line"></span><br><span class="line">    删除暂存区文件</span><br><span class="line">    git rm --cache xxx.zip</span><br><span class="line">    </span><br><span class="line">    放弃本地修改</span><br><span class="line">    git checkout xxx.java</span><br><span class="line"></span><br><span class="line">    命令放弃本次合并</span><br><span class="line">    git merge --abort </span><br><span class="line"></span><br><span class="line">    退回到改之前的版本</span><br><span class="line">    git checkout &lt;hash&gt; &lt;filename&gt;</span><br><span class="line"></span><br><span class="line">    放弃本地修改，强制拉取更新   </span><br><span class="line">    git fetch --all                                git fetch 指令是下载远程仓库最新内容，不做合并 </span><br><span class="line">    git reset --hard origin/master                 git reset 指令把HEAD指向master最新版本</span><br><span class="line"></span><br><span class="line">提交:</span><br><span class="line">    相当于git add . 加上 git commit -m &quot;xxx&quot;  只会add修改的文件,不add新增的文件.</span><br><span class="line">    git commit -am &quot;xxx&quot; </span><br><span class="line"></span><br><span class="line">    提交会与上一次提交合并成一个新的提交，之前的提交会被废弃掉。</span><br><span class="line">    git commit --amend  </span><br><span class="line"></span><br><span class="line">    放弃commit, 回到未提交状态</span><br><span class="line">    git reset --soft HEAD^</span><br><span class="line"></span><br><span class="line">    git reset --hard xxxx</span><br><span class="line"></span><br><span class="line">后悔药的后悔药:</span><br><span class="line">    git reflog</span><br><span class="line"></span><br><span class="line">推分支到远程</span><br><span class="line">    git push origin local_branch:remote_branch</span><br><span class="line">删除远程分支</span><br><span class="line">    git push origin --delete remote_branch</span><br><span class="line"></span><br><span class="line">查看历史:</span><br><span class="line">    来查看最近一次提交的差异，当然也可以使用 git log -p 来查看所有的差异</span><br><span class="line">    git log -p -1   </span><br><span class="line"></span><br><span class="line">    git log --pretty=oneline </span><br><span class="line">    git log --oneline --graph --all </span><br><span class="line">    </span><br><span class="line">标签:</span><br><span class="line">    git tag -a 版本号 -m &apos;tag 信息&apos;来创建“轻量标签”</span><br><span class="line"></span><br><span class="line">    git show v1.1.1 来查看v1.1.1处的相关信息</span><br><span class="line"></span><br><span class="line">    给之前的某个commit打一个tag, 将commit号追加到打标签的命令后方</span><br><span class="line">    git tag -a vx.x.x -m &apos;message&apos; commit-hash</span><br><span class="line"></span><br><span class="line">    将本地创建的所有 tag 推送到远端origin</span><br><span class="line">    git push origin --tags</span><br><span class="line"></span><br><span class="line">别名:</span><br><span class="line">    创建别名</span><br><span class="line">    git config --global alias.s status </span><br><span class="line"></span><br><span class="line">    查看设置过的所有别名</span><br><span class="line">    git config -l</span><br><span class="line"></span><br><span class="line">开发中分支合并最新master且不新增提交:</span><br><span class="line">1.在开发分支合并最新的master.</span><br><span class="line">2.切换至master,使用git read-tree -m -u &lt;开发分支&gt;, 获得开发改动的代码的 未提交状态.</span><br><span class="line">3.在master新建开发分支</span><br><span class="line"></span><br><span class="line">理论知识:</span><br><span class="line">    Git 保存的不是文件差异或者变化量，而只是一系列文件快照。</span><br><span class="line"></span><br><span class="line">    git add时, 暂存操作会为每个文件计算校验和,把当前版本的文件使用bolb对象保存到Git仓库中.</span><br><span class="line"></span><br><span class="line">    git commit时, 提交操作会计算每一个子目录的校验和, 在Git仓库中将这些校验和</span><br><span class="line">    保存为树对象. 然后Git创建一个提交对象, 包含一个指向暂存内容快照的指针,作者的</span><br><span class="line">    姓名邮箱,提交时的输入信息和指向父对象的指针, 指向树对象的指针.</span><br><span class="line"></span><br><span class="line">        此时Git仓库中的对象:</span><br><span class="line">            bolb对象: 保存文件快照.</span><br><span class="line">            树对象: 记录着目录结构和blob对象索引.</span><br><span class="line">            提交对象: 包含着指向前面树对象的指针和所有的提交信息.</span><br><span class="line"></span><br><span class="line">    Git分支: 指向提交对象的可变指针. 实质上是包含所指向对象校验和的文件. </span><br><span class="line">    创建分支: 创建一个可以移动的新指针. 相当于往一个文件中0  写41个字节(40个SHA-1字符和1个换行符).</span><br><span class="line">    HEAD指针: 指向当前所在的分支</span><br><span class="line"></span><br><span class="line">Fast-forward</span><br><span class="line">    如果顺着一个分支走下去能够达到另一个分支, 那么Git在合并时只会简单的将指针前进.</span><br><span class="line">&apos;recursive&apos; strategy 合并提交</span><br><span class="line">    选取一个共同祖先, 作为合并的基础, 做一个新的快照并自动创建一个提交指向它.</span><br><span class="line"></span><br><span class="line">git rebase</span><br><span class="line">    将提交到某一分支上的所有修改都应用到另一分支.</span><br><span class="line">    原理: 先找到最近共同祖先, 对比当前分支相对于该祖先的历次提交,</span><br><span class="line">        提取相应的修改并存为临时文件,然后将当前分支指向目标基底,</span><br><span class="line">        将之前另存为临时文件的修改依序应用.</span><br><span class="line">    实质: 丢弃一些现有的提交, 然后相应地新建一些内容一样但不同的提交.</span><br><span class="line">    结果: 最终结果和git merge没有任何区别, 只是让提交历史变成一串.</span><br><span class="line">    特殊选项: </span><br><span class="line">        --onto</span><br><span class="line">            取出 client 分支，找出处于 client 分支和 server 分支的共同祖先之后的修改，然后把它们在 master 分支上重放一遍</span><br><span class="line">            git rebase --onto master server client</span><br><span class="line">        </span><br><span class="line">        将特性分支变基到目标分支</span><br><span class="line">        git rebase [basebranch] [topicbranch]</span><br><span class="line"></span><br><span class="line">    风险: 丢弃掉已经被人依赖的提交, 导致这边丢不掉, 那边提交重复.</span><br><span class="line">    解决办法: 用rebase解决rebase.</span><br><span class="line">            git rebase teamone/master</span><br><span class="line">        过程:1. 检查哪些提交是我们分支独有的.</span><br><span class="line">            2. 检查其中哪些提交不是合并操作的结果.</span><br><span class="line">            3. 检查其中哪些提交在对方覆盖更新时并没有被纳入目标分支.</span><br><span class="line">            4. 把查到的这些提交应用到teamone/master上.</span><br><span class="line">            </span><br><span class="line">    原则: 只对尚未推送或分享给别人的本地修改执行rebase操作清理历史,</span><br><span class="line">         不对已推送至别处的提交执行rebase.</span><br></pre></td></tr></table></figure>
+        <p>记录 Java 应用性能指标</p>
+<p>计量器注册表 MeterRegistry<br>    创建和维护计量器.</p>
+<pre><code>基于内存的计量器注册表实现: 
+    SimpleMeterRegistry 不支持导出数据到监控系统
+
+可以组合多个计量器注册表的实现类
+    CompositeMeterRegistry 运行同时发布数据到多个监控系统
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompositeMeterRegistryExample</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CompositeMeterRegistry registry = <span class="keyword">new</span> CompositeMeterRegistry();</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry());</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry(<span class="keyword">new</span> MyConfig(), Clock.SYSTEM));</span><br><span class="line"> </span><br><span class="line">    Counter counter = registry.counter(<span class="string">"simple"</span>);</span><br><span class="line">    counter.increment();</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> <span class="keyword">implements</span> <span class="title">SimpleConfig</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">prefix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"my"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>静态的全局计量器注册表对象 
+    Metrics.globalRegistry 组合注册表
+</code></pre><pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalRegistryExample</span> </span>{
+
+  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
+    Metrics.addRegistry(<span class="keyword">new</span> SimpleMeterRegistry());
+    Counter counter = Metrics.counter(<span class="string">"simple"</span>);
+    counter.increment();
+  }
+}
+</code></pre>
+<p>计量器 Meter<br>    需要收集的性能指标数据.</p>
+<pre><code>计量器名称和标签
+    每个计量器在创建时都可以指定一系列标签。标签以名值对的形式出现。监控系统使用标签对数据进行过滤。除了每个计量器独有的标签之外，每个计量器注册表还可以添加通用标签。所有该注册表导出的数据都会带上这些通用标签。
+</code></pre><p>计数器 Counter<br>    单个只允许增加的值.    </p>
+<p>计量仪 Gauge<br>    单个变化的值. Gauge对象既可以从计量器注册表中创建,也可以使用<br>    Gauge.builder()构建.</p>
+<p>计时器 Timer<br>    记录事件的持续时间.</p>
+<p>集成SpringBoot</p>
+
       
 
       
@@ -591,7 +369,7 @@ Spark工作机制
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Git//" class="article-tag-list-link color4">Git</a>
+        			<a href="/categories/Meter//" class="article-tag-list-link color1">Meter</a>
         		</li>
       		
 		</ul>
@@ -600,7 +378,7 @@ Spark工作机制
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Git技巧/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Micrometer/">展开全文 >></a>
         </p>
       
 
@@ -630,58 +408,72 @@ Spark工作机制
 
 
   
-    <article id="post-GitFlow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-MongoDB" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/GitFlow/">Git Flow</a>
+      <a class="article-title" href="/2019/06/29/MongoDB/">MongoDB</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/GitFlow/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/06/29/MongoDB/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>集中式工作流<br>    工作方式<br>        以中央仓库作为项目所有修改的单点实体,所有修改提交到这个分支<br>        上,只用到master这一个分支.<br>    冲突解决<br>        开发者提交之前,需要先fetch中央库的新增提交,rebase自己提交到<br>        中央仓库提交历史之上.[把自己的修改加到别人已经完成的修改上]</p>
-<pre><code>git pull --rebase origin master
-    --rebase选项把提交已到同步了中央仓库修改后的master分支的顶部.
-</code></pre><p>功能分支工作流<br>    所有的功能开发应该在一个专门的分支</p>
-<p>GitFlow工作流<br>    历史分支<br>        使用两个分支来记录项目的历史,master分支存储了正式发布的历史,develop<br>        分支作为功能的集成分支.<br>    功能分支<br>        使用develop作为父分支,新功能完成时合并回develop分支.<br>    发布分支<br>        从develop分支上fork一个发布分支,新建的分支用于开始发布循环,发布分支<br>        合并到master分支并分配一个版本号打好Tag.</p>
-<pre><code>示例
-    git checkout -b some-feature develop
+        <p>查看数据库<br>    show dbs<br>查看数据表<br>    show tables</p>
+<p>集合<br>    创建集合<br>        db.createColleaction(name, options)<br>            name: 集合名称<br>            options:<br>                capped: 是否创建固定大小集合,当达到最大值时,自动覆盖最早的文档<br>                size: 固定集合字节大小<br>                antoIndexId: 是否自动在_id字段创建索引.默认为false<br>                max: 固定集合中包含文档的最大数量<br>            插入文档时,先检查size再检查max<br>    删除集合<br>        db.col.drop()</p>
+<pre><code>插入文档
+    db.col.insert(document)
+    例:
+        db.col.insert({
+            title: &apos;MongoDB 教程&apos;, 
+            tags: [&apos;mongodb&apos;, &apos;database&apos;, &apos;NoSQL&apos;],
+            likes: 100
+        })
 
-    git status
-    git add 
-    git commit
+查看文档
+    db.col.find()
 
-    git pull origin develop
-    git checkout develop
-    git merge some-feature
-    git push
-    git branch -d some-feature
+更新文档
+    db.col.update(
+        &lt;query&gt;,
+        &lt;update&gt;,
+        {
+            upsert: &lt;boolean&gt;,
+            multi: &lt;boolean&gt;,
+            writeConcern: &lt;document&gt;
+        }
+    )
 
-    git checkout -b release-0.1 develop
+    query : update的查询条件
+    update : update的对象和一些更新的操作符（如$,$inc...）
+    upsert : 可选，这个参数的意思是，如果不存在update的记录，是否插入,默认是false不插入
+    multi : 可选，mongodb 默认是false,只更新找到的第一条记录，如果这个参数为true,就把按条件查出来多条记录全部更新。
+    writeConcern :可选，抛出异常的级别。
 
-    git checkout master
-    git merge release-0.1
-    git push
-    git checkout develop
-    git merge release-0.1
-    git push
-    git branch -d release-0.1
+    例: 
+        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}})
+        要修改多条参数:
+        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}}, multi: true)
 
-    git tag -a 0.1 -m &quot;Initial public release&quot; master
-    git push --tag
-</code></pre><p>Forking工作流</p>
-
+查询文档:
+        db.col.find({likes: 100})
+    小于,大于: 
+        db.col.find({likes: {$lt:50}}) 
+        db.col.find({likes: {$gt:50}})
+    AND:
+        db.col.find({key1:value1, key2:value2})
+    OR:
+        db.col.find({$or: [{key1: value1}, {key2:value2}]})
+</code></pre>
       
 
       
@@ -695,7 +487,7 @@ Spark工作机制
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Git//" class="article-tag-list-link color4">Git</a>
+        			<a href="/categories/MongoDB//" class="article-tag-list-link color3">MongoDB</a>
         		</li>
       		
 		</ul>
@@ -704,7 +496,7 @@ Spark工作机制
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/GitFlow/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/MongoDB/">展开全文 >></a>
         </p>
       
 
@@ -736,7 +528,7 @@ Spark工作机制
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/22/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/24/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/22/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/24/">Next &raquo;</a>
     </nav>
   
 
@@ -748,7 +540,7 @@ Spark工作机制
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -997,6 +789,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

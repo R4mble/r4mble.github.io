@@ -151,119 +151,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Micrometer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-real" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Micrometer/">Meter</a>
+      <a class="article-title" href="/2019/10/10/real/">real</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Micrometer/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>记录 Java 应用性能指标</p>
-<p>计量器注册表 MeterRegistry<br>    创建和维护计量器.</p>
-<pre><code>基于内存的计量器注册表实现: 
-    SimpleMeterRegistry 不支持导出数据到监控系统
-
-可以组合多个计量器注册表的实现类
-    CompositeMeterRegistry 运行同时发布数据到多个监控系统
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompositeMeterRegistryExample</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CompositeMeterRegistry registry = <span class="keyword">new</span> CompositeMeterRegistry();</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry());</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry(<span class="keyword">new</span> MyConfig(), Clock.SYSTEM));</span><br><span class="line"> </span><br><span class="line">    Counter counter = registry.counter(<span class="string">"simple"</span>);</span><br><span class="line">    counter.increment();</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> <span class="keyword">implements</span> <span class="title">SimpleConfig</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">prefix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"my"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>静态的全局计量器注册表对象 
-    Metrics.globalRegistry 组合注册表
-</code></pre><pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalRegistryExample</span> </span>{
-
-  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
-    Metrics.addRegistry(<span class="keyword">new</span> SimpleMeterRegistry());
-    Counter counter = Metrics.counter(<span class="string">"simple"</span>);
-    counter.increment();
-  }
-}
-</code></pre>
-<p>计量器 Meter<br>    需要收集的性能指标数据.</p>
-<pre><code>计量器名称和标签
-    每个计量器在创建时都可以指定一系列标签。标签以名值对的形式出现。监控系统使用标签对数据进行过滤。除了每个计量器独有的标签之外，每个计量器注册表还可以添加通用标签。所有该注册表导出的数据都会带上这些通用标签。
-</code></pre><p>计数器 Counter<br>    单个只允许增加的值.    </p>
-<p>计量仪 Gauge<br>    单个变化的值. Gauge对象既可以从计量器注册表中创建,也可以使用<br>    Gauge.builder()构建.</p>
-<p>计时器 Timer<br>    记录事件的持续时间.</p>
-<p>集成SpringBoot</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Meter//" class="article-tag-list-link color1">Meter</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Micrometer/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-每周总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/每周总结/">每周总结</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/29/每周总结/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/10/10/real/" class="archive-article-date">
+  	<time datetime="2019-10-10T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-10</time>
 </a>
         
       </header>
@@ -271,37 +172,59 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>感觉每个周做一次总结还是挺不错的, 频率不会太频繁导致难以维护, 一个周的时间<br>  也足够做一些东西出来, 系统地学一些知识.</p>
+<p>我希望你玩点儿真实的.</p>
 </blockquote>
-<h2 id="todos"><a href="#todos" class="headerlink" title="todos"></a>todos</h2><ul>
-<li><p>[] 英语: 单词, 听力</p>
+<h1 id="字节跳动"><a href="#字节跳动" class="headerlink" title="字节跳动"></a>字节跳动</h1><h2 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h2><ol>
+<li><p>找到数组中只出现了一次的那个数,其他的都出现了两次.<br>异或</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">findOnce</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums == <span class="keyword">null</span> || nums.length &lt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> a = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>; i&lt;nums.length; i++) &#123;</span><br><span class="line">        a ^= nums[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>[] 算法: 数组, 字符串, 链表, 树, 动态规划</p>
+<li><p>数组中有两个数只出现一次, 其他的出现两次, 找到这两个数?<br> 1) 对数组异或一遍, 结果就是那两个数异或的结果temp, 这个两个数不相等, 即temp不为0<br> 2) temp中的某一位为1, 则说明这两个数在这一位上不相等, 即一个是0, 一个是1.<br> 3) 按照这个位是1还是0, 将数组分为两个小数组, 相等的数在那一位上必然相等, 所以相等的数会被分到同一个组内.<br> 4) 在两个小数组内求得结果.</p>
 </li>
-<li><p>[] Web框架: Spring</p>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[] findOnce2(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">    <span class="keyword">if</span> (nums == <span class="keyword">null</span> || nums.length &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"数组不能为空且数组内至少有两个元素."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> temp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        temp ^= num;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> flag = temp &amp; (temp - <span class="number">1</span>) ^ temp;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> b = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((num &amp; flag) != <span class="number">0</span>) &#123;</span><br><span class="line">            a ^= num;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            b ^= num;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;a, b&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>一个整数减去1, 就是把从右数第一个1的右边取反, 左边不变.<br>   整数和它减1之后 相与, 该整数最右边的1变成0, 其他位不变.</p>
+</blockquote>
+<p>统计一个二进制整数中1的个数:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">numberOf1</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (n != <span class="number">0</span>) &#123;</span><br><span class="line">        count ++;</span><br><span class="line">        n = n &amp; (n - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ol start="3">
+<li>悲观锁和乐观锁</li>
+</ol>
+<ul>
+<li>悲观锁<br>  行锁, 表锁, 读锁, 写锁</li>
+<li><p>乐观锁<br>  假设多用户并发事务处理时不会彼此影响. 在提交数据更新之前, 每个事务会先检查该事务读取数据后, 有没有其他事务又修改了该数据, 如果有则回滚.</p>
+<p>  两种机制:</p>
+<pre><code>1. 版本号机制
+表中存有version字段,数据被修改时version加一. 更新数据时读取数据的同时读取version,提交更新时比较version,相等才更新,否则重试更新操作.
+
+2. CAS (compare and swap), 在没有线程被阻塞的情况下实现变量的同步, 非阻塞同步
+    java.util.concurrent.atomic
+    需要读写的内存值V, 进行比较的值A, 拟写入的新值B
+    当且仅当V等于A时, CAS通过原子方式用新值B来更新V的值.
+</code></pre><p>  缺点:</p>
+<pre><code>1. ABA问题
+    两次检查值没有变都是A, 但中间被其他线程改为B又改回去了.
+
+2. 循环时间长开销大
+</code></pre></li>
+</ul>
+<ol start="4">
+<li><p>ReentrantLock实现原理</p>
 </li>
-<li><p>[] 数据存储: Redis, Elasticsearch, Postgresql, MyBatis</p>
+<li><p>AQS (AbstractQueueSynchronizer 队列同步器)        </p>
+<blockquote>
+<p>构建锁或其他同步组件的基础框架,维持一个private volatile int state来表示同步状态,通过<br> 内置的FIFO队列来完成资源获取线程的排队工作.</p>
+</blockquote>
 </li>
-<li><p>[] 开发工具: Maven, Git, Linux, Kubernete</p>
-</li>
-<li><p>[] 编程语言: Java, Go, JavaScript</p>
-</li>
-<li><p>[] 网络协议: Http, TCP, WebScoket, Netty, gRPC</p>
-</li>
-<li><p>[] 消息队列: RabbitMQ</p>
-<h2 id="2019"><a href="#2019" class="headerlink" title="2019"></a>2019</h2><h3 id="6-24-6-29"><a href="#6-24-6-29" class="headerlink" title="6.24-6.29"></a>6.24-6.29</h3></li>
-<li><p>[x] 学习了Elasticsearch的相关知识</p>
-</li>
-<li><p>[x] 了解下angular</p>
-</li>
-<li><p>[] Leetcode Weekly contest</p>
-</li>
-<li><p>[] </p>
-<h4 id="6-29"><a href="#6-29" class="headerlink" title="6.29"></a>6.29</h4></li>
-<li>[] MyBatis缓存<h3 id="7-1-7-6"><a href="#7-1-7-6" class="headerlink" title="7.1-7.6"></a>7.1-7.6</h3></li>
-<li>[] Leetcode Weekly contest</li>
-<li>[] 20道算法题</li>
-<li>[] 200个单词</li>
+</ol>
+<p>锁是面向使用者,它定义了使用者与锁交互的接口,隐藏了实现细节.<br>同步器面向锁的实现者,它简化了锁的实现方式,屏蔽了同步状态管理,线程的排队,等待与唤醒等底层操作.</p>
+<ul>
+<li>使用方式: 继承并重写方法来管理同步状态.<br>  修改同步状态的方法: getState(), setState(int newState), compareAndSetState(int expect, int update);<br>  可以重写的方法:<pre><code>boolean tryAcquire(int arg); 独占式获取同步状态,实现该方法需要查询当前状态并判断同步状态是否符合预期,然后再
+                                进行CAS设置同步状态.
+boolean tryRelease(int arg); 独占式释放同步状态,等待获取同步状态的线程将有机会获取同步状态.
+int tryAcquireShared(int arg); 共享式获取同步状态,返回大于等于0的值表示获取成功,否则失败
+boolean tryReleaseShared(int arg); 共享式释放同步状态
+boolean isHeldExclusively(); 当前同步器是否在独占模式下被线程占用,  一般该方法表示是否被当前线程独占                                  
+</code></pre></li>
 </ul>
 
       
@@ -311,22 +234,22 @@
     <div class="article-info article-info-index">
       
       
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
 	</div>
 
+      
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/每周总结/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/10/10/real/">展开全文 >></a>
         </p>
       
 
@@ -356,35 +279,52 @@
 
 
   
-    <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-SICP in JS系列(1) - 模块化,对象和状态" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/30/linux/">linux</a>
+      <a class="article-title" href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/">SICP in JS系列(1) - 模块化,对象和状态</a>
     </h1>
   
 
         
-        <a href="/2019/05/30/linux/" class="archive-article-date">
-  	<time datetime="2019-05-30T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+        <a href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/" class="archive-article-date">
+  	<time datetime="2019-10-10T02:11:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-10</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h1><p>平均负载是指单位时间内,系统处于可运行状态和不可中断状态的平均进程数.即平均活跃进程数.</p>
-<p>内核架构<br>    Linux内核上下层通信方式</p>
-<p>常用命令:<br>nc -l port &gt; test.txt<br>nc -q 0 MachineIP Port &lt; test.txt</p>
-<p>nohup npm start &amp;</p>
-<p>1、tar包的创建<br>tar -cvf  file.tar file1  file2<br>tar -zcvf  file.tar.gz  file1  file2<br>tar -jcvf   file.tar.bz2  file1  file2</p>
-<p>2、tar包的查看<br>tar -tvf  file.tar<br>tar -ztvf  file.tar.gz<br>tar -jtvf  file.tar.bz2</p>
-<p>3、释放tar包<br>tar -xvf  file.tar<br>tar -zxvf  file.tar.gz<br>tar -jxvf  file.tar.bz2</p>
-<p>主选项：<br>-x    从档案文件中释放文件。<br>-c    创建新的档案文件。如果用户想备份一个目录或是一些文件，就要选择这个选项。<br>-r     把要存档的文件追加到档案文件的末尾。例如用户已经做好备份文件，又发现还有一个目录或<br>         是一些文件忘 记备份了，这时可以使用该选项，将忘记的目录或文件追加到备份文件中。<br>-t       列出档案文件的内容，查看已经备份了哪些文件。<br>-u      更新文件。就是说，用新增的文件取代原备份文件，如果在备份文件中找不到要更新的文件，<br>          则把它追加到备份文件的最后。</p>
-<p>辅助选项：<br>-j         代表使用‘bzip2’程序进行文件的压缩    tar.bz2<br>-z       用gzip来压缩/解压缩文件，加上该选项后可以将档案文件进行压缩，但还原时也一定要使用该<br>            选项进行解压缩。   tar.gz<br>-v       详细报告tar处理的文件信息。如无此选项，tar不报告文件信息。<br>-b     该选项是为磁带机设定的，其后跟一数字，用来说明区块的大小，系统预设值为20（20×512 bytes）。<br>-f       使用档案文件或设备，这个选项通常是必选的。<br>-k       保存已经存在的文件。例如把某个文件还原，在还原的过程中遇到相同的文件，不会进行覆盖。<br>-m       在还原文件时，把所有文件的修改时间设定为。<br>-M      创建多卷的档案文件，以便在几个磁盘中存放。<br>-w           每一步都要求确认。</p>
+        <ul>
+<li>synthesis n. 综合, 综合法</li>
+<li>coherent adj. 条理清楚的, 连贯的; 前后一致的</li>
+<li>extent n. 长度, 面积, 范围</li>
+<li>dictate vt. 指示; 指定; 指令</li>
+<li>prominent 显著的; 突出的</li>
+<li>linguistic adj. 语言的, 语言学的, 语言研究的</li>
+<li>grapple 抓住；格斗</li>
+<li>exploit vt. 开发，开拓；剥削；开采 n. 勋绩；功绩</li>
+<li>deposit n. 存款；保证金；沉淀物 vt. 存放；使沉积 vi. 沉淀</li>
+<li>elapse  时间过去；消逝<br>adequate adj. 充分的, 足够的 适当的, 胜任的<br>consequence n. 结果, 后果 重要(性), 重大<br>thicket n. 丛林；灌木丛；错综复杂</li>
+</ul>
+<p>两种构建系统的方式:</p>
+<ol>
+<li>基于对象的, 对象的行为会随着时间而变化</li>
+<li>基于流的, 信息流从系统流过.</li>
+</ol>
+<p>基于对象最适合高内聚,低耦合的系统.</p>
+<p>“如果想构建随时间变化的系统,那就需要变量”</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> balance = <span class="number">100</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">withdraw</span>(<span class="params">amount</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (balance &gt;= amount) &#123;</span><br><span class="line">        balance = balance - amount</span><br><span class="line">        <span class="keyword">return</span> balance</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Insufficient funds"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把balance内含进去:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_withdraw =</span><br><span class="line">    balance =&gt;</span><br><span class="line">        amount =&gt; </span><br><span class="line">            balance &gt;= amount</span><br><span class="line">            ? balance -= amount</span><br><span class="line">            : <span class="string">"Insufficient funds"</span></span><br></pre></td></tr></table></figure></p>
+<p>整一个bank<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account = <span class="function"><span class="params">balance</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> withdraw =</span><br><span class="line">            amount =&gt;</span><br><span class="line">                balance &gt;= amount</span><br><span class="line">                    ? balance -= amount</span><br><span class="line">                    : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> deposit =</span><br><span class="line">        amount =&gt; balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">m</span> =&gt;</span></span><br><span class="line">            m === <span class="string">"withdraw"</span></span><br><span class="line">                ? withdraw</span><br><span class="line">                : m === <span class="string">"deposit"</span></span><br><span class="line">                    ? deposit</span><br><span class="line">                    : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-1"><a href="#Exercise-3-1" class="headerlink" title="Exercise 3.1"></a>Exercise 3.1</h3><p>搞个累加器<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_accumulator = <span class="function"><span class="params">init</span> =&gt;</span> num =&gt; init += num</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-2"><a href="#Exercise-3-2" class="headerlink" title="Exercise 3.2"></a>Exercise 3.2</h3><p>函数调用次数统计<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_monitored = <span class="function"><span class="params">f</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> counter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> exec = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">        counter += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> f(arg)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">arg</span> =&gt;</span></span><br><span class="line">        arg === <span class="string">"how many calls?"</span></span><br><span class="line">            ? counter</span><br><span class="line">            : arg === <span class="string">"reset count"</span></span><br><span class="line">                ? counter = <span class="number">0</span></span><br><span class="line">                : exec(arg)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-3"><a href="#Exercise-3-3" class="headerlink" title="Exercise 3.3"></a>Exercise 3.3</h3><p>给之前的bank加个密码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account_password = <span class="function">(<span class="params">balance, password</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> withdraw =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance &gt;= amount</span><br><span class="line">                ? balance -= amount</span><br><span class="line">                : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> deposit =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">pd, m</span>) =&gt;</span></span><br><span class="line">                pd === password</span><br><span class="line">                    ? m === <span class="string">"withdraw"</span></span><br><span class="line">                        ? withdraw</span><br><span class="line">                        : m === <span class="string">"deposit"</span></span><br><span class="line">                            ? deposit</span><br><span class="line">                            : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">                    : <span class="function"><span class="params">num</span> =&gt;</span> <span class="string">"incorrect password"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Exercise-3-4"><a href="#Exercise-3-4" class="headerlink" title="Exercise 3.4"></a>Exercise 3.4</h3><p>连续输错7次密码, 自动报警<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account_call_cops = <span class="function">(<span class="params">balance, password</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> wrong_time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> withdraw =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance &gt;= amount</span><br><span class="line">                ? balance -= amount</span><br><span class="line">                : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> deposit =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> call_the_cops = <span class="function"><span class="params">()</span> =&gt;</span> <span class="string">"How dare you!"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> normal = <span class="function"><span class="params">m</span> =&gt;</span> &#123;</span><br><span class="line">        wrong_time = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> m === <span class="string">"withdraw"</span></span><br><span class="line">                ? withdraw</span><br><span class="line">                : m === <span class="string">"deposit"</span></span><br><span class="line">                    ? deposit</span><br><span class="line">                    : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">pd, m</span>) =&gt;</span></span><br><span class="line">        pd === password</span><br><span class="line">            ? normal(m)</span><br><span class="line">            : <span class="function"><span class="params">num</span> =&gt;</span></span><br><span class="line">                ++wrong_time &gt; <span class="number">7</span></span><br><span class="line">                    ? call_the_cops()</span><br><span class="line">                    : <span class="string">"incorrect password"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -399,7 +339,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -408,7 +348,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/30/linux/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/">展开全文 >></a>
         </p>
       
 
@@ -438,27 +378,34 @@
 
 
   
-    <article id="post-撸个ioc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Japanese系列(1) - 香菜sweets parade" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/30/撸个ioc/">撸个ioc</a>
+      <a class="article-title" href="/2019/10/10/Japanese系列(1) - 香菜sweets parade/">Japanese系列(1) - 香菜sweets parade</a>
     </h1>
   
 
         
-        <a href="/2019/05/30/撸个ioc/" class="archive-article-date">
-  	<time datetime="2019-05-30T03:43:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+        <a href="/2019/10/10/Japanese系列(1) - 香菜sweets parade/" class="archive-article-date">
+  	<time datetime="2019-10-09T16:29:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-10</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>初学语言好难记啊, 感觉八竿子打不着的东西硬要联系到一起去.<br>来首歌吧.</p>
+<p>愛、上、お菓子、下<br>あい、うえ、おかし、した<br>a i, u e, o ka shi, shi ta<br>爱, 在上, 零食, 在下</p>
+<p>柿喰うっけ？こんなにも<br>かき　くう　っ　け？こんなにも<br>ka ki ku u ltu ke? kon na ni mo<br>吃柿子?还是什么</p>
+<p>(促音っ　ltu)</p>
+<p>差しすせ　ソ フ ト  ク リー ム<br>さしすせ　so hu to ku ri　mu<br>sa shi su se so hu to ku ri mu<br>拿出冰激凌(soft cream)</p>
+<p>(ー是表示的前面的片假名是长音符号)</p>
+<p>五臓六腑　でいこう<br>ごぞうろっぶ　でいこう<br>go zo u ro ltu bu de i ko u<br>五脏六腑一起出发</p>
+
       
 
       
@@ -472,7 +419,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/Japanese//" class="article-tag-list-link color4">Japanese</a>
         		</li>
       		
 		</ul>
@@ -481,7 +428,81 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/30/撸个ioc/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/10/10/Japanese系列(1) - 香菜sweets parade/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SICP in JS系列(0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/09/SICP in JS系列(0) - 写在前面的话/">SICP in JS系列(0) - 写在前面的话</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/09/SICP in JS系列(0) - 写在前面的话/" class="archive-article-date">
+  	<time datetime="2019-10-09T12:11:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>想读SICP, 但是Lisp语法实在蛋疼.<br>意外发现JS版本的, 搞起搞起!<br>前两章都看吐了, 从第三章开始吧.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/09/SICP in JS系列(0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 
@@ -513,7 +534,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 
@@ -525,7 +546,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -774,6 +795,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

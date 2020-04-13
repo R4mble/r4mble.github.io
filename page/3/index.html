@@ -151,52 +151,234 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-SICP in JS系列(1) - 模块化,对象和状态" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/">SICP in JS系列(1) - 模块化,对象和状态</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/" class="archive-article-date">
-  	<time datetime="2019-10-10T02:11:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-10</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>synthesis n. 综合, 综合法</li>
-<li>coherent adj. 条理清楚的, 连贯的; 前后一致的</li>
-<li>extent n. 长度, 面积, 范围</li>
-<li>dictate vt. 指示; 指定; 指令</li>
-<li>prominent 显著的; 突出的</li>
-<li>linguistic adj. 语言的, 语言学的, 语言研究的</li>
-<li>grapple 抓住；格斗</li>
-<li>exploit vt. 开发，开拓；剥削；开采 n. 勋绩；功绩</li>
-<li>deposit n. 存款；保证金；沉淀物 vt. 存放；使沉积 vi. 沉淀</li>
-<li>elapse  时间过去；消逝<br>adequate adj. 充分的, 足够的 适当的, 胜任的<br>consequence n. 结果, 后果 重要(性), 重大<br>thicket n. 丛林；灌木丛；错综复杂</li>
+        <p>阿里巴巴<br>一面（36分钟）芝麻信用<br>1.HashMap和Hashtable区别<br><img src="HashMap&amp;Hashtable&amp;ConcurrentHashMap.md" alt="HashMap&amp;Hashtable&amp;ConcurrentHashMap"></p>
+<p>2.为什么产生死锁<br>线程A持有锁a等待获取锁b, 线程B持有锁b等待获取锁a</p>
+<ul>
+<li>竞争资源: 1.可剥夺资源:某进程获得这类资源后,该资源可以被其他进程或系统剥夺, 如CPU和主存<pre><code>2. 不可剥夺资源: 当系统把这类资源分配给某进程后, 再不能强行收回, 只能在进程用完后自行释放, 如磁带机,打印机等
+3. 临时资源: 硬件中断,信号,消息,缓存区内的消息等
+</code></pre>  产生死锁的竞争资源: 不可剥夺资源, 临时资源</li>
 </ul>
-<p>两种构建系统的方式:</p>
+<p>死锁产生的4个必要条件:<br>    1.互斥条件: 进程要求对所分配的资源进行排它性控制，即在一段时间内某资源仅为一进程所占用。<br>    2.请求和保持条件: 当进程因请求资源而阻塞时，对已获得的资源保持不放。<br>    3.不剥夺条件: 进程已获得的资源在未使用完之前，不能剥夺，只能在使用完时由自己释放。<br>    4.环路等待条件: 在发生死锁时，必然存在一个进程–资源的环形链。</p>
+<p>解决死锁的方法:<br>    1.资源一次性分配: 一次性分配所有资源，这样就不会再有请求了：（破坏请求条件）<br>    2.只要有一个资源得不到分配, 也不给这个进程分配其他的资源（破坏请保持条件）<br>    3.可剥夺资源: 当某进程获得了部分资源,但得不到其他资源,则释放已占有的资源（破坏不可剥夺条件）<br>    4.资源有序分配法: 系统给每类资源赋予一个编号,每一个进程按编号递增的顺序请求进程,释放则相反(破坏环路等待条件)</p>
+<p>死锁检测: Jstack命令 JConsole工具</p>
+<p>3.jvm类加载<br><img src="JVM类加载机制.md" alt="JVM类加载机制"></p>
+<p>4.java反射获取私有属性，改变值</p>
+<p>Class类: 代表类的实体<br>Field类: 代表类的成员变量<br>Method类: 代表类的方法<br>Constructor类: 代表类的构造方法<br>        Class&lt;?&gt; classBook = Class.forName(“reflect.Book”);<br>        Object objectBook = classBook.newInstance();<br>        Field fieldTag = classBook.getDeclaredField(“tag”);<br>        fieldTag.setAccessible(true);<br>        fieldTag.set(objectBook, “interesting”);</p>
+<pre><code>System.out.println(objectBook);
+</code></pre><p>5.反射用途</p>
+<ul>
+<li>根据类名创建实例(类名可以从配置文件读取)</li>
+<li>用Method.invoke执行方法</li>
+</ul>
+<p>6.所用数据库<br>PostgreSQL MySQl</p>
+<ul>
+<li>MySQL的text字段要区分small text, middle text, large text, PostgreSQL没有这个限制,text可以支持各种大小</li>
+<li>MySQL需要utf8mb4显示emoji, PG不用</li>
+<li>PG有jsonb</li>
+</ul>
+<p>7.项目难点，问题<br>8.如何解决项目中遇到的问题<br>9.项目中遇到最自豪的地方<br>10.会什么算法</p>
+<p>二面（44分钟）支付宝创新<br>1.讲项目<br>2.数据库乐观锁使用</p>
+<p>事务的四个特性: 原子性,一致性,隔离性,持久性 ACID<br>              一致性由主键,外键约束保证, 持久性由预写日志和数据库管理系统的恢复子系统保证, 原子性和隔离性由事务管理器和MVCC来控制</p>
+<p>非预期现象: 脏读,不可重复读,幻读,序列化异常<br>脏读: 第一个事务读到了第二个事务已经修改但还未提交的数据, 当第二个事务不提交并执行ROLLBACK后, 第一个事务读到的数据是不正确的, 即脏读<br>不可重复读: 一个事务第一次读取数据后,被读取的数据被另一个已经提交的事务进行了修改,事务再次读取这些数据时发现数据已经被另一个事务修改,<br>            两次查询结果不一致, 即不可重复读<br>幻读: 一个事务两次查询的结果集记录数不一致. 幻读可以认为是受INSERT DELETE影响的不可重复读的一种特殊场景</p>
+<p>四种隔离级别: 读未提交,读已提交,可重复读,可序列化<br>读未提交: 所有事务都可以看到其他未提交事务的执行结果, 性能不比其他隔离级别好, 很少用<br>读已提交: PG的默认隔离级别,一个事务只能看见已提交事务<br>可重复读: 确保同一个事务的多个实例在并发读取数据时, 会看到同样的数据行.<br>可序列化: 强制事务排序, 在每个读的数据行上加上共享锁, 可能导致大量的超时现象和锁竞争</p>
+<p>并发控制模型: 基于锁的并发控制, 基于多版本的并发控制<br>基于锁的并发控制: 排他锁: 被加锁的对象只能被持有锁的事务读取和修改, 其他事务无法在该对象上加其他锁,也不能读取和修改该对象<br>               共享锁: 被加锁的对象可以被持锁事务读取, 但不能被修改, 其他事务也可以在上面再加共享锁.</p>
+<p>封锁对象的大小被称为封锁粒度: 可以是逻辑单元: 属性值,属性值的集合,元组,关系,索引项,整个索引项甚至整个数据库<br>                         也可以是物理单元: 页(数据页或索引页), 物理记录等</p>
+<p>基于多版本的并发控制: MVCC, 乐观锁:<br>    每一个写操作创建一个新的版本, 当事务发出一个读操作时,并发控制管理器选择一个版本进行读取.<br>    即: 为数据增加一个版本标识, 读取时连同版本号一起读出, 更新时对版本号加一.</p>
+<pre><code>一个事务无论运行多长时间, 在同一个事务里都能看到一致的数据.
+根据事务开始的时间不同,同一个时刻不同事务看到的相同表里的数据可能不同.
+</code></pre><p>PG为每一个事务分配一个递增的,int32的整型数作为唯一事务id, 称为xid.<br>每一行记录有4个与事务可见性相关的隐藏列: xmin,xmax,cmin,cmax<br>cmin,cmax分别是插入和删除该元组的命令在事务中的命令序列标识<br>xmin,xmax与事务对其他事务的可见性相关,用于同一个事务中的可见性判断</p>
+<p>插入一行数据时, PG会将插入这行数据的事务的xid存储在xmin中.<br>a.由回滚的事务或未提交的事务创建的行对于其他事物都是不可见的<br>b.无论提交成功或回滚的事务,xid都会递增</p>
+<p>一个事务元组的xmin小于另一个事务的xmin,那么另一个事务对这个事务是不可见的</p>
+<p>3.状态机<br>State<br>Event<br>Action<br>Transition</p>
+<p>4.如何解决状态机不对问题</p>
+<p>5.如何分库分表<br>对于因为表多而数据多,适合垂直切分,把关系紧密的表切分出来放到一个server上;<br>对于表不多数据多, 适合水平切分, 把表按照某种规则(如按ID散列)切分到多个数据库(server)上.</p>
+<p>要解决的问题:<br>    事务问题: 1.使用分布式事务   2.由应用程序和数据库共同控制<br>    跨节点Join: 分两次查询<br>    跨节点count,order by, group by: 在各个节点得到结果后在应用程序端进行合并<br>    数据迁移,容量规划,扩容: 对2的倍数取余（如对4取余得1的数对2取余也是1）  ,可以向前兼容.<br>    ID: 不能依赖自增主键.<br>        UUID: 长,占用空间大, 建立索引和基于索引进行查询都有性能问题.<br>        Sequence表 (table_name, next_id): 该表容易成为系统性能瓶颈,一旦该表失效,整个程序都崩; 读写1:1<br>        Twitter分布式自增ID算法Snowflake:   1位未使用(可用作long的符号位) + 毫秒级时间41位 + 机器ID 10位 + 毫秒内序列12位<br>                                         每秒产生26万ID</p>
+<p>6.MySQL极限<br>7.HashMap源码<br><img src="HashMap&amp;Hashtable&amp;ConcurrentHashMap.md" alt="HashMap"></p>
+<p>8.设计一个线程安全的HashMap</p>
+<ul>
+<li>所有public方法加上synchronized, Hashtable思路, Collections.synchronizedMap()</li>
+<li>每个桶都加一个锁</li>
+<li>锁分离: 把桶均匀分成16部分, 每个部分加一个锁, JDK7的ConcurrentHashMap思路</li>
+<li>CAS指令, 链表太长转换为红黑树</li>
+</ul>
+<p>9.快排的实现，时间复杂度和空间复杂度<br><img src="./快排.md" alt="快排"></p>
+<p>10.会什么算法<br>11.如何把项目变成SOA架构</p>
+<p>12.Spring源码，最深刻的模块，aop用途</p>
+<p>13.JVM内存模型</p>
+<p>14.垃圾回收机制<br>15.项目中查看垃圾回收</p>
+<p>三面(33分钟)菜鸟国际<br>1.项目中的权限管理<br>2.登录状态如何储存<br>3.session和cookie的区别,session如何管理<br>4.HashMap底层结构<br>5.synchronized关键字的用法<br>6.synchronized修饰类方法和普通方法的锁区别,获取类锁之后还能获取对象锁吗<br>7.类加载器的双亲委派模型的作用,能重复加载某个类吗<br>8.类加载器的类的缓存,key是什么<br>9.介绍Redis<br>10.如何将数据分布在不同的Redis<br>11.有了解过取余算法?<br>12.spring的apo实现<br>13.字节码结构<br>14.浏览器输入网址过程,结合springmvc</p>
+<p>四面(36分钟)菜鸟国际供应链<br>1.HashMap在大量哈希冲突该怎么处理<br>2.红黑树比BST优点<br>3.MySQL为什么使用B+树<br>4.多个索引会有多份数据吗<br>5.数据库的隔离级别和解决的问题<br>6.数据库默认隔离级别,一定会产生幻读吗,怎么解决<br>7.输入网址到展示的整个过程,结合springmvc来讲<br>8.负载均衡的算法<br>9.哈弗曼编码,如何解决译码问题<br>10.实习会对工作有影响吗<br>11.用英文介绍一个项目<br>12.如何查看系统负载<br>13.描述一个解决问题的过程<br>14.如何把文件从服务器复制到本地,用什么命令</p>
+<p>五面（27分钟）菜鸟技术部<br>1.当时怎么找到百度这个机会的<br>2.项目中用的哪些技术<br>3.项目如何设计流程流转，如果是你的话该怎么设计<br>4.MySQL使用的索引结构，查找效率<br>5.MySQL查询优化<br>6.MySQL慢查询开启，语句分析<br>7.HashMap查找效率<br>8.JVM内存模型<br>9.设计模式，策略模式的使用场景<br>10.如何确保单例线程安全<br>11.Spring的bean的默认范围<br>12.对Netty的了解<br>13.未来发展规划<br>14.如何让代码可读性更加复杂</p>
+<p>六面（22分钟）HR面<br>1.说一下发展方向<br>2.说一下经验不足导致的问题<br>3.说一下挑战杯的工作内容<br>4.说一下你给挑战杯项目的主要贡献<br>5.实习时间<br>6.拿到了哪些offer，你是怎么考虑的<br>7.为什么不选择腾讯<br>8.腾讯技术栈和阿里技术栈的区别</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/13/笔记/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-WebRTC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="getUserMedia-浏览器获取用户的摄像头-麦克风"><a href="#getUserMedia-浏览器获取用户的摄像头-麦克风" class="headerlink" title="getUserMedia() 浏览器获取用户的摄像头,麦克风"></a>getUserMedia() 浏览器获取用户的摄像头,麦克风</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> constraints = &#123;<span class="attr">audio</span>: <span class="literal">false</span>, <span class="attr">video</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> video = <span class="built_in">document</span>.querySelector(<span class="string">"video"</span>);</span><br><span class="line"></span><br><span class="line">navigator.mediaDevices.getUserMedia(constraints)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span> (<span class="params">stream</span>) </span>&#123;</span><br><span class="line">        video.srcObject = stream</span><br><span class="line">        video.onloadedmetadata = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            video.play()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(<span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"getUserMedia error: "</span>, err);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/13/WebRTC/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SpringCloud - 重新定义SpringCloud实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>单体应用架构 -&gt; 分布式架构 -&gt; SOA -&gt; 微服务</p>
+<p>分布式架构: 按照业务垂直切分, 每个应用都是单体架构, 通过API互相调用<br>SOA: 服务提供者(Provider)和服务消费者(Consumer), Dubbo<br>微服务: Martin’s SOA</p>
+<p>中间件: 向下屏蔽异构的硬件,软件,网络等计算资源, 向上提供应用开发,运行,维护等全生命周期的统一计算环境与管理.<br>常见的中间件: 服务治理中间件,配置中心,全链路监控,分布式事务,分布式定时任务,消息中间件,API网关,分布式缓存,数据库中间件.</p>
+<p>Spring Cloud是一个中间件.<br>包括: 服务注册与发现,配置中心,全链路监控,API网关,熔断器</p>
+<p>Feign: 一个声明式的Web</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/13/SpringCloud - 重新定义SpringCloud实战/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Kubernetes权威指南-从Docker到Kubernetes实践全接触" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><ul>
+<li>拥有唯一指定的名称 (如mysql-server)</li>
+<li>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP, Service IP 或 VIP.</li>
+<li>能够提供某种远程服务能力</li>
+<li>被映射到提供这种服务能力的一组容器应用上</li>
+</ul>
+<p>Service与Pod之间通过Label关联, 给运行MySQL的Pod贴上name=mysql的标签, 给Service定义Label Selector,<br>MySQL Service的标签选择器的选择条件为name=mysql</p>
+<p>一个Node上运行着几百个Pod</p>
+<p>一个Pod里有一个Pause容器和多个业务容器</p>
+<h2 id="例子-运行在Tomcat里的WebApp"><a href="#例子-运行在Tomcat里的WebApp" class="headerlink" title="例子: 运行在Tomcat里的WebApp"></a>例子: 运行在Tomcat里的WebApp</h2><p>两个容器: WebApp容器和MySQL容器<br>webapp需要访问mysql容器</p>
+<ul>
+<li>docker时代: 把mysql容器的ip地址通过环境变量注入到webapp中, 把webapp的8080端口映射到宿主机的8080端口</li>
+<li>kubernetes时代: </li>
+</ul>
 <ol>
-<li>基于对象的, 对象的行为会随着时间而变化</li>
-<li>基于流的, 信息流从系统流过.</li>
+<li>为mysql服务创建RC(Replication Controller)定义文件 mysql-rc.yaml</li>
 </ol>
-<p>基于对象最适合高内聚,低耦合的系统.</p>
-<p>“如果想构建随时间变化的系统,那就需要变量”</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> balance = <span class="number">100</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">withdraw</span>(<span class="params">amount</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (balance &gt;= amount) &#123;</span><br><span class="line">        balance = balance - amount</span><br><span class="line">        <span class="keyword">return</span> balance</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Insufficient funds"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>把balance内含进去:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_withdraw =</span><br><span class="line">    balance =&gt;</span><br><span class="line">        amount =&gt; </span><br><span class="line">            balance &gt;= amount</span><br><span class="line">            ? balance -= amount</span><br><span class="line">            : <span class="string">"Insufficient funds"</span></span><br></pre></td></tr></table></figure></p>
-<p>整一个bank<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account = <span class="function"><span class="params">balance</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> withdraw =</span><br><span class="line">            amount =&gt;</span><br><span class="line">                balance &gt;= amount</span><br><span class="line">                    ? balance -= amount</span><br><span class="line">                    : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> deposit =</span><br><span class="line">        amount =&gt; balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">m</span> =&gt;</span></span><br><span class="line">            m === <span class="string">"withdraw"</span></span><br><span class="line">                ? withdraw</span><br><span class="line">                : m === <span class="string">"deposit"</span></span><br><span class="line">                    ? deposit</span><br><span class="line">                    : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="Exercise-3-1"><a href="#Exercise-3-1" class="headerlink" title="Exercise 3.1"></a>Exercise 3.1</h3><p>搞个累加器<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_accumulator = <span class="function"><span class="params">init</span> =&gt;</span> num =&gt; init += num</span><br></pre></td></tr></table></figure></p>
-<h3 id="Exercise-3-2"><a href="#Exercise-3-2" class="headerlink" title="Exercise 3.2"></a>Exercise 3.2</h3><p>函数调用次数统计<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_monitored = <span class="function"><span class="params">f</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> counter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> exec = <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">        counter += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> f(arg)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">arg</span> =&gt;</span></span><br><span class="line">        arg === <span class="string">"how many calls?"</span></span><br><span class="line">            ? counter</span><br><span class="line">            : arg === <span class="string">"reset count"</span></span><br><span class="line">                ? counter = <span class="number">0</span></span><br><span class="line">                : exec(arg)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="Exercise-3-3"><a href="#Exercise-3-3" class="headerlink" title="Exercise 3.3"></a>Exercise 3.3</h3><p>给之前的bank加个密码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account_password = <span class="function">(<span class="params">balance, password</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> withdraw =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance &gt;= amount</span><br><span class="line">                ? balance -= amount</span><br><span class="line">                : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> deposit =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">pd, m</span>) =&gt;</span></span><br><span class="line">                pd === password</span><br><span class="line">                    ? m === <span class="string">"withdraw"</span></span><br><span class="line">                        ? withdraw</span><br><span class="line">                        : m === <span class="string">"deposit"</span></span><br><span class="line">                            ? deposit</span><br><span class="line">                            : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">                    : <span class="function"><span class="params">num</span> =&gt;</span> <span class="string">"incorrect password"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="Exercise-3-4"><a href="#Exercise-3-4" class="headerlink" title="Exercise 3.4"></a>Exercise 3.4</h3><p>连续输错7次密码, 自动报警<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> make_account_call_cops = <span class="function">(<span class="params">balance, password</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> wrong_time = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> withdraw =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance &gt;= amount</span><br><span class="line">                ? balance -= amount</span><br><span class="line">                : <span class="string">"Insufficient funds"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> deposit =</span><br><span class="line">        amount =&gt;</span><br><span class="line">            balance += amount</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> call_the_cops = <span class="function"><span class="params">()</span> =&gt;</span> <span class="string">"How dare you!"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> normal = <span class="function"><span class="params">m</span> =&gt;</span> &#123;</span><br><span class="line">        wrong_time = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> m === <span class="string">"withdraw"</span></span><br><span class="line">                ? withdraw</span><br><span class="line">                : m === <span class="string">"deposit"</span></span><br><span class="line">                    ? deposit</span><br><span class="line">                    : <span class="string">"Unknown request -- "</span> + m</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">pd, m</span>) =&gt;</span></span><br><span class="line">        pd === password</span><br><span class="line">            ? normal(m)</span><br><span class="line">            : <span class="function"><span class="params">num</span> =&gt;</span></span><br><span class="line">                ++wrong_time &gt; <span class="number">7</span></span><br><span class="line">                    ? call_the_cops()</span><br><span class="line">                    : <span class="string">"incorrect password"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -206,1528 +388,10 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/10/SICP in JS系列(1) - 模块化,对象和状态/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Japanese系列(1) - 香菜sweets parade" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/10/Japanese系列(1) - 香菜sweets parade/">Japanese系列(1) - 香菜sweets parade</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/10/Japanese系列(1) - 香菜sweets parade/" class="archive-article-date">
-  	<time datetime="2019-10-09T16:29:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>初学语言好难记啊, 感觉八竿子打不着的东西硬要联系到一起去.<br>来首歌吧.</p>
-<p>愛、上、お菓子、下<br>あい、うえ、おかし、した<br>a i, u e, o ka shi, shi ta<br>爱, 在上, 零食, 在下</p>
-<p>柿喰うっけ？こんなにも<br>かき　くう　っ　け？こんなにも<br>ka ki ku u ltu ke? kon na ni mo<br>吃柿子?还是什么</p>
-<p>(促音っ　ltu)</p>
-<p>差しすせ　ソ フ ト  ク リー ム<br>さしすせ　so hu to ku ri　mu<br>sa shi su se so hu to ku ri mu<br>拿出冰激凌(soft cream)</p>
-<p>(ー是表示的前面的片假名是长音符号)</p>
-<p>五臓六腑　でいこう<br>ごぞうろっぶ　でいこう<br>go zo u ro ltu bu de i ko u<br>五脏六腑一起出发</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Japanese//" class="article-tag-list-link color4">Japanese</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/10/Japanese系列(1) - 香菜sweets parade/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-SICP in JS系列(0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/09/SICP in JS系列(0) - 写在前面的话/">SICP in JS系列(0) - 写在前面的话</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/09/SICP in JS系列(0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-10-09T12:11:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>想读SICP, 但是Lisp语法实在蛋疼.<br>意外发现JS版本的, 搞起搞起!<br>前两章都看吐了, 从第三章开始吧.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/09/SICP in JS系列(0) - 写在前面的话/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Japanese系列(0) - 50音图" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/07/Japanese系列(0) - 50音图/">Japanese系列(0) - 50音图</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/07/Japanese系列(0) - 50音图/" class="archive-article-date">
-  	<time datetime="2019-10-07T07:29:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <table>
-<thead>
-<tr>
-<th style="text-align:center">a</th>
-<th style="text-align:center">i</th>
-<th style="text-align:center">u</th>
-<th style="text-align:center">e</th>
-<th style="text-align:center">o</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">あ</td>
-<td style="text-align:center">い</td>
-<td style="text-align:center">う</td>
-<td style="text-align:center">え</td>
-<td style="text-align:center">お</td>
-</tr>
-<tr>
-<td style="text-align:center">ア</td>
-<td style="text-align:center">イ</td>
-<td style="text-align:center">ウ</td>
-<td style="text-align:center">エ</td>
-<td style="text-align:center">オ</td>
-</tr>
-</tbody>
-</table>
-<p>　　　　</p>
-<h2 id="1-あ-a"><a href="#1-あ-a" class="headerlink" title="1. あ a"></a>1. あ a</h2><p>あ　来自”安”<br>ア　来自”阿”的左半边</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">あい</th>
-<th style="text-align:center">愛</th>
-<th style="text-align:center">(n) 爱</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">あう</td>
-<td style="text-align:center">会う</td>
-<td style="text-align:center">(v) 见面</td>
-</tr>
-<tr>
-<td style="text-align:center">いう</td>
-<td style="text-align:center">言う</td>
-<td style="text-align:center">(v) 说</td>
-</tr>
-<tr>
-<td style="text-align:center">愛してる</td>
-<td style="text-align:center">a i shi te ru</td>
-<td style="text-align:center">我爱你</td>
-</tr>
-<tr>
-<td style="text-align:center">会いたい</td>
-<td style="text-align:center">a i ta i</td>
-<td style="text-align:center">我想你</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-い-i"><a href="#2-い-i" class="headerlink" title="2. い i"></a>2. い i</h2><p>い  来自”以”<br>イ　来自”伊”的左半边</p>
-<h2 id="3-う-u"><a href="#3-う-u" class="headerlink" title="3. う u"></a>3. う u</h2><p>う　来自”宇”<br>ウ　来自”宇”</p>
-<h2 id="4-え-e"><a href="#4-え-e" class="headerlink" title="4. え e"></a>4. え e</h2><p>え　来自”衣”<br>エ　来自”江”的右半边</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">え</th>
-<th style="text-align:center">絵</th>
-<th style="text-align:center">画</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">いえ</td>
-<td style="text-align:center">家</td>
-<td style="text-align:center">家,房子</td>
-</tr>
-<tr>
-<td style="text-align:center">うえ</td>
-<td style="text-align:center">上</td>
-<td style="text-align:center">(n) 上面</td>
-</tr>
-<tr>
-<td style="text-align:center">おい</td>
-<td style="text-align:center">甥</td>
-<td style="text-align:center">外甥, 侄子</td>
-</tr>
-<tr>
-<td style="text-align:center">あおい</td>
-<td style="text-align:center">青い</td>
-<td style="text-align:center">蓝色的</td>
-</tr>
-<tr>
-<td style="text-align:center">藍より青し</td>
-<td style="text-align:center">a i yo ri a o shi</td>
-<td style="text-align:center">青出于蓝</td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-お-o"><a href="#5-お-o" class="headerlink" title="5. お o"></a>5. お o</h2><p>お  来自”於”<br>オ  来自”於”</p>
-<hr>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ka</th>
-<th style="text-align:center">ki</th>
-<th style="text-align:center">ku</th>
-<th style="text-align:center">ke</th>
-<th style="text-align:center">ko</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">か</td>
-<td style="text-align:center">き</td>
-<td style="text-align:center">く</td>
-<td style="text-align:center">け</td>
-<td style="text-align:center">こ</td>
-</tr>
-<tr>
-<td style="text-align:center">カ</td>
-<td style="text-align:center">キ</td>
-<td style="text-align:center">ク</td>
-<td style="text-align:center">ケ</td>
-<td style="text-align:center">コ</td>
-</tr>
-</tbody>
-</table>
-<h2 id="1-か-ka"><a href="#1-か-ka" class="headerlink" title="1. か ka"></a>1. か ka</h2><p>か  来自”加”<br>カ　来自”加”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">あかい</th>
-<th style="text-align:center">赤い</th>
-<th style="text-align:center">a ka i</th>
-<th style="text-align:center">红色的</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">かう</td>
-<td style="text-align:center">買う</td>
-<td style="text-align:center">ka u</td>
-<td style="text-align:center">(v) 买</td>
-</tr>
-<tr>
-<td style="text-align:center">かお</td>
-<td style="text-align:center">顔</td>
-<td style="text-align:center">ka o</td>
-<td style="text-align:center">脸</td>
-</tr>
-<tr>
-<td style="text-align:center">かおもじ</td>
-<td style="text-align:center">顔文字</td>
-<td style="text-align:center">ka o mo i</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-き-ki"><a href="#2-き-ki" class="headerlink" title="2. き ki"></a>2. き ki</h2><p>き　来自”幾”<br>キ　来自”幾”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">あき</th>
-<th style="text-align:center">秋</th>
-<th style="text-align:center">a ki</th>
-<th style="text-align:center">秋天</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">かき</td>
-<td style="text-align:center">柿</td>
-<td style="text-align:center">ka ki</td>
-<td style="text-align:center">柿子</td>
-</tr>
-<tr>
-<td style="text-align:center">えき</td>
-<td style="text-align:center">駅</td>
-<td style="text-align:center">e ki</td>
-<td style="text-align:center">车站(电车站，地铁站，不包括公交车站)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-く-ku"><a href="#3-く-ku" class="headerlink" title="3. く ku"></a>3. く ku</h2><p>く　来自”久”<br>ク  来自”久”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">いく</th>
-<th style="text-align:center">行く</th>
-<th style="text-align:center">i ku</th>
-<th style="text-align:center">(v) 去</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">きく</td>
-<td style="text-align:center">聞く</td>
-<td style="text-align:center">ki ku</td>
-<td style="text-align:center">(v) 听, 问</td>
-</tr>
-<tr>
-<td style="text-align:center">かく</td>
-<td style="text-align:center">書く</td>
-<td style="text-align:center">ka ku</td>
-<td style="text-align:center">(v) 写</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-け-ke"><a href="#4-け-ke" class="headerlink" title="4. け　ke"></a>4. け　ke</h2><p>け　来自”计”<br>ケ  来自”介”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">け</th>
-<th style="text-align:center">毛</th>
-<th style="text-align:center">ke</th>
-<th style="text-align:center">毛</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">いけ</td>
-<td style="text-align:center">池</td>
-<td style="text-align:center">i ke</td>
-<td style="text-align:center">池塘</td>
-</tr>
-<tr>
-<td style="text-align:center">ケア</td>
-<td style="text-align:center">care</td>
-<td style="text-align:center">ke a</td>
-<td style="text-align:center">(n) 看护照料</td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-こ-ko"><a href="#5-こ-ko" class="headerlink" title="5. こ ko"></a>5. こ ko</h2><p>こ　来自”己”<br>コ 来自”己”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ここ</th>
-<th style="text-align:center">-</th>
-<th style="text-align:center">ko ko</th>
-<th style="text-align:center">这里</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">こい</td>
-<td style="text-align:center">恋</td>
-<td style="text-align:center">ko i</td>
-<td style="text-align:center">(n) 恋爱</td>
-</tr>
-<tr>
-<td style="text-align:center">こえ</td>
-<td style="text-align:center">声</td>
-<td style="text-align:center">ko e</td>
-<td style="text-align:center">声音</td>
-</tr>
-<tr>
-<td style="text-align:center">こいびと</td>
-<td style="text-align:center">恋人</td>
-<td style="text-align:center">ko i bi to</td>
-<td style="text-align:center">恋人</td>
-</tr>
-<tr>
-<td style="text-align:center">こいぶみ</td>
-<td style="text-align:center">恋文</td>
-<td style="text-align:center">ko i bu mi</td>
-<td style="text-align:center">情书(旧)</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>sa shi su se so<br>さ し す せ そ<br>サ シ ス セ ソ</p>
-<h2 id="1-さ-sa"><a href="#1-さ-sa" class="headerlink" title="1. さ sa"></a>1. さ sa</h2><p>さ 来自”左”<br>サ 来自”散”的前三笔</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">さけ</th>
-<th style="text-align:center">酒</th>
-<th style="text-align:center">sa ke</th>
-<th style="text-align:center">酒</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">さく</td>
-<td style="text-align:center">咲く</td>
-<td style="text-align:center">sa ku</td>
-<td style="text-align:center">(v)花开</td>
-</tr>
-<tr>
-<td style="text-align:center">えさ</td>
-<td style="text-align:center">餌</td>
-<td style="text-align:center">e sa</td>
-<td style="text-align:center">鱼饵,诱饵</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-し-shi"><a href="#2-し-shi" class="headerlink" title="2. し shi"></a>2. し shi</h2><p>し 来自”之”<br>シ 来自”之”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">しか</th>
-<th style="text-align:center">鹿</th>
-<th style="text-align:center">shi ka</th>
-<th style="text-align:center">鹿</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">うし</td>
-<td style="text-align:center">牛</td>
-<td style="text-align:center">u shi</td>
-<td style="text-align:center">牛</td>
-</tr>
-<tr>
-<td style="text-align:center">しあい</td>
-<td style="text-align:center">試合</td>
-<td style="text-align:center">shi a i</td>
-<td style="text-align:center">(n) 比赛</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-す-su-介于su和si之间"><a href="#3-す-su-介于su和si之间" class="headerlink" title="3. す su (介于su和si之间))"></a>3. す su (介于su和si之间))</h2><p>す 来自”寸”<br>ス 来自”须”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">すし</th>
-<th style="text-align:center">寿司</th>
-<th style="text-align:center">su shi</th>
-<th style="text-align:center">寿司</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">すこし</td>
-<td style="text-align:center">少し</td>
-<td style="text-align:center">su ko shi</td>
-<td style="text-align:center">一点儿</td>
-</tr>
-<tr>
-<td style="text-align:center">すき</td>
-<td style="text-align:center">好き</td>
-<td style="text-align:center">su ki</td>
-<td style="text-align:center">(n,adj,v) 喜欢</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-せ-se"><a href="#4-せ-se" class="headerlink" title="4. せ se"></a>4. せ se</h2><p>せ 来自”世”<br>セ 来自”世”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">せかい</th>
-<th style="text-align:center">世界</th>
-<th style="text-align:center">se ka i</th>
-<th style="text-align:center">世界</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">せき</td>
-<td style="text-align:center">席</td>
-<td style="text-align:center">se ki</td>
-<td style="text-align:center">座位</td>
-</tr>
-<tr>
-<td style="text-align:center">くせ</td>
-<td style="text-align:center">癖</td>
-<td style="text-align:center">ku se</td>
-<td style="text-align:center">癖好</td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-そ-so"><a href="#5-そ-so" class="headerlink" title="5. そ so"></a>5. そ so</h2><p>そ 来自”曾”<br>ソ 来自”曾”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">うそ</th>
-<th style="text-align:center">嘘</th>
-<th style="text-align:center">u so</th>
-<th style="text-align:center">谎言</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">そこ</td>
-<td style="text-align:center">そこ</td>
-<td style="text-align:center">so ko</td>
-<td style="text-align:center">那儿</td>
-</tr>
-<tr>
-<td style="text-align:center">おそい</td>
-<td style="text-align:center">遅い</td>
-<td style="text-align:center">o so i</td>
-<td style="text-align:center">慢的,迟的</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>ta chi tu te to<br>た ち つ て と<br>タ チ ツ テ ト</p>
-<h2 id="1-た-ta"><a href="#1-た-ta" class="headerlink" title="1. た ta"></a>1. た ta</h2><p>た 来自”太”<br>タ 来自”多”的一部分</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">たこ</th>
-<th style="text-align:center">蛸</th>
-<th style="text-align:center">ta ko</th>
-<th style="text-align:center">章鱼</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">たき</td>
-<td style="text-align:center">滝</td>
-<td style="text-align:center">ta ki</td>
-<td style="text-align:center">瀑布</td>
-</tr>
-<tr>
-<td style="text-align:center">たかい</td>
-<td style="text-align:center">高い</td>
-<td style="text-align:center">ta ka i</td>
-<td style="text-align:center">高的,贵的</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-ち-chi-读作qi"><a href="#2-ち-chi-读作qi" class="headerlink" title="2. ち chi(读作qi)"></a>2. ち chi(读作qi)</h2><p>ち 来自”知”<br>チ 来自”千”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ちち</th>
-<th style="text-align:center">父</th>
-<th style="text-align:center">chi chi</th>
-<th style="text-align:center">父亲(自谦, 等同家父)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">くち</td>
-<td style="text-align:center">口</td>
-<td style="text-align:center">ku chi</td>
-<td style="text-align:center">口</td>
-</tr>
-<tr>
-<td style="text-align:center">ちかい</td>
-<td style="text-align:center">近い</td>
-<td style="text-align:center">chi ka i</td>
-<td style="text-align:center">近的</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-つ-tsu-读作ci"><a href="#3-つ-tsu-读作ci" class="headerlink" title="3. つ tsu(读作ci)"></a>3. つ tsu(读作ci)</h2><p>つ 来自”川”<br>ツ 来自”川”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">つき</th>
-<th style="text-align:center">月</th>
-<th style="text-align:center">tsu ki</th>
-<th style="text-align:center">月亮</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">つくえ</td>
-<td style="text-align:center">机</td>
-<td style="text-align:center">tsu ku e</td>
-<td style="text-align:center">书桌</td>
-</tr>
-<tr>
-<td style="text-align:center">あつい</td>
-<td style="text-align:center">暑い</td>
-<td style="text-align:center">a tsu i</td>
-<td style="text-align:center">热的</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-て-te"><a href="#4-て-te" class="headerlink" title="4. て te"></a>4. て te</h2><p>て 来自”天”<br>テ 来自”天”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">て</th>
-<th style="text-align:center">手</th>
-<th style="text-align:center">te</th>
-<th style="text-align:center">手</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">てき</td>
-<td style="text-align:center">敵</td>
-<td style="text-align:center">te ki</td>
-<td style="text-align:center">敌人,对手</td>
-</tr>
-<tr>
-<td style="text-align:center">ちかてつ</td>
-<td style="text-align:center">地下鉄</td>
-<td style="text-align:center">chi ka te tsu</td>
-<td style="text-align:center">地铁</td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-と-to"><a href="#5-と-to" class="headerlink" title="5. と to"></a>5. と to</h2><p>と 来自”止”<br>ト 来自”止”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">とし</th>
-<th style="text-align:center">年</th>
-<th style="text-align:center">to shi</th>
-<th style="text-align:center">年,年纪</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">とき</td>
-<td style="text-align:center">時</td>
-<td style="text-align:center">to ki</td>
-<td style="text-align:center">时间</td>
-</tr>
-<tr>
-<td style="text-align:center">テスト</td>
-<td style="text-align:center">(test)</td>
-<td style="text-align:center">te su to</td>
-<td style="text-align:center">考试</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>na ni nu ne no<br>な に ぬ ね の<br>ナ ニ ヌ ネ ノ</p>
-<h2 id="1-な-na"><a href="#1-な-na" class="headerlink" title="1. な na"></a>1. な na</h2><p>な 来自”奈”<br>ナ 来自”奈”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">なか</th>
-<th style="text-align:center">中</th>
-<th style="text-align:center">na ka</th>
-<th style="text-align:center">中间</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">なつ</td>
-<td style="text-align:center">夏</td>
-<td style="text-align:center">na tsu</td>
-<td style="text-align:center">夏天</td>
-</tr>
-<tr>
-<td style="text-align:center">あなた</td>
-<td style="text-align:center">貴方</td>
-<td style="text-align:center">a na ta</td>
-<td style="text-align:center">你(亲爱的,老公)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-に-ni"><a href="#2-に-ni" class="headerlink" title="2. に ni"></a>2. に ni</h2><p>に 来自”仁”<br>ニ 来自”仁”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">にく</th>
-<th style="text-align:center">肉</th>
-<th style="text-align:center">ni ku</th>
-<th style="text-align:center">肉</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">なに</td>
-<td style="text-align:center">何</td>
-<td style="text-align:center">na ni</td>
-<td style="text-align:center">什么</td>
-</tr>
-<tr>
-<td style="text-align:center">おに</td>
-<td style="text-align:center">鬼</td>
-<td style="text-align:center">o ni</td>
-<td style="text-align:center">鬼</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-ぬ-nu"><a href="#3-ぬ-nu" class="headerlink" title="3. ぬ nu"></a>3. ぬ nu</h2><p>ぬ 来自”奴”<br>ヌ 来自”奴”的右半部分</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">いぬ</th>
-<th style="text-align:center">犬</th>
-<th style="text-align:center">i nu</th>
-<th style="text-align:center">狗</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">きぬ</td>
-<td style="text-align:center">絹</td>
-<td style="text-align:center">ki nu</td>
-<td style="text-align:center">丝绢</td>
-</tr>
-<tr>
-<td style="text-align:center">しぬ</td>
-<td style="text-align:center">死ぬ</td>
-<td style="text-align:center">shi nu</td>
-<td style="text-align:center">(v)死亡</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-ね-ne"><a href="#4-ね-ne" class="headerlink" title="4. ね ne"></a>4. ね ne</h2><p>ね 来自”祢”<br>ネ 来自”祢”的左半部分</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ねこ</th>
-<th style="text-align:center">猫</th>
-<th style="text-align:center">ne ko</th>
-<th style="text-align:center">猫</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">いね</td>
-<td style="text-align:center">稲</td>
-<td style="text-align:center">i ne</td>
-<td style="text-align:center">稻子</td>
-</tr>
-<tr>
-<td style="text-align:center">かね</td>
-<td style="text-align:center">金</td>
-<td style="text-align:center">ka ne</td>
-<td style="text-align:center">金钱</td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-の-no"><a href="#5-の-no" class="headerlink" title="5. の no"></a>5. の no</h2><p>の 来自”乃”<br>ノ 来自”乃”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ぬの</th>
-<th style="text-align:center">布</th>
-<th style="text-align:center">nu no</th>
-<th style="text-align:center">布</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">つの</td>
-<td style="text-align:center">角</td>
-<td style="text-align:center">tsu no</td>
-<td style="text-align:center">动物的角</td>
-</tr>
-<tr>
-<td style="text-align:center">のこす</td>
-<td style="text-align:center">残す</td>
-<td style="text-align:center">no ko su</td>
-<td style="text-align:center">(v) 留下,剩下</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>ha hi hu he ho<br>は ひ ふ へ ほ<br>ハ ヒ フ ヘ ホ</p>
-<h2 id="1-は-ha"><a href="#1-は-ha" class="headerlink" title="1. は ha"></a>1. は ha</h2><p>は 来自”波”<br>ハ 来自”八”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">はあ</th>
-<th style="text-align:center">花</th>
-<th style="text-align:center">ha na</th>
-<th style="text-align:center">花</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">はし</td>
-<td style="text-align:center">箸</td>
-<td style="text-align:center">ha shi</td>
-<td style="text-align:center">筷子</td>
-</tr>
-<tr>
-<td style="text-align:center">はは</td>
-<td style="text-align:center">母</td>
-<td style="text-align:center">ha ha</td>
-<td style="text-align:center">母亲(自谦)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-ひ-hi"><a href="#2-ひ-hi" class="headerlink" title="2. ひ hi"></a>2. ひ hi</h2><p>ひ 来自”比”<br>ヒ 来自”比”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ひ</th>
-<th style="text-align:center">日</th>
-<th style="text-align:center">hi</th>
-<th style="text-align:center">太阳</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ひと</td>
-<td style="text-align:center">人</td>
-<td style="text-align:center">hi to</td>
-<td style="text-align:center">人</td>
-</tr>
-<tr>
-<td style="text-align:center">ひとつ</td>
-<td style="text-align:center">一つ</td>
-<td style="text-align:center">hi to tsu</td>
-<td style="text-align:center">一个</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-ふ-fu"><a href="#3-ふ-fu" class="headerlink" title="3. ふ fu"></a>3. ふ fu</h2><p>ふ 来自”不”<br>フ 来自”不”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ふね</th>
-<th style="text-align:center">船</th>
-<th style="text-align:center">fu ne</th>
-<th style="text-align:center">船</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ふく</td>
-<td style="text-align:center">服</td>
-<td style="text-align:center">fu ku</td>
-<td style="text-align:center">衣服</td>
-</tr>
-<tr>
-<td style="text-align:center">ふえ</td>
-<td style="text-align:center">笛</td>
-<td style="text-align:center">fu e</td>
-<td style="text-align:center">笛子</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-へ-he"><a href="#4-へ-he" class="headerlink" title="4. へ he"></a>4. へ he</h2><p>へ 来自”部”<br>へ 来自”部”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">へた</th>
-<th style="text-align:center">下手</th>
-<th style="text-align:center">he ta</th>
-<th style="text-align:center">(adj v) 笨拙,不擅长</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">へそ</td>
-<td style="text-align:center">臍</td>
-<td style="text-align:center">he so</td>
-<td style="text-align:center">肚脐</td>
-</tr>
-<tr>
-<td style="text-align:center">ヘア</td>
-<td style="text-align:center">(hair)</td>
-<td style="text-align:center">he a</td>
-<td style="text-align:center">头发</td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-ほ-ho"><a href="#5-ほ-ho" class="headerlink" title="5. ほ ho"></a>5. ほ ho</h2><p>ほ 来自”保”<br>ホ 来自”保”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ほし</th>
-<th style="text-align:center">星</th>
-<th style="text-align:center">ho shi</th>
-<th style="text-align:center">星星</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ほそい</td>
-<td style="text-align:center">細い</td>
-<td style="text-align:center">ho so i</td>
-<td style="text-align:center">细的</td>
-</tr>
-<tr>
-<td style="text-align:center">アホ</td>
-<td style="text-align:center">阿保</td>
-<td style="text-align:center">a ho</td>
-<td style="text-align:center">白痴(关西)</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>ma mi mu me mo<br>ま み む め も<br>マ ミ ム メ モ</p>
-<h2 id="1-ま-ma"><a href="#1-ま-ma" class="headerlink" title="1. ま ma"></a>1. ま ma</h2><p>ま 来自”末”<br>マ 来自”末”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">まえ</th>
-<th style="text-align:center">前</th>
-<th style="text-align:center">ma e</th>
-<th style="text-align:center">(n)前面, 先前</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">まち</td>
-<td style="text-align:center">町</td>
-<td style="text-align:center">ma chi</td>
-<td style="text-align:center">城市</td>
-</tr>
-<tr>
-<td style="text-align:center">うまい</td>
-<td style="text-align:center">旨い</td>
-<td style="text-align:center">u ma i</td>
-<td style="text-align:center">美味的, 很棒的</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-み-mi"><a href="#2-み-mi" class="headerlink" title="2. み mi"></a>2. み mi</h2><p>み 来自”美”<br>ミ 来自”三”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">みみ</th>
-<th style="text-align:center">耳</th>
-<th style="text-align:center">mi mi</th>
-<th style="text-align:center">耳朵</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">みせ</td>
-<td style="text-align:center">店</td>
-<td style="text-align:center">mi se</td>
-<td style="text-align:center">商店</td>
-</tr>
-<tr>
-<td style="text-align:center">みそ</td>
-<td style="text-align:center">味噌</td>
-<td style="text-align:center">mi so</td>
-<td style="text-align:center">酱</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-む-mu"><a href="#3-む-mu" class="headerlink" title="3. む mu"></a>3. む mu</h2><p>む 来自”武”<br>ム 来自”牟”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">むし</th>
-<th style="text-align:center">虫</th>
-<th style="text-align:center">mu shi</th>
-<th style="text-align:center">虫子</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">むね</td>
-<td style="text-align:center">胸</td>
-<td style="text-align:center">mu ne</td>
-<td style="text-align:center">胸,心胸</td>
-</tr>
-<tr>
-<td style="text-align:center">むかし</td>
-<td style="text-align:center">昔</td>
-<td style="text-align:center">mu ka shi</td>
-<td style="text-align:center">过去</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-め-me"><a href="#4-め-me" class="headerlink" title="4. め me"></a>4. め me</h2><p>め 来自”女”<br>メ 来自”女”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">め</th>
-<th style="text-align:center">目</th>
-<th style="text-align:center">me</th>
-<th style="text-align:center">眼睛</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">めし</td>
-<td style="text-align:center">飯</td>
-<td style="text-align:center">me shi</td>
-<td style="text-align:center">饭</td>
-</tr>
-<tr>
-<td style="text-align:center">ひめ</td>
-<td style="text-align:center">姫</td>
-<td style="text-align:center">hi me</td>
-<td style="text-align:center">公主</td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-も"><a href="#5-も" class="headerlink" title="5. も"></a>5. も</h2><p>も 来自”毛”<br>モ 来自”毛” </p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">もも</th>
-<th style="text-align:center">桃</th>
-<th style="text-align:center">mo mo</th>
-<th style="text-align:center">桃子</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">もの</td>
-<td style="text-align:center">物</td>
-<td style="text-align:center">mo no</td>
-<td style="text-align:center">东西</td>
-</tr>
-<tr>
-<td style="text-align:center">もち</td>
-<td style="text-align:center">餅</td>
-<td style="text-align:center">mo chi</td>
-<td style="text-align:center">年糕</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>ya yu yo<br>や ゆ よ<br>ヤ ユ ヨ</p>
-<h2 id="1-や-ya"><a href="#1-や-ya" class="headerlink" title="1. や ya"></a>1. や ya</h2><p>や 来自”也”<br>ヤ 来自”也” </p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">やま</th>
-<th style="text-align:center">山</th>
-<th style="text-align:center">ya ma</th>
-<th style="text-align:center">山</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">やさい</td>
-<td style="text-align:center">野菜</td>
-<td style="text-align:center">ya sa i</td>
-<td style="text-align:center">蔬菜</td>
-</tr>
-<tr>
-<td style="text-align:center">やすみ</td>
-<td style="text-align:center">休み</td>
-<td style="text-align:center">ya su mi</td>
-<td style="text-align:center">休息</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-ゆ-yu"><a href="#2-ゆ-yu" class="headerlink" title="2. ゆ yu"></a>2. ゆ yu</h2><p>ゆ 来自”由”<br>ユ 来自”由” </p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ゆき</th>
-<th style="text-align:center">雪</th>
-<th style="text-align:center">yu ki</th>
-<th style="text-align:center">雪</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ゆめ</td>
-<td style="text-align:center">夢</td>
-<td style="text-align:center">yu me</td>
-<td style="text-align:center">梦</td>
-</tr>
-<tr>
-<td style="text-align:center">ふゆ</td>
-<td style="text-align:center">冬</td>
-<td style="text-align:center">fu yu</td>
-<td style="text-align:center">冬天</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-よ-yo"><a href="#3-よ-yo" class="headerlink" title="3. よ yo"></a>3. よ yo</h2><p>よ 来自”与”<br>ヨ 来自”與” </p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">よめ</th>
-<th style="text-align:center">嫁</th>
-<th style="text-align:center">yo me</th>
-<th style="text-align:center">妻子,儿媳</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">よい</td>
-<td style="text-align:center">良い</td>
-<td style="text-align:center">yo i</td>
-<td style="text-align:center">好的</td>
-</tr>
-<tr>
-<td style="text-align:center">よむ</td>
-<td style="text-align:center">読む</td>
-<td style="text-align:center">yo mu</td>
-<td style="text-align:center">(v)阅读</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>ra ri ru re ro<br>ら り る れ ろ<br>ラ リ ル レ ロ</p>
-<h2 id="1-ら-ra"><a href="#1-ら-ra" class="headerlink" title="1. ら ra"></a>1. ら ra</h2><p>ら 来自”良”<br>ラ 来自”良”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">さくら</th>
-<th style="text-align:center">桜</th>
-<th style="text-align:center">sa ku ra</th>
-<th style="text-align:center">樱花</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">らく</td>
-<td style="text-align:center">楽</td>
-<td style="text-align:center">ra ku</td>
-<td style="text-align:center">(adj v)轻松,舒服</td>
-</tr>
-<tr>
-<td style="text-align:center">みらい</td>
-<td style="text-align:center">未来</td>
-<td style="text-align:center">mi ra i</td>
-<td style="text-align:center">未来</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-り-ri"><a href="#2-り-ri" class="headerlink" title="2. り ri"></a>2. り ri</h2><p>り 来自”利”<br>リ 来自”利”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">りかい</th>
-<th style="text-align:center">理解</th>
-<th style="text-align:center">ri ka i</th>
-<th style="text-align:center">(n v) 理解</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">りえき</td>
-<td style="text-align:center">利益</td>
-<td style="text-align:center">ri e ki</td>
-<td style="text-align:center">(n) 利益,利润</td>
-</tr>
-<tr>
-<td style="text-align:center">リスト</td>
-<td style="text-align:center">(list)</td>
-<td style="text-align:center">ri su to</td>
-<td style="text-align:center">列表</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-る-ru"><a href="#3-る-ru" class="headerlink" title="3. る ru"></a>3. る ru</h2><p>る 来自”留”<br>ル 来自”流”的下半部分</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">はる</th>
-<th style="text-align:center">春</th>
-<th style="text-align:center">ha ru</th>
-<th style="text-align:center">春</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">るす</td>
-<td style="text-align:center">留守</td>
-<td style="text-align:center">ru su</td>
-<td style="text-align:center">(n v) 不在家</td>
-</tr>
-<tr>
-<td style="text-align:center">ホテル</td>
-<td style="text-align:center">(hotel)</td>
-<td style="text-align:center">ho te ru</td>
-<td style="text-align:center">旅馆</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-れ-re"><a href="#4-れ-re" class="headerlink" title="4. れ re"></a>4. れ re</h2><p>れ 来自”礼”<br>レ 来自”礼”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">かれ</th>
-<th style="text-align:center">彼</th>
-<th style="text-align:center">ka re</th>
-<th style="text-align:center">他(男朋友)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">れきし</td>
-<td style="text-align:center">歴史</td>
-<td style="text-align:center">re ki shi</td>
-<td style="text-align:center">历史</td>
-</tr>
-<tr>
-<td style="text-align:center">トイレ</td>
-<td style="text-align:center">(toilet)</td>
-<td style="text-align:center">to i re</td>
-<td style="text-align:center">厕所</td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-ろ-ro"><a href="#5-ろ-ro" class="headerlink" title="5. ろ ro"></a>5. ろ ro</h2><p>ろ 来自”吕”<br>ロ 来自”吕”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">いろ</th>
-<th style="text-align:center">色</th>
-<th style="text-align:center">i ro</th>
-<th style="text-align:center">颜色</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ろく</td>
-<td style="text-align:center">六</td>
-<td style="text-align:center">ro ku</td>
-<td style="text-align:center">六</td>
-</tr>
-<tr>
-<td style="text-align:center">ひろい</td>
-<td style="text-align:center">広い</td>
-<td style="text-align:center">hi ro i</td>
-<td style="text-align:center">宽阔的</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>wa wo<br>わ を<br>ワ ヲ</p>
-<h2 id="1-わ-wa"><a href="#1-わ-wa" class="headerlink" title="1. わ wa"></a>1. わ wa</h2><p>わ 来自”和”<br>ワ 来自”和”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">わたし</th>
-<th style="text-align:center">私</th>
-<th style="text-align:center">wa ta shi</th>
-<th style="text-align:center">我</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">わるい</td>
-<td style="text-align:center">悪い</td>
-<td style="text-align:center">wa ru i</td>
-<td style="text-align:center">不好的</td>
-</tr>
-<tr>
-<td style="text-align:center">わかい</td>
-<td style="text-align:center">若い</td>
-<td style="text-align:center">wa ka i</td>
-<td style="text-align:center">年轻的</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-を-wo"><a href="#2-を-wo" class="headerlink" title="2. を wo"></a>2. を wo</h2><p>を 来自”远”<br>ヲ 来自”乎”</p>
-<hr>
-<h2 id="拨音-ん-n"><a href="#拨音-ん-n" class="headerlink" title="拨音 ん n"></a>拨音 ん n</h2><p>ん 来自”无”<br>ン 来自”尔”</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">てんき</th>
-<th style="text-align:center">天気</th>
-<th style="text-align:center">ten ki</th>
-<th style="text-align:center">天气</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">にほん</td>
-<td style="text-align:center">日本</td>
-<td style="text-align:center">ni hon</td>
-<td style="text-align:center">日本</td>
-</tr>
-<tr>
-<td style="text-align:center">しんしつ</td>
-<td style="text-align:center">寝室</td>
-<td style="text-align:center">shin shi tsu</td>
-<td style="text-align:center">寝室</td>
-</tr>
-<tr>
-<td style="text-align:center">ハンカチ</td>
-<td style="text-align:center">(handkerchief)</td>
-<td style="text-align:center">han ka chi</td>
-<td style="text-align:center">手绢</td>
-</tr>
-<tr>
-<td style="text-align:center">アクセント</td>
-<td style="text-align:center">(accent)</td>
-<td style="text-align:center">a ku sen to</td>
-<td style="text-align:center">声调</td>
-</tr>
-<tr>
-<td style="text-align:center">てんあんもん</td>
-<td style="text-align:center">天安門</td>
-<td style="text-align:center">ten an mon</td>
-<td style="text-align:center">天安门</td>
-</tr>
-<tr>
-<td style="text-align:center">にせんさんねん</td>
-<td style="text-align:center">2003年</td>
-<td style="text-align:center">ni sen san nen</td>
-<td style="text-align:center">2003年</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<p>k -&gt; g<br>|  ga   |  gi   |  gu   |  ge   |  go   |<br>| :—: | :—: | :—: | :—: | :—: |<br>|  が   |  ぎ   |  ぐ   |  げ   |  ご   |<br>|  ガ   |  ギ   |  グ   |  ゲ   |  ゴ   |</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">がいこく</th>
-<th style="text-align:center">外国</th>
-<th style="text-align:center">ga i ko ku</th>
-<th style="text-align:center">外国</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ぎし</td>
-<td style="text-align:center">技師</td>
-<td style="text-align:center">gi shi</td>
-<td style="text-align:center">技师</td>
-</tr>
-<tr>
-<td style="text-align:center">ぐあい</td>
-<td style="text-align:center">具合</td>
-<td style="text-align:center">gu a i</td>
-<td style="text-align:center">情况</td>
-</tr>
-<tr>
-<td style="text-align:center">げんき</td>
-<td style="text-align:center">元気</td>
-<td style="text-align:center">ge n ki</td>
-<td style="text-align:center">精力,健康</td>
-</tr>
-<tr>
-<td style="text-align:center">ごはん</td>
-<td style="text-align:center">ご飯</td>
-<td style="text-align:center">go ha n</td>
-<td style="text-align:center">饭</td>
-</tr>
-</tbody>
-</table>
-<p>da.ji.zu.de.do<br>だじずでど</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">za</th>
-<th style="text-align:center">ji</th>
-<th style="text-align:center">zu</th>
-<th style="text-align:center">ze</th>
-<th style="text-align:center">zo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ざ</td>
-<td style="text-align:center">じ</td>
-<td style="text-align:center">ず</td>
-<td style="text-align:center">ぜ</td>
-<td style="text-align:center">ぞ</td>
-</tr>
-<tr>
-<td style="text-align:center">ザ</td>
-<td style="text-align:center">ジ</td>
-<td style="text-align:center">ズ</td>
-<td style="text-align:center">ゼ</td>
-<td style="text-align:center">ゾ</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">ba</th>
-<th style="text-align:center">bi</th>
-<th style="text-align:center">bu</th>
-<th style="text-align:center">be</th>
-<th style="text-align:center">bo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ば</td>
-<td style="text-align:center">び</td>
-<td style="text-align:center">ぶ</td>
-<td style="text-align:center">べ</td>
-<td style="text-align:center">ぼ</td>
-</tr>
-<tr>
-<td style="text-align:center">バ</td>
-<td style="text-align:center">ビ</td>
-<td style="text-align:center">ブ</td>
-<td style="text-align:center">ベ</td>
-<td style="text-align:center">ボ</td>
-</tr>
-</tbody>
-</table>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Japanese//" class="article-tag-list-link color4">Japanese</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/07/Japanese系列(0) - 50音图/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/13/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">展开全文 >></a>
         </p>
       
 
@@ -1759,7 +423,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 
@@ -1771,7 +435,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -2020,6 +684,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="三石的QQ空间">
 <meta property="og:description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  数据类型字符串(string)常规操作: set name &amp;quot;Tom&amp;quot; get name append name &amp;quot;Jack&amp;quot; exists name del name 批量操作: MGET name1 name2 name3">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-21T13:33:43.060Z">
+<meta property="og:updated_time" content="2020-04-13T12:44:00.123Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis">
 <meta name="twitter:description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  数据类型字符串(string)常规操作: set name &amp;quot;Tom&amp;quot; get name append name &amp;quot;Jack&amp;quot; exists name del name 批量操作: MGET name1 name2 name3">
@@ -359,6 +359,52 @@ n表示单个管道内并行的请求数量.
 
 对于管道来说: 连续的write操作没有耗时,之后第一个read操作会等待一个网络的来回开销,
 然后所有的响应消息就都已经会送到内核的读缓冲了.后续的read操作直接就可以从缓冲拿到结果.
+</code></pre><p>Redis区<br>     Redis是一个Key-value存储系统。它支持存储的value类型很多，包括String（字符串）、链表(list)、set（集合）、zset（有序集合） hash。<br>     Redis支持各种不同方式的排序。可以把周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件。</p>
+<pre><code>缓存穿透
+    缓存系统按照KEY去查询VALUE,当KEY对应的VALUE一定不存在的时候并对KEY并发请求量很大的时候，就会对后端造成很大的压力。
+
+    解决办法
+        布隆过滤器
+            将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。
+        缓存层缓存空值
+            如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。
+               存储层更新代码了，缓存层还是空值。（优化：后台设置时主动删除空值，并缓存把值进去）
+
+缓存雪崩（缓存失效）
+     如果缓存集中在一段时间内失效，发生大量的缓存穿透，所有的查询都落在数据库上，造成了缓存雪崩。
+
+     解决办法
+        1.在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。
+        2.可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存
+        3.不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀
+        4.做二级缓存，或者双缓存策略。A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期。
+
+热点key
+    将热点key对应value并缓存在客户端本地，并且设置一个失效时间。
+    对于每次读请求，将首先检查key是否存在于本地缓存中，如果存在则直接返回，如果不存在再去访问分布式缓存的机器。
+
+    将热点key分散为多个子key，然后存储到缓存集群的不同机器上，这些子key对应的value都和热点key是一样的。
+    当通过热点key去查询数据时，通过某种hash算法随机选择一个子key，然后再去访问缓存机器，将热点分散到了多个子key上。
+
+
+淘汰策略
+    noeviction: 不删除策略, 达到最大内存限制时, 如果需要更多内存, 直接返回错误信息。 大多数写命令都会导致占用更多的内存(有极少数会例外, 如 DEL )。
+    allkeys-lru: 所有key通用; 优先删除最近最少使用(less recently used ,LRU) 的 key。
+    volatile-lru: 只限于设置了 expire 的部分; 优先删除最近最少使用(less recently used ,LRU) 的 key。
+    allkeys-random: 所有key通用; 随机删除一部分 key。
+    volatile-random: 只限于设置了 expire 的部分; 随机删除一部分 key。
+    volatile-ttl: 只限于设置了 expire 的部分; 优先删除剩余时间(time to live,TTL) 短的key。
+
+    如果分为热数据与冷数据, 推荐使用 allkeys-lru 策略。 也就是, 其中一部分key经常被读写. 如果不确定具体的业务特征,
+     那么 allkeys-lru 是一个很好的选择。
+
+     如果需要循环读写所有的key, 或者各个key的访问频率差不多, 可以使用 allkeys-random 策略, 即读写所有元素的概率差不多。
+
+     假如要让 Redis 根据 TTL 来筛选需要删除的key, 请使用 volatile-ttl 策略。
+
+     volatile-lru 和 volatile-random 策略主要应用场景是: 既有缓存,又有持久key的实例中。
+      一般来说, 像这类场景, 应该使用两个单独的 Redis 实例。
+      值得一提的是, 设置 expire 会消耗额外的内存, 所以使用 allkeys-lru 策略, 可以更高效地利用内存, 因为这样就可以不再设置过期时间了。
 </code></pre>
       
 
@@ -442,18 +488,18 @@ n表示单个管道内并行的请求数量.
   
 <nav id="article-nav">
   
-    <a href="/2019/08/25/RxJava/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          RxJava
+          深究Spring系列 (0) - 写在前面的话
         
       </div>
     </a>
   
   
-    <a href="/2019/07/30/网络协议/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">网络协议</div>
+    <a href="/2019/08/25/RxJava/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">RxJava</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -529,7 +575,7 @@ n表示单个管道内并行的请求数量.
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -778,6 +824,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

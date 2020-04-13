@@ -151,33 +151,28 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TypeScript文档" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java中的垃圾回收算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/07/TypeScript文档/">TypeScript文档</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/07/TypeScript文档/" class="archive-article-date">
-  	<time datetime="2019-10-07T04:29:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-07</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>就闲着无聊, 来点script.</p>
-<h2 id="神奇的-for-in-和-for-of"><a href="#神奇的-for-in-和-for-of" class="headerlink" title="神奇的 for in 和 for of"></a>神奇的 for in 和 for of</h2><p>for..in迭代的是对象的 键 的列表，而for..of则迭代对象的键对应的值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> list = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> list) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i); <span class="comment">// "0", "1", "2",</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> list) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i); <span class="comment">// "4", "5", "6"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>for..in可以操作任何对象；它提供了查看对象属性的一种方法。 但是 for..of关注于迭代对象的值<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> pets = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="string">"Cat"</span>, <span class="string">"Dog"</span>, <span class="string">"Hamster"</span>]);</span><br><span class="line">pets[<span class="string">"species"</span>] = <span class="string">"mammals"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> pet <span class="keyword">in</span> pets) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(pet); <span class="comment">// "species"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> pet <span class="keyword">of</span> pets) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(pet); <span class="comment">// "Cat", "Dog", "Hamster"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="没看人用过的-Symbol"><a href="#没看人用过的-Symbol" class="headerlink" title="没看人用过的 Symbol"></a>没看人用过的 Symbol</h2><p>symbol类型的值是通过Symbol构造函数创建的, 不可改变且唯一</p>
-<h2 id="有点意思的特性"><a href="#有点意思的特性" class="headerlink" title="有点意思的特性"></a>有点意思的特性</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x = <span class="number">3</span></span><br><span class="line">print(x = x <span class="number">-3</span>)</span><br><span class="line">print(x)</span><br></pre></td></tr></table></figure>
-<p>修改和赋值合并</p>
-
+        <p>docker exec -it mysql /bin/bash</p>
+<p>可达性分析<br>    通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，<br>    当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。</p>
+<pre><code>GC Roots
+    1)虚拟机栈（栈帧中的本地变量表）中引用的对象
+    2）方法区中的类静态属性引用的对象。
+    3）方法区中的常量引用的对象
+    4）本地方法栈中JNI（通常说的Native方法）引用的对象
+</code></pre><p>标记清除法<br>    标记阶段和清除阶段<br>    可能产生的最大的问题就是空间碎片</p>
+<p>复制算法<br>    将原有的内存空间分为两块相同的存储空间，每次只使用一块，在垃圾回收时，<br>    将正在使用的内存块中存活对象复制到未使用的那一块内存空间中，之后清除正在使用的内存块中的所有对象，完成垃圾回收。</p>
+<p> 标记压缩算法<br>    在标记清除算法的基础上做了优化,将所有的存活对象压缩到内存空间的一端，之后，清理边界外所有的空间。</p>
+<p>通常新生代回收的频率很高，但是每次回收的时间都很短，而老年代回收的频率比较低，但是被消耗很多的时间</p>
+<p>为了支持高频率的新生代回收，虚拟机可能使用一种叫做卡表的数据结构，卡表为一个比特位集合，<br>每一个比特位可以用来表示老年代的某一区域中的所有对象是否持有新生代对象的引用，<br>新生代GC时，可以不用花大量时间扫描所有老年代对象，来确定每一个对象的引用关系，而可以先扫描卡表，只有当卡表的标记为1时，<br>才需要扫描给定区域的老年代对象，而卡表为0的所在区域的老年代对象，一定不含有新生代对象的引用。</p>
+<p>分区算法<br>    将整个堆空间划分为连续的不同小区间</p>
+<pre><code>相同的条件下，堆空间越大，一次GC所需的时间就越长，从而产生的停顿时间就越长。为了更好的控制GC产生的停顿时间，
+将一块大的内存区域分割成多个小块，
+根据目标的停顿时间，每次合理的回收若干个小区间，而不是整个堆空间，从而减少一个GC的停顿时间。
+</code></pre>
       
 
       
@@ -186,21 +181,10 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/TypeScript//" class="article-tag-list-link color1">TypeScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/07/TypeScript文档/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/13/Java中的垃圾回收算法/">展开全文 >></a>
         </p>
       
 
@@ -230,30 +214,32 @@
 
 
   
-    <article id="post-TCP交钱学系列 (4) - MTU和MSS" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java中的ThreadLocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/30/TCP交钱学系列 (4) - MTU和MSS/">TCP交钱学系列 (4) - MTU和MSS</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/30/TCP交钱学系列 (4) - MTU和MSS/" class="archive-article-date">
-  	<time datetime="2019-09-30T09:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="最大传输单元（Maximum-Transmission-Unit-MTU）"><a href="#最大传输单元（Maximum-Transmission-Unit-MTU）" class="headerlink" title="最大传输单元（Maximum Transmission Unit, MTU）"></a>最大传输单元（Maximum Transmission Unit, MTU）</h2><p>数据链路层传输的帧大小</p>
-<p>以太网的帧最小的帧是 64 字节，除去 14 字节头部和 4 字节 CRC 字段，有效荷载最小为 46 字节。<br>最大的帧是 1518 字节，除去 14 字节头部和 4 字节 CRC，有效荷载最大为 1500，这个值就是以太网的 MTU。</p>
-<p>如果传输 100KB 的数据，至少需要 （100 * 1024 / 1500) = 69 个以太网帧。</p>
-<p>netstat -i 可以查看网卡的 mtu</p>
+        <p>ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。</p>
+<p>首先，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，<br>键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。</p>
+<p>　　 初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，<br>并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。</p>
+<p>　　  然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。</p>
+<p>join的作用<br>    调用某个线程的这个方法时，这个方法会挂起调用线程，直到被调用线程结束执行，调用线程才会继续执行。</p>
+<pre><code>join逻辑
+
+    Parent 调用 child.join()，child.join() 再调用 child.join(0) （此时 Parent 会获得 child 实例作为锁，其他线程可以进入 child.join() ，但不可以进入 child.join(0)， 
+    因为无法获取锁）。child.join(0) 会不断地检查 child 线程是否是 Active。
+
+    如果 child 线程是 Active，则循环调用 child.wait(0)（为了防止 Spurious wakeup, 需要将 wait(0) 放入 for 循环体中；此时 Parent 会释放 child 实例锁，
+    其他线程可以竞争锁并进入 child.join(0)。我们可以得知，可以有多个线程等待某个线程执行完毕）。
+
+    一旦 child 线程不为 Active （状态为 TERMINATED）, child.join(0) 会直接返回到 child.join(), 
+    child.join() 会直接返回到 Parent 父线程，Parent 父线程就可以继续运行下去了。
+</code></pre><p>1）实际的通过ThreadLocal创建的副本是存储在每个线程自己的threadLocals中的；</p>
+<p>　　  为何threadLocals的类型ThreadLocalMap的键值为ThreadLocal对象，因为每个线程中可有多个threadLocal变量，就像上面代码中的longLocal和stringLocal；</p>
+<p>　　  在进行get之前，必须先set，否则会报空指针异常；</p>
+<p>　　  如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法。</p>
+<p>最常见的ThreadLocal使用场景为 用来解决 数据库连接、Session管理等</p>
+<p>实现:<br>    内部类<br>        ThreadLocalMap<br>            内部类<br>                Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt;<br>        public T get()</p>
 
       
 
@@ -263,21 +249,10 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/30/TCP交钱学系列 (4) - MTU和MSS/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/13/Java中的ThreadLocal/">展开全文 >></a>
         </p>
       
 
@@ -307,53 +282,41 @@
 
 
   
-    <article id="post-TCP交钱学系列 (3) - TCP首部字段" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-java中==和equals的区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/30/TCP交钱学系列 (3) - TCP首部字段/">TCP交钱学系列 (3) - TCP首部字段</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/30/TCP交钱学系列 (3) - TCP首部字段/" class="archive-article-date">
-  	<time datetime="2019-09-30T03:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="源端口号Source-Port-目标端口号Destination-Port"><a href="#源端口号Source-Port-目标端口号Destination-Port" class="headerlink" title="源端口号Source Port, 目标端口号Destination Port"></a>源端口号Source Port, 目标端口号Destination Port</h2><p>各占2个字节</p>
-<p>TCP报文头部没有源ip和目标ip地址</p>
-<h2 id="序列号Sequence-number"><a href="#序列号Sequence-number" class="headerlink" title="序列号Sequence number"></a>序列号Sequence number</h2><p>本报文段第一个字节的序列号, 4个字节, 32位无符号整数.</p>
-<p>序列号加报文长度, 可以确定传输的是哪一段数据.</p>
-<p>SYN报文中,序列号用于交换彼此的初始序列号,其它报文中,序列号用于保证包的顺序</p>
-<p>初始序列号(Initial Sequence Number, ISN)</p>
-<p>client ISN=1025<br>                ——-&gt;<br>                 1.SYN<br>                 SEQ=1025<br>                            Sever ISN=1118<br>                &lt;——–<br>                2.SYN+ACK<br>                SEQ=1118<br>                ACK=1025+1=1026</p>
-<pre><code>---------&gt;
-3.ACK
-SEQ=1026
-ACK=1118+1=1119
-</code></pre><h2 id="确认号-Acknowledgment-number"><a href="#确认号-Acknowledgment-number" class="headerlink" title="确认号(Acknowledgment number)"></a>确认号(Acknowledgment number)</h2><p>4个字节<br>告知对方下一个期望接收的序列号, 小于此确认号的所有字节都已收到.</p>
-<h2 id="TCP-Flags"><a href="#TCP-Flags" class="headerlink" title="TCP Flags"></a>TCP Flags</h2><p>2个字节</p>
-<ul>
-<li>SYN（Synchronize）：用于发起连接数据包同步双方的初始序列号</li>
-<li>ACK（Acknowledge）：确认数据包</li>
-<li>RST（Reset）：这个标记用来强制断开连接，通常是之前建立的连接已经不在了、包不合法、或者实在无能为力处理</li>
-<li>FIN（Finish）：通知对方我发完了所有数据，准备断开连接，后面我不会再发数据包给你了。</li>
-<li>PSH（Push）：告知对方这些数据包收到以后应该马上交给上层应用，不能缓存起来</li>
-</ul>
-<h2 id="窗口大小-Window-size-value"><a href="#窗口大小-Window-size-value" class="headerlink" title="窗口大小 Window size value"></a>窗口大小 Window size value</h2><p>2个字节<br>最大窗口大小是65535字节, 即64KB<br>TCP窗口缩放比例因子n: 0~14<br>把窗口放大2 ^ n</p>
-<h2 id="可选项"><a href="#可选项" class="headerlink" title="可选项"></a>可选项</h2><ul>
-<li>MSS：最大段大小选项，是TCP允许的从对方接收的最大报文段</li>
-<li>SACK：选择确认选项</li>
-<li>Window Scale：窗口缩放选项</li>
-</ul>
+        <p>java中==和equals的区别<br>    public boolean equals(Object obj) {<br>        return (this == obj);<br>    }</p>
+<pre><code>基本概念:
+    值类型是存储在内存中的堆栈（以后简称栈），而引用类型的变量在栈中仅仅是存储引用类型变量的地址，而其本身则存储在堆中。
+    ==操作比较的是两个变量的值是否相等，对于引用型变量表示的是两个变量在堆中存储的地址是否相同，即栈中的内容是否相同。
+    equals操作表示的两个变量是否是对同一个对象的引用，即堆中的内容是否相同。
+    ==比较的是2个对象的地址，而equals比较的是2个对象的内容。
 
+常见误区:
+    程序在运行的时候会创建一个字符串缓冲池当使用 s2 = &quot;Monday&quot; 这样的表达是创建字符串的时候，
+    程序首先会在这个String缓冲池中寻找相同值的对象，在第一个程序中，s1先被放到了池中，所以在s2被创建的时候，
+    程序找到了具有相同值的 s1
+    使用了 new 操作符，新的&quot;Monday&quot;Sting对象被创建在内存中。他们的值相同，但是位置不同.
+
+     String str1 = new String(&quot;hello&quot;);
+     String str2 = new String(&quot;hello&quot;);
+     String str3 = &quot;hello&quot;;
+     String str4 = &quot;hello&quot;;
+     System.out.println(str1==str2);//false  栈里面内容是否相等
+     System.out.println(str1.equals(str2));//true 堆里面内容是否相等
+
+    System.out.println(str1==str3);//false
+    System.out.println(str1.equals(str3));//true
+
+    System.out.println(str3==str4);//true
+    System.out.println(str3.equals(str4));//true
+
+拓展:
+    String的intern()方法检查字符串池里是否存在&quot;abc&quot;这么一个字符串，如果存在，就返回池里的字符串；如果不存在，
+    该方法会把&quot;abc&quot;添加到字符串池中，然后再返回它的引用。
+</code></pre>
       
 
       
@@ -362,21 +325,10 @@ ACK=1118+1=1119
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/30/TCP交钱学系列 (3) - TCP首部字段/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/13/java中==和equals的区别/">展开全文 >></a>
         </p>
       
 
@@ -406,90 +358,55 @@ ACK=1118+1=1119
 
 
   
-    <article id="post-TCP交钱学系列 (2) - packetdrill tcpdump" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java线程池ThreadPoolExecutor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/">TCP交钱学系列 (2) - packetdrill tcpdump</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/" class="archive-article-date">
-  	<time datetime="2019-09-30T03:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><h3 id="tcpdump-–-网络流量分析工具"><a href="#tcpdump-–-网络流量分析工具" class="headerlink" title="tcpdump – 网络流量分析工具"></a>tcpdump – 网络流量分析工具</h3><blockquote>
-<p>linux设置root密码: sudo passwd root</p>
-</blockquote>
-<ol>
-<li>tcpdump -i any<br>-i表示指定哪一个网卡，any 表示任意<br>ifconfig查看有哪些网卡</li>
-</ol>
-<p>tcpdump -i eth3 只看网卡eth3经过的数据包</p>
-<ol start="2">
-<li>只看某个ip的网络包<br>tcpdump -i any host 220.181.38.148<br>这个ip可以是源地址也可以是目标地址</li>
-</ol>
-<p>tcpdump -i any host src 220.181.38.148<br>只抓这个ip发出的包</p>
-<p>tcpdump -i any host dst 220.181.38.148<br>只抓这个ip收到的包</p>
-<ol start="3">
-<li>只看某个端口的包<br>tcpdump -i any port 80</li>
-</ol>
-<p>tcpdump -i any dst port 80<br>只看某个ip收到的包</p>
-<ol start="4">
-<li><p>抓取某个区间内端口的包<br>tcpdump portrange 21-23</p>
-</li>
-<li><p>禁用主机与端口解析: -n 与 -nn</p>
-</li>
-<li><p>过滤协议<br>tcpdump -i any -nn udp   </p>
-</li>
-<li><p>用ascii格式查看包体内容: -A选项<br> 限制包大小：-s 选项<br>  -X 命令，用来同时用 HEX 和 ASCII 显示报文内容<br> -c 选项 抓取 number 个报文后退出</p>
-<p> -w 选项用来把数据报文输出到文件<br> 显示绝对的序号：-S 选项</p>
-</li>
-<li><p>过滤器</p>
-</li>
-</ol>
-<p>抓取 ip 为 10.211.55.10 到端口 3306 的数据包<br>sudo tcpdump -i any host 10.211.55.10 and dst port 3306</p>
-<p>抓取源 ip 为 10.211.55.10，目标端口除了22 以外所有的流量<br>sudo tcpdump -i any src 10.211.55.10 and not dst port 22</p>
-<p>抓取：来源 ip 为 10.211.55.10 且目标端口为 3306 或 6379 的包<br>sudo tcpdump -i any ‘src 10.211.55.10 and (dst port 3306 or 6379)’</p>
-<p>显示所有的 RST 包<br>tcpdump ‘tcp[13] &amp; 4 != 0’</p>
-<p>想过滤 SYN + ACK 包<br>tcpdump ‘tcp[13] &amp; 18 != 0’</p>
-<h3 id="packetdrill-–-Google网络工具"><a href="#packetdrill-–-Google网络工具" class="headerlink" title="packetdrill – Google网络工具"></a>packetdrill – Google网络工具</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ol>
-<li>国内源没一个好用的, 直接梯子, 刷刷装好bison flex</li>
-<li>关掉offload机制, 不光要注释掉函数, 也要注掉函数调用</li>
-<li>make命令就是命令行直接手敲”make”, 然后Enter</li>
-</ol>
-<h4 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h4><p>packetdrill 脚本采用 c 语言和 tcpdump 混合的语法。脚本文件名一般以 .pkt 为后缀，<br>执行脚本的方式为sudo ./packetdrill test.pkt</p>
-<p>脚本的每一行可以由以下几种类型的语句构成：</p>
-<ul>
-<li>执行系统调用（system call），对比返回值是否符合预期</li>
-<li>把数据包（packet）注入到内核协议栈，模拟协议栈收到包</li>
-<li>比较内核协议栈发出的包与预期是否相符</li>
-<li>执行 shell 命令</li>
-<li>执行 python 命令</li>
-</ul>
-<p>脚本每一行都有一个时间参数用来表明执行的时间或者预期事件发生的时间，packetdrill 支持绝对时间和相对时间。绝对时间就是一个简单的数字，相对时间会在数字前面添加一个+号</p>
-<h4 id="代码环节"><a href="#代码环节" class="headerlink" title="代码环节"></a>代码环节</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span> socket(..., SOCK_STREAM, IPPROTO_TCP) = <span class="number">3</span></span><br></pre></td></tr></table></figure>
-<p>解释: 脚本执行的第0s创建一个socket, 使用系统调用的方式<br>    脚本中的…表示使用packetdrill的默认值<br>    linux在每个程序的开始都有3个已经打开的文件句柄: stdin(0), sdtout(1), stderr(2)</p>
-<p>socket函数签名:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> domain, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 成功时返回文件描述符, 失败时返回-1</span></span><br><span class="line"><span class="keyword">int</span> socket_fd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br></pre></td></tr></table></figure></p>
-<p>domain 表示套接字协议簇, AF_INET表示IPv4, AF_INET6表示IPv6.<br>type 表示套接字数据传输类型信息, 面向连接的SOCK_STREAM(默认TCP), 面向无连接的SOCK_DGRAM(默认UDP).<br>protocal 用0来表示使用默认的协议族和套接字类型</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> setsockopt(<span class="number">3</span>, SOL_SOCKET, SO_REUSEADDR, [<span class="number">1</span>], <span class="number">4</span>) = <span class="number">0</span></span><br><span class="line">+<span class="number">0</span> bind(<span class="number">3</span>, ..., ...) = <span class="number">0</span></span><br><span class="line">+<span class="number">0</span> listen(<span class="number">3</span>, <span class="number">1</span>) = <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<p>setsockopt函数设置端口重用<br>bind函数, 使用默认端口8080<br>listen函数, 此时socket已经可以接受客户端的tcp连接.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> &lt; S <span class="number">0</span>:<span class="number">0</span>(<span class="number">0</span>) win <span class="number">4000</span> &lt;mss <span class="number">1000</span>&gt;</span><br><span class="line">+<span class="number">0</span> &gt; S. <span class="number">0</span>:<span class="number">0</span>(<span class="number">0</span>) ack <span class="number">1</span> &lt;...&gt;</span><br><span class="line">+<span class="number">.1</span> &lt; . <span class="number">1</span>:<span class="number">1</span>(<span class="number">0</span>) ack <span class="number">1</span> win <span class="number">1000</span></span><br></pre></td></tr></table></figure>
-<p>经典的三次握手</p>
-<p>‘&lt;’ 表示输入的数据包, packetdrill会构造真实的数据包, 注入到内核协议栈.<br>‘&gt;’ 表示预期协议栈会响应的包, packetdrill会检查协议栈是不是真的发出了这个包, 如果没有, 脚本就会报错停止执行.</p>
-<p>+0 &lt; S 0:0(0) win 4000 <mss 1000><br>S后面的三个0分别表示: 包的起始seq, 结束seq, 包的长度.<br>win表示发送端的接收窗口大小, SYN包的MSS选项</mss></p>
-<p>+0 &gt; S. 0:0(0) ack 1 &lt;…&gt;<br>预期协议栈立即返回SYN+ACK包, ack为上次seq+1, 表示第一个SYN包已经收到</p>
-<p>+.1 &lt; . 1:1(0) ack 1 win 1000<br>0.1秒后注入一个ACK包到协议栈, 没有携带数据, 包的长度为0.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+<span class="number">0</span> accept(<span class="number">3</span>, ..., ...) = <span class="number">4</span></span><br><span class="line">+<span class="number">0</span> &lt; P. <span class="number">1</span>:<span class="number">201</span>(<span class="number">200</span>) win <span class="number">4000</span></span><br><span class="line">+<span class="number">0</span> &gt; . <span class="number">1</span>:<span class="number">1</span>(<span class="number">0</span>) ack <span class="number">201</span></span><br></pre></td></tr></table></figure>
-<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>执行脚本前创建名为tun0的虚拟网卡, 脚本执行完, tun0被销毁.<br>虚拟网卡在操作系统中/dev/net/tun文件, 每次程序通过 write 等系统调用将数据写入到这个文件 fd 时，这些数据会经过 tun0 这个虚拟网卡，将数据写入到内核协议栈，read 系统调用读取数据的过程类似。协议栈可以向操作普通网卡一样操作虚拟网卡 tun0。</p>
+        <pre><code>目的
+    线程是稀缺资源，不能频繁的创建。
+    解耦作用；线程的创建与执行完全分开，方便维护。
+    应当将其放入一个池子中，可以给其他任务进行复用。
+    提高线程的可管理性：线程池可以统一管理、分配、调优和监控
+    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗
+    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    
 
+四个构造函数,其中的一些参数: 
+    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
+                            除非将allowCoreThreadTimeOut设置为true。
+
+    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
+                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
+
+    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
+
+    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
+                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
+
+    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
+                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
+
+    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
+
+    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
+                                        会调用RejectedExecutionHandler的rejectedExecution方法。
+
+线程池规则
+
+    下面都假设任务队列没有大小限制：
+
+        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
+
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
+
+    任务队列大小有限时
+
+        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
+        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
+</code></pre>
       
 
       
@@ -498,21 +415,10 @@ ACK=1118+1=1119
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/30/TCP交钱学系列 (2) - packetdrill tcpdump/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/13/Java线程池ThreadPoolExecutor/">展开全文 >></a>
         </p>
       
 
@@ -544,7 +450,7 @@ ACK=1118+1=1119
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -556,7 +462,7 @@ ACK=1118+1=1119
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -805,6 +711,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

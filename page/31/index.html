@@ -151,41 +151,94 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/分布式消息队列实践/">分布式消息队列实践</a>
+      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/分布式消息队列实践/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
-<p>ArrayBlockingQueue</p>
-<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
-<pre><code>    功能命令
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.</p>
+<h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><p>类从加载到卸载的生命周期7个阶段:<br>    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)<br>    解析可以在初始化之后开始.</p>
+<p>5种必须对类进行初始化的情况:</p>
+<pre><code>1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
+2. 使用reflect包方法对类进行反射调用时.
+3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
+4. 虚拟机启动时用户指定要执行的主类
+5. 动态语言支持
+</code></pre><p>不会触发初始化的引用–被动引用:</p>
+<pre><code>1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
+2. 通过数组定义来引用类,不会触发类的初始化
+    package org.fenixsoft.classloading
+        SuperClass[] sca = new SuperClass[10];
+    类org.fenixsoft.classloading.SuperClass不会被初始化.
+    但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
+        创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
+        数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
+3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
+</code></pre><p>对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.</p>
+<h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><p>加载</p>
+<pre><code>1. 通过一个类的全限定名来获取定义此类的二进制字节流
+2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
+3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
+</code></pre><p>验证</p>
+<p>准备</p>
+<p>解析</p>
+<p>初始化</p>
+<p>类加载的三个步骤: 加载,链接,初始化</p>
+<ul>
+<li><p>加载: 把类的class文件读到内存里, 为它创建一个java.lang.Class对象.<br>从本地文件系统加载class文件; 从jar包加载class文件(如JDBC的数据库驱动类); 通过网络加载class文件; 把一个java源文件动态编译,加载</p>
+</li>
+<li><p>链接: 三个阶段: 验证,准备,解析</p>
+<pre><code>验证: 检验被加载的类是否有正确的内部结构
+   文件格式验证: 验证字节流是否符合Class文件格式规范,并且能被当前的虚拟机加载处理,如主次版本号是否在当前虚拟机处理范围内.
+               常量池中是否有不被支持常量类型.
+   元数据验证: 对字节码描述的信息进行语义分析,分析是否符合java的语言语法的规范
+   字节码验证: 分析数据流和控制, 确定语义是合法符合逻辑的
+   符合引用验证: 保证引用会被访问到, 不会出现类无法访问的情况
 
-    传输层协议
+准备: 类准备阶段为类的静态变量分配内存, 设置默认初始值
+解析: 将类的二进制数据中的符号引用替换成直接引用
+</code></pre></li>
+<li><p>初始化: 为类的静态变量赋予正确的初始值.如 private static int a = 10; 在链接的准备阶段, a=0, 在初始化阶段a=10</p>
+</li>
+</ul>
+<p>类加载的时机: 创建类的实例,即new一个对象; 访问某个类或接口的静态变量,或者对该静态变量赋值; 调用类的静态方法;<br>            反射(Class.forName(“com.App”)); 初始化一个类的子类(会先初始化子类的父类); JVM启动时标明的启动类</p>
+<pre><code>对于final类型的静态变量, 如果该变量的值可以在编译时就确定下来, Java编译器会在它出现的位置替换成它的值, 程序访问该
+静态变量, 不会导致该类的初始化.   如果final类型的静态Field的值不能在编译时确定下来, 则必须等到运行时才可以确定该变量
+的值, 访问该静态变量会导致该类被初始化
+</code></pre><p>类加载器: 三种类加载器: 根类加载器, 扩展类加载器, 系统类加载器</p>
+<pre><code>    - 根类加载器(bootstrap class loader): 加载java的核心类,用C++实现,不继承自java.lang.ClassLoader.
+    - 扩展类加载器(extension class loader): 加载JRE的扩展目录, lib/ext或者java.ext.dirs系统属性指定的目录中的JAR包的类
+                                          由java实现, 父加载器为null
+    - 系统类加载器(system class loader): 在JVM启动时加载来自java命令的-classpath选项, java.class.path系统属性,
+                                        或者CLASSPATH所指定的jar包和类路径.用户自定义的类加载器都以此类加载器作为父加载器.
+                                        由java实现, 父加载器为ExtClassLoader
 
-MQTT
+类加载器加载Class的8个步骤: 1.检测此Class是否载入过, 缓冲区是否有此Class; 有则跳至8, 否则2
+                         2.如果没有父类加载器,要么父类是根加载器,要么本身就是根加载器,跳至4; 如果父类加载器存在,进入3
+                         3.请求使用父类加载器去载入目标类, 成功则8, 否则5
+                         4.请求使用根类加载器去载入目标类, 成功则8, 否则7
+                         5.当前类加载器尝试寻找Class文件, 找到则6, 否则7
+                         6.从文件中载入Class, 成功则跳至8
+                         7.抛出ClassNotFoundException异常
+                         8.返回对应的java.lang.Class对象
+</code></pre><p>类加载机制: 三种机制: 全盘负责, 双亲委派, 缓存机制<br>        1.全盘负责: 一个类加载器负责加载某个Class时,该Class所依赖和引用其他Class也将由该类加载器负责载入<br>        2.双亲委派: 先让父类加载器试图加载该Class, 只有父类加载器无法加载该类时才尝试从自己的类路径中加载该类<br>                   某个特定的类加载器在接到加载类的请求时, 首先将加载任务委托给父加载器, 依次递归, 父加载器无法<br>                   完成该加载任务时, 才自己去加载<br>        3.缓存机制:  所有加载过的Class都会被缓存, 修改了Class之后, 必须重新启动JVM, 修改才会生效</p>
+<p>根类加载器 &lt;- 扩展类加载器 &lt;- 系统类加载器 &lt;- 用户类加载器<br>双亲委派优势: 1.java类随它的类加载器一起具备了一种优先级的层次关系, 避免类的重复加载<br>            2.java核心api中定义类型不会被随意替换, 假设网络传递一个java.lang.Integer的类, 启动类加载器在发现这个类后,<br>                直接返回已经加载过的Integer.class, 防止核心API库被篡改</p>
 
-STOMP
-
-XMPP
-
-JMS
-</code></pre>
       
 
       
@@ -193,24 +246,13 @@ JMS
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">消息队列</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -219,7 +261,7 @@ JMS
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/分布式消息队列实践/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
         </p>
       
 
@@ -249,55 +291,226 @@ JMS
 
 
   
-    <article id="post-Weekly Contest 130" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kotlin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Weekly Contest 130/">Weekly Contest 130</a>
+      <a class="article-title" href="/2019/04/24/Kotlin/">Kotlin</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/Weekly Contest 130/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:01:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/24/Kotlin/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1018-Binary-Prefix-Divisible-By-5"><a href="#1018-Binary-Prefix-Divisible-By-5" class="headerlink" title="1018. Binary Prefix Divisible By 5"></a><a href="https://leetcode.com/problems/binary-prefix-divisible-by-5/" target="_blank" rel="noopener">1018. Binary Prefix Divisible By 5</a></h1><h3 id="我想写对个东西怎么就这么难"><a href="#我想写对个东西怎么就这么难" class="headerlink" title="我想写对个东西怎么就这么难 -_-"></a>我想写对个东西怎么就这么难 -_-</h3><hr>
-<ol>
-<li>最开始的初始暴力想法: 把每个位置对应的数转化为题目中要求的数, 然后看是否能被5整除.<br> 简单的写了个双重循环后开始脑壳疼, 数组头部的边界条件不太好写啊, 不要然从后往前遍历.<br> 过于复杂了,看看别人的思路吧.</li>
-<li>这个规则是数组元素往二进制里面加, 思路就是就用左移并且把数组元素是0或1考虑进来.</li>
-<li> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">int</span> acc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : A) &#123;</span><br><span class="line">    acc = (acc &lt;&lt; <span class="number">1</span>) + i;</span><br><span class="line">    res.add(acc % <span class="number">5</span> == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res;</span><br></pre></td></tr></table></figure>
-<p> 按照别人的python解法仿照写的java代码,给的几个Example都没问题,点击Submit,失败.<br> 这种写法的确是符合正常思路,但是题目中给的数组长度是1到30000,而java的int只有2^31,<br> 所以int溢出了.<br> python还是爽啊,写代码跟着思路走就行,你只管岁月静好,自有动态类型替你负重前行.<br> 不过倔强的java程序员不会就此认输,悄悄地把取模移了上去: </p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">int</span> acc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : A) &#123;</span><br><span class="line">    acc = (acc * <span class="number">2</span> + i) % <span class="number">5</span>;</span><br><span class="line">    res.add(acc == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res;</span><br></pre></td></tr></table></figure>
-<p> 为什么敢移上去呢?就因为int装不下吗?并不:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">证明 (n * <span class="number">2</span> + <span class="number">1</span>) % <span class="number">5</span> 等于 ((n % <span class="number">5</span>) * <span class="number">2</span> + <span class="number">1</span>) % <span class="number">5</span></span><br><span class="line">因为</span><br><span class="line">    (a + b) % p = (a % p + b % p) % p</span><br><span class="line">    (a * b) % p = (a % p * b % p) % p</span><br><span class="line">    a % p == a % p % p</span><br><span class="line">所以</span><br><span class="line">    左边 = ((n * <span class="number">2</span>) % <span class="number">5</span> + <span class="number">1</span> % <span class="number">5</span>) % <span class="number">5</span></span><br><span class="line">        = ((((n % <span class="number">5</span>) * <span class="number">2</span>) % <span class="number">5</span>) + <span class="number">1</span>) % <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    右边 = 左边</span><br></pre></td></tr></table></figure>
-<p> 嗯…不知道这儿又可以引发多少对两种语言的思考.</p>
-</li>
-<li><p>写java的过程中同时又踩了其他的坑—–运算符优先级:<br> 乘除取模 &gt; 加减 &gt; 移位 &gt; 按位或<br> 所以 </p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">acc &lt;&lt; <span class="number">1</span> + a 问题很大</span><br><span class="line">acc &lt;&lt; <span class="number">1</span> | a 还ok</span><br><span class="line">acc &lt;&lt; <span class="number">1</span> | a % <span class="number">5</span> 问题很大</span><br></pre></td></tr></table></figure>
-</code></pre><p> 多写括号可破:</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((acc &lt;&lt; <span class="number">1</span>) | a) % <span class="number">5</span></span><br></pre></td></tr></table></figure>
+        <p>is运算符<br>    检测一个表达式是否某类型的实例.如果是,在检测后可以直接当做该类型使用.<br>for循环<br>    普通的和索引遍历.<br>        for((k, v) in map) print(“$k -&gt; $v”)<br>when表达式<br>    模式匹配, 可以匹配具体的值, 也可以匹配类型.<br>in运算符<br>    检测某个数字是否在指定区间内.<br>        for (x in 9 downTo 0 step 3) print(x)<br>lambda表达式<br>    filter, sortedBy, map, forEach使用大括号<br>    list.filter{it &gt; 0}<br>类的创建<br>    不同指定实例类型, 不用new<br>DTO<br>    data class Customer(val name: String, val email: String)<br>    提供: getters, 对var还有setters<br>         equals(), hashCode(), toString(), copy()<br>默认参数<br>    fun foo(a: Int = 0, b: String = “”) {…}<br>访问map<br>    map[“key”]<br>延迟属性<br>    val p: String by lazy {}<br>扩展函数<br>    fun String.spaceToCamelCase() {…}<br>创建单例<br>    object Resource {<br>        val name = “Name”<br>    }</p>
+<p>if not null缩写<br>    val files = File(“Test”).listFiles()<br>    print(files?.size)</p>
+<p>if not null and else<br>    print(files?.size ?: “empty”)</p>
+<p>if null执行语句<br>    val email = values[“email”] ?: throw IllegalStateException(“Email is missing”)</p>
+<p>在可能会空的集合取第一个元素<br>    val mainEmail = emails.firstOrNull() ?: “”</p>
+<p>if not null执行代码<br>    value?.let {}</p>
+<p>可空布尔<br>    val b: Boolean? = …</p>
+<p>交换变量<br>    a = b.also {b = a}</p>
+<p>三个等号与两个等号<br>    数字装箱的 同一性 相等性</p>
+<p>基本类型<br>    在运行时表示为原生类型值,使用时像普通的类.<br>    较小类型不能隐式转换为较大的类型.</p>
+<p>密封类<br>    表示受限的类继承结构, 当一个值为有限集中的类型,不能有任何其他类型时.</p>
+<p>协程</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kotlin//" class="article-tag-list-link color2">Kotlin</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/Kotlin/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JVM故障排查" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/JVM故障排查/">JVM故障排查</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/JVM故障排查/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="jps-JVM-Process-Status-Tool"><a href="#jps-JVM-Process-Status-Tool" class="headerlink" title="jps (JVM Process Status Tool)"></a>jps (JVM Process Status Tool)</h2><p>列出正在运行的虚拟机进程<br>-v 输出虚拟机进程启动时JVM参数</p>
+<h2 id="jstat-JVM-Statistics-Monitoring-Tool"><a href="#jstat-JVM-Statistics-Monitoring-Tool" class="headerlink" title="jstat (JVM Statistics Monitoring Tool)"></a>jstat (JVM Statistics Monitoring Tool)</h2><p>监视虚拟机各种运行状态信息</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/JVM故障排查/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/JWT/">JWT</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/JWT/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p>了解JWT相关知识</p>
+<pre><code>JWT组成: 
+    Header.Payload.Signature
+    头部.负载.签名
+
+头部:
+    {
+       &quot;alg&quot;: &quot;HS256&quot;,
+        &quot;typ&quot;: &quot;JWT&quot;
+    }
+    alg表示签名的算法，默认是HMAC SHA256, typ表示这个令牌的类型.
+
+负载:
+    iss (issuer)：签发人
+    exp (expiration time)：过期时间
+    sub (subject)：主题
+    aud (audience)：受众
+    nbf (Not Before)：生效时间
+    iat (Issued At)：签发时间
+    jti (JWT ID)：编号
+
+签名: 对前两部分的签名,防止数据篡改.
+    HMACSHA256(
+        base64UrlEncode(header) + &quot;.&quot; +
+        base64UrlEncode(payload),
+        secret)
+把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用&quot;点&quot;（.）分隔
 </code></pre></li>
-<li><p>从移位来考虑应当是 acc &lt;&lt; 1 | a<br> 从二进制转十进制的阶数来考虑是 acc * 2 + 1<br> 两种写法杂糅在一起感觉有些奇怪</p>
-</li>
 </ol>
-<h1 id="1017-Convert-to-Base-2"><a href="#1017-Convert-to-Base-2" class="headerlink" title="1017. Convert to Base -2"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/convert-to-base-2/" target="_blank" rel="noopener">1017. Convert to Base -2</a></h1><p>考虑十进制到二进制的转换:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">base2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    String res = <span class="string">";</span></span><br><span class="line"><span class="string">    while (N != 0) &#123;</span></span><br><span class="line"><span class="string">        res = Integer.toString(N &amp; 1) + res;</span></span><br><span class="line"><span class="string">        N = N &gt;&gt; 1;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    return res == "</span><span class="string">" ? "</span><span class="number">0</span><span class="string">" : res;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></p>
-<p>每次把最后一位二进制数留下来,组成一个二进制字符串.<br>对于负二进制:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">baseNeg2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    String res = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">while</span> (N != <span class="number">0</span>) &#123;</span><br><span class="line">        res = Integer.toString(N &amp; <span class="number">1</span>) + res;</span><br><span class="line">        N = -(N &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res == <span class="string">""</span> ? <span class="string">"0"</span> : res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>对于String的优化:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">baseNeg2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    StringBuilder res = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">while</span> (N != <span class="number">0</span>) &#123;</span><br><span class="line">        res.insert(<span class="number">0</span>, Integer.toString(N &amp; <span class="number">1</span>));</span><br><span class="line">        N = -(N &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.toString().equals(<span class="string">""</span>) ? <span class="string">"0"</span> : res.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="1019-Next-Greater-Node-In-Linked-List"><a href="#1019-Next-Greater-Node-In-Linked-List" class="headerlink" title="1019. Next Greater Node In Linked List"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/next-greater-node-in-linked-list/" target="_blank" rel="noopener">1019. Next Greater Node In Linked List</a></h1><p>考查对于链表,栈,数组,线性表的组合使用.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">先把链表的东西都存到线性表来.</span><br><span class="line">遍历线性表的同时</span><br><span class="line">    若栈不为空 且 当前遍历的线性表的值a大于栈顶索引对应的值b,</span><br><span class="line">        则将要返回的数组的a项设置为b,同时出栈.</span><br><span class="line">    否则</span><br><span class="line">        把当前遍历的索引入栈.</span><br><span class="line">```         </span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">public int[] nextLargerNodes(ListNode head) &#123;</span><br><span class="line">    ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">    while (head != null) &#123;</span><br><span class="line">        list.add(head.val);</span><br><span class="line">        head = head.next;</span><br><span class="line">    &#125;</span><br><span class="line">    int[] res = new int[list.size()];</span><br><span class="line">    Stack[Integer] stack = new Stack&lt;&gt;();</span><br><span class="line">    for (int i=0; i&lt;list.size(); i++) &#123;</span><br><span class="line">        while (!stack.isEmpty() &amp;&amp; list.get(i) &gt; list.get(stack.peek())) &#123;</span><br><span class="line">            res[stack.pop()] = list.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">        stack.push(i);</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="1020-Number-of-Enclaves"><a href="#1020-Number-of-Enclaves" class="headerlink" title="1020. Number of Enclaves"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/number-of-enclaves/" target="_blank" rel="noopener">1020. Number of Enclaves</a></h1><p>神奇的dfs,关键在于构造递归结构,入参,返回值以及终止条件.</p>
-<ol>
-<li>遍历整个二维数组,只对在边上的行列进行dfs</li>
-<li>将可以被边上索引到的1都变为0.</li>
-<li>统计二维数组中剩余的1.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numEnclaves</span><span class="params">(<span class="keyword">int</span>[][] A)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;A.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;A[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i==<span class="number">0</span> || j==<span class="number">0</span> || i==A.length-<span class="number">1</span> || j==A[<span class="number">0</span>].length-<span class="number">1</span>) &#123;</span><br><span class="line">                dfs(A, i, j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;A.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;A[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (A[i][j] == <span class="number">1</span>) &#123;</span><br><span class="line">                result++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[][] a, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (i&gt;=<span class="number">0</span> &amp;&amp; i&lt;a.length &amp;&amp; j&gt;=<span class="number">0</span> &amp;&amp; j&lt;a[<span class="number">0</span>].length &amp;&amp; a[i][j]==<span class="number">0</span>) &#123;</span><br><span class="line">        a[i][j] = <span class="number">0</span>;</span><br><span class="line">        dfs(a, i+<span class="number">1</span>, j);</span><br><span class="line">        dfs(a, i-<span class="number">1</span>, j);</span><br><span class="line">        dfs(a, i, j+<span class="number">1</span>);</span><br><span class="line">        dfs(a, i, j-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<p>Spring中使用JWT:</p>
+<pre><code>1. 编写由登录对象转为token和由token获取登录对象的方法.
+2. 继承OncePerRequestFilter,重写doFilterInternal方法,对每一次请求进行token检查.
+3. 使用@AuthenticationPrincipal注解, 根据前端传过来的header获取登录对象.
+</code></pre><ol start="2">
+<li>postgresql的具体使用:<pre><code>读取数组属性:
+    1. 定义ArrayTypeHandelr继承BaseTypeHandler,重写get,set方法
+    2. 指定mybatis的类型处理器包的位置为ArrayTypeHandelr所在包.
+    3. 定义数组属性所在类型的resultMap.
+</code></pre></li>
 </ol>
 
       
@@ -307,24 +520,13 @@ JMS
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
         		</li>
       		
 		</ul>
@@ -333,7 +535,7 @@ JMS
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/Weekly Contest 130/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/JWT/">展开全文 >></a>
         </p>
       
 
@@ -365,7 +567,7 @@ JMS
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/30/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span>
+      <a class="extend prev" rel="prev" href="/page/30/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/32/">Next &raquo;</a>
     </nav>
   
 
@@ -377,7 +579,7 @@ JMS
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -626,6 +828,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

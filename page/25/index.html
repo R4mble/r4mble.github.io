@@ -151,444 +151,64 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Java8查漏补缺" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux epoll&amp;select&amp;poll" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Java8查漏补缺/">Java8查漏补缺</a>
+      <a class="article-title" href="/2019/06/29/Linux epoll&select&poll/">Linux epoll&amp;select&amp;poll</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Java8查漏补缺/" class="archive-article-date">
-  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/06/29/Linux epoll&select&poll/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>函数式接口里可以有继承自Object类的抽象方法.<br> 例:</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">toString</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</code></pre><p> 以上代码是合法的.</p>
-</li>
-<li><p>函数式接口的实例可以通过 lambda表达式, 方法引用 或者 构造方法引用 创建.</p>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MyInterface myInterface = () -&gt; System.out.println(<span class="string">"hello"</span>);</span><br><span class="line">System.out.println(myInterface.getClass());</span><br><span class="line">System.out.println(myInterface.getClass().getSuperclass());</span><br><span class="line">System.out.println(myInterface.getClass().getInterfaces()[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+        <p>阻塞blocking IO<br>非阻塞nonblocking IO<br>io多路复用技术 IO multiplexing<br>        select 和 poll<br>事件驱动 epoll</p>
+<p>epoll 多路复用IO接口select/poll的增强版本<br>        显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率.<br>        原因: 1.复用文件描述符集合来传递结果,而不用迫使开发者每次等待事件之前都必须重新准备要被侦听的文件描述符集合.<br>              2.获取事件时,无须遍历整个被侦听的描述符集合,只要遍历那些被内核IO事件异步唤醒而加入Ready队列的描述符集合.<br>              3.epoll除了提供select/poll那种IO事件的电平触发(Level Triggered),还提供了边沿触发(Edge Triggered),使得用户空间<br>                程序有可能缓存IO状态,减少epoll_wait/epoll_pwait的调用,提高应用程序效率.<br>              4.epoll没有文件描述符的上限,select/poll有限定数量.<br>              5.select/poll会轮询所有fd,有数据就处理,没数据就跳过.epoll只处理就绪的fd,它有一个就绪设备的队列,<br>                每次只轮询该队列的数据,然后进行处理.<br>              6.epoll使用mmap(文件/对象的内存映射,被映射到多个内存页上),同一块内存避免fd在操作过程中的拷贝问题.</p>
+<pre><code>epoll的两种工作方式
+        LT(电平触发 Level Triggered, 只要有数据可以读,不管怎样都会通知): 默认工作方式,同时支持block和no_block_socket. 
+                这种工作方式下,内核会通知你一个fd是否就绪,然后才可以对这个就绪的fd进行IO操作. 
+                即使没有任何操作,系统还是会继续提示fd已就绪,select/poll也是使用这种工作方式.
 
-class sth.jdk8.Test2$$Lambda$2/1149319664
-class java.lang.Object
-interface sth.jdk8.MyInterface
-</code></pre><p> 可以看到这个函数式接口实例的父类是Object,它实现了接口MyInterface</p>
-<pre><code>通过方法引用创建函数式接口实例
-list.forEach(System.out::println);
-</code></pre></li>
-<li><p>方法引用的四种形式:<br>  类名::实例方法 所对应lambda表达式的第一个参数就是这个调用方法的对象</p>
-</li>
-<li><p>Function&lt;T, R&gt;接口<br> Represents a function that accepts one argument and produces a result.<br> 抽象方法:     R apply(T t);<br> 例:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">convert</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, String&gt; function)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> 默认方法: compose andThen<br> 静态方法: identity</p>
-<p> BiFunction&lt;T, U, R&gt;接口<br> 抽象方法: R apply(T t, U u);<br> 默认方法: <v> BiFunction&lt;T, U, V&gt; andThen(Function&lt;? super R, ? extends V&gt; after)</v></p>
-<p> 重要建议: equals方法 把常量放在前面,变量放在后面. 可以避免变量为null时引发的空指针异常</p>
-</li>
-</ol>
+        ET(边沿触发 Edge Triggered, 只有状态发生变化时才会通知): 高速工作方式,仅支持no_block_socket,当fd从未就绪变为就绪时,
+                内核会通知fd已就绪,并且不会再次通知,除非因为某些操作导致fd就绪状态发生变化. only once.
+                当一直不对这个fd进行IO操作,导致fd变为未就绪时,内核同样不会发送更多的通知. 这种方式出错率较高,需要检测程序.
 
-      
+函数
+        int epoll_create(int size);
+                创建一个epoll实例,通知内核监听size个fd. 创建成功后会占用一个fd,使用完之后要close(),否则fd可能会被耗尽
+        int epoll_ctl(int epfd, int op, int fd, struct epoll_events* event);
+                注册每一个文件描述符,一旦某个文件描述符就绪,内核采用回调机制,迅速激活文件描述符
+        int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
+                返回一个代表就绪描述符数量的值. mmap内存映射技术,省掉文件描述符在系统调用时复制的开销
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
+Nginx使用了边缘触发:
+        ee.events = EPOLLIN|EPOLLOUT|EPOLLET
+</code></pre><p>select<br>        文件描述符集合1 文件描述符集合2 文件描述符集合3<br>        可读事件        可写事件        异常事件</p>
+<pre><code>创建三个关注事件的文件描述符,死循环,依次遍历所有的文件描述符集合,判断是否由可读,可写,异常事件,
+遍历完,如果有事件或超时,返回事件个数,否则阻塞一定时间.
+每次调用select,都需要把三个fd集合从用户态拷贝到内核态.
 
+文件描述符个数有限制: 1024, 数据结构: 位图.
+</code></pre><p>poll<br>        共用一个文件描述符集合,数据结构:链表,<br>        没有最大文件描述符数量的限制</p>
+<pre><code>select和poll一般不会丢失就绪的消息,使用水平触发. 将就绪的文件告诉进程后,如果进程没有对其进行IO操作,下次调用select()或poll()时
+将再次报告这些文件描述符.
+</code></pre><p>epoll<br>        epoll_ctl: 1.增加监听的fd到红黑树中<br>                   2.从红黑树中删除fd<br>                   3.修改已经注册的fd的监听事件</p>
+<pre><code>epoll_wait:如果就绪队列不为空或超时,结束循环,否则阻塞一段时间继续下一次循环,
+          如果就绪队列不为空,拷贝就绪文件描述符到用户空间,返回就绪个数.
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Java8查漏补缺/">展开全文 >></a>
-        </p>
-      
+当设备就绪后,会通过注册的回调函数自动将就绪文件描述符加入就绪队列.
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JavaScript教程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/JavaScript教程/">JavaScript教程</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/JavaScript教程/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>基本语法<br>    变量<br>        声明和赋值<br>            var a = 1;<br>            当只声明了变量,而没有赋值时 为 undefined</p>
-<pre><code>    变量没有类型,只有值有类型
-        var a = 42;
-        typeof a; // &quot;number&quot;
-
-        a = true;
-        typeof a; // &quot;boolean&quot;
-
-        typeof typeof 42; // &quot;string&quot;
-
-    变量提升
-        JavaScript引擎会先解析代码,获取所有被声明的变量.
-            console.log(a);
-            var a = 1;
-            //执行时相当于先声明了a,但是没有赋值,会打印出undefined
-
-标识符
-    第一个字符可以是任意Unicode字母,不能是数字, 包括 $ 和 _
-
-区块
-    对var来说,区块不构成单独的作用域
-    {
-        var a = 1;
-    }
-    a // 1
-
-逻辑控制
-    if else switch 三目运算符 while for do...while break continue 同 Java
-
-标签
-    通常和break,continue配合
-
-    top:
-        for (var i=0; i&lt;3; i++) {
-            for (var j=0; j&lt;3; j++) {
-                if (i===1 &amp;&amp; j===1) break top;
-            }
-        }
-    满足条件跳出双层循环. 如果不使用标签则只能跳出内层循环.
-</code></pre><p>数据类型<br>    number      整数和小数<br>    string<br>    boolean<br>    undefined<br>    null<br>    object<br>    symbol</p>
-<pre><code>typeof运算符
-    typeof 123 // &quot;number&quot;
-    typeof &quot;123&quot; // &quot;string&quot;
-    typeof false // &quot;boolean&quot;
-
-    函数 返回 function
-    function f() {}
-    typeof f // &quot;function&quot;
-
-    未定义变量 返回 undefined, 可以用来检测没有声明的变量
-    typeof undefined === &quot;undefined&quot;
-
-    typeof window // &quot;object&quot;
-    typeof {} // &quot;object&quot;
-    typeof [] // &quot;object&quot;
-
-    var o = {};
-    var a = [];
-
-    区分数组和对象
-    o instanceof Array //false
-    a instanceof Array //true
-
-
-    typeof null === &quot;object&quot; //这个是存在了20年的bug,应该返回null
-
-    检测null:
-        val a = null;
-        (!a &amp;&amp; typeof a === &quot;object&quot;) //true, null是假值, undefined也是假值
-
-    undefined == null //true
-
-    Number(null) //0
-    5 + null //5
-
-    Number(undefined) //NaN
-    5 + undefined // NaN
-
-    null表示空值
-    undefined表示未定义
-        1)变量声明了但没有赋值
-        2)调用函数时该提供的参数没有提供
-        3)对象没有该属性
-        4)函数没有返回值,默认返回 undefined
-
-
-布尔值
-    以下为false, 其他为true
-    undefined
-    null
-    false
-    0
-    NaN
-    &quot;&quot; 或 &apos;&apos;
-
-    空数组和空对象都是true
-
-数值
-    所有数值以64位浮点数形式存储,也就是说这个语言根本没有整数
-        1 === 1.0  true
-
-    浮点数不精确,所以
-        0.1 + 0.2 === 0.3  //false
-
-        0.3 / 0.1   //2.999999999
-
-        (0.3 - 0.2) === (0.2 - 0.1)  //false
-
-    64个二进制位: 第1位 符号位,
-                 第2位到第12位(共11位) 指数部分, 
-                 第13位到第64位(共52位) 小数部分.
-</code></pre><p>函数作用域:<br>     其它类C语言,一对花括号封闭的代码块就是一个作用域, JavaScript的作用域<br>     是通过函数来定义的.<br>     静态作用域,词法作用域,作用域的嵌套关系可以在语法分析时确定,而不必等到<br>     运行时确定.</p>
-<p>闭包:<br>    由函数及其封闭的自由变量组成的集合体.<br>    特性: 当一个函数返回它内部定义的一个函数时,就产生了闭包,闭包不但包括被返回的函数,<br>          还包括这个函数的定义环境.</p>
-<pre><code>用途: 实现嵌套的回调函数
-        由于闭包,即使外层函数已经执行完毕,其作用域内申请的变量也不会释放,因为里层
-        的函数还有可能引用到这些变量.
-     隐藏对象的细节
-</code></pre><h1 id="诱骗JS入门教程"><a href="#诱骗JS入门教程" class="headerlink" title="诱骗JS入门教程"></a>诱骗JS入门教程</h1><p>立足点: 工作和生活中用得到JS<br>需要学习的点: 变量,条件,循环,对象,函数</p>
-<ol>
-<li>模拟键鼠: 炉石传送自动开包脚本, 炉石传说自动投降脚本</li>
-<li>处理文本文件: 找到重复的数</li>
-<li>下载图片: 下载某微博评论下用户的头像</li>
-<li>写游戏: 2048</li>
-</ol>
-<h3 id="Lesson1-变量与类型"><a href="#Lesson1-变量与类型" class="headerlink" title="Lesson1 变量与类型"></a>Lesson1 变量与类型</h3><p>运算</p>
-<ol>
-<li><p>打印<br>console.log(3)</p>
-</li>
-<li><p>变量<br>let a = 4<br>let b = 3<br>let c = a + b<br>console.log(c)</p>
-</li>
-<li><p>类型<br>数字<br>let x = 101<br>字符串<br>let y = ‘nihao’<br>数组<br>let arr = [1,2,3]<br>布尔<br>let z = false</p>
-</li>
-</ol>
-<h3 id="Lesson2-条件和循环"><a href="#Lesson2-条件和循环" class="headerlink" title="Lesson2 条件和循环"></a>Lesson2 条件和循环</h3><ol>
-<li>if</li>
-</ol>
-<ul>
-<li><p>if<br>if (3 &gt; 4) {<br>  console.log(“nihao”)<br>}</p>
-</li>
-<li><p>if else</p>
-</li>
-<li><p>if else if</p>
-</li>
-</ul>
-<ol start="2">
-<li>for</li>
-</ol>
-<ul>
-<li>let of 数组 字符串</li>
-</ul>
-<ol start="3">
-<li>练习</li>
-</ol>
-<h3 id="Lesson3-对象和函数"><a href="#Lesson3-对象和函数" class="headerlink" title="Lesson3 对象和函数"></a>Lesson3 对象和函数</h3><ol>
-<li>对象</li>
-<li>函数</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/JavaScript教程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Haskell实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Haskell实现2048/">Haskell实现2048</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/Haskell实现2048/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Prelude <span class="keyword">hiding</span> (<span class="type">Left</span>, <span class="type">Right</span>)</span><br><span class="line"><span class="keyword">import</span> Data.Char (<span class="title">toLower</span>)</span><br><span class="line"><span class="keyword">import</span> Data.List</span><br><span class="line"><span class="keyword">import</span> System.IO</span><br><span class="line"><span class="keyword">import</span> System.Random</span><br><span class="line"><span class="keyword">import</span> Text.Printf</span><br><span class="line"><span class="keyword">import</span> System.Process</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">data</span> <span class="type">Move</span> = <span class="type">Up</span> | <span class="type">Down</span> | <span class="type">Left</span> | <span class="type">Right</span></span></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="type">Grid</span> = [[<span class="type">Int</span>]]</span></span><br><span class="line"></span><br><span class="line"><span class="title">start</span> :: <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">start</span> = <span class="keyword">do</span> grid'  &lt;- addTile $ replicate <span class="number">4</span> [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line">           addTile grid'</span><br><span class="line"></span><br><span class="line"><span class="title">merge</span> :: [<span class="type">Int</span>] -&gt; [<span class="type">Int</span>]</span><br><span class="line"><span class="title">merge</span> xs = merged ++ padding</span><br><span class="line">    <span class="keyword">where</span> padding = replicate (length xs - length merged) <span class="number">0</span></span><br><span class="line">          merged  = combine $ filter (/= <span class="number">0</span>) xs</span><br><span class="line">          combine (x:y:xs) | x == y = x * <span class="number">2</span> : combine xs</span><br><span class="line">                           | otherwise = x  : combine (y:xs)</span><br><span class="line">          combine x = x</span><br><span class="line"></span><br><span class="line"><span class="title">move</span> :: <span class="type">Move</span> -&gt; <span class="type">Grid</span> -&gt; <span class="type">Grid</span></span><br><span class="line"><span class="title">move</span> <span class="type">Left</span>  = map merge</span><br><span class="line"><span class="title">move</span> <span class="type">Right</span> = map (reverse . merge . reverse)</span><br><span class="line"><span class="title">move</span> <span class="type">Up</span>    = transpose . move <span class="type">Left</span>  . transpose</span><br><span class="line"><span class="title">move</span> <span class="type">Down</span>  = transpose . move <span class="type">Right</span> . transpose</span><br><span class="line"></span><br><span class="line"><span class="title">getZeroes</span> :: <span class="type">Grid</span> -&gt; [(<span class="type">Int</span>, <span class="type">Int</span>)]</span><br><span class="line"><span class="title">getZeroes</span> grid = filter (\(row, col) -&gt; (grid!!row)!!col == <span class="number">0</span>) coordinates</span><br><span class="line">    <span class="keyword">where</span> singleRow n = zip (replicate <span class="number">4</span> n) [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line">          coordinates = concatMap singleRow [<span class="number">0.</span><span class="number">.3</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">setSquare</span> :: <span class="type">Grid</span> -&gt; (<span class="type">Int</span>, <span class="type">Int</span>) -&gt; <span class="type">Int</span> -&gt; <span class="type">Grid</span></span><br><span class="line"><span class="title">setSquare</span> grid (row, col) val = pre ++ [mid] ++ post</span><br><span class="line">    <span class="keyword">where</span> pre  = take row grid</span><br><span class="line">          mid  = take col (grid!!row) ++ [val] ++ drop (col + <span class="number">1</span>) (grid!!row)</span><br><span class="line">          post = drop (row + <span class="number">1</span>) grid</span><br><span class="line"></span><br><span class="line"><span class="title">isMoveLeft</span> :: <span class="type">Grid</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">isMoveLeft</span> grid = sum allChoices &gt; <span class="number">0</span></span><br><span class="line">    <span class="keyword">where</span> allChoices = map (length . getZeroes . flip move grid) directions</span><br><span class="line">          directions = [<span class="type">Left</span>, <span class="type">Right</span>, <span class="type">Up</span>, <span class="type">Down</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">printGrid</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">printGrid</span> grid = <span class="keyword">do</span></span><br><span class="line">    system <span class="string">"cls"</span> <span class="comment">-- clears the screen</span></span><br><span class="line">    mapM_ (putStrLn . showRow) grid</span><br><span class="line"></span><br><span class="line"><span class="title">showRow</span> :: [<span class="type">Int</span>] -&gt; <span class="type">String</span></span><br><span class="line"><span class="title">showRow</span> = concatMap (printf <span class="string">"%5d"</span>)</span><br><span class="line"></span><br><span class="line"><span class="title">moves</span> :: [(<span class="type">Char</span>, <span class="type">Move</span>)]</span><br><span class="line"><span class="title">moves</span> = keys <span class="string">"wasd"</span> ++ keys <span class="string">"chtn"</span></span><br><span class="line">    <span class="keyword">where</span> keys chars = zip chars [<span class="type">Up</span>, <span class="type">Left</span>, <span class="type">Down</span>, <span class="type">Right</span>]</span><br><span class="line"></span><br><span class="line"><span class="title">captureMove</span> :: <span class="type">IO</span> <span class="type">Move</span></span><br><span class="line"><span class="title">captureMove</span> = <span class="keyword">do</span></span><br><span class="line">    inp &lt;- getChar</span><br><span class="line">    <span class="keyword">case</span> lookup (toLower inp) moves <span class="keyword">of</span></span><br><span class="line">        <span class="type">Just</span> x  -&gt; return x</span><br><span class="line">        <span class="type">Nothing</span> -&gt; <span class="keyword">do</span> putStrLn <span class="string">"Use WASD or CHTN as input"</span></span><br><span class="line">                      captureMove</span><br><span class="line"></span><br><span class="line"><span class="title">check2048</span> :: <span class="type">Grid</span> -&gt; <span class="type">Bool</span></span><br><span class="line"><span class="title">check2048</span> grid = [] /= filter (== <span class="number">2048</span>) (concat grid)</span><br><span class="line">                </span><br><span class="line"><span class="title">addTile</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">addTile</span> grid = <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">let</span> candidates = getZeroes grid</span><br><span class="line">    pick &lt;- choose candidates</span><br><span class="line">    val  &lt;- choose [<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>]</span><br><span class="line">    <span class="keyword">let</span> new_grid = setSquare grid pick val</span><br><span class="line">    return new_grid</span><br><span class="line"></span><br><span class="line"><span class="title">choose</span> :: [a] -&gt; <span class="type">IO</span> a</span><br><span class="line"><span class="title">choose</span> xs = <span class="keyword">do</span></span><br><span class="line">    i &lt;- randomRIO (<span class="number">0</span>, length xs<span class="number">-1</span>)</span><br><span class="line">    return (xs !! i)</span><br><span class="line"></span><br><span class="line"><span class="title">newGrid</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> <span class="type">Grid</span></span><br><span class="line"><span class="title">newGrid</span> grid = <span class="keyword">do</span></span><br><span class="line">    m &lt;- captureMove</span><br><span class="line">    <span class="keyword">let</span> new_grid = move m grid</span><br><span class="line">    return new_grid</span><br><span class="line"></span><br><span class="line"><span class="title">gameLoop</span> :: <span class="type">Grid</span> -&gt; <span class="type">IO</span> ()</span><br><span class="line"><span class="title">gameLoop</span> grid</span><br><span class="line">    | isMoveLeft grid = <span class="keyword">do</span></span><br><span class="line">        printGrid grid</span><br><span class="line">        <span class="keyword">if</span> check2048 grid</span><br><span class="line">        <span class="keyword">then</span> putStrLn <span class="string">"You won!"</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">do</span> new_grid &lt;- newGrid grid</span><br><span class="line">                <span class="keyword">if</span> grid /= new_grid</span><br><span class="line">                <span class="keyword">then</span> <span class="keyword">do</span> new &lt;- addTile new_grid</span><br><span class="line">                        gameLoop new</span><br><span class="line">                <span class="keyword">else</span> gameLoop grid</span><br><span class="line">    | otherwise = <span class="keyword">do</span></span><br><span class="line">        printGrid grid</span><br><span class="line">        putStrLn <span class="string">"Game over"</span></span><br><span class="line"></span><br><span class="line"><span class="title">main</span> :: <span class="type">IO</span> ()</span><br><span class="line"><span class="title">main</span> = <span class="keyword">do</span></span><br><span class="line">    hSetBuffering stdin <span class="type">NoBuffering</span></span><br><span class="line">    grid &lt;- start</span><br><span class="line">    gameLoop grid</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Haskell//" class="article-tag-list-link color3">Haskell</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Haskell实现2048/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Haskell里的Functor函子" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Haskell里的Functor函子/">Haskell里的Functor函子</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/Haskell里的Functor函子/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <pre><code class="haskell"><span class="keyword">import</span> Data.List
-<span class="keyword">import</span> Data.Char
-<span class="title">main</span> = <span class="keyword">do</span> line &lt;- fmap (intersperse '-' . reverse . map toUpper) getLine
-          putStrLn line
-          main
+    数据结构:红黑树
 </code></pre>
-
       
 
       
@@ -596,24 +216,13 @@ list.forEach(System.out::println);
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Haskell//" class="article-tag-list-link color3">Haskell</a>
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
         		</li>
       		
 		</ul>
@@ -622,7 +231,364 @@ list.forEach(System.out::println);
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Haskell里的Functor函子/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Linux epoll&select&poll/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Markdown语法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/Markdown语法/">Markdown语法</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/Markdown语法/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="用Markdown写Markdown语法教程"><a href="#用Markdown写Markdown语法教程" class="headerlink" title="用Markdown写Markdown语法教程"></a>用Markdown写Markdown语法教程</h1><h2 id="使用-号可以标记1-6级标题"><a href="#使用-号可以标记1-6级标题" class="headerlink" title="使用#号可以标记1-6级标题"></a>使用#号可以标记1-6级标题</h2><h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><h2 id="换行"><a href="#换行" class="headerlink" title="换行"></a>换行</h2><p>换行了吗?<br>没有<br>段落的换行<br>是使用两个以上空格加上回车  </p>
+<h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p>// IDEA不支持<br><em>斜体文本</em><br><em>斜体文本</em><br><strong>粗体文本</strong><br><strong>粗体文本</strong><br><strong><em>粗斜体文本</em></strong><br><strong><em>粗斜体文本</em></strong>  </p>
+<h2 id="分隔线"><a href="#分隔线" class="headerlink" title="分隔线"></a>分隔线</h2><p>内容A</p>
+<hr>
+<p>内容B</p>
+<h2 id="删除线"><a href="#删除线" class="headerlink" title="删除线"></a>删除线</h2><p><del>sb</del></p>
+<h2 id="下划线"><a href="#下划线" class="headerlink" title="下划线"></a>下划线</h2><p><u>下划线</u></p>
+<h2 id="脚注"><a href="#脚注" class="headerlink" title="脚注"></a>脚注</h2><p>// IDEA不支持  </p>
+<p>有些人活着, 他已经死了[^鲁迅]<br>[^鲁迅]: 1923</p>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ul>
+<li>无序</li>
+<li>的</li>
+<li>列表  </li>
+</ul>
+<ol>
+<li>第一个</li>
+<li>第二个</li>
+</ol>
+<h3 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h3><p>在子列表中的选项添加四个空格</p>
+<ol>
+<li>第一个<ul>
+<li>嵌套1</li>
+<li>嵌套2</li>
+</ul>
+</li>
+<li>第二个<ul>
+<li>嵌套1</li>
+<li>嵌套2</li>
+</ul>
+</li>
+</ol>
+<h2 id="区块"><a href="#区块" class="headerlink" title="区块"></a>区块</h2><blockquote>
+<p>区块链<br>AI<br>人工智能</p>
+</blockquote>
+<h3 id="区块嵌套"><a href="#区块嵌套" class="headerlink" title="区块嵌套"></a>区块嵌套</h3><blockquote>
+<p>最外层</p>
+<blockquote>
+<p>第一层嵌套</p>
+<blockquote>
+<p>第二次嵌套</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="区块中使用列表"><a href="#区块中使用列表" class="headerlink" title="区块中使用列表"></a>区块中使用列表</h3><blockquote>
+<p>列表</p>
+<ol>
+<li>第一个</li>
+<li>第二个<ul>
+<li>嵌套之嵌套</li>
+<li>嵌套之嵌套</li>
+</ul>
+</li>
+<li>第三个</li>
+</ol>
+</blockquote>
+<h3 id="列表中使用区块"><a href="#列表中使用区块" class="headerlink" title="列表中使用区块"></a>列表中使用区块</h3><p>在 &gt; 前添加四个空格的缩进</p>
+<ul>
+<li>第一个<blockquote>
+<p>Ai<br>小爱</p>
+</blockquote>
+</li>
+<li>第二个   </li>
+</ul>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>段落上的一个函数或片段的代码可以用反引号把它包起来<br>如: <code>epoll</code>函数</p>
+<h3 id="代码区块"><a href="#代码区块" class="headerlink" title="代码区块"></a>代码区块</h3><p>代码区块使用 4 个空格或者一个制表符（Tab 键）  </p>
+<pre><code>def map(fa: F[A])(f: a -&gt; b): F[B] =
+    flatMap(fa)(a -&gt; unit(f(a)))
+</code></pre><p>以上是map的flatMap实现<br>当然也可以使用三个反引号包裹.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>(fa: <span class="type">F</span>[<span class="type">A</span>])(f: a -&gt; b): <span class="type">F</span>[<span class="type">B</span>] =</span><br><span class="line">        flatMap(fa)(a -&gt; unit(f(a)))</span><br></pre></td></tr></table></figure></p>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>这是一个链接<a href="www.baidu.com">百度</a></p>
+<h3 id="高级链接"><a href="#高级链接" class="headerlink" title="高级链接"></a>高级链接</h3><p>使用变量代替链接,文档末尾附带变量地址<a href="www.google.com">Google</a>  </p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>方框里的是替代文字,引号里加上加上选择性的 ‘title’ 属性的文字<br><img src="https://r4mble.github.io/images/lanmao.jpg" alt="我的头像" title="mio"></p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>用|来分隔单元格, 用-来分隔表头和其他行  </p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">name</th>
+<th style="text-align:right">age</th>
+<th style="text-align:center">gender</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">小王</td>
+<td style="text-align:right">5岁</td>
+<td style="text-align:center">男</td>
+</tr>
+<tr>
+<td style="text-align:left">小李</td>
+<td style="text-align:right">6岁</td>
+<td style="text-align:center">女</td>
+</tr>
+</tbody>
+</table>
+<p>注意: 表格开始时要有空行</p>
+<h3 id="对齐方式"><a href="#对齐方式" class="headerlink" title="对齐方式"></a>对齐方式</h3><p>-:设置为右对齐, :-设置为左对齐, :-:设置为居中</p>
+<h2 id="支持的HTML元素"><a href="#支持的HTML元素" class="headerlink" title="支持的HTML元素"></a>支持的HTML元素</h2><p>// 按键这个只是IDEA不支持<br><kbd>Ctrl</kbd>+<kbd>f</kbd> </p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Markdown语法//" class="article-tag-list-link color1">Markdown语法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/Markdown语法/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-每周总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/每周总结/">每周总结</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/每周总结/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>感觉每个周做一次总结还是挺不错的, 频率不会太频繁导致难以维护, 一个周的时间<br>  也足够做一些东西出来, 系统地学一些知识.</p>
+</blockquote>
+<h2 id="todos"><a href="#todos" class="headerlink" title="todos"></a>todos</h2><ul>
+<li><p>[] 英语: 单词, 听力</p>
+</li>
+<li><p>[] 算法: 数组, 字符串, 链表, 树, 动态规划</p>
+</li>
+<li><p>[] Web框架: Spring</p>
+</li>
+<li><p>[] 数据存储: Redis, Elasticsearch, Postgresql, MyBatis</p>
+</li>
+<li><p>[] 开发工具: Maven, Git, Linux, Kubernete</p>
+</li>
+<li><p>[] 编程语言: Java, Go, JavaScript</p>
+</li>
+<li><p>[] 网络协议: Http, TCP, WebScoket, Netty, gRPC</p>
+</li>
+<li><p>[] 消息队列: RabbitMQ</p>
+<h2 id="2019"><a href="#2019" class="headerlink" title="2019"></a>2019</h2><h3 id="6-24-6-29"><a href="#6-24-6-29" class="headerlink" title="6.24-6.29"></a>6.24-6.29</h3></li>
+<li><p>[x] 学习了Elasticsearch的相关知识</p>
+</li>
+<li><p>[x] 了解下angular</p>
+</li>
+<li><p>[] Leetcode Weekly contest</p>
+</li>
+<li><p>[] </p>
+<h4 id="6-29"><a href="#6-29" class="headerlink" title="6.29"></a>6.29</h4></li>
+<li>[] MyBatis缓存<h3 id="7-1-7-6"><a href="#7-1-7-6" class="headerlink" title="7.1-7.6"></a>7.1-7.6</h3></li>
+<li>[] Leetcode Weekly contest</li>
+<li>[] 20道算法题</li>
+<li>[] 200个单词</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/每周总结/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/30/linux/">linux</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/30/linux/" class="archive-article-date">
+  	<time datetime="2019-05-30T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h1><p>平均负载是指单位时间内,系统处于可运行状态和不可中断状态的平均进程数.即平均活跃进程数.</p>
+<p>内核架构<br>    Linux内核上下层通信方式</p>
+<p>常用命令:<br>nc -l port &gt; test.txt<br>nc -q 0 MachineIP Port &lt; test.txt</p>
+<p>nohup npm start &amp;</p>
+<p>1、tar包的创建<br>tar -cvf  file.tar file1  file2<br>tar -zcvf  file.tar.gz  file1  file2<br>tar -jcvf   file.tar.bz2  file1  file2</p>
+<p>2、tar包的查看<br>tar -tvf  file.tar<br>tar -ztvf  file.tar.gz<br>tar -jtvf  file.tar.bz2</p>
+<p>3、释放tar包<br>tar -xvf  file.tar<br>tar -zxvf  file.tar.gz<br>tar -jxvf  file.tar.bz2</p>
+<p>主选项：<br>-x    从档案文件中释放文件。<br>-c    创建新的档案文件。如果用户想备份一个目录或是一些文件，就要选择这个选项。<br>-r     把要存档的文件追加到档案文件的末尾。例如用户已经做好备份文件，又发现还有一个目录或<br>         是一些文件忘 记备份了，这时可以使用该选项，将忘记的目录或文件追加到备份文件中。<br>-t       列出档案文件的内容，查看已经备份了哪些文件。<br>-u      更新文件。就是说，用新增的文件取代原备份文件，如果在备份文件中找不到要更新的文件，<br>          则把它追加到备份文件的最后。</p>
+<p>辅助选项：<br>-j         代表使用‘bzip2’程序进行文件的压缩    tar.bz2<br>-z       用gzip来压缩/解压缩文件，加上该选项后可以将档案文件进行压缩，但还原时也一定要使用该<br>            选项进行解压缩。   tar.gz<br>-v       详细报告tar处理的文件信息。如无此选项，tar不报告文件信息。<br>-b     该选项是为磁带机设定的，其后跟一数字，用来说明区块的大小，系统预设值为20（20×512 bytes）。<br>-f       使用档案文件或设备，这个选项通常是必选的。<br>-k       保存已经存在的文件。例如把某个文件还原，在还原的过程中遇到相同的文件，不会进行覆盖。<br>-m       在还原文件时，把所有文件的修改时间设定为。<br>-M      创建多卷的档案文件，以便在几个磁盘中存放。<br>-w           每一步都要求确认。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/30/linux/">展开全文 >></a>
         </p>
       
 
@@ -654,7 +620,7 @@ list.forEach(System.out::println);
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="extend next" rel="next" href="/page/26/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/24/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/26/">Next &raquo;</a>
     </nav>
   
 
@@ -666,7 +632,7 @@ list.forEach(System.out::println);
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 三石的QQ空间
+    		&copy; 2020 三石的QQ空间
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -915,6 +881,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">PL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">flutter</a>
               </li>
             
             <div class="clearfix"></div>

@@ -151,403 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-JavaScript教程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/JavaScript教程/">JavaScript教程</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/JavaScript教程/" class="archive-article-date">
-  	<time datetime="2019-04-04T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>基本语法<br>    变量<br>        声明和赋值<br>            var a = 1;<br>            当只声明了变量,而没有赋值时 为 undefined</p>
-<pre><code>    变量没有类型,只有值有类型
-        var a = 42;
-        typeof a; // &quot;number&quot;
-
-        a = true;
-        typeof a; // &quot;boolean&quot;
-
-        typeof typeof 42; // &quot;string&quot;
-
-    变量提升
-        JavaScript引擎会先解析代码,获取所有被声明的变量.
-            console.log(a);
-            var a = 1;
-            //执行时相当于先声明了a,但是没有赋值,会打印出undefined
-
-标识符
-    第一个字符可以是任意Unicode字母,不能是数字, 包括 $ 和 _
-
-区块
-    对var来说,区块不构成单独的作用域
-    {
-        var a = 1;
-    }
-    a // 1
-
-逻辑控制
-    if else switch 三目运算符 while for do...while break continue 同 Java
-
-标签
-    通常和break,continue配合
-
-    top:
-        for (var i=0; i&lt;3; i++) {
-            for (var j=0; j&lt;3; j++) {
-                if (i===1 &amp;&amp; j===1) break top;
-            }
-        }
-    满足条件跳出双层循环. 如果不使用标签则只能跳出内层循环.
-</code></pre><p>数据类型<br>    number      整数和小数<br>    string<br>    boolean<br>    undefined<br>    null<br>    object<br>    symbol</p>
-<pre><code>typeof运算符
-    typeof 123 // &quot;number&quot;
-    typeof &quot;123&quot; // &quot;string&quot;
-    typeof false // &quot;boolean&quot;
-
-    函数 返回 function
-    function f() {}
-    typeof f // &quot;function&quot;
-
-    未定义变量 返回 undefined, 可以用来检测没有声明的变量
-    typeof undefined === &quot;undefined&quot;
-
-    typeof window // &quot;object&quot;
-    typeof {} // &quot;object&quot;
-    typeof [] // &quot;object&quot;
-
-    var o = {};
-    var a = [];
-
-    区分数组和对象
-    o instanceof Array //false
-    a instanceof Array //true
-
-
-    typeof null === &quot;object&quot; //这个是存在了20年的bug,应该返回null
-
-    检测null:
-        val a = null;
-        (!a &amp;&amp; typeof a === &quot;object&quot;) //true, null是假值, undefined也是假值
-
-    undefined == null //true
-
-    Number(null) //0
-    5 + null //5
-
-    Number(undefined) //NaN
-    5 + undefined // NaN
-
-    null表示空值
-    undefined表示未定义
-        1)变量声明了但没有赋值
-        2)调用函数时该提供的参数没有提供
-        3)对象没有该属性
-        4)函数没有返回值,默认返回 undefined
-
-
-布尔值
-    以下为false, 其他为true
-    undefined
-    null
-    false
-    0
-    NaN
-    &quot;&quot; 或 &apos;&apos;
-
-    空数组和空对象都是true
-
-数值
-    所有数值以64位浮点数形式存储,也就是说这个语言根本没有整数
-        1 === 1.0  true
-
-    浮点数不精确,所以
-        0.1 + 0.2 === 0.3  //false
-
-        0.3 / 0.1   //2.999999999
-
-        (0.3 - 0.2) === (0.2 - 0.1)  //false
-
-    64个二进制位: 第1位 符号位,
-                 第2位到第12位(共11位) 指数部分, 
-                 第13位到第64位(共52位) 小数部分.
-</code></pre><p>函数作用域:<br>     其它类C语言,一对花括号封闭的代码块就是一个作用域, JavaScript的作用域<br>     是通过函数来定义的.<br>     静态作用域,词法作用域,作用域的嵌套关系可以在语法分析时确定,而不必等到<br>     运行时确定.</p>
-<p>闭包:<br>    由函数及其封闭的自由变量组成的集合体.<br>    特性: 当一个函数返回它内部定义的一个函数时,就产生了闭包,闭包不但包括被返回的函数,<br>          还包括这个函数的定义环境.</p>
-<pre><code>用途: 实现嵌套的回调函数
-        由于闭包,即使外层函数已经执行完毕,其作用域内申请的变量也不会释放,因为里层
-        的函数还有可能引用到这些变量.
-     隐藏对象的细节
-</code></pre><h1 id="诱骗JS入门教程"><a href="#诱骗JS入门教程" class="headerlink" title="诱骗JS入门教程"></a>诱骗JS入门教程</h1><p>立足点: 工作和生活中用得到JS<br>需要学习的点: 变量,条件,循环,对象,函数</p>
-<ol>
-<li>模拟键鼠: 炉石传送自动开包脚本, 炉石传说自动投降脚本</li>
-<li>处理文本文件: 找到重复的数</li>
-<li>下载图片: 下载某微博评论下用户的头像</li>
-<li>写游戏: 2048</li>
-</ol>
-<h3 id="Lesson1-变量与类型"><a href="#Lesson1-变量与类型" class="headerlink" title="Lesson1 变量与类型"></a>Lesson1 变量与类型</h3><p>运算</p>
-<ol>
-<li><p>打印<br>console.log(3)</p>
-</li>
-<li><p>变量<br>let a = 4<br>let b = 3<br>let c = a + b<br>console.log(c)</p>
-</li>
-<li><p>类型<br>数字<br>let x = 101<br>字符串<br>let y = ‘nihao’<br>数组<br>let arr = [1,2,3]<br>布尔<br>let z = false</p>
-</li>
-</ol>
-<h3 id="Lesson2-条件和循环"><a href="#Lesson2-条件和循环" class="headerlink" title="Lesson2 条件和循环"></a>Lesson2 条件和循环</h3><ol>
-<li>if</li>
-</ol>
-<ul>
-<li><p>if<br>if (3 &gt; 4) {<br>  console.log(“nihao”)<br>}</p>
-</li>
-<li><p>if else</p>
-</li>
-<li><p>if else if</p>
-</li>
-</ul>
-<ol start="2">
-<li>for</li>
-</ol>
-<ul>
-<li>let of 数组 字符串</li>
-</ul>
-<ol start="3">
-<li>练习</li>
-</ol>
-<h3 id="Lesson3-对象和函数"><a href="#Lesson3-对象和函数" class="headerlink" title="Lesson3 对象和函数"></a>Lesson3 对象和函数</h3><ol>
-<li>对象</li>
-<li>函数</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/JavaScript教程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-MyBatis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/MyBatis/">MyBatis</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/04/MyBatis/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="MyBatis实操经验"><a href="#MyBatis实操经验" class="headerlink" title="MyBatis实操经验"></a>MyBatis实操经验</h2><h2 id="MyBatis整体架构"><a href="#MyBatis整体架构" class="headerlink" title="MyBatis整体架构"></a>MyBatis整体架构</h2><ul>
-<li><p>基础支持层</p>
-<ul>
-<li>数据源模块（连接池功能，检测连接状态）</li>
-<li>事务管理模块，缓存模块（一级、二级缓存，运行在同一个JVM）</li>
-<li>Binding模块（将用户自定义的Mapper接口与映射配置文件关联起来）</li>
-<li>反射模块（封装java原生的反射，提供优化，缓存了类的元数据，提高反射性能）</li>
-<li>类型转换模块（别名机制，JDBC类型和Java类型的转换）</li>
-<li>日志模块（集成第三方日志模块）</li>
-<li>资源加载模块（对类加载器进行封装，确定类加载器的使用顺序</li>
-<li>提供了加载类文件和其他资源文件的功能）</li>
-<li>解析器模块（对XPath进行封装，为解析config文件提供支持；为处理动态SQL语句中的占位符提供支持）</li>
-</ul>
-</li>
-<li><p>核心处理层</p>
-<ul>
-<li>配置解析（加载mybatis-config.xml、*Mapper.xml和Mapper接口中的注解信息，解析后形成相应的对象保存到Configuration对象中，利用该对象创建SqlSessionFactory）</li>
-<li>参数映射，SQL解析，SQL执行（Executor维护一级、二级缓存，提供事务管理的相关操作，将数据库相关操作委托给StatementHandler完成。StatementHandler通过<pre><code>ParameterHandler完成SQL语句的实参绑定，然后通过java.sql.Statement对象执行SQL语句并得到结果集ResultSet，最后通过ResultSetHandler完成结果集映射，得到结果并返回），结果集映射，插件（拦截SQL语句进行重写）。
-</code></pre></li>
-</ul>
-</li>
-<li><p>接口层：SqlSession</p>
-</li>
-<li><p>解析器模块, XML解析方式</p>
-<ul>
-<li>DOM(Document Object Model)<ul>
-<li>树形结构解析，将整个XML文档读入内存构建DOM树：文档节点、元素节点、属性节点、文本节点、注释节点。</li>
-<li>易于编程、节点间导航和修改数据，资源消耗大。</li>
-</ul>
-</li>
-<li>SAX(Simple API for XML)<ul>
-<li>基于事件模型解析，推模式。解析到某类型节点时会触发注册在该类型节点上的回调函数。</li>
-<li>流式处理，需要自己维护节点之间的关系。</li>
-</ul>
-</li>
-<li>StAX(Streaming API for XML)<ul>
-<li>拉模式，应用程序通过调用解析器推进解析进程。<ul>
-<li>两套API：基于指针的，效率高但抽象程度低；基于迭代器的，应用程序把XML文档当做一系列事件对象来处理，效率低但抽象程度高。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>MyBatis在初始化过程中使用DOM解析方式。XPath是一种查询XML文档的语言。</p>
-</blockquote>
-<blockquote>
-<p>Java基本类型有默认值，在动态SQL部分属性判断总不为空，因此在实体类中使用包装类型。<br>Java中的byte[]对应数据库中的BOLB、LONGVARBINARY等<br>insert标签包含flushCache属性，默认为true，语句被调用时清空一、二级缓存。<br>给参数配置@Param注解后，MyBatis自动将参数封装为Map类型，@Param注解值作为Map中的key。</p>
-</blockquote>
-<p>动态SQL：</p>
-<ul>
-<li>if：用在where语句中，通过判断参数值来决定是否使用某个查询条件；用在update语句中判断是否更新某一个字段；用在insert语句中判断是否插入某个字段的值。</li>
-<li>choose(when、otherwise)：实现if…else逻辑</li>
-<li>trim(where、set)：<ul>
-<li>where: 如果该标签有返回值，就插入一个where，如果where后面的字符串是以and和or开头，则将它们剔除。</li>
-<li>set： 如果该标签有返回值，就插入一个set，如果set后面的字符串是以逗号结尾，则将逗号剔除。</li>
-<li>如果set元素中没有内容，set后面连着where，会产生SQL错误，因此需要在set标签最后加上id = #{id}</li>
-</ul>
-</li>
-<li>trim: <ul>
-<li>prefix: 当trim元素包含内容时，给内容增加prefix指定的前缀</li>
-<li>suffix: 当trim元素包含内容时，给内容增加suffix指定的前缀</li>
-<li>prefixOverrides: 当trim元素包含内容时，会把内容中匹配的前缀字符串去掉</li>
-<li>suffixOverrides: 当trim元素包含内容时，会把内容中匹配的后缀字符串去掉</li>
-</ul>
-</li>
-<li>foreach：${} 配合 in 的方式不能防止sql注入。可以用#{} 配合 foreach<ul>
-<li>collection: 要迭代循环的属性</li>
-<li>item：变量名</li>
-<li>index：索引属性名，List中为当前索引值，Map中为key</li>
-<li>open：整个循环内容开头的字符串</li>
-<li>close：整个循环内容结尾的字符串</li>
-<li>separator：每次循环的分隔符</li>
-<li>collection的属性设置<ul>
-<li>只有一个数组参数或者集合参数</li>
-<li>批量插入</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>bind： 防止sql注入。创建变量并绑定到上下文中。</li>
-</ul>
-<p>${} 与 #{}</p>
-<pre><code>#{}：解析为一个JDBC预编译语句的参数标记符，参数占位符。
-${}: 仅仅为String替换，在动态SQL解析阶段进行变量替换。
-</code></pre><p>高级查询<br>    高级结果映射</p>
-<pre><code>存储过程
-
-枚举或其他对象
-</code></pre><p>缓存配置<br>    一级缓存    </p>
-<pre><code>二级缓存
-</code></pre><p>@SpringBootTest 注解必须要加<br>路径前面的/不能省略<br>@RequestBody 在实体类上加上 @JsonRootName(value = “user”)<br>这么写json {“user”:{“email”:”<a href="mailto:sanshi.30@qq.com" target="_blank" rel="noopener">sanshi.30@qq.com</a>“,”username”:”Ramble”,”password”:”1234567”}}</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MyBatis//" class="article-tag-list-link color3">MyBatis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/MyBatis/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-Nodejs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -997,6 +600,213 @@ select * from r order by id;
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/04/PostgreSQL Notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Ramda碎碎念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/Ramda碎碎念/">Ramda碎碎念</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/Ramda碎碎念/" class="archive-article-date">
+  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>prop基于path实现.<br>    prop = (p, obj) =&gt; path([p], obj)</p>
+<pre><code>path一层层索引
+
+    R.path([&apos;a&apos;, &apos;b&apos;], {a: {b: 2}}); //=&gt; 2a
+    R.prop(&apos;x&apos;, {x: 100}); //=&gt; 100
+</code></pre><p>descend = (f, a, b) =&gt; f(a) &gt; f(b) ? -1 : f(a) &lt; f(b) ? 1 : 0<br>类似地: ascend…</p>
+<p>sort = (comparator, list) =&gt; Array.prototype.slice.call(list, 0).sort(comparator)<br>sort函数实现直接用的原生实现,不过返回了新list,而且curry了.</p>
+<p>comparator :: a -&gt; b -&gt; Int</p>
+<p>thrush combinator 接受一个值, 并将函数作用于其上.  applyTo = (x, f) =&gt; f(x)<br>    const t42 = R.applyTo(42);<br>    t42(R.identity); //=&gt; 42<br>    t42(R.add(1)); //=&gt; 43</p>
+<p>keys 返回对象最外层key    </p>
+<p>applySpec : 接受一个属性值为函数的对象,返回的函数使用传入的参数调用对象的每个属性位对应的函数，来生成相应属性的值。</p>
+<pre><code>const getMetrics = R.applySpec({
+    sum: (a,b,c) =&gt; a+b+c,
+    nested: { mul: (a,b,c) =&gt; a*b*c }
+});
+print(getMetrics(2, 5, 4)) // { sum: 11, nested: { mul: 40 } }
+
+内部函数: mapValues = (f, obj) =&gt; 
+            R.keys(obj).reduce((acc, key) =&gt; {
+                acc[key] = f(obj[key])
+                return acc
+            }, {})
+        是为了避免specs函数也包含map
+
+pluck 从列表内的每个对象元素中取出特定名称的属性，组成一个新的列表
+    pluck = (p, list) =&gt; map(prop(p), list)
+
+    var getAges = R.pluck(&apos;age&apos;);
+    getAges([{name: &apos;fred&apos;, age: 29}, {name: &apos;wilma&apos;, age: 27}]); //=&gt; [29, 27]
+
+    R.pluck(0, [[1, 2], [3, 4]]);               //=&gt; [1, 3]
+    R.pluck(&apos;val&apos;, {a: {val: 3}, b: {val: 5}}); //=&gt; {a: 3, b: 5}
+</code></pre><p>addIndex: 没咋看懂<br>adjust: 将数组中指定索引处的值替换为经函数变换的值<br>    R.adjust(1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);      //=&gt; [‘a’, ‘B’, ‘c’, ‘d’]<br>    R.adjust(-1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);     //=&gt; [‘a’, ‘b’, ‘c’, ‘D’]</p>
+<pre><code>实现: 统一索引,利用_concat新建list,将索引处值替换.
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/04/Ramda碎碎念/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Ramda里的柯西化实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/Ramda里的柯西化实现/">Ramda里的柯西化实现</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/Ramda里的柯西化实现/" class="archive-article-date">
+  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>先说R.__ (两个下划线)<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> __ = &#123;<span class="string">'@@functional/placeholder'</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"></span><br><span class="line"> *      <span class="keyword">const</span> greet = R.replace(<span class="string">'&#123;name&#125;'</span>, R.__, <span class="string">'Hello, &#123;name&#125;!'</span>);</span><br><span class="line"> *      greet(<span class="string">'Alice'</span>); <span class="comment">//=&gt; 'Hello, Alice!'</span></span><br></pre></td></tr></table></figure></p>
+<p>R.__是一个含有@@functional/placeholder属性的对象, 那么它是怎么起到占位符作用的呢?</p>
+<p>看下这个函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_isPlaceholder</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a != <span class="literal">null</span> &amp;&amp;</span><br><span class="line">         <span class="keyword">typeof</span> a === <span class="string">'object'</span> &amp;&amp;</span><br><span class="line">         a[<span class="string">'@@functional/placeholder'</span>] === <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个函数的作用就是检查一个对象的@@functional/placeholder属性是否为true.</p>
+<p>第一个curry函数:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_curry1</span>(<span class="params">fn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>.length === <span class="number">0</span> || _isPlaceholder(a)) &#123;</span><br><span class="line">      <span class="keyword">return</span> f1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/04/Ramda里的柯西化实现/">展开全文 >></a>
         </p>
       
 

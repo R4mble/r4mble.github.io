@@ -151,97 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-精通Redis系列 (1) - 简单动态字符串" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/">精通Redis系列 (0) - 写在前面的话</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/" class="archive-article-date">
-  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Simple Dynamic Strings, SDS<br>存储字符串和整型数据, 兼容C语言标准字符串处理函数, 在此基础之上保证二进制安全, 避免缓冲区溢出.</p>
-<h3 id="什么是二进制安全"><a href="#什么是二进制安全" class="headerlink" title="什么是二进制安全?"></a>什么是二进制安全?</h3><p>C语言中用”\0”表示字符串的结束, 如果字符串本身就含有”\0”字符, 字符串就会被截断, 就是非二进制安全.<br>所以C字符串不能保存图片,音频,视频,压缩文件这样的二进制数据.</p>
-<p>如果可以通过某种机制, 保证读写字符串时不损害其内容, 则称为二进制安全.<br>Redis的sds有长度统计变量len, 读写字符串不依赖”\0”终止符,保证了二进制安全.</p>
-<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><ol>
-<li>Redis3.2之前<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sds</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// buf中已占用空间</span></span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// buf中剩余可用字节数</span></span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 数据空间, 柔性数组, 通过malloc函数动态分配内存</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>64位系统中: len与free各占4字节.</p>
-<ul>
-<li>预分配冗余空间的方式来减少内存的频繁分配.字符串<br>  长度小于1M时,加倍扩容,大于1M时每次扩1M.最大长度为512M.</li>
-<li>惰性空间释放<br>当sds要缩短保存的字符串时,不立即使用内存重分配来回收缩短后多出来的字节,而是使用free记录下来.</li>
-</ul>
-<ol start="2">
-<li>改进版sds</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></span><br><span class="line"><span class="comment"> * However is here to document the layout of type 5 SDS strings. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr5</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr64</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>一般情况下结构体会按其所有变量大小的最小公倍数做字节对齐,而使用packed修饰后,结构体变为按照1字节对齐.<br>好处: 1. 节省内存; 2. 实现简单–SDS返回给上层指向内容的指针而不是结构体首地址.</p>
-<h3 id="SDS的创建"><a href="#SDS的创建" class="headerlink" title="SDS的创建"></a>SDS的创建</h3><p>sdsnewlen函数创建SDS<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init, <span class="keyword">size_t</span> initlen)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">void</span> *sh;</span><br><span class="line">    sds s;</span><br><span class="line">    <span class="keyword">char</span> type = sdsReqType(initlen);</span><br><span class="line">    <span class="comment">/* Empty strings are usually created in order to append. Use type 8</span></span><br><span class="line"><span class="comment">     * since type 5 is not good at this. */</span></span><br><span class="line">    <span class="keyword">if</span> (type == SDS_TYPE_5 &amp;&amp; initlen == <span class="number">0</span>) type = SDS_TYPE_8;</span><br><span class="line">    <span class="keyword">int</span> hdrlen = sdsHdrSize(type);</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *fp; <span class="comment">/* flags pointer. */</span></span><br><span class="line"></span><br><span class="line">    sh = s_malloc(hdrlen+initlen+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (init==SDS_NOINIT)</span><br><span class="line">        init = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!init)</span><br><span class="line">        <span class="built_in">memset</span>(sh, <span class="number">0</span>, hdrlen+initlen+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (sh == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    s = (<span class="keyword">char</span>*)sh+hdrlen;</span><br><span class="line">    fp = ((<span class="keyword">unsigned</span> <span class="keyword">char</span>*)s)<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">switch</span>(type) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5: &#123;</span><br><span class="line">            *fp = type | (initlen &lt;&lt; SDS_TYPE_BITS);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">8</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">16</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">32</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">64</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(s, init, initlen);</span><br><span class="line">    s[initlen] = <span class="string">'\0'</span>;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="释放字符串"><a href="#释放字符串" class="headerlink" title="释放字符串"></a>释放字符串</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsfree</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    s_free((<span class="keyword">char</span>*)s-sdsHdrSize(s[<span class="number">-1</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将len归零, 新的数据可以覆盖写</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsclear</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    sdssetlen(s, <span class="number">0</span>);</span><br><span class="line">    s[<span class="number">0</span>] = <span class="string">'\0'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-精通Redis系列 (3) - 压缩列表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -461,6 +370,79 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/17/The Little系列(0) - 写在前面的话/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-小红书系列 (5) - 非严格求值" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/16/小红书系列 (5) - 非严格求值/">小红书系列 (5) - 非严格求值</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/16/小红书系列 (5) - 非严格求值/" class="archive-article-date">
+  	<time datetime="2019-09-16T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Demo1-Stream定义："><a href="#Demo1-Stream定义：" class="headerlink" title="Demo1: Stream定义："></a>Demo1: Stream定义：</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Stream</span>[+<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">Empty</span> <span class="keyword">extends</span> <span class="title">Stream</span>[<span class="type">Nothing</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Cons</span>[+<span class="type">A</span>](<span class="params">h: (</span>) <span class="title">=&gt;</span> <span class="title">A</span>, <span class="title">t</span></span>: () =&gt; <span class="type">Stream</span>[<span class="type">A</span>]) <span class="keyword">extends</span> <span class="type">Stream</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Stream</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cons</span></span>[<span class="type">A</span>](hd: =&gt; <span class="type">A</span>, tl: =&gt; <span class="type">Stream</span>[<span class="type">A</span>]): <span class="type">Stream</span>[<span class="type">A</span>] = &#123;</span><br><span class="line">        <span class="comment">// 对惰性求值的head和tail做缓存, 避免重复求值</span></span><br><span class="line">        <span class="keyword">lazy</span> <span class="keyword">val</span> head = hd</span><br><span class="line">        <span class="keyword">lazy</span> <span class="keyword">val</span> tail = tl</span><br><span class="line">        <span class="type">Cons</span>(() =&gt; head, () =&gt; tail)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">empty</span></span>[<span class="type">A</span>]: <span class="type">Stream</span>[<span class="type">A</span>] = <span class="type">Empty</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>[<span class="type">A</span>](as: <span class="type">A</span>*): <span class="type">Stream</span>[<span class="type">A</span>] =</span><br><span class="line">        <span class="keyword">if</span> (as.isEmpty) empty <span class="keyword">else</span> cons(as.head, apply(as.tail: _*))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">headOption</span></span>: <span class="type">Option</span>[<span class="type">A</span>] = <span class="keyword">this</span> <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Empty</span> =&gt; <span class="type">None</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Some</span>(h())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/16/小红书系列 (5) - 非严格求值/">展开全文 >></a>
         </p>
       
 

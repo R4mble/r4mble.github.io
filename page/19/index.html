@@ -151,79 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-小红书系列 (5) - 非严格求值" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/16/小红书系列 (5) - 非严格求值/">小红书系列 (5) - 非严格求值</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/16/小红书系列 (5) - 非严格求值/" class="archive-article-date">
-  	<time datetime="2019-09-16T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Demo1-Stream定义："><a href="#Demo1-Stream定义：" class="headerlink" title="Demo1: Stream定义："></a>Demo1: Stream定义：</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Stream</span>[+<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">Empty</span> <span class="keyword">extends</span> <span class="title">Stream</span>[<span class="type">Nothing</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Cons</span>[+<span class="type">A</span>](<span class="params">h: (</span>) <span class="title">=&gt;</span> <span class="title">A</span>, <span class="title">t</span></span>: () =&gt; <span class="type">Stream</span>[<span class="type">A</span>]) <span class="keyword">extends</span> <span class="type">Stream</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Stream</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cons</span></span>[<span class="type">A</span>](hd: =&gt; <span class="type">A</span>, tl: =&gt; <span class="type">Stream</span>[<span class="type">A</span>]): <span class="type">Stream</span>[<span class="type">A</span>] = &#123;</span><br><span class="line">        <span class="comment">// 对惰性求值的head和tail做缓存, 避免重复求值</span></span><br><span class="line">        <span class="keyword">lazy</span> <span class="keyword">val</span> head = hd</span><br><span class="line">        <span class="keyword">lazy</span> <span class="keyword">val</span> tail = tl</span><br><span class="line">        <span class="type">Cons</span>(() =&gt; head, () =&gt; tail)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">empty</span></span>[<span class="type">A</span>]: <span class="type">Stream</span>[<span class="type">A</span>] = <span class="type">Empty</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>[<span class="type">A</span>](as: <span class="type">A</span>*): <span class="type">Stream</span>[<span class="type">A</span>] =</span><br><span class="line">        <span class="keyword">if</span> (as.isEmpty) empty <span class="keyword">else</span> cons(as.head, apply(as.tail: _*))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">headOption</span></span>: <span class="type">Option</span>[<span class="type">A</span>] = <span class="keyword">this</span> <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Empty</span> =&gt; <span class="type">None</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Some</span>(h())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/16/小红书系列 (5) - 非严格求值/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-Kafka" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -371,6 +298,106 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/15/小红书系列 (4) - 函数式错误处理/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-小红书系列 (1) - 函数式编程初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/14/小红书系列 (1) - 函数式编程初探/">小红书系列 (1) - 函数式编程初探</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/14/小红书系列 (1) - 函数式编程初探/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="什么是函数式编程"><a href="#什么是函数式编程" class="headerlink" title="什么是函数式编程?"></a>什么是函数式编程?</h2><p>如果非要用一个词来描述这种思想, 我大概会用”连续运算”. </p>
+<p>底层结构决定上层逻辑, 在冯·诺依曼体系中, 运算数先放到寄存器里, 再参与CPU运算. 因此在代码中的编程习惯往往是: 使用中间变量存储一步运算的结果值, 然后继续使用中间变量参与运算.</p>
+<p>而在阿隆左·丘奇的Lambda计算模型中: 接收输入, 产生输出, 输出的结果即时下一个运算的输入, 在连续运算的过程中不需要中间变量来”寄存”.</p>
+<p>当你在Java中写了很大一串连续运算的代码时, 你有可能会被同事吐槽”代码有鲜明的个人特色”. 通常在Java这种工业合作语言中, 不被建议写连续运算的主要原因是: </p>
+<ol>
+<li>代码写成一坨不清晰易读. </li>
+<li>不方便Bug排查. </li>
+</ol>
+<p>前者还好说, 可以通过换行排版等方式让它变得清晰. 后者就是阻碍你一口气写完代码的死穴了, 因为谁也不知道这一串连续计算中哪里会出个问题, Kibana报个空指针, 然后翻代码到这一行看到一万个操作不知道哪里出的问题, 排查问题的同事估计想给你一刀.</p>
+<p>有意思的是Java8引入的函数式编程, 在对集合的操作中是鼓励链式操作的, 也就是连续运算. 同时它也提供了Option来做错误处理. 所以为了让连续运算能连续下去, 不突然崩掉而且找不到崩掉的位置, 保证每一个操作都是安全可靠的就很有必要了.那么怎么才能这么安全可靠不出问题呢? 答案就是: 无副作用.</p>
+<p>对于相同的输入总有相同的输出, 并且没有其它的副作用产生, 这便是函数式编程所追求的.</p>
+<p>典型的容易出问题的操作就是IO操作, 各种乱七八糟的因素导致IO容易崩, </p>
+<p>函数式编程就是一种范式, 一种思想. 既然如此, 什么语言都可以多多少少和它扯上关系, 来个”函数式xxx”. 不过不同的语言有不同的特性, 也就对这种范式的支持有多有少. 其中最为重要的就是一等函数这种特性吧.</p>
+<h2 id="函数式编程Demo"><a href="#函数式编程Demo" class="headerlink" title="函数式编程Demo"></a>函数式编程Demo</h2><p>更具体一点, 什么是函数式编程? 这就是函数式编程: </p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cafe</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buyCoffee</span></span>(cc: <span class="type">CreditCard</span>): (<span class="type">Coffee</span>, <span class="type">Charge</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> cup = <span class="type">Coffee</span>(<span class="number">5</span>)</span><br><span class="line">    (cup, <span class="type">Charge</span>(cc, cup.price))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buyCoffee</span></span>(cc: <span class="type">CreditCard</span>, num: <span class="type">Int</span>): (<span class="type">List</span>[<span class="type">Coffee</span>], <span class="type">Charge</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> purchases: <span class="type">List</span>[(<span class="type">Coffee</span>, <span class="type">Charge</span>)] = <span class="type">List</span>.fill(num) (buyCoffee(cc))</span><br><span class="line">    <span class="comment">// 把Coffee和Charge作为元素的列表拆分为Coffee列表和Charge列表</span></span><br><span class="line">    <span class="keyword">val</span> (coffees, charges) = purchases.unzip</span><br><span class="line">    (coffees, charges.reduce((c1, c2) =&gt; c1.combine(c2)))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 合并</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">coalesce</span></span>(charges: <span class="type">List</span>[<span class="type">Charge</span>]): <span class="type">List</span>[<span class="type">Charge</span>] = &#123;</span><br><span class="line">    charges.groupBy(_.cc).values.map(_.reduce(_ combine _)).toList</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Coffee</span>(<span class="params">price: <span class="type">Double</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">CreditCard</span>(<span class="params">name: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Charge</span>(<span class="params">cc: <span class="type">CreditCard</span>, amount: <span class="type">Double</span></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">combine</span></span>(other: <span class="type">Charge</span>): <span class="type">Charge</span> = &#123;</span><br><span class="line">    <span class="keyword">if</span> (cc == other.cc) &#123;</span><br><span class="line">      <span class="type">Charge</span>(cc, amount + other.amount)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Exception</span>(<span class="string">"can't combine charges to different cards"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Cafe</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> c = <span class="keyword">new</span> <span class="type">Cafe</span>()</span><br><span class="line">    <span class="keyword">val</span> coffee1 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"wyl"</span>))</span><br><span class="line">    <span class="keyword">val</span> coffee2 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"wyl"</span>), <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">val</span> coffee3 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"ramble"</span>), <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> charges = c.coalesce(<span class="type">List</span>[<span class="type">Charge</span>](coffee1._2, coffee2._2, coffee3._2))</span><br><span class="line"></span><br><span class="line">    println(coffee1)</span><br><span class="line">    println(coffee2)</span><br><span class="line">    println(coffee3)</span><br><span class="line">    println(charges)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>既然只是思想, 那语言不是问题. 所以上面这个例子我试着用Java实现了一遍, 没问题, 只是不太优雅. 感兴趣的可以到我的Github看看.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/14/小红书系列 (1) - 函数式编程初探/">展开全文 >></a>
         </p>
       
 

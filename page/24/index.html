@@ -151,116 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux epoll&amp;select&amp;poll" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux epoll&select&poll/">Linux epoll&amp;select&amp;poll</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/29/Linux epoll&select&poll/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>阻塞blocking IO<br>非阻塞nonblocking IO<br>io多路复用技术 IO multiplexing<br>        select 和 poll<br>事件驱动 epoll</p>
-<p>epoll 多路复用IO接口select/poll的增强版本<br>        显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率.<br>        原因: 1.复用文件描述符集合来传递结果,而不用迫使开发者每次等待事件之前都必须重新准备要被侦听的文件描述符集合.<br>              2.获取事件时,无须遍历整个被侦听的描述符集合,只要遍历那些被内核IO事件异步唤醒而加入Ready队列的描述符集合.<br>              3.epoll除了提供select/poll那种IO事件的电平触发(Level Triggered),还提供了边沿触发(Edge Triggered),使得用户空间<br>                程序有可能缓存IO状态,减少epoll_wait/epoll_pwait的调用,提高应用程序效率.<br>              4.epoll没有文件描述符的上限,select/poll有限定数量.<br>              5.select/poll会轮询所有fd,有数据就处理,没数据就跳过.epoll只处理就绪的fd,它有一个就绪设备的队列,<br>                每次只轮询该队列的数据,然后进行处理.<br>              6.epoll使用mmap(文件/对象的内存映射,被映射到多个内存页上),同一块内存避免fd在操作过程中的拷贝问题.</p>
-<pre><code>epoll的两种工作方式
-        LT(电平触发 Level Triggered, 只要有数据可以读,不管怎样都会通知): 默认工作方式,同时支持block和no_block_socket. 
-                这种工作方式下,内核会通知你一个fd是否就绪,然后才可以对这个就绪的fd进行IO操作. 
-                即使没有任何操作,系统还是会继续提示fd已就绪,select/poll也是使用这种工作方式.
-
-        ET(边沿触发 Edge Triggered, 只有状态发生变化时才会通知): 高速工作方式,仅支持no_block_socket,当fd从未就绪变为就绪时,
-                内核会通知fd已就绪,并且不会再次通知,除非因为某些操作导致fd就绪状态发生变化. only once.
-                当一直不对这个fd进行IO操作,导致fd变为未就绪时,内核同样不会发送更多的通知. 这种方式出错率较高,需要检测程序.
-
-函数
-        int epoll_create(int size);
-                创建一个epoll实例,通知内核监听size个fd. 创建成功后会占用一个fd,使用完之后要close(),否则fd可能会被耗尽
-        int epoll_ctl(int epfd, int op, int fd, struct epoll_events* event);
-                注册每一个文件描述符,一旦某个文件描述符就绪,内核采用回调机制,迅速激活文件描述符
-        int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
-                返回一个代表就绪描述符数量的值. mmap内存映射技术,省掉文件描述符在系统调用时复制的开销
-
-Nginx使用了边缘触发:
-        ee.events = EPOLLIN|EPOLLOUT|EPOLLET
-</code></pre><p>select<br>        文件描述符集合1 文件描述符集合2 文件描述符集合3<br>        可读事件        可写事件        异常事件</p>
-<pre><code>创建三个关注事件的文件描述符,死循环,依次遍历所有的文件描述符集合,判断是否由可读,可写,异常事件,
-遍历完,如果有事件或超时,返回事件个数,否则阻塞一定时间.
-每次调用select,都需要把三个fd集合从用户态拷贝到内核态.
-
-文件描述符个数有限制: 1024, 数据结构: 位图.
-</code></pre><p>poll<br>        共用一个文件描述符集合,数据结构:链表,<br>        没有最大文件描述符数量的限制</p>
-<pre><code>select和poll一般不会丢失就绪的消息,使用水平触发. 将就绪的文件告诉进程后,如果进程没有对其进行IO操作,下次调用select()或poll()时
-将再次报告这些文件描述符.
-</code></pre><p>epoll<br>        epoll_ctl: 1.增加监听的fd到红黑树中<br>                   2.从红黑树中删除fd<br>                   3.修改已经注册的fd的监听事件</p>
-<pre><code>epoll_wait:如果就绪队列不为空或超时,结束循环,否则阻塞一段时间继续下一次循环,
-          如果就绪队列不为空,拷贝就绪文件描述符到用户空间,返回就绪个数.
-
-当设备就绪后,会通过注册的回调函数自动将就绪文件描述符加入就绪队列.
-
-    数据结构:红黑树
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux epoll&select&poll/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-Lua" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -419,19 +309,19 @@ Nginx使用了边缘触发:
 
 
   
-    <article id="post-Micrometer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux性能优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Micrometer/">Meter</a>
+      <a class="article-title" href="/2019/06/29/Linux性能优化/">Linux性能优化</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Micrometer/" class="archive-article-date">
+        <a href="/2019/06/29/Linux性能优化/" class="archive-article-date">
   	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
@@ -439,32 +329,11 @@ Nginx使用了边缘触发:
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>记录 Java 应用性能指标</p>
-<p>计量器注册表 MeterRegistry<br>    创建和维护计量器.</p>
-<pre><code>基于内存的计量器注册表实现: 
-    SimpleMeterRegistry 不支持导出数据到监控系统
-
-可以组合多个计量器注册表的实现类
-    CompositeMeterRegistry 运行同时发布数据到多个监控系统
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompositeMeterRegistryExample</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CompositeMeterRegistry registry = <span class="keyword">new</span> CompositeMeterRegistry();</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry());</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry(<span class="keyword">new</span> MyConfig(), Clock.SYSTEM));</span><br><span class="line"> </span><br><span class="line">    Counter counter = registry.counter(<span class="string">"simple"</span>);</span><br><span class="line">    counter.increment();</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> <span class="keyword">implements</span> <span class="title">SimpleConfig</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">prefix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"my"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>静态的全局计量器注册表对象 
-    Metrics.globalRegistry 组合注册表
-</code></pre><pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalRegistryExample</span> </span>{
-
-  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
-    Metrics.addRegistry(<span class="keyword">new</span> SimpleMeterRegistry());
-    Counter counter = Metrics.counter(<span class="string">"simple"</span>);
-    counter.increment();
-  }
-}
-</code></pre>
-<p>计量器 Meter<br>    需要收集的性能指标数据.</p>
-<pre><code>计量器名称和标签
-    每个计量器在创建时都可以指定一系列标签。标签以名值对的形式出现。监控系统使用标签对数据进行过滤。除了每个计量器独有的标签之外，每个计量器注册表还可以添加通用标签。所有该注册表导出的数据都会带上这些通用标签。
-</code></pre><p>计数器 Counter<br>    单个只允许增加的值.    </p>
-<p>计量仪 Gauge<br>    单个变化的值. Gauge对象既可以从计量器注册表中创建,也可以使用<br>    Gauge.builder()构建.</p>
-<p>计时器 Timer<br>    记录事件的持续时间.</p>
-<p>集成SpringBoot</p>
+        <p>计算CPU每秒定时中断的次数:<br>cat /proc/interrupts | grep timer; sleep 10; cat /proc/interrupts | grep timer<br>    结果:<br>          CPU0        CPU1<br>    LOC: 2142174276 2150800894<br>    LOC: 2142179825 2150806783<br>CPU0: (2142179825 - 2142174276) / 10 = 555次中断 / 秒<br>CPU1: (2150806783 - 2150800894) / 10 = 589次中断 / 秒</p>
+<p>(我的腾讯云: 357次中断 / 秒)</p>
+<p>虚拟内存统计: vmstat [-n] [-s] [delay [count]]<br>    参数说明:<br>            delay: vmstat采样的间隔时间<br>            count: 采样次数<br>            -s: 更详细的信息<br>    功能: 正在运行的进程个数, CPU的使用情况, CPU接收的中断个数, 调度器执行的上下文切换次数<br>    模式: 采样模式和平均模式. 不指定参数则运行于平均模式,显示从系统启动以来所有统计数据的均值.<br>          指定延迟后, 第一个采样仍是系统启动以来的均值,之后按延迟秒数采样系统并显示.<br>    直接运行vmstat的结果:<br>procs ———–memory———- —swap– —–io—- -system– ——cpu—–<br> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st<br> 1  0      0 198800  68680 488468    0    0     2     7    0    0  0  0 99  0  0<br>    结果说明<br>        r: 当前可运行的进程数, 已经准备好. 理想的话, 可运行进程数应与可用CPU的数量相等<br>        b: 等待IO完成的被阻塞进程数<br>        forks: 创建新进程的次数<br>        in: 系统发生中断的次数<br>        cs: 系统发生上下文切换的次数<br>        us: 用户进程消耗总CPU时间的百分比<br>        sy: 系统代码消耗的总CPU时间百分比<br>        wa: 等待IO消耗的CPU时间百分比<br>        id: 系统空闲的消耗总CPU时间百分比</p>
+<pre><code>把结果输出到文件: vmstat 1 | tee /tmp/output
+</code></pre><p>把占用CPU最多的进程按降序排列: top [d delay] [C] [H] [i] [n iter] [b]<br>        (默认每3秒更新一次)<br>    两种模式选项: 命令行模式, 运行时模式<br>    参数说明: i 不显示未使用任何cpu的进程<br>             H 显示应用程序所有的单个线程</p>
 
       
 
@@ -479,7 +348,7 @@ Nginx使用了边缘触发:
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Meter//" class="article-tag-list-link color1">Meter</a>
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
         		</li>
       		
 		</ul>
@@ -488,7 +357,89 @@ Nginx使用了边缘触发:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Micrometer/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Linux性能优化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/30/linux/">linux</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/30/linux/" class="archive-article-date">
+  	<time datetime="2019-05-30T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h1><p>平均负载是指单位时间内,系统处于可运行状态和不可中断状态的平均进程数.即平均活跃进程数.</p>
+<p>内核架构<br>    Linux内核上下层通信方式</p>
+<p>常用命令:<br>nc -l port &gt; test.txt<br>nc -q 0 MachineIP Port &lt; test.txt</p>
+<p>nohup npm start &amp;</p>
+<p>1、tar包的创建<br>tar -cvf  file.tar file1  file2<br>tar -zcvf  file.tar.gz  file1  file2<br>tar -jcvf   file.tar.bz2  file1  file2</p>
+<p>2、tar包的查看<br>tar -tvf  file.tar<br>tar -ztvf  file.tar.gz<br>tar -jtvf  file.tar.bz2</p>
+<p>3、释放tar包<br>tar -xvf  file.tar<br>tar -zxvf  file.tar.gz<br>tar -jxvf  file.tar.bz2</p>
+<p>主选项：<br>-x    从档案文件中释放文件。<br>-c    创建新的档案文件。如果用户想备份一个目录或是一些文件，就要选择这个选项。<br>-r     把要存档的文件追加到档案文件的末尾。例如用户已经做好备份文件，又发现还有一个目录或<br>         是一些文件忘 记备份了，这时可以使用该选项，将忘记的目录或文件追加到备份文件中。<br>-t       列出档案文件的内容，查看已经备份了哪些文件。<br>-u      更新文件。就是说，用新增的文件取代原备份文件，如果在备份文件中找不到要更新的文件，<br>          则把它追加到备份文件的最后。</p>
+<p>辅助选项：<br>-j         代表使用‘bzip2’程序进行文件的压缩    tar.bz2<br>-z       用gzip来压缩/解压缩文件，加上该选项后可以将档案文件进行压缩，但还原时也一定要使用该<br>            选项进行解压缩。   tar.gz<br>-v       详细报告tar处理的文件信息。如无此选项，tar不报告文件信息。<br>-b     该选项是为磁带机设定的，其后跟一数字，用来说明区块的大小，系统预设值为20（20×512 bytes）。<br>-f       使用档案文件或设备，这个选项通常是必选的。<br>-k       保存已经存在的文件。例如把某个文件还原，在还原的过程中遇到相同的文件，不会进行覆盖。<br>-m       在还原文件时，把所有文件的修改时间设定为。<br>-M      创建多卷的档案文件，以便在几个磁盘中存放。<br>-w           每一步都要求确认。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/30/linux/">展开全文 >></a>
         </p>
       
 

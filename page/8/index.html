@@ -151,140 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-CTM系列(2) - 声明式计算模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/24/CTM系列(2) - 声明式计算模型/">CTM系列(2) - 声明式计算模型</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/24/CTM系列(2) - 声明式计算模型/" class="archive-article-date">
-  	<time datetime="2019-12-24T08:19:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="声明式计算模型-p31-74-p108"><a href="#声明式计算模型-p31-74-p108" class="headerlink" title="声明式计算模型 p31(74) - p108"></a>声明式计算模型 p31(74) - p108</h2><blockquote>
-<p>encompass 包含</p>
-</blockquote>
-<p>编程有三件事:</p>
-<ol>
-<li>计算模型: 定义了编程语言的语句怎样被抽象机器执行.</li>
-<li>编程模型: 编程技巧和设计原则的集合</li>
-<li>推断技巧集合: 正确性</li>
-</ol>
-<p>(我被我的蹩脚翻译恶心吐了, 此后使用英文吧)</p>
-<p>The first and simplest computation model – declarative programming (stateless programming)</p>
-<p>encompasses the core ideas of two main declarative paradigms: functional and logic programming.</p>
-<blockquote>
-<p>embryonic 未成熟的</p>
-</blockquote>
-<h3 id="2-1-define-the-syntax-and-semantics-of-practical-programming-languages"><a href="#2-1-define-the-syntax-and-semantics-of-practical-programming-languages" class="headerlink" title="2.1 define the syntax and semantics of practical programming languages"></a>2.1 define the syntax and semantics of practical programming languages</h3><p>syntax: “grammer”<br>semantics: “meaning”</p>
-<p>Extended Backus-Naur<br>Form (EBNF)<br>扩展的巴科斯范式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;digit&gt; ::= 0|1|2|3|4|5|6|7|8|9</span><br><span class="line">&lt;int&gt; ::= &lt;digit&gt; &#123; &lt;digit&gt; &#125;</span><br><span class="line">大括号表示可以重复任意次v</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>Precedence 优先级</p>
-</blockquote>
-<p>context-free 和 content-sensitive 语法</p>
-<p>语法的歧义: 2*3+4的两种解析方法<br>解决办法: 1. 设定优先级, 把优先级高的放到解析树离根更远的地方</p>
-<pre><code>2. 实用结合律, 对于2-3-4, 是左结合还是右结合
-</code></pre><blockquote>
-<p>affirmative 肯定的<br>linguistic 语言的</p>
-</blockquote>
-<p>用the kernel language approach来定义编程语言的语意</p>
-<ol>
-<li>定义一个简单核心语言</li>
-<li>把编程语言翻译到那个简单语言: 语言的抽象和语法糖 </li>
-</ol>
-<blockquote>
-<p>axiomatic 公理<br>clutter 杂乱<br>evolve 逐步发展<br>analogous 相似的</p>
-</blockquote>
-<p>总结: 讲了编程语言的syntax(语法)和semantics(语义),<br>(读完感觉没啥收获, 这个是最打击人的.完全没有读下去的兴趣了.<br>还是跟英文有关系吧, 这节的定位应当就是那种介绍背景的, 泛泛而谈, 让读者知道有这回事就行.<br>我来读就是做英文阅读理解, 连读11页, 就像万里长征过草地,爬雪山, 忍着困意和乏味读完了, 发现: 就这? 就这? 就这?)</p>
-<h3 id="2-2-data-structures-single-assignment-store-and-its-contents-partial-values-and-dataflow-variables"><a href="#2-2-data-structures-single-assignment-store-and-its-contents-partial-values-and-dataflow-variables" class="headerlink" title="2.2 data structures: single-assignment store and its contents, partial values and dataflow variables"></a>2.2 data structures: single-assignment store and its contents, partial values and dataflow variables</h3><p>p87<br>声明式模型使用single-assignment store – 变量可以initially unbound, 也可以bound to one value</p>
-<h4 id="Declaratice-variables"><a href="#Declaratice-variables" class="headerlink" title="Declaratice variables"></a>Declaratice variables</h4><p>这个和SICP里面讲的那个变量替换应该是一回事.<br>一旦绑定, variable就是value了.</p>
-<blockquote>
-<p>indistinguishable 无法分辨的;</p>
-</blockquote>
-<h4 id="Value-store"><a href="#Value-store" class="headerlink" title="Value store"></a>Value store</h4><p>Standard ML, Haskell, Scheme使用value store (不可变)<br>C++, Java使用cell store (可变)</p>
-<p>而本书使用 sigle-assignment store. 原因:</p>
-<ol>
-<li>想使用partial values, 举例: a procedure can return an output by binding an unbound variable argument.</li>
-<li>声明式并发</li>
-<li>想扩展这个模型用于relational(logic) programming 和 constraint programming</li>
-<li>性能好, 比如尾递归和不同的list</li>
-</ol>
-<h4 id="Value-creation"><a href="#Value-creation" class="headerlink" title="Value creation"></a>Value creation</h4><p>如果变量已经被绑定, single-assignment 操作会检查这两个value是否适配, 如果不适配就会报错.</p>
-<h4 id="Value-identifiers"><a href="#Value-identifiers" class="headerlink" title="Value identifiers"></a>Value identifiers</h4><h4 id="Partial-values"><a href="#Partial-values" class="headerlink" title="Partial values"></a>Partial values</h4><p>含有未知数的值</p>
-<h4 id="Variable-variable-binding"><a href="#Variable-variable-binding" class="headerlink" title="Variable-variable binding"></a>Variable-variable binding</h4><h4 id="Dataflow-variable"><a href="#Dataflow-variable" class="headerlink" title="Dataflow variable"></a>Dataflow variable</h4><h3 id="2-3-defines-the-kernel-language-syntax"><a href="#2-3-defines-the-kernel-language-syntax" class="headerlink" title="2.3 defines the kernel language syntax"></a>2.3 defines the kernel language syntax</h3><h3 id="2-4-defines-the-kernel-language-semantics-in-terms-of-a-simple-abstract-machine"><a href="#2-4-defines-the-kernel-language-semantics-in-terms-of-a-simple-abstract-machine" class="headerlink" title="2.4 defines the kernel language semantics in terms of a simple abstract machine"></a>2.4 defines the kernel language semantics in terms of a simple abstract machine</h3><h3 id="2-5-defines-a-practical-programming-language-on-top-of-the-kernel-language"><a href="#2-5-defines-a-practical-programming-language-on-top-of-the-kernel-language" class="headerlink" title="2.5 defines a practical programming language on top of the kernel language"></a>2.5 defines a practical programming language on top of the kernel language</h3><h3 id="2-6-exception-handling"><a href="#2-6-exception-handling" class="headerlink" title="2.6 exception handling"></a>2.6 exception handling</h3><h3 id="2-7-advanced-topics"><a href="#2-7-advanced-topics" class="headerlink" title="2.7 advanced topics"></a>2.7 advanced topics</h3>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/24/CTM系列(2) - 声明式计算模型/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-CTM系列(1) - 介绍编程概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -508,6 +374,88 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/12/19/SICP in Python系列(1)/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Python-流畅的Python系列(2) - 数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/">Python-流畅的Python系列(2) - 数据结构</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/" class="archive-article-date">
+  	<time datetime="2019-12-12T08:58:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><ul>
+<li>容器序列: list, tuple, collections.deque 可以存放不同类型的数据, 存放的是包含的任意类型的对象的引用</li>
+<li><p>扁平序列: str, bytes, bytearray, memoryview 和 array.array 只能容纳一种类型, 存放的是值而不是引用,只能存放字符,字节,数值</p>
+</li>
+<li><p>可变序列: list, bytearray, array.array, collections.deque, memoryview</p>
+</li>
+<li>不可变序列: tuple, str, bytes</li>
+</ul>
+<h1 id="列表推导和生成器表达式"><a href="#列表推导和生成器表达式" class="headerlink" title="列表推导和生成器表达式"></a>列表推导和生成器表达式</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="string">'ABC'</span></span><br><span class="line">dummy = [x <span class="keyword">for</span> x <span class="keyword">in</span> x]</span><br><span class="line">dummy2 = [ord(x) <span class="keyword">for</span> x <span class="keyword">in</span> x]</span><br><span class="line">print(x)</span><br><span class="line">print(dummy)</span><br><span class="line">print(dummy2)</span><br><span class="line"></span><br><span class="line">beyond = [s <span class="keyword">for</span> s <span class="keyword">in</span> x <span class="keyword">if</span> ord(s) &gt; <span class="number">65</span>]</span><br><span class="line">beyond2 = list(filter(<span class="keyword">lambda</span> c: c &gt; <span class="number">65</span>, map(ord, x)))</span><br><span class="line">print(beyond)</span><br><span class="line">print(beyond2)</span><br></pre></td></tr></table></figure>
+<h2 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h2>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Python//" class="article-tag-list-link color2">Python</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/">展开全文 >></a>
         </p>
       
 

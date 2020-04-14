@@ -226,84 +226,6 @@
 
 
   
-    <article id="post-算法图解系列(2) - 选择排序和快排" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/09/算法图解系列(2) - 选择排序和快排/">算法图解系列(2) - 选择排序</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/09/算法图解系列(2) - 选择排序和快排/" class="archive-article-date">
-  	<time datetime="2019-12-09T03:27:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><blockquote>
-<p>每次都把最小的拿出来, 复杂度: O(n * 1/2n), 就是O(n ^ 2)<br>还是习惯驼峰式,就这样来吧,按照我的喜好~<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findSmallest</span><span class="params">(arr)</span>:</span></span><br><span class="line">    smallest = arr[<span class="number">0</span>]</span><br><span class="line">    smallestIndex = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(arr)):</span><br><span class="line">        <span class="keyword">if</span> arr[i] &lt; smallest:</span><br><span class="line">            smallest = arr[i]</span><br><span class="line">            smallestIndex = i</span><br><span class="line">    <span class="keyword">return</span> smallestIndex</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">selectionSort</span><span class="params">(arr)</span>:</span></span><br><span class="line">    newArr = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(arr)):</span><br><span class="line">        smallest = findSmallest(arr)</span><br><span class="line">        newArr.append(arr.pop(smallest))</span><br><span class="line">    <span class="keyword">return</span> newArr</span><br><span class="line"></span><br><span class="line">print(selectionSort([<span class="number">5</span>,<span class="number">4</span>,<span class="number">23</span>,<span class="number">7</span>,<span class="number">1</span>]))</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p>python还是秀啊! (不过总感觉这种写法效率要低一些)<br>我试图用java来用这样实现, 发现各种别扭, 数组和list, 包装类型和基本类型<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">quickSort</span><span class="params">(arr)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(arr) &lt; <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> arr</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        pivot = arr[<span class="number">0</span>]</span><br><span class="line">        <span class="comment"># 数组中比pivot小的</span></span><br><span class="line">        less = [i <span class="keyword">for</span> i <span class="keyword">in</span> arr[<span class="number">1</span>:] <span class="keyword">if</span> i &lt;= pivot]</span><br><span class="line">        <span class="comment"># 数组中比pivot大的</span></span><br><span class="line">        greater = [i <span class="keyword">for</span> i <span class="keyword">in</span> arr[<span class="number">1</span>:] <span class="keyword">if</span> i &gt; pivot]</span><br><span class="line">        <span class="keyword">return</span> quickSort(less) + [pivot] + quickSort(greater)</span><br><span class="line"></span><br><span class="line">print(quickSort([<span class="number">3</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">8</span>,<span class="number">2</span>]))</span><br></pre></td></tr></table></figure></p>
-<p>wait, Java8是可以的, java的数组好贴近底层啊..我竟然有了这种想法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">quickSort</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (list.size() &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        Integer pivot = list.get(<span class="number">0</span>);</span><br><span class="line">        List&lt;Integer&gt; less = list.stream().skip(<span class="number">1</span>).filter(el -&gt; el &lt;= pivot).collect(Collectors.toList());</span><br><span class="line">        List&lt;Integer&gt; greater = list.stream().skip(<span class="number">1</span>).filter(el -&gt; el &gt; pivot).collect(Collectors.toList());</span><br><span class="line">        <span class="keyword">return</span> Stream.of(quickSort(less).stream(), Stream.of(pivot), quickSort(greater).stream())</span><br><span class="line">                .flatMap(Function.identity()).collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/09/算法图解系列(2) - 选择排序和快排/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-算法图解系列(1) - 算法初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -434,6 +356,102 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/12/03/Golang东一榔头西一棒槌系列(1) -来点代码/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Golang东一榔头西一棒槌系列(0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/03/Golang东一榔头西一棒槌系列(0) - 写在前面的话/">Golang东一榔头西一棒槌系列(0) - 写在前面的话</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/03/Golang东一榔头西一棒槌系列(0) - 写在前面的话/" class="archive-article-date">
+  	<time datetime="2019-12-02T16:34:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>写代码嘛, 开心就好~</p>
+<hr>
+<p>go语言, 真的乱七八糟的, 对于我这种三心二意的人极不友好, 每次回来都会把上一次学到的东西, 踩过的坑全都忘掉.</p>
+<h1 id="怎么把它跑起来"><a href="#怎么把它跑起来" class="headerlink" title="怎么把它跑起来?"></a>怎么把它跑起来?</h1><ol>
+<li>Go的代码都要放在$GOPATH的src下面…</li>
+<li>go install 安装, 在$GOPATH/pkg/#{GOOS}_${GOARCH}下有xxx.a</li>
+<li>含有main方法的go文件 package也必须是main, 执行go build, 生成可执行文件</li>
+</ol>
+<blockquote>
+<p>go get github.com/xxxxxx<br>就是git clone 然后执行go install</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Hello World"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>go run 01_HelloWorld.go</p>
+</blockquote>
+<h2 id="go-build-用于测试编译"><a href="#go-build-用于测试编译" class="headerlink" title="go build 用于测试编译"></a>go build 用于测试编译</h2><ul>
+<li>如果是普通包: 没用</li>
+<li>如果是main包: 在当前目录生成可执行文件. 如果想在$GOPATH/bin下生成相应的文件, 需要执行go install 或者<br>go build -o 路径/a.exe</li>
+</ul>
+<p>默认编译当前目录下的所有go文件, 可以使用go build a.go只编译某个文件</p>
+<p>忽略以 _ 和 . 开头的go文件</p>
+<h2 id="go-clean-移除当前源码包中编译生成的文件"><a href="#go-clean-移除当前源码包中编译生成的文件" class="headerlink" title="go clean 移除当前源码包中编译生成的文件"></a>go clean 移除当前源码包中编译生成的文件</h2><p>xxx.out<br>xxx.exe</p>
+<h2 id="go-test"><a href="#go-test" class="headerlink" title="go test"></a>go test</h2><p>读取源码目录下*_test.go文件, 生成运行测试用的可执行文件</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Go//" class="article-tag-list-link color3">Go</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/03/Golang东一榔头西一棒槌系列(0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 

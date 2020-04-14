@@ -151,19 +151,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-沪江网校新标日语(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java线程池ThreadPoolExecutor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/沪江网校新标日语(1)/">沪江网校新标日语(1)</a>
+      <a class="article-title" href="/2020/04/14/Java线程池ThreadPoolExecutor/">Java线程池ThreadPoolExecutor</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/沪江网校新标日语(1)/" class="archive-article-date">
+        <a href="/2020/04/14/Java线程池ThreadPoolExecutor/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -171,33 +171,50 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>私<br>wa ta shi<br>わたし<br>我</p>
-<p>あなた　<br>a na ta<br>你</p>
-<p>あの人<br>a no hi to<br>あのひと<br>那个人</p>
-<p>~さん<br>sa nn<br>姓氏之后</p>
-<p>~らやん<br>ra ya nn<br>小孩子或亲近的女孩子</p>
-<p>~君<br>ku nn<br>くん<br>年龄相当或年轻的男性</p>
-<p>日本<br>ni ho nn<br>にほん</p>
-<p>日本人<br>ni ho nn ji nn<br>にほんじん</p>
-<p>中国<br>chu u go ku<br>ちゅうごく</p>
-<p>中国人<br>chu u go ku ji nn<br>ちゅごくじん</p>
-<p>韓国<br>ka nn ko ku<br>かんこく</p>
-<p>韓国人<br>ka nn ko ku ji nn</p>
-<p>先生<br>se nn se i<br>せんせい<br>老师,律师,艺术家,领导人,专家</p>
-<p>学生<br>ga ku se i<br>がくせい<br>大学生</p>
-<p>大学<br>da i ga ku<br>だいがく</p>
-<p>学 ga ku<br>生 se i</p>
-<p>会社<br>ka i sha<br>かいしゃ<br>公司</p>
-<p>会社員<br>ka i sha i nn<br>かいしゃいん<br>公司职员</p>
-<p>社員<br>sha i nn<br>しゃいん<br>职员</p>
-<p>企業<br>ki gyou<br>きぎょう</p>
-<p>企画<br>ki ka ku<br>策划</p>
-<p>はい<br>ha i<br>是</p>
-<p>いいえ<br>i i e<br>不是</p>
-<p>そうです<br>so u de su<br>是的</p>
-<p>違います<br>chi ga i ma su<br>ちがいます<br>不是</p>
-<p>分かりません<br>wa ka ri ma se nn<br>わかりません<br>不知道</p>
+        <pre><code>目的
+    线程是稀缺资源，不能频繁的创建。
+    解耦作用；线程的创建与执行完全分开，方便维护。
+    应当将其放入一个池子中，可以给其他任务进行复用。
+    提高线程的可管理性：线程池可以统一管理、分配、调优和监控
+    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗
+    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    
 
+四个构造函数,其中的一些参数: 
+    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
+                            除非将allowCoreThreadTimeOut设置为true。
+
+    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
+                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
+
+    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
+
+    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
+                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
+
+    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
+                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
+
+    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
+
+    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
+                                        会调用RejectedExecutionHandler的rejectedExecution方法。
+
+线程池规则
+
+    下面都假设任务队列没有大小限制：
+
+        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
+        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
+
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
+        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
+
+    任务队列大小有限时
+
+        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
+        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
+</code></pre>
       
 
       
@@ -211,7 +228,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -220,7 +237,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/沪江网校新标日语(1)/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Java线程池ThreadPoolExecutor/">展开全文 >></a>
         </p>
       
 
@@ -329,68 +346,6 @@
 
 
   
-    <article id="post-邓小平传" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/邓小平传/">邓小平传</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/邓小平传/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/邓小平传/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-java中==和equals的区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -464,6 +419,68 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/04/14/java中==和equals的区别/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-邓小平传" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/邓小平传/">邓小平传</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/邓小平传/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/邓小平传/">展开全文 >></a>
         </p>
       
 

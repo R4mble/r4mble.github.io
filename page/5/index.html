@@ -248,6 +248,95 @@
 
 
   
+    <article id="post-Java内存结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Java内存结构/">Java内存结构</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Java内存结构/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="线程共享"><a href="#线程共享" class="headerlink" title="线程共享"></a>线程共享</h2><ul>
+<li><p>方法区<br>  又称Non-Heap（非堆），主要用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，<br>  根据Java 虚拟机规范的规定，当方法区无法满足内存分配需求时，将抛出OutOfMemoryError 异常。<br>  在方法区中存在一个叫运行时常量池(Runtime Constant Pool）的区域，它主要用于存放编译器生成的各种字面量和符号引用，<br>  这些内容将在类加载后存放到运行时常量池中，以便后续使用。</p>
+</li>
+<li><p>堆<br>  在虚拟机启动时创建，是Java 虚拟机所管理的内存中最大的一块，主要用于存放对象实例，几乎所有的对象实例都在这里分配内存，<br>  Java 堆是垃圾收集器管理的主要区域，因此很多时候也被称做GC 堆，如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，<br>  将会抛出OutOfMemoryError 异常。</p>
+</li>
+<li><p>直接内存<br>  JDK1.4中新加入的 NIO(New Input/Output) 类，引入了一种基于通道（Channel） 与缓存区（Buffer） 的 I/O 方式，<br>  它可以直接使用Native函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。<br>  这样就能在一些场景中显著提高性能，因为避免了在 Java 堆和 Native 堆之间来回复制数据。</p>
+</li>
+</ul>
+<h2 id="线程私有"><a href="#线程私有" class="headerlink" title="线程私有"></a>线程私有</h2><ul>
+<li><p>虚拟机栈<br>  与线程同时创建，总数与线程关联，代表Java方法执行的内存模型。每个方法执行时都会创建一个栈桢来存储方法的的变量表、<br>  操作数栈、动态链接方法、返回值、返回地址等信息。每个方法从调用直结束就对于一个栈桢在虚拟机栈中的入栈和出栈过程</p>
+</li>
+<li><p>本地方法栈<br>  与虚拟机用到的 Native 方法相关</p>
+</li>
+<li><p>程序计数器<br>  一小块内存空间，主要代表当前线程所执行的字节码行号指示器。字节码解释器工作时，<br>  通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。</p>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/Java内存结构/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Golang东一榔头西一棒槌系列(3) -集合" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -461,68 +550,6 @@ func fn2(f func() string) string {
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Golang东一榔头西一棒槌系列(5) -控制流程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(5) -控制流程/">Golang东一榔头西一棒槌系列(5) -控制流程</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(5) -控制流程/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(5) -控制流程/">展开全文 >></a>
         </p>
       
 

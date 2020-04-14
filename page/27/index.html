@@ -151,137 +151,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-编程的数学原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/28/编程的数学原理/">编程的数学原理</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/28/编程的数学原理/" class="archive-article-date">
-  	<time datetime="2019-04-28T04:32:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="群-group"><a href="#群-group" class="headerlink" title="群(group)"></a>群(group)</h1><p>群是一个集合G与其上定义的某种二元关系运算.</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
-<li>消去公理: 对任何a ∈ G, 都存在一个逆元a<sup>-1</sup>使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e</li>
-</ol>
-<p>例子: 整数加法群, 整数模5加法群</p>
-<h1 id="幺半群-monoid"><a href="#幺半群-monoid" class="headerlink" title="幺半群(monoid)"></a>幺半群(monoid)</h1><p>幺半群是一个集合S和其上定义的二元运算</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
-</ol>
-<p>例子: 字符串的拼接, 列表的连接</p>
-<h1 id="半群-semigroup"><a href="#半群-semigroup" class="headerlink" title="半群(semigroup)"></a>半群(semigroup)</h1><p>半群是一个集合S和其上定义的二元运算</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-</ol>
-<p>例子: 全体正整数构成的加法半群, 乘法半群; 全体偶数构成的加法半群, 乘法半群</p>
-<h2 id="群的性质"><a href="#群的性质" class="headerlink" title="群的性质"></a>群的性质</h2><blockquote>
-<p>群的单位元是惟一的<br>群中的任意元素a,都存在且仅存在一个逆元使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e<br>有限群的每个元素都有有限的阶<br>    对群的一个元a,能够满足a<sup>m</sup> = e的最小整数m叫做a的阶<br>    如果m不存在,则称a的阶是无限的.</p>
-</blockquote>
-<p>存在从某个集合A到另一个集合B的映射f<br>a和b是A中的两个元, f(a)和f(b)是它们在B中的像<br>考虑在A上的二元封闭运算产生的元a · b,在映射下在B中的像f(a · b)<br>如果对B上的二元封闭运算总有<br>    f(a) · f(b) = f(a · b)</p>
-<p>则称f是从A到B的同态映射<br>如果f是满射(即B中所有元素都在A中有原像),则称为同态满射<br>例:奇偶判定函数odd: Z -&gt; Bool,接受一个整数,如果是奇数返回True,否则返回False<br>    布尔集合{True,False  }在逻辑或运算下构成一个群</p>
-<p> 如果f不仅是满射,还是单射,那么它就是一一映射.称f是从A到B的同构映射,简称同构,记做A ≌ B<br>    例: a=2,f(a)=4<br>        b=3,f(b)=9<br>        ab=6,f(ab)=f(a)f(b)=36</p>
-<h2 id="范畴Category"><a href="#范畴Category" class="headerlink" title="范畴Category"></a>范畴Category</h2><p>一个范畴C包括一组对象（Object），记为A,B,C,…，和一组箭头<br>（Arrow），记为f,g,h,…。它们之上定义了以下四种操作：</p>
-<ul>
-<li>成为源和目标</li>
-<li>id</li>
-<li>组合<br>两条公理:</li>
-<li>结合</li>
-<li>单位元<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">Monoid</span> <span class="type">String</span> <span class="keyword">where</span></span></span><br><span class="line">    e = <span class="string">""</span></span><br><span class="line">    (*) = (++)</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>字符串幺半群(S, ++, “”)<br>    r ++ (s ++ t) = (r ++ s) ++ t<br>    “” ++ s = s = s ++ “”<br>字符集幺半群(C, ∪, {})<br>自然数幺半群(N, +, 0)</p>
-<p>S到C的态射: 把串中用到的字符组成一个字符集 S -&gt; C  φ: s -&gt; {c | c ∈ s}<br>    φ(s ++ r) = φ(s) ∪ φ(r)<br>    φ(“”) = {}<br>C到N的态射: 集合的大小映射为自然数,空集的大小映射为0 C −→ N  ψ : c → |c|<br>    ψ(s) ∪ ψ(r) = ψ(s + r)<br>    {} = ψ(0)</p>
-<p>S -&gt; C -&gt; N<br>幺半群范畴Mon,对象是幺半群,箭头是态射,恒等箭头是从一个幺半群到它自己的态射</p>
-<p>只有一个对象的幺半群范畴:<br>    对象是字符串幺半群(S, ++, “”), 箭头是前缀映射,单位元是空串””</p>
-<p>预序 preset</p>
-<ul>
-<li>自反性 任何集合中的元素a都有a ≤ a；</li>
-<li>传递性 若a ≤ b且b ≤ c，则a ≤ c；<br>在预序基础上满足 </li>
-<li>反对称性 若a ≤ b且b ≤ a，则a = b；<br>称为偏序 poset</li>
-</ul>
-<p>偏序集例子: 族谱, {x,y,z}的所有子集在包含关系下</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/28/编程的数学原理/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-范畴论-贺伟" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -387,90 +256,6 @@
 
 
   
-    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-DDIA系列(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -542,6 +327,266 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/27/DDIA系列(1)/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-es doc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/es doc/">es doc</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/es doc/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>新建文档</li>
+</ul>
+<pre><code>PUT /customer/_doc/1
+{
+&quot;name&quot;: &quot;John Doe&quot;
+}
+</code></pre><ul>
+<li>获取文档</li>
+</ul>
+<pre><code>GET /customer/_doc/1
+</code></pre><ul>
+<li>批量导入</li>
+</ul>
+<pre><code>curl -H &quot;Content-Type: application/json&quot; -XPOST &quot;localhost:9200/bank/_bulk?pretty&amp;refresh&quot; --data-binary &quot;@accounts.json&quot;
+curl &quot;localhost:9200/_cat/indices?v&quot;
+</code></pre><ul>
+<li>搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match_all&quot;: {}
+    },
+    &quot;sort&quot;: [
+        {
+            &quot;account_number&quot;: {
+                &quot;order&quot;: &quot;desc&quot;
+            }
+        }
+    ],
+    &quot;from&quot;: 10,
+    &quot;size&quot;: 10
+}
+from和size做分页
+</code></pre><ul>
+<li>匹配搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match&quot;: {
+            &quot;address&quot;: &quot;mill lane&quot;
+        }
+    }
+}    
+</code></pre><ul>
+<li>精确搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match_phrase&quot;: {
+            &quot;address&quot;: &quot;mill lane&quot;
+        }
+    }
+}
+</code></pre><ul>
+<li>must,should,must_not从句<br>  must: 文档必须完全匹配条件<br>  should: should下面会带一个以上的条件，至少满足一个条件，这个文档就符合should<br>  must_not: 文档必须不匹配条件</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;bool&quot;: {
+            &quot;must&quot;: [
+                {&quot;match&quot;: {&quot;age&quot;: &quot;40&quot;}}
+            ],
+            &quot;must_not&quot;: [
+                {&quot;match&quot;: {&quot;state&quot;: &quot;ID&quot;}}
+            ]
+        }
+    }
+}
+</code></pre><ul>
+<li>范围过滤器</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;bool&quot;: {
+            &quot;must&quot;: {&quot;match_all&quot;: {}},
+            &quot;filter&quot;: {
+                &quot;range&quot;: {
+                    &quot;balance&quot;: {
+                        &quot;gte&quot;: 20000,
+                        &quot;lte&quot;: 30000
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/es doc/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
         </p>
       
 

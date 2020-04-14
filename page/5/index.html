@@ -241,19 +241,19 @@
 
 
   
-    <article id="post-沪江网校新标日语(2)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-java中==和equals的区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/沪江网校新标日语(2)/">沪江网校新标日语(2)</a>
+      <a class="article-title" href="/2020/04/14/java中==和equals的区别/">java中==和equals的区别</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/沪江网校新标日语(2)/" class="archive-article-date">
+        <a href="/2020/04/14/java中==和equals的区别/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -261,26 +261,36 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="名词1-は-名词2-です"><a href="#名词1-は-名词2-です" class="headerlink" title="[名词1] は [名词2]　です"></a>[名词1] は [名词2]　です</h1><p>李さん　は　中国人　です<br>ri sa nn ha chu u go ku ji　nn　de su<br>りさんはちゅうごくじんです</p>
-<p>私　は　中国人　です<br>wa ta shi ha chu u go ku ji nn de su<br>わたしはちゅうごくじんです</p>
-<p>私　は　学生　です<br>wa ta shi ha ga ku se i de su<br>わたしはがくせいです</p>
-<h1 id="名词1-は-名词2-では-ありません"><a href="#名词1-は-名词2-では-ありません" class="headerlink" title="[名词1] は [名词2]　では　ありません"></a>[名词1] は [名词2]　では　ありません</h1><p>では：口语中说成 　じゃ　ja</p>
-<p>森さん　は　学生　では　ありません<br>mo ri sa nn ha ga ku se i de ha a ri ma se nn<br>もりさんはがくせいではありません</p>
-<p>私は日本人ではありません<br>wa ta shi ha ni ho nn ji nn de ha a ri ma se nn<br>わたしはにほんじんではありません</p>
-<p>私は日本人じゃありません<br>wa ta shi ha ni ho nn ji nn ja a ri ma se<br>わたしはにほんじんじゃありませ</p>
-<h1 id="名词1-は-名词2-ですか"><a href="#名词1-は-名词2-ですか" class="headerlink" title="[名词1] は [名词2]　ですか"></a>[名词1] は [名词2]　ですか</h1><p>疑问句句尾使用句号</p>
-<p>林さんは日本人ですか。<br>ha ya shi sa nn ha ni ho nn ji nn de su ka<br>はやしさんはにほんじんですか。</p>
-<p>ー　はい、日本人です。<br>ー　いいえ、日本人ではありません。中国人です。</p>
-<p>金さんは中国人ですか。<br>ki nn sa nn ha chu u go ku ji nn de su ka<br>きんさんはちゅうごくじんですか</p>
-<p>ー　いいえ、中国人ではありません。韓国人です。</p>
-<p>回答方式<br>ー　はい、そうです。</p>
-<p>ー　いいえ、違います。<br>いいえ、ちがいまう</p>
-<p>ー　分かりません。<br>わかりません</p>
-<h1 id="名词1-の-名词2"><a href="#名词1-の-名词2" class="headerlink" title="[名词1] の [名词2]"></a>[名词1] の [名词2]</h1><p>大学の学生<br>da i ga ku no ga ku se i<br>だいがくのがくせい</p>
-<p>あの人は私の父です<br>a no hi to ha wa ta shi no chi chi de su<br>あのひとはわたしのちちです</p>
-<p>ー　私は李です。小野さんですか。<br>わたしはりです。おのさんですか。</p>
-<p>ー　はい、そうです。小野です。</p>
+        <p>java中==和equals的区别<br>    public boolean equals(Object obj) {<br>        return (this == obj);<br>    }</p>
+<pre><code>基本概念:
+    值类型是存储在内存中的堆栈（以后简称栈），而引用类型的变量在栈中仅仅是存储引用类型变量的地址，而其本身则存储在堆中。
+    ==操作比较的是两个变量的值是否相等，对于引用型变量表示的是两个变量在堆中存储的地址是否相同，即栈中的内容是否相同。
+    equals操作表示的两个变量是否是对同一个对象的引用，即堆中的内容是否相同。
+    ==比较的是2个对象的地址，而equals比较的是2个对象的内容。
 
+常见误区:
+    程序在运行的时候会创建一个字符串缓冲池当使用 s2 = &quot;Monday&quot; 这样的表达是创建字符串的时候，
+    程序首先会在这个String缓冲池中寻找相同值的对象，在第一个程序中，s1先被放到了池中，所以在s2被创建的时候，
+    程序找到了具有相同值的 s1
+    使用了 new 操作符，新的&quot;Monday&quot;Sting对象被创建在内存中。他们的值相同，但是位置不同.
+
+     String str1 = new String(&quot;hello&quot;);
+     String str2 = new String(&quot;hello&quot;);
+     String str3 = &quot;hello&quot;;
+     String str4 = &quot;hello&quot;;
+     System.out.println(str1==str2);//false  栈里面内容是否相等
+     System.out.println(str1.equals(str2));//true 堆里面内容是否相等
+
+    System.out.println(str1==str3);//false
+    System.out.println(str1.equals(str3));//true
+
+    System.out.println(str3==str4);//true
+    System.out.println(str3.equals(str4));//true
+
+拓展:
+    String的intern()方法检查字符串池里是否存在&quot;abc&quot;这么一个字符串，如果存在，就返回池里的字符串；如果不存在，
+    该方法会把&quot;abc&quot;添加到字符串池中，然后再返回它的引用。
+</code></pre>
       
 
       
@@ -294,7 +304,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -303,7 +313,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/沪江网校新标日语(2)/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/java中==和equals的区别/">展开全文 >></a>
         </p>
       
 
@@ -333,19 +343,19 @@
 
 
   
-    <article id="post-沪江网校新标日语(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes权威指南-从Docker到Kubernetes实践全接触" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/沪江网校新标日语(1)/">沪江网校新标日语(1)</a>
+      <a class="article-title" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">Kubernetes</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/沪江网校新标日语(1)/" class="archive-article-date">
+        <a href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -353,32 +363,23 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>私<br>wa ta shi<br>わたし<br>我</p>
-<p>あなた　<br>a na ta<br>你</p>
-<p>あの人<br>a no hi to<br>あのひと<br>那个人</p>
-<p>~さん<br>sa nn<br>姓氏之后</p>
-<p>~らやん<br>ra ya nn<br>小孩子或亲近的女孩子</p>
-<p>~君<br>ku nn<br>くん<br>年龄相当或年轻的男性</p>
-<p>日本<br>ni ho nn<br>にほん</p>
-<p>日本人<br>ni ho nn ji nn<br>にほんじん</p>
-<p>中国<br>chu u go ku<br>ちゅうごく</p>
-<p>中国人<br>chu u go ku ji nn<br>ちゅごくじん</p>
-<p>韓国<br>ka nn ko ku<br>かんこく</p>
-<p>韓国人<br>ka nn ko ku ji nn</p>
-<p>先生<br>se nn se i<br>せんせい<br>老师,律师,艺术家,领导人,专家</p>
-<p>学生<br>ga ku se i<br>がくせい<br>大学生</p>
-<p>大学<br>da i ga ku<br>だいがく</p>
-<p>学 ga ku<br>生 se i</p>
-<p>会社<br>ka i sha<br>かいしゃ<br>公司</p>
-<p>会社員<br>ka i sha i nn<br>かいしゃいん<br>公司职员</p>
-<p>社員<br>sha i nn<br>しゃいん<br>职员</p>
-<p>企業<br>ki gyou<br>きぎょう</p>
-<p>企画<br>ki ka ku<br>策划</p>
-<p>はい<br>ha i<br>是</p>
-<p>いいえ<br>i i e<br>不是</p>
-<p>そうです<br>so u de su<br>是的</p>
-<p>違います<br>chi ga i ma su<br>ちがいます<br>不是</p>
-<p>分かりません<br>wa ka ri ma se nn<br>わかりません<br>不知道</p>
+        <h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><ul>
+<li>拥有唯一指定的名称 (如mysql-server)</li>
+<li>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP, Service IP 或 VIP.</li>
+<li>能够提供某种远程服务能力</li>
+<li>被映射到提供这种服务能力的一组容器应用上</li>
+</ul>
+<p>Service与Pod之间通过Label关联, 给运行MySQL的Pod贴上name=mysql的标签, 给Service定义Label Selector,<br>MySQL Service的标签选择器的选择条件为name=mysql</p>
+<p>一个Node上运行着几百个Pod</p>
+<p>一个Pod里有一个Pause容器和多个业务容器</p>
+<h2 id="例子-运行在Tomcat里的WebApp"><a href="#例子-运行在Tomcat里的WebApp" class="headerlink" title="例子: 运行在Tomcat里的WebApp"></a>例子: 运行在Tomcat里的WebApp</h2><p>两个容器: WebApp容器和MySQL容器<br>webapp需要访问mysql容器</p>
+<ul>
+<li>docker时代: 把mysql容器的ip地址通过环境变量注入到webapp中, 把webapp的8080端口映射到宿主机的8080端口</li>
+<li>kubernetes时代: </li>
+</ul>
+<ol>
+<li>为mysql服务创建RC(Replication Controller)定义文件 mysql-rc.yaml</li>
+</ol>
 
       
 
@@ -393,7 +394,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
         		</li>
       		
 		</ul>
@@ -402,7 +403,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/沪江网校新标日语(1)/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">展开全文 >></a>
         </p>
       
 
@@ -432,19 +433,19 @@
 
 
   
-    <article id="post-沪江网校新标日语(3)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Golang东一榔头西一棒槌系列(3) -集合" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/沪江网校新标日语(3)/">沪江网校新标日语(3)</a>
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/">Golang东一榔头西一棒槌系列(3) -集合</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/沪江网校新标日语(3)/" class="archive-article-date">
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -452,25 +453,56 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>こねはテレビですか。<br>konehaterebidesuka<br>这是电视机吗</p>
-<p>いいえ、そねはテレビではありません。パソコンです。<br>不是, 那不是电视机, 是个人电脑.</p>
-<p>それは何ですか<br>それはなんですか<br>那是什么?</p>
-<p>これはテレビです。<br>这是电视.</p>
-<p>あの人は誰ですか<br>あのひとはだれですか<br>这个人是谁?</p>
-<p>あの人はスミスさんです。<br>这个人是史密斯先生.</p>
-<p>スミスさんはどなたですか。<br>史密斯先生是哪位?</p>
-<p>あの方です。<br>あのかたです。<br>这位.</p>
-<p>あれは誰の傘ですか。<br>あれはだれのかさですか。<br>那是谁的伞？</p>
-<p>私の鍵<br>わたしのかぎ<br>我的钥匙</p>
-<p>田中さんの車<br>たなかさんのくるま<br>田中先生的汽车</p>
-<p>日本語の本<br>にほんごのほん<br>日语书</p>
-<p>このカメラはスミスさんです<br>这个照相机是史密斯先生的.</p>
-<p>その ノート は だれの ですか<br>谁的笔记本?<br>わたしのです<br>我的.</p>
-<p>森さんの かばん は どれ ですか。<br>森的包是哪一个?<br>あのかばんです。<br>这个包.</p>
-<p>中島さんの傘はどれですか。<br>なかしまさんのかさはどれですか。<br>中島さんの傘はどの傘ですか。</p>
-<p>中岛的伞是哪一把?</p>
-<p>小野さんの机はどの机ですか。<br>おのさんのつくえはどのつくえですか。<br>小野さんの机はどれですか.</p>
-<p>小野的桌子是哪一张?</p>
+        <h1 id="array-数组"><a href="#array-数组" class="headerlink" title="array 数组"></a>array 数组</h1><pre><code>// 声明一个int类型数组
+var arr [10]int
+
+// 省略长度, go会自动根据元素算长度
+a := [...]int{3,4,4}
+
+// 二位数组
+doubleArray := [2][4]int{{1, 2, 3, 4}, {5, 6, 7, 8}}
+</code></pre><p>长度也是数组类型的一部分, [3]int和[4]int是不同的类型<br>数组作为参数时, 传入的是该数组的副本, 而不是指针.</p>
+<h1 id="slice-“动态数组”-引用类型-指向一个底层array"><a href="#slice-“动态数组”-引用类型-指向一个底层array" class="headerlink" title="slice “动态数组”,引用类型,指向一个底层array"></a>slice “动态数组”,引用类型,指向一个底层array</h1><pre><code>// 声明一个slice, (少了长度)
+var fslice []int
+
+// 声明两个含有byte的slice
+var a, b [] byte
+
+var ar = [10]byte{0,1,2,3,4,5,6,7,8,9}
+
+// a指向数组的第三个元素开始, 到第5个元素结束, a就是[2 3 4]
+a = ar[2:5]
+</code></pre><p>slice通过arr[i:j]来获取, i是数组的开始位置,j是结束位置,不包含arr[j],长度是j-i</p>
+<p>slice默认开始位置是0, 结束位置是数组长度<br>即: arr[:n]等价于arr[0:n]<br>    arr[n:]等价于arr[n:len(arr)]<br>从一个数组直接获取slice, 可以用arr[:]</p>
+<p>slice的最大长度cap: slice开始位置到数组最后位置的长度, len(arr) - i<br>对slice的slice可以在cap范围内扩展<br>slice的元素变了, 对它切片的slice元素也会相应改变</p>
+<p>append: 向slice里追加一个或多个元素, 返回一个slice(不改变原slice)<br>乱七八糟警告: append函数会改变slice所引用的数组的内容! 同时会影响到引用同一个数组的其他slice<br>            当slice没有剩余空间的时候, 将动态分配新的数组空间, 返回的slice数组将指向这个空间,<br>             原数组内容保持不变, 其他引用此数组的slice不受影响</p>
+<h1 id="map"><a href="#map" class="headerlink" title="map"></a>map</h1><pre><code>// 声明一个key是字符串,值是int的map, 这种声明需要在使用之前使用make初始化
+var numbers map[string] int
+
+// 声明map
+numbers := make(map[string]int)
+
+// 赋值
+numbers[&quot;one&quot;] = 1
+</code></pre><ul>
+<li>map是无序的</li>
+<li>map长度不固定, 是引用类型, 两个map指向一个底层, 一个改变另一个也改变</li>
+<li>内置len函数返回map拥有key的数量</li>
+</ul>
+<pre><code>// 初始化一个map
+rating := map[string]float32 {&quot;c&quot;: 4, &quot;go&quot;: 3.4, &quot;c++&quot;: 1.3} 
+
+// 如果不存在则ok为false, 存在ok为true
+cSharp, ok := rating[&quot;c#&quot;]
+if ok {
+    fmt.Println(&quot;c# is in the map and its rating is &quot;, cSharp)
+} else {
+    fmt.Println(&quot;C# is not found&quot;)
+}
+
+// 删除map中key为c的元素
+delete(rating, &quot;c&quot;)
+</code></pre><h1 id="内建函数make和new"><a href="#内建函数make和new" class="headerlink" title="内建函数make和new"></a>内建函数make和new</h1><p>make用于内建类型(map,slice,channel)的内存分配<br>new用于各种类型的内存分配, 返回一个指针, 指向新分配的类型T的零值</p>
 
       
 
@@ -480,21 +512,10 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/沪江网校新标日语(3)/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/">展开全文 >></a>
         </p>
       
 
@@ -634,6 +655,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
@@ -642,15 +667,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">

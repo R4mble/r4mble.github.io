@@ -151,19 +151,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-玩转ElasticSearch系列 (1) - 架构原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-玩转ElasticSearch系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/">玩转Elasticsearch系列 (1) - 架构原理</a>
+      <a class="article-title" href="/2019/09/21/玩转ElasticSearch系列 (0) - 写在前面的话/">玩转ElasticSearch系列 (0) - 写在前面的话</a>
     </h1>
   
 
         
-        <a href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/" class="archive-article-date">
+        <a href="/2019/09/21/玩转ElasticSearch系列 (0) - 写在前面的话/" class="archive-article-date">
   	<time datetime="2019-09-21T02:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-21</time>
 </a>
         
@@ -171,42 +171,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Lucene倒排索引"><a href="#Lucene倒排索引" class="headerlink" title="Lucene倒排索引"></a>Lucene倒排索引</h2><p>根据属性的值来查找记录.<br>表现为: 一个关键词,它的频度,位置.</p>
-<ol>
-<li>取得关键词. 去掉无意义介词,大小写统一,动词时态还原,过滤标点.</li>
-<li>建立倒排索引. 关键词所在的文章号,关键词的位置, 频度</li>
-<li>实现. 词典文件,频率文件,位置文件; 词典文件保留指向另外两个文件的指针.</li>
-<li>压缩算法. 关键词压缩: &lt;前缀长度,后缀&gt;. 数字压缩:只保存与上一个值的差值.</li>
-<li><p>查询单词时,Lucene对词典二元查找</p>
-<p>对应关系: “文章号” 对应 “文章中所有关键词”<br>倒排索引: “关键词” 对应 “拥有该关键词的所有文章”<br>关键词在文章中出现的位置和次数:  记录该词是文章中第几个关键词,(节约索引空间,词组查询快)<br>关键词按照字符顺序排列,可以使用二元搜索算法快速定位关键词.  </p>
-<p>| 关键词 | 文章号[出现频率] | 出现位置 |<br>| :—-: | :—-: | :—-: |<br>| he | 2[1] | 1<br>| live | 1[2] 2[1] | 2,5 2|<br>以上三列分别作为词典文件,频率文件,位置文件保存.<br>词典文件不仅保存了关键词,还保存了指向频率文件和位置文件的指针.</p>
-<p>假设查询单词”live”, Lucene先对词典二元查找,找到该词,通过指向频率文件的指针读出<br>所有文章号.返回结果.</p>
-</li>
-</ol>
-<h2 id="准实时索引的实现"><a href="#准实时索引的实现" class="headerlink" title="准实时索引的实现"></a>准实时索引的实现</h2><p>新收到的数据写到新的索引文件里.<br>Lucene把每次生成的倒排索引, 叫做一个段. 使用一个commit文件记录索引内所有的segment.<br>生成segment的数据来源就是内存中的buffer.</p>
-<p>1) 当前索引有3个segment可用.<br>2) 新接收的数据进入内存buffer<br>3) 内存buffer生成一个新的segment, 刷到文件系统缓存中(默认1秒间隔, Lucene即可检索到这个新的segment),<br>   再由文件系统缓存刷到磁盘, commit文件同步更新</p>
-<pre><code>curl -XPOST http://127.0.0.1:9200/logstash-2015.06.21/_settings -d&apos;
-{ “refresh_interval”: “10s” }
-</code></pre><h3 id="translog提供的磁盘同步控制"><a href="#translog提供的磁盘同步控制" class="headerlink" title="translog提供的磁盘同步控制"></a>translog提供的磁盘同步控制</h3><p>ES把数据写入内存buffer的同时,另外记录了一个translog日志.<br>在文件系统缓存刷到磁盘的过程中如果发生了异常, ES会从commit位置开始, 恢复整个translog文件中的记录, 保证数据一致性.<br>真正把segment刷到磁盘, 且commit文件进行更新时, translog文件才清空.称为flush<br>ES默认每30分钟或当translog文件大于512MB时 主动进行一次flush</p>
-<h4 id="translog的一致性"><a href="#translog的一致性" class="headerlink" title="translog的一致性"></a>translog的一致性</h4><p>ES默认每5秒强制刷新translog日志到磁盘上.(如果数据没备份,发生故障时确实有可能丢失5秒数据)</p>
-<h2 id="segment-merge的影响"><a href="#segment-merge的影响" class="headerlink" title="segment merge的影响"></a>segment merge的影响</h2><p>独立线程来进行segment数据归并, 把零散的segment归并为少量的,每个都比较大的segment文件.<br>归并后较大的segment刷到磁盘后,commit文件做出相应变更, 删除之前几个小segment,改成大segment.<br>等检索请求都从小segment转到大segment后,删除没用的segment.</p>
-<h4 id="归并线程的配置"><a href="#归并线程的配置" class="headerlink" title="归并线程的配置"></a>归并线程的配置</h4><p>归并过程: 读取segment -&gt; 归并计算 -&gt; 写segment -&gt; 刷到磁盘<br>限速机制: indices.store.throttle.max_bytes_per_sec : 20MB<br>对于SSD可以调到100MB或更高:</p>
-<pre><code>curl -XPOST http://127.0.0.1:9200/_cluster/settings -d&apos;
-{ “persistent”: {
-        &quot;indices.store.throttle.max_bytes_per_sec&quot; : &quot;100mb&quot;
-    } 
-}
-</code></pre><p>归并线程的数量: Math.min(3, Runtime.getRuntime().availableProcessors() / 2)<br>服务器CPU核数的一半大于3时启动3个归并线程, 否则启动CPU核心数一半的线程.<br>如果磁盘性能跟不上,可以降低index.merge.scheduler.max_thread_count配置, 避免IO情况恶化<br>归并策略:</p>
-<ul>
-<li>index.merge.policy.floor_segment 默认2MB, 小于它的优先被归并</li>
-<li>index.merge.policy.max_merge_at_once 默认一次最多归并10个segment</li>
-<li>index.merge.policy.max_merge_at_once_explicit 默认optimize时一次最多归并30个segment</li>
-<li>index.merge.policy.max_merged_segment 默认5GB,大于它的不参与归并,optimize除外<br>增大flush间隔,让每次新生成的segment本身就比较大</li>
-</ul>
-<p>optimize接口: 在负载较低的时间段,强制归并segment</p>
-<h2 id="routing和replica的读写过程"><a href="#routing和replica的读写过程" class="headerlink" title="routing和replica的读写过程"></a>routing和replica的读写过程</h2><h3 id="routing"><a href="#routing" class="headerlink" title="routing"></a>routing</h3><p>shard = hash(routing) % number_of_primary_shards</p>
-<p>每个数据都有一个routing参数,默认使用_id值.<br>因此: Elasticsearch索引的主分片数不能随意修改, 一旦改动存储位置计算结果就会发生改变, 索引数据将不可读.</p>
-<h3 id="副本一致性"><a href="#副本一致性" class="headerlink" title="副本一致性"></a>副本一致性</h3><h2 id="shard的allocate控制"><a href="#shard的allocate控制" class="headerlink" title="shard的allocate控制"></a>shard的allocate控制</h2><h2 id="自动发现的配置"><a href="#自动发现的配置" class="headerlink" title="自动发现的配置"></a>自动发现的配置</h2>
+        <p>就是个垃圾</p>
+
       
 
       
@@ -220,7 +186,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        			<a href="/categories/ElasticSearch//" class="article-tag-list-link color4">ElasticSearch</a>
         		</li>
       		
 		</ul>
@@ -229,7 +195,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/21/玩转ElasticSearch系列 (1) - 架构原理/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/21/玩转ElasticSearch系列 (0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 
@@ -364,6 +330,105 @@
 
 
   
+    <article id="post-精通Redis系列 (2) - 跳跃表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/19/精通Redis系列 (2) - 跳跃表/">精通Redis系列 (2) - 跳跃表</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/19/精通Redis系列 (2) - 跳跃表/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>核心思想: 有序链表分层, 空间换时间<br>性质:</p>
+<ol>
+<li>头结点中有一个64层结构, 每层结构包含指向本层的下个节点的指针, 指向本层下个节点中间所跨越的节点个数为本层的跨度.</li>
+<li>除头结点外, 层数最多的节点的层高为跳跃表的高度,</li>
+<li>每一层都是有序链表, 数据递增</li>
+<li>除头结点外, 一个元素在上层有序链表中出现, 一定会在下层有序链表中出现.</li>
+<li>跳跃表每层最后一个节点指向Null, 表示本层有序链表的结束</li>
+<li>跳跃表有一个tail指针, 指向跳跃吧的最后一个节点.</li>
+<li>最底层的有序链表包含所有节点, 最底层的节点个数为跳跃表的长度(不包括头节点)</li>
+<li>每个节点包含一个后退指针, 头结点和第一个节点指向Null</li>
+</ol>
+<h2 id="冲向源码"><a href="#冲向源码" class="headerlink" title="冲向源码"></a>冲向源码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    sds ele;</span><br><span class="line">    <span class="comment">// 用于存储排序的分值</span></span><br><span class="line">    <span class="keyword">double</span> score;</span><br><span class="line">    <span class="comment">// 回退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="comment">// 柔性数组,每个节点的数组长度不一样. 生成跳跃表节点时,随机生成一个1-64的值,值越大出现的概率越低</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">// 本层的下一个节点, 尾节点的forward指向Null</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">// forward指向的节点与本节点之间的元素个数, span值越大,跳过的节点个数越多</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">long</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="comment">// header: 头结点,level数组元素个数为64, 头结点不存储任何member和score,ele为Null,score为0,</span></span><br><span class="line">    <span class="comment">// 不计入跳跃表的总长度.头结点在初始化时,64个元素都指向Null,span值都为0</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> length;</span><br><span class="line">    <span class="keyword">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每个节点的ele存储zset的member, socre存储score, 当有序集合分值相同时,节点会按member的字典序进行排序</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zset</span> &#123;</span></span><br><span class="line">    dict *dict;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line">&#125; zset;</span><br></pre></td></tr></table></figure>
+<h3 id="跳跃表的创建"><a href="#跳跃表的创建" class="headerlink" title="跳跃表的创建"></a>跳跃表的创建</h3><h4 id="节点层高"><a href="#节点层高" class="headerlink" title="节点层高"></a>节点层高</h4><p>最小值为1, 最大值为64.<br>生成算法: level初始为1, 随机值小于p时level加1<br>    level为1的概率: 1-p<br>    level为2的概率: p(1-p)<br>    level为3的概率: (1-p) * p^2</p>
+<p>节点层高为n的概率是(1-p) * p^(n-1), p=0.25<br>节点的期望层高为1/(1-p), 即: 1.33</p>
+<h4 id="创建节点"><a href="#创建节点" class="headerlink" title="创建节点"></a>创建节点</h4><p>每个节点就是有序集合的一个元素, 创建节点时, 待创建节点的层高,分值,member等都已确定.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">zskiplistNode *<span class="title">zslCreateNode</span><span class="params">(<span class="keyword">int</span> level, <span class="keyword">double</span> score, sds ele)</span> </span>&#123;</span><br><span class="line">    zskiplistNode *zn =</span><br><span class="line">        zmalloc(<span class="keyword">sizeof</span>(*zn)+level*<span class="keyword">sizeof</span>(struct zskiplistLevel));</span><br><span class="line">    zn-&gt;score = score;</span><br><span class="line">    zn-&gt;ele = ele;</span><br><span class="line">    <span class="keyword">return</span> zn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Create a new skiplist. */</span></span><br><span class="line"><span class="function">zskiplist *<span class="title">zslCreate</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line"></span><br><span class="line">    zsl = zmalloc(<span class="keyword">sizeof</span>(*zsl));</span><br><span class="line">    zsl-&gt;level = <span class="number">1</span>;</span><br><span class="line">    zsl-&gt;length = <span class="number">0</span>;</span><br><span class="line">    zsl-&gt;header = zslCreateNode(ZSKIPLIST_MAXLEVEL,<span class="number">0</span>,<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; ZSKIPLIST_MAXLEVEL; j++) &#123;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].forward = <span class="literal">NULL</span>;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].span = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    zsl-&gt;header-&gt;backward = <span class="literal">NULL</span>;</span><br><span class="line">    zsl-&gt;tail = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> zsl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="插入节点"><a href="#插入节点" class="headerlink" title="插入节点"></a>插入节点</h4><ol>
+<li>查找要插入的位置</li>
+<li>调整跳跃表高度</li>
+<li>插入节点</li>
+<li>调整backward</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Insert a new node in the skiplist. Assumes the element does not already</span></span><br><span class="line"><span class="comment"> * exist (up to the caller to enforce that). The skiplist takes ownership</span></span><br><span class="line"><span class="comment"> * of the passed SDS string 'ele'. */</span></span><br><span class="line"><span class="function">zskiplistNode *<span class="title">zslInsert</span><span class="params">(zskiplist *zsl, <span class="keyword">double</span> score, sds ele)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入节点时, 需要更新被插入节点每层的前一个节点. 将每层需要更新的节点记录在update[i]中</span></span><br><span class="line">    <span class="comment">// x是跳跃表的头结点</span></span><br><span class="line">    zskiplistNode *update[ZSKIPLIST_MAXLEVEL], *x;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 记录当前层从header节点到update[i]节点所经历的步长, 在更新update[i]的span和设置</span></span><br><span class="line">    <span class="comment">// 新插入节点的span时用到</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> rank[ZSKIPLIST_MAXLEVEL];</span><br><span class="line">    <span class="keyword">int</span> i, level;</span><br><span class="line"></span><br><span class="line">    serverAssert(!isnan(score));</span><br><span class="line">    x = zsl-&gt;header;</span><br><span class="line">    <span class="keyword">for</span> (i = zsl-&gt;level<span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="comment">/* store rank that is crossed to reach the insert position */</span></span><br><span class="line">        rank[i] = i == (zsl-&gt;level<span class="number">-1</span>) ? <span class="number">0</span> : rank[i+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">while</span> (x-&gt;level[i].forward &amp;&amp;</span><br><span class="line">                (x-&gt;level[i].forward-&gt;score &lt; score ||</span><br><span class="line">                    (x-&gt;level[i].forward-&gt;score == score &amp;&amp;</span><br><span class="line">                    sdscmp(x-&gt;level[i].forward-&gt;ele,ele) &lt; <span class="number">0</span>)))</span><br><span class="line">        &#123;</span><br><span class="line">            rank[i] += x-&gt;level[i].span;</span><br><span class="line">            x = x-&gt;level[i].forward;</span><br><span class="line">        &#125;</span><br><span class="line">        update[i] = x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* we assume the element is not already inside, since we allow duplicated</span></span><br><span class="line"><span class="comment">     * scores, reinserting the same element should never happen since the</span></span><br><span class="line"><span class="comment">     * caller of zslInsert() should test in the hash table if the element is</span></span><br><span class="line"><span class="comment">     * already inside or not. */</span></span><br><span class="line">    level = zslRandomLevel();</span><br><span class="line">    <span class="keyword">if</span> (level &gt; zsl-&gt;level) &#123;</span><br><span class="line">        <span class="keyword">for</span> (i = zsl-&gt;level; i &lt; level; i++) &#123;</span><br><span class="line">            rank[i] = <span class="number">0</span>;</span><br><span class="line">            update[i] = zsl-&gt;header;</span><br><span class="line">            update[i]-&gt;level[i].span = zsl-&gt;length;</span><br><span class="line">        &#125;</span><br><span class="line">        zsl-&gt;level = level;</span><br><span class="line">    &#125;</span><br><span class="line">    x = zslCreateNode(level,score,ele);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; level; i++) &#123;</span><br><span class="line">        x-&gt;level[i].forward = update[i]-&gt;level[i].forward;</span><br><span class="line">        update[i]-&gt;level[i].forward = x;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* update span covered by update[i] as x is inserted here */</span></span><br><span class="line">        x-&gt;level[i].span = update[i]-&gt;level[i].span - (rank[<span class="number">0</span>] - rank[i]);</span><br><span class="line">        update[i]-&gt;level[i].span = (rank[<span class="number">0</span>] - rank[i]) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* increment span for untouched levels */</span></span><br><span class="line">    <span class="keyword">for</span> (i = level; i &lt; zsl-&gt;level; i++) &#123;</span><br><span class="line">        update[i]-&gt;level[i].span++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    x-&gt;backward = (update[<span class="number">0</span>] == zsl-&gt;header) ? <span class="literal">NULL</span> : update[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;level[<span class="number">0</span>].forward)</span><br><span class="line">        x-&gt;level[<span class="number">0</span>].forward-&gt;backward = x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        zsl-&gt;tail = x;</span><br><span class="line">    zsl-&gt;length++;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SkipList 有序数据结构<br>    在每个节点维持多个指向其他节点的指针.<br>    平均O(logN),最坏O(N)复杂度的节点查找,可以通过顺序性操作来<br>        批量处理节点.<br>    当有序集合包含的元素数量较多, 或有序集合中元素的member是比较长的字符串时,<br>    Redis使用跳表来作为有序集合键的底层实现.</p>
+<p>跳表在Redis的两个应用: 有序集合键, 集群节点中做内部数据结构</p>
+<p>zskiplist<br>    header: 指向跳表的表头节点<br>    tail: 指向跳表的表尾节点<br>    level: 记录目前跳表内,层数最大的那个节点的层数(表头节点的层数不计算在内)<br>    length: 跳表目前包含节点的数量(表头节点不计算在内)</p>
+<p>zskiplistNode<br>    level: L1代表第一层, L2代表第二层.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (2) - 跳跃表/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-精通Redis系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -409,99 +474,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/19/精通Redis系列 (0) - 写在前面的话/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-精通Redis系列 (3) - 压缩列表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/19/精通Redis系列 (3) - 压缩列表/">精通Redis系列 (3) - 压缩列表</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/19/精通Redis系列 (3) - 压缩列表/" class="archive-article-date">
-  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ziplist<br>当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.<br>列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合.</p>
-<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">zlbytes</th>
-<th style="text-align:center">zltail</th>
-<th style="text-align:center">zllen</th>
-<th style="text-align:center">entry</th>
-<th style="text-align:center">zlend</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"></td>
-</tr>
-</tbody>
-</table>
-<p>zlbytes: 压缩列表的字节长度,占4个字节<br>zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节<br>zllen: 压缩列表的元素个数, 占2个字节<br>extry: 压缩列表存储的元素,可以是字节数组或者整数,长度不限.<br>zlend: 压缩列表的结尾, 占1个字节, 为 0xFF</p>
-<p>char* zl指向压缩列表首地址,通过以下宏命令实现压缩列表各个字段的存取<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Return total bytes a ziplist is composed of. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the offset of the last item inside the ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof(uint32_t))))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the length of a ziplist, or UINT16_MAX if the length cannot be</span></span><br><span class="line"><span class="comment"> * determined without scanning the whole ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_LENGTH(zl)      (*((uint16_t*)((zl)+sizeof(uint32_t)*2)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The size of a ziplist header: two 32 bit integers for the total</span></span><br><span class="line"><span class="comment"> * bytes count and last item offset. One 16 bit integer for the number</span></span><br><span class="line"><span class="comment"> * of items field. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_HEADER_SIZE     (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Size of the "end of ziplist" entry. Just one byte. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_END_SIZE        (sizeof(uint8_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the first entry of a ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_HEAD(zl)  ((zl)+ZIPLIST_HEADER_SIZE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last entry of a ziplist, using the</span></span><br><span class="line"><span class="comment"> * last entry offset inside the ziplist header. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_TAIL(zl)  ((zl)+intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last byte of a ziplist, which is, the</span></span><br><span class="line"><span class="comment"> * end of ziplist FF entry. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_END(zl)   ((zl)+intrev32ifbe(ZIPLIST_BYTES(zl))-1)</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="压缩列表元素的存储"><a href="#压缩列表元素的存储" class="headerlink" title="压缩列表元素的存储"></a>压缩列表元素的存储</h3><p>| previous_entry_length | encoding | content |<br>| :—-: | :—-: | :—-: |</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/19/精通Redis系列 (3) - 压缩列表/">展开全文 >></a>
         </p>
       
 
@@ -641,6 +613,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
@@ -649,15 +625,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -446,19 +446,19 @@
 
 
   
-    <article id="post-Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-es index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Docker/">Docker</a>
+      <a class="article-title" href="/2019/04/27/es index/">es index</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/Docker/" class="archive-article-date">
+        <a href="/2019/04/27/es index/" class="archive-article-date">
   	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
@@ -466,8 +466,110 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>利用Linux内核提供的namespace和CGroups为应用进程构架起沙箱和资源限制.<br>在沙箱容器中,应用拥有自己的设备文件,进程间通信环境,根文件系统,进程空间,<br>用户账户空间和网络资源空间.<br>进程级资源隔离, 秒级启动.</p>
-
+        <ul>
+<li>创建索引</li>
+</ul>
+<pre><code>PUT /secisland
+{
+    &quot;settings&quot; : {
+        &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
+    }
+}
+三个主分片,两个副本分片
+</code></pre><ul>
+<li>修改副本分片的数量</li>
+</ul>
+<pre><code>PUT /secisland/_settings
+{
+    &quot;number_of_replicas&quot;: 1
+}
+</code></pre><ul>
+<li>创建自定义字段类型</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">PUT /secisland</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span> : &#123;</span><br><span class="line">       <span class="string">"number_of_shards"</span>: <span class="number">3</span>, <span class="string">"number_of_replicas"</span>: <span class="number">2</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"mappings"</span>: &#123;</span><br><span class="line">        <span class="string">"secilog"</span>: &#123;</span><br><span class="line">            <span class="string">"properties"</span>: &#123;</span><br><span class="line">                <span class="string">"logType"</span>: &#123;</span><br><span class="line">                    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">                    <span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /secisland/_mapping/secilog</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"properties"</span>: &#123;</span><br><span class="line">        <span class="string">"logType"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"string"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>创建了一个名为secilog的类型，类型中有一个字段，字段的名称是logType，
+字段的数据类型是string，而且这个字段是不进行分析的。
+// 创建失败,
+</code></pre><ul>
+<li>增加映射</li>
+</ul>
+<pre><code>PUT /secisland
+{
+    &quot;mappings&quot;: {
+        &quot;log&quot;: {
+            &quot;properties&quot;: {
+                &quot;message&quot;: {
+                    &quot;type&quot;: &quot;string&quot;
+                }
+            }
+        }
+    }
+}
+// 失败.
+</code></pre><p>_source属性内是原始json文档.</p>
+<p>type已过时.一个index中最好只有一种type</p>
+<ul>
+<li>搜索</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+</code></pre><ul>
+<li>轻量搜索</li>
+</ul>
+<pre><code>GET /megacorp/_search?q=last_name:Smith
+</code></pre><ul>
+<li>查询表达式</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match&quot; : {
+            &quot;last_name&quot; : &quot;Smith&quot;
+        }
+    }
+}
+</code></pre><ul>
+<li>range过滤器</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;bool&quot;: {
+            &quot;must&quot;: {
+                &quot;match&quot; : {
+                    &quot;last_name&quot; : &quot;smith&quot; 
+                }
+            },
+            &quot;filter&quot;: {
+                &quot;range&quot; : {
+                    &quot;age&quot; : { &quot;lt&quot; : 30 } 
+                }
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>全文搜索</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match&quot; : {
+            &quot;about&quot; : &quot;rock climbing&quot;
+        }
+    }
+}    
+</code></pre><ul>
+<li>短语搜索, 精确匹配</li>
+</ul>
+<pre><code>GET /megacorp/employee/_search
+{
+    &quot;query&quot; : {
+        &quot;match_phrase&quot; : {
+            &quot;about&quot; : &quot;rock climbing&quot;
+        }
+    }
+}    
+</code></pre>
       
 
       
@@ -492,7 +594,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Docker//" class="article-tag-list-link color2">Docker</a>
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
         		</li>
       		
 		</ul>
@@ -501,7 +603,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Docker/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/es index/">展开全文 >></a>
         </p>
       
 
@@ -667,19 +769,19 @@
 
 
   
-    <article id="post-es doc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/es doc/">es doc</a>
+      <a class="article-title" href="/2019/04/27/Docker/">Docker</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/es doc/" class="archive-article-date">
+        <a href="/2019/04/27/Docker/" class="archive-article-date">
   	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
@@ -687,99 +789,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>新建文档</li>
-</ul>
-<pre><code>PUT /customer/_doc/1
-{
-&quot;name&quot;: &quot;John Doe&quot;
-}
-</code></pre><ul>
-<li>获取文档</li>
-</ul>
-<pre><code>GET /customer/_doc/1
-</code></pre><ul>
-<li>批量导入</li>
-</ul>
-<pre><code>curl -H &quot;Content-Type: application/json&quot; -XPOST &quot;localhost:9200/bank/_bulk?pretty&amp;refresh&quot; --data-binary &quot;@accounts.json&quot;
-curl &quot;localhost:9200/_cat/indices?v&quot;
-</code></pre><ul>
-<li>搜索</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;match_all&quot;: {}
-    },
-    &quot;sort&quot;: [
-        {
-            &quot;account_number&quot;: {
-                &quot;order&quot;: &quot;desc&quot;
-            }
-        }
-    ],
-    &quot;from&quot;: 10,
-    &quot;size&quot;: 10
-}
-from和size做分页
-</code></pre><ul>
-<li>匹配搜索</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;match&quot;: {
-            &quot;address&quot;: &quot;mill lane&quot;
-        }
-    }
-}    
-</code></pre><ul>
-<li>精确搜索</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;match_phrase&quot;: {
-            &quot;address&quot;: &quot;mill lane&quot;
-        }
-    }
-}
-</code></pre><ul>
-<li>must,should,must_not从句<br>  must: 文档必须完全匹配条件<br>  should: should下面会带一个以上的条件，至少满足一个条件，这个文档就符合should<br>  must_not: 文档必须不匹配条件</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;bool&quot;: {
-            &quot;must&quot;: [
-                {&quot;match&quot;: {&quot;age&quot;: &quot;40&quot;}}
-            ],
-            &quot;must_not&quot;: [
-                {&quot;match&quot;: {&quot;state&quot;: &quot;ID&quot;}}
-            ]
-        }
-    }
-}
-</code></pre><ul>
-<li>范围过滤器</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;bool&quot;: {
-            &quot;must&quot;: {&quot;match_all&quot;: {}},
-            &quot;filter&quot;: {
-                &quot;range&quot;: {
-                    &quot;balance&quot;: {
-                        &quot;gte&quot;: 20000,
-                        &quot;lte&quot;: 30000
-                    }
-                }
-            }
-        }
-    }
-}
-</code></pre>
+        <p>利用Linux内核提供的namespace和CGroups为应用进程构架起沙箱和资源限制.<br>在沙箱容器中,应用拥有自己的设备文件,进程间通信环境,根文件系统,进程空间,<br>用户账户空间和网络资源空间.<br>进程级资源隔离, 秒级启动.</p>
+<p>docker exec -it mysql /bin/bash</p>
+
       
 
       
@@ -804,7 +816,7 @@ from和size做分页
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        			<a href="/categories/Docker//" class="article-tag-list-link color2">Docker</a>
         		</li>
       		
 		</ul>
@@ -813,7 +825,7 @@ from和size做分页
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/es doc/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Docker/">展开全文 >></a>
         </p>
       
 
@@ -953,6 +965,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
@@ -961,15 +977,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">

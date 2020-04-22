@@ -151,104 +151,28 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux_sed&amp;awk三剑客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-小红书系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux_sed&awk三剑客/">Linux</a>
+      <a class="article-title" href="/2019/09/14/小红书系列 (0) - 写在前面的话/">小红书系列 (0) - 写在前面的话</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Linux_sed&awk三剑客/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/09/14/小红书系列 (0) - 写在前面的话/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>awk<br>    每行按空格或TAB分割，输出文本中的1、4项<br>    awk ‘{print $1,$4}’ log.txt</p>
-<pre><code>格式化输出
-awk &apos;{printf &quot;%-8s %-10s\n&quot;,$1,$4}&apos; log.txt
+        <p>小红书指的是&lt;&lt;Scala函数式编程&gt;&gt;这本书.<br>之前断断续续读了很久,抄了很多乱七八糟的代码,写这个系列来总结一下.</p>
 
-使用&quot;,&quot;分割
-awk -F, &apos;{print $1,$2}&apos; log.txt
-
-使用内建变量
-awk &apos;BEGIN{FS=&quot;,&quot;} {print $1,$2}&apos; log.txt
-
-使用多个分隔符, 先使用空格分割，然后对分割结果再使用&quot;,&quot;分割
-awk -F &apos;[ ,]&apos; &apos;{print $1,$2,$5}&apos; log.txt
-
-设置变量a=1, b=s (字符串加数字结果为数字, $1b相当于concat)
-awk -va=1 &apos;{print $1,$1+a}&apos; log.txt
-awk -va=1 -vb=s &apos;{print $1,$1+a,$1b}&apos; log.txt
-
-过滤第一列大于2的行
-awk &apos;$1&gt;2&apos; log.txt
-
-过滤第一列等于2的行
-awk &apos;$1==2 {print $1,$3}&apos; log.txt
-
-过滤第一列大于2并且第二列等于&apos;Are&apos;的行
-awk &apos;$1&gt;2 &amp;&amp; $2==&quot;Are&quot; {print $1,$2,$3}&apos; log.txt
-
-内建变量: 
-    FILENAME: 当前文件名
-    NR: 行号, 从1开始
-
-指定输出分割符
-awk &apos;{print $1,$2,$5}&apos; OFS=&quot; $ &quot;  log.txt
-
-~ 表示模式开始。// 中是模式。
-找到第二列包含 &quot;th&quot;的行，打印第二列与第四列
-awk &apos;$2 ~ /th/ {print $2,$4}&apos; log.txt
-
-输出包含&quot;re&quot; 的行
-awk &apos;/re/ &apos; log.txt
-
-忽略大小写
-awk &apos;BEGIN{IGNORECASE=1} /this/&apos; log.txt
-
-计算文件大小
-ls -l *.txt | awk &apos;{sum+=$6} END {print sum}&apos;
-
-从文件中找出长度大于80的行
-awk &apos;length&gt;80&apos; log.txt
-</code></pre><p>sed<br>    在第四行后添加一行，并将结果输出到标准输出<br>    sed -e 4a\newline testfile</p>
-<pre><code>在第二行前添加一行，并将结果输出到标准输出
-sed -e &apos;2i drink tea&apos; testfile
-
-删除第二行和第三行
-sed -e &apos;2,3d&apos; testfile
-
-删除第二行到最后一行
-sed -e &apos;2,$d&apos; testfile
-
-添加多行,使用\隔开
-
-第二行到第五行整个使用No 2-5 number替换
-sed &apos;2,5c No 2-5 number&apos; testfile
-
-列出第2-4行
-sed -n &apos;2,4p&apos; testfile
-
-搜索匹配Linux的行
-sed -n &apos;/Linux/p&apos; testfile
-
-删除匹配的行
-sed &apos;/Linux/d&apos; testfile
-
-替换匹配的行
-sed &apos;s/Linux/linux/g&apos; testfile
-
-行尾的.换成! 并写入文件
-sed -i &apos;s/\.$/\!/g&apos; testfile
-</code></pre>
       
 
       
@@ -256,13 +180,24 @@ sed -i &apos;s/\.$/\!/g&apos; testfile
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -271,7 +206,7 @@ sed -i &apos;s/\.$/\!/g&apos; testfile
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux_sed&awk三剑客/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/14/小红书系列 (0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 
@@ -301,90 +236,28 @@ sed -i &apos;s/\.$/\!/g&apos; testfile
 
 
   
-    <article id="post-Linux_C" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-深究Spring系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux_C/">Linux进程</a>
+      <a class="article-title" href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/">深究Spring系列 (0) - 写在前面的话</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Linux_C/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>GCC<br>    gcc hello.c -o hello<br>    预处理<br>        预处理器cpp, .c -&gt; .i<br>        解释预处理指令: 文件包含,宏定义,条件编译.<br>        删除注释<br>        查看一个c程序被预处理之后的样子:<br>            gcc hello.c -o hello.i -E<br>    编译<br>        词法分析,语法分析, 生成硬件平台的汇编语言.<br>        查看c程序被预处理和编译之后的汇编程序:<br>            gcc hello.i -o hello.s S<br>    汇编<br>        将汇编程序翻译成可重定位文件.文件已经包含处理器可以<br>        执行的指令流,但全局符号尚未定位.<br>    链接<br>        重定位<br>        合并相同权限的段</p>
-<p>Makefile<br>    make: 自动检查文件的更新情况,自动进行编译的软件.<br>    Makefile: make的配置文件, 指定编译选项,编译环境等.<br>            每一个子目录有一个Makefile,有一个顶层Makefile管理<br>            所有的子目录Makefile.</p>
-<p>Linux C语言<br>    条件编译语句:</p>
-<pre><code>    #ifdef DEBUG
-        printf(&quot;debugging message\n&quot;);
-    #endif
-打开调试信息:
-    gcc debug.c -o debug -DDEBUG
+        <p>Spring工程师的自我修养</p>
 
-数组和指针
-    通用性指针void
-        void *p = malloc(8); //申请了8个字节未知用途的内存
-
-        void指针解引用时必须转化为某种具体的数据类型指针.
-        double f = 3.14;
-        *(double *)p = f;
-
-    函数指针:
-        double func(int a, char c);
-        double (*p)(int a, char c);
-        p = func; //func本身就是函数地址
-
-        double ans1 = func(100, &apos;x&apos;);
-        double ans2 = (*p)(100, &apos;x&apos;);
-
-    const指针:
-        const变量不能作为switch的条件.
-        希望通过指针访问某块内存的数据但不希望修改它.
-
-        int a,b;
-        const int *p = &amp;a;
-        a = 100;    //正确
-        p = &amp;b;     //正确
-        *p = 100;   //错误
-
-结构体:
-    各种初始化方法, 访问方法详见![struct.c](/linux_c/struct.c)
-
-共同体(联合体):
-    union ex
-    共用同一块内存, 适合存储互斥量.
-
-枚举:
-
-IO:
-    一切皆文件, 文件类别:
-        普通文件(regular)
-        目录文件(directory)
-        管道文件(pipe)
-        套接字文件(socket)
-        链接文件(link)
-        字符设备文件(character)
-        块设备文件(block)
-
-    打开文件并获得文件描述符: file.c
-</code></pre><p>  #include &lt;sys/types.h&gt;</p>
-<p>  #include &lt;sys/stat.h&gt;</p>
-<p>  #include &lt;fcntl.h&gt;</p>
-<p>  int open(const char pathname, int flags);<br>  int open(const char pathname, int flags, mode_t mode);</p>
-<p>  flgs: 只读O_RDONLY, 只写, 读写, 追加… 多个flag用 | 隔开.<br>  mode: 权限,  如 0644, 0755<br>  返回值: 文件描述符</p>
-<p>  可以用来打开普通文件,块设备文件,字符设备文件,链接文件,管道文件,<br>  只能用来创建普通文件,每一种特殊文件的创建都有其特定的其他函数.</p>
-<p>  #include &lt;unistd.h&gt;</p>
-<p>  int close(int fd);<br>  fd: 要关闭的文件的描述符.<br>  返回值: 成功0, 失败1.<br>  可以重复关闭已关闭或未打开的文件.</p>
- <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">读文件: </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">read</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count)</span></span>;</span><br><span class="line"></span><br><span class="line">fd: 文件描述符</span><br><span class="line">buf: 指向存放读到的数据的缓冲区</span><br><span class="line">count: 要读取的字节数</span><br><span class="line"></span><br><span class="line">返回值: 成功 -&gt; 读到的字节数, 失败 -&gt; <span class="number">-1.</span> </span><br><span class="line"></span><br><span class="line">写文件:</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count)</span></span>;</span><br><span class="line">fd: 文件描述符</span><br><span class="line">buf: 指向要写入的数据</span><br><span class="line">count: 要写入的字节数</span><br><span class="line"></span><br><span class="line">返回值: 成功 -&gt; 写入的字节数, 失败 -&gt; <span class="number">-1.</span></span><br></pre></td></tr></table></figure>
       
 
       
@@ -398,7 +271,7 @@ IO:
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -407,7 +280,7 @@ IO:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux_C/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/">展开全文 >></a>
         </p>
       
 
@@ -437,64 +310,42 @@ IO:
 
 
   
-    <article id="post-Linux epoll&amp;select&amp;poll" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-小红书系列 (2) - Scala与函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux epoll&select&poll/">Linux epoll&amp;select&amp;poll</a>
+      <a class="article-title" href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/">小红书系列 (2) - Scala与函数式编程</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Linux epoll&select&poll/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>阻塞blocking IO<br>非阻塞nonblocking IO<br>io多路复用技术 IO multiplexing<br>        select 和 poll<br>事件驱动 epoll</p>
-<p>epoll 多路复用IO接口select/poll的增强版本<br>        显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率.<br>        原因: 1.复用文件描述符集合来传递结果,而不用迫使开发者每次等待事件之前都必须重新准备要被侦听的文件描述符集合.<br>              2.获取事件时,无须遍历整个被侦听的描述符集合,只要遍历那些被内核IO事件异步唤醒而加入Ready队列的描述符集合.<br>              3.epoll除了提供select/poll那种IO事件的电平触发(Level Triggered),还提供了边沿触发(Edge Triggered),使得用户空间<br>                程序有可能缓存IO状态,减少epoll_wait/epoll_pwait的调用,提高应用程序效率.<br>              4.epoll没有文件描述符的上限,select/poll有限定数量.<br>              5.select/poll会轮询所有fd,有数据就处理,没数据就跳过.epoll只处理就绪的fd,它有一个就绪设备的队列,<br>                每次只轮询该队列的数据,然后进行处理.<br>              6.epoll使用mmap(文件/对象的内存映射,被映射到多个内存页上),同一块内存避免fd在操作过程中的拷贝问题.</p>
-<pre><code>epoll的两种工作方式
-        LT(电平触发 Level Triggered, 只要有数据可以读,不管怎样都会通知): 默认工作方式,同时支持block和no_block_socket. 
-                这种工作方式下,内核会通知你一个fd是否就绪,然后才可以对这个就绪的fd进行IO操作. 
-                即使没有任何操作,系统还是会继续提示fd已就绪,select/poll也是使用这种工作方式.
+        <h2 id="Scala与Haskell"><a href="#Scala与Haskell" class="headerlink" title="Scala与Haskell"></a>Scala与Haskell</h2><blockquote>
+<p>Scala is a gateway drug to Haskell.</p>
+</blockquote>
+<p>读过&lt;&lt; Learn You a Haskell for great good&gt;&gt;这本书, Haskell确实优雅, 但同时也让人感觉过于高贵冷艳, 还是Scala读起来更舒服.</p>
+<h2 id="Scala函数式编程Demo"><a href="#Scala函数式编程Demo" class="headerlink" title="Scala函数式编程Demo"></a>Scala函数式编程Demo</h2><p>我感觉有些文章反复出现在视野, 说起函数式编程就是map, 说起范畴论就是compose.甚至还有人用几个带点函数式意味的函数后就瞧不起别人, 感觉别人都看不懂, 真是naive!  =_=</p>
+<h3 id="Demo1-阶乘"><a href="#Demo1-阶乘" class="headerlink" title="Demo1: 阶乘"></a>Demo1: 阶乘</h3><p>这个样子的代码我写过太多遍了, 尤其是在SICP的练习里.<br>同时这个例子也涉及到尾递归优化的问题, 因为递归太多, 容易爆栈, 所以要递归转迭代.<br>加上这个注解@annotation.tailrec, 也可以让编译器来做尾调用.</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">factorial</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>, acc: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) acc</span><br><span class="line">    <span class="keyword">else</span> go(n<span class="number">-1</span>, n*acc)</span><br><span class="line"></span><br><span class="line">  go(n, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Demo2-斐波那契数列"><a href="#Demo2-斐波那契数列" class="headerlink" title="Demo2: 斐波那契数列"></a>Demo2: 斐波那契数列</h3><p>写到吐的斐波那契数列, 先来一个递归的:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = </span><br><span class="line">  <span class="keyword">if</span> (n &lt; <span class="number">2</span>) n</span><br><span class="line">  <span class="keyword">else</span> fib(n<span class="number">-1</span>) + fib(n<span class="number">-2</span>)</span><br></pre></td></tr></table></figure></p>
+<p>再来个迭代的:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>, prev: <span class="type">Int</span>, cur: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) prev</span><br><span class="line">    <span class="keyword">else</span> go(n<span class="number">-1</span>, cur, prev + cur)</span><br><span class="line"></span><br><span class="line">  go(n, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>形象地说, 递归是随着一轮轮计算越变越长, 而迭代一直不变长.</p>
+<h3 id="Demo3-在数组中找到第一个匹配的元素的索引"><a href="#Demo3-在数组中找到第一个匹配的元素的索引" class="headerlink" title="Demo3: 在数组中找到第一个匹配的元素的索引"></a>Demo3: 在数组中找到第一个匹配的元素的索引</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findFirst</span></span>[<span class="type">A</span>](as: <span class="type">Array</span>[<span class="type">A</span>], p: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n &gt;= as.length) <span class="number">-1</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (p(as(n))) n</span><br><span class="line">    <span class="keyword">else</span> go(n+<span class="number">1</span>)</span><br><span class="line">  </span><br><span class="line">  go(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Demo4-检查数组是否按照给定的比较函数排序"><a href="#Demo4-检查数组是否按照给定的比较函数排序" class="headerlink" title="Demo4: 检查数组是否按照给定的比较函数排序"></a>Demo4: 检查数组是否按照给定的比较函数排序</h3><p>上次看到群里有人问这个函数怎么写, 我一时之间还想不出来该怎么写. 这种玩具代码, 真是容易忘记啊.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isSorted</span></span>[<span class="type">A</span>](as: <span class="type">Array</span>[<span class="type">A</span>], ordered: (<span class="type">A</span>,<span class="type">A</span>) =&gt; <span class="type">Boolean</span>): <span class="type">Boolean</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>): <span class="type">Boolean</span> =</span><br><span class="line">    <span class="keyword">if</span> (n+<span class="number">1</span> &gt;= as.length) <span class="literal">true</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!ordered(as[n], as[n+<span class="number">1</span>])) <span class="literal">false</span></span><br><span class="line">    <span class="keyword">else</span> go(n+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">  go(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Demo5-函数式三连-柯西-反柯西和组合"><a href="#Demo5-函数式三连-柯西-反柯西和组合" class="headerlink" title="Demo5: 函数式三连: 柯西, 反柯西和组合"></a>Demo5: 函数式三连: 柯西, 反柯西和组合</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">curry</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>): <span class="type">A</span> =&gt; (<span class="type">B</span> =&gt; <span class="type">C</span>) =</span><br><span class="line">  a =&gt; b =&gt; f(a, b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unCurry</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: <span class="type">A</span> =&gt; <span class="type">B</span> =&gt; <span class="type">C</span>): (<span class="type">A</span>, <span class="type">B</span>) =&gt; <span class="type">C</span> =</span><br><span class="line">  (a, b) =&gt; f(a)(b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compose</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: <span class="type">B</span> =&gt; <span class="type">C</span>, g: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">A</span> =&gt; <span class="type">C</span> =</span><br><span class="line">  a =&gt; f(g(a))</span><br></pre></td></tr></table></figure>
+<p>用JavaScript来写写看:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function"><span class="params">f</span> =&gt;</span> <span class="function"><span class="params">a</span> =&gt;</span> <span class="function"><span class="params">b</span> =&gt;</span> f(a, b)</span><br><span class="line"><span class="keyword">const</span> unCurry = <span class="function"><span class="params">f</span> =&gt;</span> <span class="function">(<span class="params">a, b</span>) =&gt;</span> f(a)(b)</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> <span class="function"><span class="params">a</span> =&gt;</span> f(g(a))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 一些测试的例子</span></span><br><span class="line"><span class="keyword">const</span> print = <span class="built_in">console</span>.log</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b</span><br><span class="line">print(add(<span class="number">3</span>, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> curryAdd = curry(add)</span><br><span class="line">print(curryAdd(<span class="number">3</span>)(<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> unCurryAdd = unCurry(curryAdd)</span><br><span class="line">print(unCurryAdd(<span class="number">3</span>,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mul3 = <span class="function"><span class="params">a</span> =&gt;</span> a * <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> add2 = <span class="function"><span class="params">a</span> =&gt;</span> a + <span class="number">2</span></span><br><span class="line"><span class="keyword">const</span> composeAddMul = compose(add2, mul3)</span><br><span class="line">print(composeAddMul(<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> composeMulAdd = compose(mul3, add2)</span><br><span class="line">print(composeMulAdd(<span class="number">3</span>))</span><br></pre></td></tr></table></figure></p>
+<p>可以看出JavaScript算的上是键盘友好型FP选手了.</p>
 
-        ET(边沿触发 Edge Triggered, 只有状态发生变化时才会通知): 高速工作方式,仅支持no_block_socket,当fd从未就绪变为就绪时,
-                内核会通知fd已就绪,并且不会再次通知,除非因为某些操作导致fd就绪状态发生变化. only once.
-                当一直不对这个fd进行IO操作,导致fd变为未就绪时,内核同样不会发送更多的通知. 这种方式出错率较高,需要检测程序.
-
-函数
-        int epoll_create(int size);
-                创建一个epoll实例,通知内核监听size个fd. 创建成功后会占用一个fd,使用完之后要close(),否则fd可能会被耗尽
-        int epoll_ctl(int epfd, int op, int fd, struct epoll_events* event);
-                注册每一个文件描述符,一旦某个文件描述符就绪,内核采用回调机制,迅速激活文件描述符
-        int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
-                返回一个代表就绪描述符数量的值. mmap内存映射技术,省掉文件描述符在系统调用时复制的开销
-
-Nginx使用了边缘触发:
-        ee.events = EPOLLIN|EPOLLOUT|EPOLLET
-</code></pre><p>select<br>        文件描述符集合1 文件描述符集合2 文件描述符集合3<br>        可读事件        可写事件        异常事件</p>
-<pre><code>创建三个关注事件的文件描述符,死循环,依次遍历所有的文件描述符集合,判断是否由可读,可写,异常事件,
-遍历完,如果有事件或超时,返回事件个数,否则阻塞一定时间.
-每次调用select,都需要把三个fd集合从用户态拷贝到内核态.
-
-文件描述符个数有限制: 1024, 数据结构: 位图.
-</code></pre><p>poll<br>        共用一个文件描述符集合,数据结构:链表,<br>        没有最大文件描述符数量的限制</p>
-<pre><code>select和poll一般不会丢失就绪的消息,使用水平触发. 将就绪的文件告诉进程后,如果进程没有对其进行IO操作,下次调用select()或poll()时
-将再次报告这些文件描述符.
-</code></pre><p>epoll<br>        epoll_ctl: 1.增加监听的fd到红黑树中<br>                   2.从红黑树中删除fd<br>                   3.修改已经注册的fd的监听事件</p>
-<pre><code>epoll_wait:如果就绪队列不为空或超时,结束循环,否则阻塞一段时间继续下一次循环,
-          如果就绪队列不为空,拷贝就绪文件描述符到用户空间,返回就绪个数.
-
-当设备就绪后,会通过注册的回调函数自动将就绪文件描述符加入就绪队列.
-
-    数据结构:红黑树
-</code></pre>
       
 
       
@@ -502,13 +353,24 @@ Nginx使用了边缘触发:
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -517,7 +379,7 @@ Nginx使用了边缘触发:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux epoll&select&poll/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/">展开全文 >></a>
         </p>
       
 
@@ -547,122 +409,42 @@ Nginx使用了边缘触发:
 
 
   
-    <article id="post-Markdown语法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-小红书系列 (1) - 函数式编程初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Markdown语法/">Markdown语法</a>
+      <a class="article-title" href="/2019/09/14/小红书系列 (1) - 函数式编程初探/">小红书系列 (1) - 函数式编程初探</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Markdown语法/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+        <a href="/2019/09/14/小红书系列 (1) - 函数式编程初探/" class="archive-article-date">
+  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="用Markdown写Markdown语法教程"><a href="#用Markdown写Markdown语法教程" class="headerlink" title="用Markdown写Markdown语法教程"></a>用Markdown写Markdown语法教程</h1><h2 id="使用-号可以标记1-6级标题"><a href="#使用-号可以标记1-6级标题" class="headerlink" title="使用#号可以标记1-6级标题"></a>使用#号可以标记1-6级标题</h2><h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><h2 id="换行"><a href="#换行" class="headerlink" title="换行"></a>换行</h2><p>换行了吗?<br>没有<br>段落的换行<br>是使用两个以上空格加上回车  </p>
-<h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p>// IDEA不支持<br><em>斜体文本</em><br><em>斜体文本</em><br><strong>粗体文本</strong><br><strong>粗体文本</strong><br><strong><em>粗斜体文本</em></strong><br><strong><em>粗斜体文本</em></strong>  </p>
-<h2 id="分隔线"><a href="#分隔线" class="headerlink" title="分隔线"></a>分隔线</h2><p>内容A</p>
-<hr>
-<p>内容B</p>
-<h2 id="删除线"><a href="#删除线" class="headerlink" title="删除线"></a>删除线</h2><p><del>sb</del></p>
-<h2 id="下划线"><a href="#下划线" class="headerlink" title="下划线"></a>下划线</h2><p><u>下划线</u></p>
-<h2 id="脚注"><a href="#脚注" class="headerlink" title="脚注"></a>脚注</h2><p>// IDEA不支持  </p>
-<p>有些人活着, 他已经死了[^鲁迅]<br>[^鲁迅]: 1923</p>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ul>
-<li>无序</li>
-<li>的</li>
-<li>列表  </li>
-</ul>
+        <h2 id="什么是函数式编程"><a href="#什么是函数式编程" class="headerlink" title="什么是函数式编程?"></a>什么是函数式编程?</h2><p>如果非要用一个词来描述这种思想, 我大概会用”连续运算”. </p>
+<p>底层结构决定上层逻辑, 在冯·诺依曼体系中, 运算数先放到寄存器里, 再参与CPU运算. 因此在代码中的编程习惯往往是: 使用中间变量存储一步运算的结果值, 然后继续使用中间变量参与运算.</p>
+<p>而在阿隆左·丘奇的Lambda计算模型中: 接收输入, 产生输出, 输出的结果即时下一个运算的输入, 在连续运算的过程中不需要中间变量来”寄存”.</p>
+<p>当你在Java中写了很大一串连续运算的代码时, 你有可能会被同事吐槽”代码有鲜明的个人特色”. 通常在Java这种工业合作语言中, 不被建议写连续运算的主要原因是: </p>
 <ol>
-<li>第一个</li>
-<li>第二个</li>
+<li>代码写成一坨不清晰易读. </li>
+<li>不方便Bug排查. </li>
 </ol>
-<h3 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h3><p>在子列表中的选项添加四个空格</p>
-<ol>
-<li>第一个<ul>
-<li>嵌套1</li>
-<li>嵌套2</li>
-</ul>
-</li>
-<li>第二个<ul>
-<li>嵌套1</li>
-<li>嵌套2</li>
-</ul>
-</li>
-</ol>
-<h2 id="区块"><a href="#区块" class="headerlink" title="区块"></a>区块</h2><blockquote>
-<p>区块链<br>AI<br>人工智能</p>
-</blockquote>
-<h3 id="区块嵌套"><a href="#区块嵌套" class="headerlink" title="区块嵌套"></a>区块嵌套</h3><blockquote>
-<p>最外层</p>
-<blockquote>
-<p>第一层嵌套</p>
-<blockquote>
-<p>第二次嵌套</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<h3 id="区块中使用列表"><a href="#区块中使用列表" class="headerlink" title="区块中使用列表"></a>区块中使用列表</h3><blockquote>
-<p>列表</p>
-<ol>
-<li>第一个</li>
-<li>第二个<ul>
-<li>嵌套之嵌套</li>
-<li>嵌套之嵌套</li>
-</ul>
-</li>
-<li>第三个</li>
-</ol>
-</blockquote>
-<h3 id="列表中使用区块"><a href="#列表中使用区块" class="headerlink" title="列表中使用区块"></a>列表中使用区块</h3><p>在 &gt; 前添加四个空格的缩进</p>
-<ul>
-<li>第一个<blockquote>
-<p>Ai<br>小爱</p>
-</blockquote>
-</li>
-<li>第二个   </li>
-</ul>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>段落上的一个函数或片段的代码可以用反引号把它包起来<br>如: <code>epoll</code>函数</p>
-<h3 id="代码区块"><a href="#代码区块" class="headerlink" title="代码区块"></a>代码区块</h3><p>代码区块使用 4 个空格或者一个制表符（Tab 键）  </p>
-<pre><code>def map(fa: F[A])(f: a -&gt; b): F[B] =
-    flatMap(fa)(a -&gt; unit(f(a)))
-</code></pre><p>以上是map的flatMap实现<br>当然也可以使用三个反引号包裹.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>(fa: <span class="type">F</span>[<span class="type">A</span>])(f: a -&gt; b): <span class="type">F</span>[<span class="type">B</span>] =</span><br><span class="line">        flatMap(fa)(a -&gt; unit(f(a)))</span><br></pre></td></tr></table></figure></p>
-<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>这是一个链接<a href="www.baidu.com">百度</a></p>
-<h3 id="高级链接"><a href="#高级链接" class="headerlink" title="高级链接"></a>高级链接</h3><p>使用变量代替链接,文档末尾附带变量地址<a href="www.google.com">Google</a>  </p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>方框里的是替代文字,引号里加上加上选择性的 ‘title’ 属性的文字<br><img src="https://r4mble.github.io/images/lanmao.jpg" alt="我的头像" title="mio"></p>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>用|来分隔单元格, 用-来分隔表头和其他行  </p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">name</th>
-<th style="text-align:right">age</th>
-<th style="text-align:center">gender</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">小王</td>
-<td style="text-align:right">5岁</td>
-<td style="text-align:center">男</td>
-</tr>
-<tr>
-<td style="text-align:left">小李</td>
-<td style="text-align:right">6岁</td>
-<td style="text-align:center">女</td>
-</tr>
-</tbody>
-</table>
-<p>注意: 表格开始时要有空行</p>
-<h3 id="对齐方式"><a href="#对齐方式" class="headerlink" title="对齐方式"></a>对齐方式</h3><p>-:设置为右对齐, :-设置为左对齐, :-:设置为居中</p>
-<h2 id="支持的HTML元素"><a href="#支持的HTML元素" class="headerlink" title="支持的HTML元素"></a>支持的HTML元素</h2><p>// 按键这个只是IDEA不支持<br><kbd>Ctrl</kbd>+<kbd>f</kbd> </p>
+<p>前者还好说, 可以通过换行排版等方式让它变得清晰. 后者就是阻碍你一口气写完代码的死穴了, 因为谁也不知道这一串连续计算中哪里会出个问题, Kibana报个空指针, 然后翻代码到这一行看到一万个操作不知道哪里出的问题, 排查问题的同事估计想给你一刀.</p>
+<p>有意思的是Java8引入的函数式编程, 在对集合的操作中是鼓励链式操作的, 也就是连续运算. 同时它也提供了Option来做错误处理. 所以为了让连续运算能连续下去, 不突然崩掉而且找不到崩掉的位置, 保证每一个操作都是安全可靠的就很有必要了.那么怎么才能这么安全可靠不出问题呢? 答案就是: 无副作用.</p>
+<p>对于相同的输入总有相同的输出, 并且没有其它的副作用产生, 这便是函数式编程所追求的.</p>
+<p>典型的容易出问题的操作就是IO操作, 各种乱七八糟的因素导致IO容易崩, </p>
+<p>函数式编程就是一种范式, 一种思想. 既然如此, 什么语言都可以多多少少和它扯上关系, 来个”函数式xxx”. 不过不同的语言有不同的特性, 也就对这种范式的支持有多有少. 其中最为重要的就是一等函数这种特性吧.</p>
+<h2 id="函数式编程Demo"><a href="#函数式编程Demo" class="headerlink" title="函数式编程Demo"></a>函数式编程Demo</h2><p>更具体一点, 什么是函数式编程? 这就是函数式编程: </p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cafe</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buyCoffee</span></span>(cc: <span class="type">CreditCard</span>): (<span class="type">Coffee</span>, <span class="type">Charge</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> cup = <span class="type">Coffee</span>(<span class="number">5</span>)</span><br><span class="line">    (cup, <span class="type">Charge</span>(cc, cup.price))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buyCoffee</span></span>(cc: <span class="type">CreditCard</span>, num: <span class="type">Int</span>): (<span class="type">List</span>[<span class="type">Coffee</span>], <span class="type">Charge</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> purchases: <span class="type">List</span>[(<span class="type">Coffee</span>, <span class="type">Charge</span>)] = <span class="type">List</span>.fill(num) (buyCoffee(cc))</span><br><span class="line">    <span class="comment">// 把Coffee和Charge作为元素的列表拆分为Coffee列表和Charge列表</span></span><br><span class="line">    <span class="keyword">val</span> (coffees, charges) = purchases.unzip</span><br><span class="line">    (coffees, charges.reduce((c1, c2) =&gt; c1.combine(c2)))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 合并</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">coalesce</span></span>(charges: <span class="type">List</span>[<span class="type">Charge</span>]): <span class="type">List</span>[<span class="type">Charge</span>] = &#123;</span><br><span class="line">    charges.groupBy(_.cc).values.map(_.reduce(_ combine _)).toList</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Coffee</span>(<span class="params">price: <span class="type">Double</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">CreditCard</span>(<span class="params">name: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Charge</span>(<span class="params">cc: <span class="type">CreditCard</span>, amount: <span class="type">Double</span></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">combine</span></span>(other: <span class="type">Charge</span>): <span class="type">Charge</span> = &#123;</span><br><span class="line">    <span class="keyword">if</span> (cc == other.cc) &#123;</span><br><span class="line">      <span class="type">Charge</span>(cc, amount + other.amount)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Exception</span>(<span class="string">"can't combine charges to different cards"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Cafe</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> c = <span class="keyword">new</span> <span class="type">Cafe</span>()</span><br><span class="line">    <span class="keyword">val</span> coffee1 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"wyl"</span>))</span><br><span class="line">    <span class="keyword">val</span> coffee2 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"wyl"</span>), <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">val</span> coffee3 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"ramble"</span>), <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> charges = c.coalesce(<span class="type">List</span>[<span class="type">Charge</span>](coffee1._2, coffee2._2, coffee3._2))</span><br><span class="line"></span><br><span class="line">    println(coffee1)</span><br><span class="line">    println(coffee2)</span><br><span class="line">    println(coffee3)</span><br><span class="line">    println(charges)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>既然只是思想, 那语言不是问题. 所以上面这个例子我试着用Java实现了一遍, 没问题, 只是不太优雅. 感兴趣的可以到我的Github看看.</p>
 
       
 
@@ -671,13 +453,24 @@ Nginx使用了边缘触发:
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Markdown语法//" class="article-tag-list-link color1">Markdown语法</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -686,7 +479,7 @@ Nginx使用了边缘触发:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Markdown语法/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/14/小红书系列 (1) - 函数式编程初探/">展开全文 >></a>
         </p>
       
 
@@ -718,7 +511,7 @@ Nginx使用了边缘触发:
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/21/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/23/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/21/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/23/">Next &raquo;</a>
     </nav>
   
 

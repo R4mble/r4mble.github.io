@@ -6,19 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Java中的垃圾回收算法 | 三石的QQ空间</title>
+  <title>三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="可达性分析通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。 GC Roots  虚拟机栈（栈帧中的本地变量表）中引用的对象 方法区中的类静态属性引用的对象。 方法区中的常量引用的对象 本地方法栈中JNI（通常说的Native方法）引用的对象">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Java中的垃圾回收算法">
-<meta property="og:url" content="http://yoursite.com/2020/04/13/Java中的垃圾回收算法/index.html">
+  <meta name="description" content="击空明兮溯流光">
+<meta property="og:type" content="website">
+<meta property="og:title" content="三石的QQ空间">
+<meta property="og:url" content="http://yoursite.com/page/44/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="可达性分析通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。 GC Roots  虚拟机栈（栈帧中的本地变量表）中引用的对象 方法区中的类静态属性引用的对象。 方法区中的常量引用的对象 本地方法栈中JNI（通常说的Native方法）引用的对象">
+<meta property="og:description" content="击空明兮溯流光">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-14T08:26:50.801Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java中的垃圾回收算法">
-<meta name="twitter:description" content="可达性分析通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。 GC Roots  虚拟机栈（栈帧中的本地变量表）中引用的对象 方法区中的类静态属性引用的对象。 方法区中的常量引用的对象 本地方法栈中JNI（通常说的Native方法）引用的对象">
+<meta name="twitter:title" content="三石的QQ空间">
+<meta name="twitter:description" content="击空明兮溯流光">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -150,47 +149,78 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Java中的垃圾回收算法" class="article article-type-post " itemscope itemprop="blogPost">
+            
+  
+    <article id="post-Reentrantlock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 class="article-title" itemprop="name">
-      Java中的垃圾回收算法
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/Reentrantlock/">ReentrantLock</a>
     </h1>
   
 
         
-        <a href="/2020/04/13/Java中的垃圾回收算法/" class="archive-article-date">
-  	<time datetime="2020-04-13T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-13</time>
+        <a href="/2019/04/02/Reentrantlock/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="可达性分析"><a href="#可达性分析" class="headerlink" title="可达性分析"></a>可达性分析</h1><p>通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，<br>当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。</p>
-<p>GC Roots</p>
+        <blockquote>
+<p>可重入锁: 一个线程可以连续两次获得同一把锁. 如果不允许重入那么同一个线程在第二次获得锁时将会和自己产生死锁, 程序会卡死在第二次申请锁的过程中.<br>  如果一个线程多次获得锁, 那么在释放锁时也必须释放相同的次数, 如果释放多了会得到java.lang.illegalMonitorStateException异常, 释放少了<br>  线程还持有锁, 其他线程无法进入临界区.</p>
+</blockquote>
+<ol>
+<li>中断响应<br>synchronized不可被中断, 如果一个线程在等待锁, 要么获得锁继续执行, 要么保持等待.</li>
+</ol>
 <ul>
-<li>虚拟机栈（栈帧中的本地变量表）中引用的对象</li>
-<li>方法区中的类静态属性引用的对象。</li>
-<li>方法区中的常量引用的对象</li>
-<li>本地方法栈中JNI（通常说的Native方法）引用的对象</li>
+<li>lock<br>  1) 如果该锁没有被另一个线程保持, 则获取该锁并立即返回, 将锁的保持计数设置为1<br>  2) 如果当前线程已经保持该锁, 则将保持计数加1, 并且该方法立即返回<br>  3) 如果该锁被另一个线程保持, 出于线程调度的目的, 禁用当前线程, 并且在获得锁之前, 该线程一直处于休眠状态, 此时锁保持技术被设置为1</li>
+<li><p>lockInterruptibly<br>  1) 如果当前线程未被中断, 则获取锁<br>  2) 如果该锁没有被另一个线程保持, 则获取该锁并立即返回, 将锁的保持计数设置为1<br>  3) 如果当前线程已经保持该锁, 则将保持计数加1, 并且该方法立即返回<br>  4)  如果该锁被另一个线程保持, 出于线程调度的目的, 禁用当前线程, 并且在获得锁或者其他某个线程中断当前线程之前,</p>
+<pre><code>该线程一直处于休眠状态, 此时锁保持技术被设置为1
+</code></pre><p>  (获得锁, 但优先响应中断)</p>
+</li>
+<li>tryLock<br>  获得锁, 如果成功返回true, 失败返回false, 不等待.</li>
 </ul>
-<h1 id="GC算法"><a href="#GC算法" class="headerlink" title="GC算法"></a>GC算法</h1><ul>
-<li><p>标记清除法<br>标记阶段和清除阶段<br>可能产生的最大的问题就是空间碎片</p>
+<ol start="2">
+<li><p>锁申请等待超时        </p>
 </li>
-<li><p>复制算法<br>将原有的内存空间分为两块相同的存储空间，每次只使用一块，在垃圾回收时，<br>将正在使用的内存块中存活对象复制到未使用的那一块内存空间中，之后清除正在使用的内存块中的所有对象，完成垃圾回收。</p>
+<li><p>公平锁</p>
 </li>
-<li><p>标记压缩算法<br>在标记清除算法的基础上做了优化,将所有的存活对象压缩到内存空间的一端，之后，清理边界外所有的空间。</p>
-</li>
-</ul>
-<p>通常新生代回收的频率很高，但是每次回收的时间都很短，而老年代回收的频率比较低，但是被消耗很多的时间</p>
-<p>为了支持高频率的新生代回收，虚拟机可能使用一种叫做卡表的数据结构，卡表为一个比特位集合，<br>每一个比特位可以用来表示老年代的某一区域中的所有对象是否持有新生代对象的引用，<br>新生代GC时，可以不用花大量时间扫描所有老年代对象，来确定每一个对象的引用关系，而可以先扫描卡表，只有当卡表的标记为1时，<br>才需要扫描给定区域的老年代对象，而卡表为0的所在区域的老年代对象，一定不含有新生代对象的引用。</p>
-<h1 id="分区算法"><a href="#分区算法" class="headerlink" title="分区算法"></a>分区算法</h1><p>将整个堆空间划分为连续的不同小区间</p>
-<p>相同的条件下，堆空间越大，一次GC所需的时间就越长，从而产生的停顿时间就越长。为了更好的控制GC产生的停顿时间，<br>将一块大的内存区域分割成多个小块，<br>根据目标的停顿时间，每次合理的回收若干个小区间，而不是整个堆空间，从而减少一个GC的停顿时间。</p>
+</ol>
+<p>ReentrantLock的实现包含的元素:</p>
+<ol>
+<li>原子状态, 使用CAS操作来存储当前锁的状态, 判断锁是否已经被别的线程持有了</li>
+<li>等待队列, 所有没有请求到锁的线程, 会进入队列进行等待, 待有线程释放锁之后, 系统从等待队列中唤醒一个线程, 继续工作</li>
+<li>阻塞原语park()和unpark(), 用来挂起和恢复线程, 没有得到锁的线程将被挂起.</li>
+</ol>
+<h2 id="Condition"><a href="#Condition" class="headerlink" title="Condition"></a>Condition</h2><p>Object.wait() 和 Object.notify() 和 synchronized关键字一起使用.</p>
+<p>ReentrantLock的newCondition()方法生成一个与当前重入锁绑定的Condition实例.</p>
+<p>await()方法使当前线程等待,释放当前锁,当其他线程使用signal()或signalAll()方法时,线程重新获得锁并继续执行. 当线程被中断时跳出等待.<br>awaitUninterruptibly(), 与await()方法基本相同, 但不会在等待过程中响应中断.</p>
+<p>ReentrantLock有lockInterruptibly()方法  </p>
+<p>synchronized和ReentrantLock异同</p>
+<pre><code>相同点
+    都实现了多线程同步和内存可见性语义
+    都是可重入锁
+不同点
+    实现机制不同 
+        synchronized通过java对象头锁标记和Monitor对象实现 
+        synchronized依赖jvm内存模型保证包含共享变量的多线程内存可见性
 
+        ReentrantLock通过CAS、ASQ（AbstractQueuedSynchronizer）和locksupport（用于阻塞和解除阻塞）实现 
+        ReentrantLock通过ASQ的volatile state保证包含共享变量的多线程内存可见性
+
+    使用方式不同 
+        synchronized可以修饰实例方法（锁住实例对象）、静态方法（锁住类对象）、代码块（显式指定锁对象）
+        ReentrantLock显式调用trylock()/lock()方法，需要在finally块中释放锁
+
+    功能丰富程度不同 
+        ReentrantLock提供有限时间等候锁（设置过期时间）、可中断锁（lockInterruptibly）、condition（提供await、signal等方法）等丰富语义 
+        ReentrantLock提供公平锁和非公平锁实现 synchronized不可设置等待时间、不可被中断（interrupted）    
+</code></pre>
       
 
       
@@ -204,7 +234,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/并发编程//" class="article-tag-list-link color5">并发编程</a>
         		</li>
       		
 		</ul>
@@ -212,84 +242,16 @@
 
 
       
-
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/Reentrantlock/">展开全文 >></a>
+        </p>
       
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
-        </div>
-      </div>
-    </span>
-  </div>
-</div>
 
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/04/13/Java中的垃圾回收算法/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2020/04/14/Golang东一榔头西一棒槌系列(5) -控制流程/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Golang东一榔头西一棒槌系列(5) -控制流程
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2020/03/16/Golang东一榔头西一棒槌系列(2) -变量与类型/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Golang东一榔头西一棒槌系列(2) -变量与类型</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -304,52 +266,355 @@
         </div>
         
         
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#可达性分析"><span class="toc-number">1.</span> <span class="toc-text">可达性分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GC算法"><span class="toc-number">2.</span> <span class="toc-text">GC算法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分区算法"><span class="toc-number">3.</span> <span class="toc-text">分区算法</span></a></li></ol>
-                    </div>
-                </span>
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/分布式消息队列实践/">分布式消息队列实践</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/分布式消息队列实践/" class="archive-article-date">
+  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
+<p>ArrayBlockingQueue</p>
+<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
+<pre><code>    功能命令
+
+    传输层协议
+
+MQTT
+
+STOMP
+
+XMPP
+
+JMS
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">消息队列</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/分布式消息队列实践/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
             </div>
         </div>
+        
         
     </div>
 </aside>
 
 
 
+
   
-  <div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Java中的垃圾回收算法" data-title="Java中的垃圾回收算法" data-url="http://yoursite.com/2020/04/13/Java中的垃圾回收算法/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
+    <article id="post-堆" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/堆/">堆</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/堆/" class="archive-article-date">
+  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>堆是完全二叉树, 使用数组表示. 从数组下标1开始放置.<br>节点i的子节点在 2i 和 2i+1 处. 父节点在 i/2 处, 根除外.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/堆/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Japanese系列(2) - こいのうた" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/Japanese系列(2) - こいのうた/">Japanese系列(2) - こいのうた.md</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/Japanese系列(2) - こいのうた/" class="archive-article-date">
+  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>こい 　うた<br>恋爱　　歌曲</p>
+<ol>
+<li>生きてゆく力が その手にあるうちは<br>只要手中还握着活下去的勇气</li>
+</ol>
+<p>生きて ゆく 力が<br>生存下去的力量</p>
+<p>その 手に ある うちは<br>在那双手中</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">生きて</th>
+<th style="text-align:center">いきて</th>
+<th style="text-align:center">i ki te</th>
+<th style="text-align:center">活着</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ゆく</td>
+<td style="text-align:center">ゆく</td>
+<td style="text-align:center">yu ku</td>
+<td style="text-align:center">过去</td>
+</tr>
+<tr>
+<td style="text-align:center">力が</td>
+<td style="text-align:center">ちからが</td>
+<td style="text-align:center">chi ka ra ga</td>
+<td style="text-align:center">力量</td>
+</tr>
+<tr>
+<td style="text-align:center">手</td>
+<td style="text-align:center">て</td>
+<td style="text-align:center">te</td>
+<td style="text-align:center">手</td>
+</tr>
+<tr>
+<td style="text-align:center">ある</td>
+<td style="text-align:center">ある</td>
+<td style="text-align:center">a ru</td>
+<td style="text-align:center">有</td>
+</tr>
+</tbody>
+</table>
+<ol start="2">
+<li>笑わせてて いつも いつも<br>就愿为你的笑颜</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">笑</th>
+<th style="text-align:center">　わら</th>
+<th style="text-align:center">wa ra</th>
+<th style="text-align:center">笑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">せてて</td>
+<td style="text-align:center">せてて</td>
+<td style="text-align:center">se te te</td>
+<td style="text-align:center">让我来</td>
+</tr>
+<tr>
+<td style="text-align:center">いつも</td>
+<td style="text-align:center">いつも</td>
+<td style="text-align:center">i tsu mo</td>
+<td style="text-align:center">总是</td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
+<li>うたっていて 欲しいよ<br>而唱起歌</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">欲しいよ</th>
+<th style="text-align:center">ほしいよ</th>
+<th style="text-align:center">　ho shi i yo</th>
+<th style="text-align:center">想要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">せてて</td>
+<td style="text-align:center">せてて</td>
+<td style="text-align:center">se te te</td>
+<td style="text-align:center">让我来</td>
+</tr>
+</tbody>
+</table>
+<ol start="4">
+<li>きっとこの恋は 口に出すこともなく<br> 这份爱恋 永远开不了口</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/Japanese系列(2) - こいのうた/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
 
   
   
-  
-
-  
-
-  
-
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/43/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="page-number" href="/page/43/">43</a><span class="page-number current">44</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/45/">Next &raquo;</a>
+    </nav>
   
 
 
@@ -372,8 +637,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: false,
-		isPost: true,
+		isHome: true,
+		isPost: false,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

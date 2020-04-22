@@ -151,372 +151,45 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Elasticsearch" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-golang初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Elasticsearch/">Elasticsearch</a>
+      <a class="article-title" href="/2019/05/07/golang初探/">Golang初探</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/Elasticsearch/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+        <a href="/2019/05/07/golang初探/" class="archive-article-date">
+  	<time datetime="2019-05-07T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-07</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.</p>
-</blockquote>
-<blockquote>
-<p>分片机制, 复制机制.</p>
-</blockquote>
-<blockquote>
-<p>Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.</p>
-</blockquote>
-<blockquote>
-<p> Elasticsearch内置了对分布式集群和分布式索引的管理.</p>
-</blockquote>
-<p>Lucene的评分机制, 查询DSL, 底层索引控制.</p>
-<h2 id="Elasticsearch术语"><a href="#Elasticsearch术语" class="headerlink" title="Elasticsearch术语"></a>Elasticsearch术语</h2><pre><code>索引词(term): 能够被索引的精确值.
-文本(text): 普通的非结构化文字, 会被分析成一个个的索引词.
-分析(analysis): 将文本转换为索引词的过程.
-集群(cluster)
-节点(node)
-路由(routing): 存储文档时通过散列值进行选择分片.
-分片(shard): 单个Lucene实例. 索引是指向主分片和副本分片的逻辑空间,索引可以
-    分解为多个分片,Elasticsearch会自动管理集群中的所有分片.
-主分片(primary shard): 默认一个索引有5个主分片.
-副本分片(replica shard): 每一个分片有零个或多个副本.
-    当主分片失败时,可以从副本中选择一个作为主分片.
-    并行操作提高性能和吞吐量.
-索引(index) 具有相同结构的文档集合
-类型(type) 索引中可以定义一个或多个类型,类型是索引的逻辑分区.
-            一个类型被定义为具有一组公共字段的文档.
-            如: 一个博客平台的所有数据存储在一个索引中,在这个索引中,定义一种
-            类型为用户数据,一种类型为博客数据,一种类型为评论数据.
-文档(document) JSON格式的字符串,像关系数据库中的一行.每个文档都有一个类型和一个ID
-映射(mapping) 像关系数据库的表结构,每一个索引都有一个映射,定义了索引中的每一个字段类型,以及一个索引范围内的设置.
-字段(field) 像关系数据库中的列.每个字段对应一个类型: 整数,字符串,对象等.
-来源字段(source field) 原文档被存储在_source这个字段中.
-主键(ID) 
-</code></pre><h2 id="API约定"><a href="#API约定" class="headerlink" title="API约定"></a>API约定</h2><pre><code>多索引参数
-    同时查询多个索引中的数据, 通配符 * : test*表示查询所有以test开头的索引. -test表示排除test
-日期筛选
-    &lt;static_name{date_math_expr{date_format|time_zone}}&gt;
-    static_name: 索引名称
-    date_math_expr: 动态日期计算表达式
-    date_format: 日期格式
-    time_zone: 时区,默认UTC
-通用参数
-    pretty
-    human
-</code></pre><blockquote>
-<p>POST改变对象的当前状态, PUT创建一个对象.        </p>
-</blockquote>
-<blockquote>
-<p>Elasticsearch从5.X引入text和keyword，keyword适用于不分词字段，搜索时只能完全匹配.<br>               6.X彻底移除string, “index”的值只能是boolean变量.</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Elasticsearch/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Elasticsearch速查手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Elasticsearch速查手册/">Elasticsearch</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/27/Elasticsearch速查手册/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li><p>创建库  </p>
-<pre><code>PUT http://127.0.0.1:9200/secisland
-</code></pre></li>
-<li><p>查看库状态    </p>
-<pre><code>GET http://127.0.0.1:9200/_cat/indices?v
-</code></pre></li>
-<li><p>插入数据</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/secilog/1
-参数:
-    {
-        &quot;computer&quot;: &quot;x1 carbon&quot;,
-        &quot;message&quot; : &quot;for coding&quot;
-    }
-</code></pre></li>
-<li><p>修改文档</p>
-<pre><code>POST http://127.0.0.1:9200/secisland/secilog/1/_update
-参数:
-    {
-        &quot;doc&quot;: {
-            &quot;computer&quot;: &quot;x1 carbon&quot;,
-            &quot;message&quot;: &quot;lenovo&quot;
-        }
-    }
-</code></pre></li>
-<li><p>查询文档</p>
-<pre><code>GET  http://127.0.0.1:9200/secisland/secilog/1/
-</code></pre></li>
-<li><p>删除文档</p>
-<pre><code>DELETE http://127.0.0.1:9200/secisland/secilog/1/
-</code></pre></li>
-<li><p>删除库</p>
-<pre><code>DELETE http://127.0.0.1:9200/secisland/
-</code></pre></li>
+        <h1 id="如何掌握一门编程语言"><a href="#如何掌握一门编程语言" class="headerlink" title="如何掌握一门编程语言?"></a>如何掌握一门编程语言?</h1><ul>
+<li>它的值是怎么定义的？<ul>
+<li>值有哪些类型？</li>
+<li>值的类型转换怎么做？</li>
 </ul>
-<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ul>
-<li><p>创建三个主分片,两个副本分片的索引</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/
-参数: 
-    {
-        &quot;settings&quot;: {
-            &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
-        }
-    }
-修改副本数量
-    PUT http://127.0.0.1:9200/secisland/_settings/
-    参数:
-     {
-        &quot;number_of_replicas&quot;: 1
-     }
-</code></pre></li>
-</ul>
-<p>创建自定义字段类型</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland
-参数:
-    {
-        &quot;settings&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2},
-        &quot;mappings&quot;: {
-            &quot;secilog&quot;: 
-                {
-                    &quot;properties&quot;: 
-                        {
-                            &quot;logType&quot;: 
-                                {
-                                   &quot;type&quot;: &quot;text&quot;, 
-                                   &quot;index&quot;: &quot;not_analyzed&quot;
-                                }
-                        }
-                }
-            }
-    }
-</code></pre><h2 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h2><p>增加映射</p>
-<ul>
-<li><p>添加索引名为secisland, 文档类型为log, 其中包含字段message, 字段类型是字符串.</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/
-参数:
-{
-    &quot;mappings&quot;: {
-        &quot;log&quot;: {
-            &quot;properties&quot;: {
-                &quot;message&quot;: {&quot;type&quot;: &quot;text&quot;}
-            }
-        }
-    }
-}
-</code></pre></li>
-</ul>
-<ul>
-<li><p>向已存在的索引secisland添加文档类型为user, 包含字段name, 字段类型是keyword </p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/_mapping/user
-  {
-      &quot;properties&quot;: {
-          &quot;name&quot;: {&quot;type&quot;: &quot;keyword&quot;}
-      }
-  }
-</code></pre></li>
-<li><p>多个索引设置映射</p>
-<pre><code>PUT http://127.0.0.1:9200/{index}/_mapping/{type}
-{body}
-</code></pre></li>
-<li><p>获取映射</p>
-<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog
-</code></pre></li>
-<li><p>获取字段映射</p>
-<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog/field/description
-
-只返回字段为description的内容.
-</code></pre></li>
-</ul>
-<h2 id="索引别名"><a href="#索引别名" class="headerlink" title="索引别名:"></a>索引别名:</h2><pre><code>类似数据库中的视图.
-</code></pre><ul>
-<li><p>为索引添加别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {&quot;add&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
-}
-</code></pre></li>
-<li><p>删除别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {&quot;remove&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
-}
-</code></pre></li>
-<li><p>创建过滤索引别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {
-        &quot;add&quot;: {
-            &quot;index&quot;: &quot;test1&quot;, &quot;alias&quot;: &quot;alias2&quot;,
-            &quot;filter&quot;: {&quot;term&quot;: {&quot;user&quot;: &quot;ramble&quot;}}
-        }
-    }
-}
-</code></pre></li>
-</ul>
-<ul>
-<li><p>新建文档(不需要先创建索引)</p>
-<pre><code>PUT http://127.0.0.1:9200/blog/article/2 
-{
-    &quot;title&quot;: &quot;SB ES&quot;,
-    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
-    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
-}
-
-返回结果
-{
-    &quot;_index&quot;: &quot;blog&quot;,
-    &quot;_type&quot;: &quot;article&quot;,
-    &quot;_id&quot;: &quot;2&quot;,
-    &quot;_version&quot;: 1,
-    &quot;result&quot;: &quot;created&quot;,
-    &quot;_shards&quot;: {
-        &quot;total&quot;: 2,
-        &quot;successful&quot;: 1,
-        &quot;failed&quot;: 0
-    },
-    &quot;_seq_no&quot;: 0,
-    &quot;_primary_term&quot;: 1
-}
-</code></pre><p>  再执行一次的话, _version, _seq_no会加一, result会变成updated</p>
 </li>
-<li><p>不指定id, ES会自动生成唯一标识符.(改用了POST方法,因为是更改而不是创建)</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article
-{
-    &quot;title&quot;: &quot;SB ES&quot;,
-    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
-    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
-}
-返回结果
-{
-    &quot;_index&quot;: &quot;blog&quot;,
-    &quot;_type&quot;: &quot;article&quot;,
-    &quot;_id&quot;: &quot;_qm_l2sBFUlcgb1-d5N2&quot;,
-    &quot;_version&quot;: 1,
-    &quot;result&quot;: &quot;created&quot;,
-    &quot;_shards&quot;: {
-        &quot;total&quot;: 2,
-        &quot;successful&quot;: 1,
-        &quot;failed&quot;: 0
-    },
-    &quot;_seq_no&quot;: 0,
-    &quot;_primary_term&quot;: 1
-}
-</code></pre></li>
-<li><p>检索文档</p>
-<pre><code>GET http://127.0.0.1:9200/blog/article/2 
-</code></pre></li>
-<li><p>更新文档</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
-{
-    &quot;script&quot;: &quot;ctx._source.content = \&quot;new content\&quot;&quot;
-}
-只修改了content字段和version.
-</code></pre></li>
+<li>它的函数是怎么定义的？<ul>
+<li>函数能否作为值？</li>
+<li>支持默认参数吗？</li>
+<li>支持命名参数吗？</li>
+<li>函数的返回值可以有多个吗？</li>
+<li>匿名函数怎么表达？</li>
 </ul>
-<p>要更新索引中的文档, ES先获取文档,从_source属性获得数据,删除旧的<br>文件,更改_source属性,然后把它作为新的文档来索引.<br>信息一旦在Lucene的倒排索引中存储,就不能再被更改,ES通过一个带_update<br>参数的脚本来实现它.</p>
-<ul>
-<li><p>如果文档中没有该字段,使用upsert来提供该字段的默认值.</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
-{
-    &quot;script&quot;: {
-        &quot;source&quot;: &quot;ctx._source.counter += params.count&quot;,
-        &quot;lang&quot;: &quot;painless&quot;,
-        &quot;params&quot;: {
-            &quot;count&quot;: 4
-        }
-    },
-    &quot;upsert&quot;: {&quot;counter&quot;: 0}
-}
-</code></pre></li>
+</li>
+<li>它的流程控制是什么样的？<ul>
+<li>有没有for,while,switch？</li>
+</ul>
+</li>
+<li>它的list和map怎么使用？    </li>
 </ul>
 
       
@@ -526,24 +199,13 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        			<a href="/categories/Go//" class="article-tag-list-link color3">Go</a>
         		</li>
       		
 		</ul>
@@ -552,7 +214,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Elasticsearch速查手册/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/05/07/golang初探/">展开全文 >></a>
         </p>
       
 
@@ -582,29 +244,27 @@
 
 
   
-    <article id="post-Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Essentials-of-Programming-Languages" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Docker/">Docker</a>
+      <a class="article-title" href="/2019/05/04/Essentials-of-Programming-Languages/">Essentials of Programming Languages</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/Docker/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+        <a href="/2019/05/04/Essentials-of-Programming-Languages/" class="archive-article-date">
+  	<time datetime="2019-05-03T19:42:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>利用Linux内核提供的namespace和CGroups为应用进程构架起沙箱和资源限制.<br>在沙箱容器中,应用拥有自己的设备文件,进程间通信环境,根文件系统,进程空间,<br>用户账户空间和网络资源空间.<br>进程级资源隔离, 秒级启动.</p>
-<p>docker exec -it mysql /bin/bash</p>
-
+        <h1 id="Inductive-Sets-of-Data"><a href="#Inductive-Sets-of-Data" class="headerlink" title="Inductive Sets of Data"></a>Inductive Sets of Data</h1><h1 id="Data-Abstraction"><a href="#Data-Abstraction" class="headerlink" title="Data Abstraction"></a>Data Abstraction</h1><h1 id="Expressions"><a href="#Expressions" class="headerlink" title="Expressions"></a>Expressions</h1><h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><h1 id="Continuation-Passing-Interpreters"><a href="#Continuation-Passing-Interpreters" class="headerlink" title="Continuation-Passing Interpreters"></a>Continuation-Passing Interpreters</h1><h1 id="Continuation-Passing-Style"><a href="#Continuation-Passing-Style" class="headerlink" title="Continuation-Passing Style"></a>Continuation-Passing Style</h1><h1 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h1><h1 id="Modules"><a href="#Modules" class="headerlink" title="Modules"></a>Modules</h1><h1 id="Objects-and-Classes"><a href="#Objects-and-Classes" class="headerlink" title="Objects and Classes"></a>Objects and Classes</h1>
       
 
       
@@ -629,7 +289,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Docker//" class="article-tag-list-link color2">Docker</a>
+        			<a href="/categories/PL//" class="article-tag-list-link color3">PL</a>
         		</li>
       		
 		</ul>
@@ -638,7 +298,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Docker/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/05/04/Essentials-of-Programming-Languages/">展开全文 >></a>
         </p>
       
 
@@ -668,130 +328,81 @@
 
 
   
-    <article id="post-es index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-计算的本质" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/es index/">es index</a>
+      <a class="article-title" href="/2019/04/30/计算的本质/">计算的本质</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/es index/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+        <a href="/2019/04/30/计算的本质/" class="archive-article-date">
+  	<time datetime="2019-04-30T05:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>创建索引</li>
+        <h1 id="Ruby基础"><a href="#Ruby基础" class="headerlink" title="Ruby基础"></a>Ruby基础</h1><h2 id="值"><a href="#值" class="headerlink" title="值"></a>值</h2><blockquote>
+<p>面向表达式的语言,每一段有效代码执行后都要产生一个值</p>
+</blockquote>
+<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><ul>
+<li>布尔Boolean, 数值number,字符串string</li>
+<li>符号: 表示一个名字,一个轻量级,不可变的值,作为字符串的简单化,非内存密集化的替身. :symbol</li>
+<li>特殊值nil<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2></li>
+<li>数组字面量: 逗号分隔外加方括号 例: numbers = [‘zero’, ‘two’]</li>
+<li>范围range: 例: ages = 18..30</li>
+<li>散列hash: 例: fruit = {‘a’ =&gt; ‘apple’, ‘b’ =&gt; ‘banana’}</li>
+<li>proc: 未经求值的Ruby代码,匿名函数或lambda函数.例:multiply = -&gt; x, y {x * y}<h2 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h2></li>
+<li>if,case,while 都有end<h2 id="对象和方法"><a href="#对象和方法" class="headerlink" title="对象和方法"></a>对象和方法</h2></li>
+<li>每个值都是一个对象</li>
+<li>o = Object.new</li>
+<li>方法结束要有end<h2 id="类和模块"><a href="#类和模块" class="headerlink" title="类和模块"></a>类和模块</h2></li>
+<li>类结束要有end</li>
+<li>继承: class MultiplyingCalculator &lt; Calculator</li>
+<li>子类中的方法可以通过 super 关键字调用超类的同名方法</li>
+<li>共享方法定义的方式是在模块（module）中声明它们，这样它们就能被任意类包括进去<h2 id="其它特性"><a href="#其它特性" class="headerlink" title="其它特性"></a>其它特性</h2></li>
+<li>赋值声明局部变量</li>
+<li>数组给多个变量同时赋值 width, height, depth = [1000, 2250, 250]</li>
+<li>字符串插值 &gt;&gt; “hello #{‘dlrow’.reverse}” =&gt; “hello world”</li>
+<li>检查对象 inspect方法</li>
+<li>打印字符串 puts</li>
+<li>可变参数方法 * <ul>
+<li>在发送消息的时候， * 运算符还可以把每一个数组元素当作单个参数处理</li>
+<li>并行赋值</li>
 </ul>
-<pre><code>PUT /secisland
-{
-    &quot;settings&quot; : {
-        &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
-    }
-}
-三个主分片,两个副本分片
-</code></pre><ul>
-<li>修改副本分片的数量</li>
+</li>
+<li>代码块 <ul>
+<li>方法可以带一个隐式代码块参数 </li>
+<li>yield关键字表示对代码块中那段代码的调用</li>
+<li>代码块可以带参数 { |n| puts “#{n}: hello” }</li>
 </ul>
-<pre><code>PUT /secisland/_settings
-{
-    &quot;number_of_replicas&quot;: 1
-}
-</code></pre><ul>
-<li>创建自定义字段类型</li>
+</li>
+<li>枚举类型<ul>
+<li>(1..10).select(&amp;:even?) =&gt; [2, 4, 6, 8, 10]</li>
+<li>flat_map, inject </li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">PUT /secisland</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span> : &#123;</span><br><span class="line">       <span class="string">"number_of_shards"</span>: <span class="number">3</span>, <span class="string">"number_of_replicas"</span>: <span class="number">2</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"mappings"</span>: &#123;</span><br><span class="line">        <span class="string">"secilog"</span>: &#123;</span><br><span class="line">            <span class="string">"properties"</span>: &#123;</span><br><span class="line">                <span class="string">"logType"</span>: &#123;</span><br><span class="line">                    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">                    <span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /secisland/_mapping/secilog</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"properties"</span>: &#123;</span><br><span class="line">        <span class="string">"logType"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"string"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>创建了一个名为secilog的类型，类型中有一个字段，字段的名称是logType，
-字段的数据类型是string，而且这个字段是不进行分析的。
-// 创建失败,
-</code></pre><ul>
-<li>增加映射</li>
+</li>
+<li>结构体<ul>
+<li>class Point &lt; Struct.new(:x, :y)  自动生成x,y属性和getter setter</li>
+<li>比较两个结构体的属性是否相等</li>
 </ul>
-<pre><code>PUT /secisland
-{
-    &quot;mappings&quot;: {
-        &quot;log&quot;: {
-            &quot;properties&quot;: {
-                &quot;message&quot;: {
-                    &quot;type&quot;: &quot;string&quot;
-                }
-            }
-        }
-    }
-}
-// 失败.
-</code></pre><p>_source属性内是原始json文档.</p>
-<p>type已过时.一个index中最好只有一种type</p>
-<ul>
-<li>搜索</li>
+</li>
+<li>给内置对象扩展方法    </li>
+<li>定义常量 <ul>
+<li>任何以大写字母开头的变量都是常量</li>
 </ul>
-<pre><code>GET /megacorp/employee/_search
-</code></pre><ul>
-<li>轻量搜索</li>
+</li>
+<li>删除常量<br>  一个顶层常量可以通过给 Object 发送消息 remove_const<br>  来删除，同时还要把常量名作为符号（symbol）对象传进去<br>  Object.send(:remove_const, :NUMBERS)</li>
 </ul>
-<pre><code>GET /megacorp/_search?q=last_name:Smith
-</code></pre><ul>
-<li>查询表达式</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-{
-    &quot;query&quot; : {
-        &quot;match&quot; : {
-            &quot;last_name&quot; : &quot;Smith&quot;
-        }
-    }
-}
-</code></pre><ul>
-<li>range过滤器</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-{
-    &quot;query&quot; : {
-        &quot;bool&quot;: {
-            &quot;must&quot;: {
-                &quot;match&quot; : {
-                    &quot;last_name&quot; : &quot;smith&quot; 
-                }
-            },
-            &quot;filter&quot;: {
-                &quot;range&quot; : {
-                    &quot;age&quot; : { &quot;lt&quot; : 30 } 
-                }
-            }
-        }
-    }
-}
-</code></pre><ul>
-<li>全文搜索</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-{
-    &quot;query&quot; : {
-        &quot;match&quot; : {
-            &quot;about&quot; : &quot;rock climbing&quot;
-        }
-    }
-}    
-</code></pre><ul>
-<li>短语搜索, 精确匹配</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-{
-    &quot;query&quot; : {
-        &quot;match_phrase&quot; : {
-            &quot;about&quot; : &quot;rock climbing&quot;
-        }
-    }
-}    
-</code></pre>
+<hr>
+<h1 id="程序和机器"><a href="#程序和机器" class="headerlink" title="程序和机器"></a>程序和机器</h1><p>detect：（find的别名函数） 返回列表中第一个符合条件的元素</p>
+
       
 
       
@@ -816,7 +427,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        			<a href="/categories/PL//" class="article-tag-list-link color3">PL</a>
         		</li>
       		
 		</ul>
@@ -825,7 +436,94 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/es index/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/30/计算的本质/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-加密算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/30/加密算法/">计算的本质</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/30/加密算法/" class="archive-article-date">
+  	<time datetime="2019-04-30T05:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>对称加密算法: DES AES<br>非对称加密算法: RSA(数字签名,身份认证)</p>
+<p>分组密码: 加密时将明文分成固定长度的组(网络加密)<br>流密码: 又称序列密码, 每次加密一位或者一个字节的明文. RC4</p>
+<p>Base64算法: 解决电子邮件只能传输ASCII码字符问题</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/30/加密算法/">展开全文 >></a>
         </p>
       
 
@@ -857,7 +555,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/27/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/29/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/27/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="page-number current">28</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/29/">Next &raquo;</a>
     </nav>
   
 

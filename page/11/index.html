@@ -151,39 +151,36 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux系统编程手册tlpi系列(3) - 文件IO" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Python-流畅的Python系列(2) - 数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/02/Linux系统编程手册tlpi系列(3) - 文件IO/">Linux系统编程手册tlpi系列(3) - 文件IO</a>
+      <a class="article-title" href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/">Python-流畅的Python系列(2) - 数据结构</a>
     </h1>
   
 
         
-        <a href="/2019/12/02/Linux系统编程手册tlpi系列(3) - 文件IO/" class="archive-article-date">
-  	<time datetime="2019-12-02T07:45:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-02</time>
+        <a href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/" class="archive-article-date">
+  	<time datetime="2019-12-12T08:58:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>文件描述符: 非负小整数, 表示所有类型的已打开文件: 管道(pipe),FIFO,socket,终端,设备和普通文件<br>每个进程,文件描述符都自成一套</p>
-<p>标准文件描述符: 0-输入-stdin, 1-输出-stdout, 2-错误-stderr</p>
-<h2 id="文件IO的四个主要系统调用"><a href="#文件IO的四个主要系统调用" class="headerlink" title="文件IO的四个主要系统调用:"></a>文件IO的四个主要系统调用:</h2><ul>
-<li><p>fd = open(pathname, flags, mode)<br> 打开文件,返回文件描述符,用以后续函数调用指代打开的文件.<br> 如果pathname是符号链接,会对其进行解引用.<br> flags指定文件的打开方式: 只读,只写,读写<br> mode指定open调用创建文件的访问权限, 若未创建,可忽略</p>
+        <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><ul>
+<li>容器序列: list, tuple, collections.deque 可以存放不同类型的数据, 存放的是包含的任意类型的对象的引用</li>
+<li><p>扁平序列: str, bytes, bytearray, memoryview 和 array.array 只能容纳一种类型, 存放的是值而不是引用,只能存放字符,字节,数值</p>
 </li>
-<li><p>numread = read(fd, buffer, count)<br> 从fd读取至多count字节的数据, 存储到buffer中, read()返回实际读到的字节数</p>
+<li><p>可变序列: list, bytearray, array.array, collections.deque, memoryview</p>
 </li>
-<li><p>numwritten = write(fd, buffer, count)<br> 从buffer读取至多count字节的数写入由fd指代的的已打开文件中, 返回实际写入的字节数</p>
-</li>
-<li><p>status = close(fd)<br> 释放文件描述符fd以及相关的内核资源</p>
-</li>
+<li>不可变序列: tuple, str, bytes</li>
 </ul>
-
+<h1 id="列表推导和生成器表达式"><a href="#列表推导和生成器表达式" class="headerlink" title="列表推导和生成器表达式"></a>列表推导和生成器表达式</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="string">'ABC'</span></span><br><span class="line">dummy = [x <span class="keyword">for</span> x <span class="keyword">in</span> x]</span><br><span class="line">dummy2 = [ord(x) <span class="keyword">for</span> x <span class="keyword">in</span> x]</span><br><span class="line">print(x)</span><br><span class="line">print(dummy)</span><br><span class="line">print(dummy2)</span><br><span class="line"></span><br><span class="line">beyond = [s <span class="keyword">for</span> s <span class="keyword">in</span> x <span class="keyword">if</span> ord(s) &gt; <span class="number">65</span>]</span><br><span class="line">beyond2 = list(filter(<span class="keyword">lambda</span> c: c &gt; <span class="number">65</span>, map(ord, x)))</span><br><span class="line">print(beyond)</span><br><span class="line">print(beyond2)</span><br></pre></td></tr></table></figure>
+<h2 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h2>
       
 
       
@@ -197,7 +194,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/Python//" class="article-tag-list-link color2">Python</a>
         		</li>
       		
 		</ul>
@@ -206,7 +203,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/02/Linux系统编程手册tlpi系列(3) - 文件IO/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/">展开全文 >></a>
         </p>
       
 
@@ -236,44 +233,38 @@
 
 
   
-    <article id="post-Linux系统编程手册tlpi系列(2) - 系统编程概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux内核 - 内存管理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/02/Linux系统编程手册tlpi系列(2) - 系统编程概念/">Linux系统编程手册tlpi系列(2) - 系统编程概念</a>
+      <a class="article-title" href="/2019/12/12/Linux内核 - 内存管理/">Linux内核 - 内存管理</a>
     </h1>
   
 
         
-        <a href="/2019/12/02/Linux系统编程手册tlpi系列(2) - 系统编程概念/" class="archive-article-date">
-  	<time datetime="2019-12-02T06:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-02</time>
+        <a href="/2019/12/12/Linux内核 - 内存管理/" class="archive-article-date">
+  	<time datetime="2019-12-12T06:49:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h1><ul>
-<li>系统调用将处理器从用户态切换到核心态, 以便CPU访问受到保护的内核内存</li>
-<li><p>每个系统调用都由唯一的数字来标识</p>
-<p>过程:</p>
-<ol>
-<li>应用程序通过C语言函数库的外壳(wrapper)函数,发起系统调用</li>
-<li>外壳函数把系统调用的参数复制到寄存器</li>
-<li>外壳函数会将系统调用编号复制到一个特殊的CPU寄存器(%eax)中</li>
-<li>外壳函数执行中断机器指令(int 0x80),引发处理器从用户态切换到核心态,执行<br>系统中断0x80(十进制128)的中断矢量所指向的代码<br>(2.6内核以后支持sysenter指令, 进入内核更快)</li>
-<li>内核调用system_call()例程处理这次中断:<br>a) 在内核栈中保存寄存器值<br>b) 审核系统调用编号的有效性<br>c) 在sys_call_table中索引发现并调用系统调用服务例程,<br>  检查系统调用参数的有效性(检查地址指向用户空间的内存位置是否有效),<br>  该服务例程执行必要的任务(对特定参数中指定地址处的值进行修改, 在用户内存和内核内存间传递数据),<br>  该服务例程将结果状态返回给system_call()例程<br>d) 从内核栈恢复各寄存器值,并将系统调用返回值置于栈中<br>e) 返回至外壳函数,将处理器切换回用户态</li>
-</ol>
-</li>
+        <ul>
+<li>32bit Linux内核, 用户空间和内核空间的比例是3:1</li>
+<li>物理内存页面, 一级页表, 二级页表</li>
+<li>页表是如何映射的</li>
 </ul>
-<ol start="6">
-<li>外壳函数返回调用程序, 返回一个整型值, 表明该系统调用是否成功</li>
-</ol>
-<p>lib/tlpi_hdr.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> TLPI_HDR_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TLPI_HDR_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"get_num.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"error_functions.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;FALSE, TRUE&#125; Boolean;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> min(m,n) ((m) &lt; (n) ? (m) : (n))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> max(m,n) ((m) m (n) ? (m) : (n))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
-<p>lib/error_function.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> ERROR_FUNCTION_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERROR_FUNCTION_H</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errMsg</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __GNUC__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NORETURN __attribute__ ((__noreturn__))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NORETURN</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errExit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">err_exit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errExitEN</span><span class="params">(<span class="keyword">int</span> errnum, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fatal</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">usageErr</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cmdLineErr</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
+<h1 id="物理内存初始化"><a href="#物理内存初始化" class="headerlink" title="物理内存初始化"></a>物理内存初始化</h1><ul>
+<li>内核如何知道系统中有多大内存?<br>BIOS或boot loader把DDR的大小传递给内核</li>
+</ul>
+<p>内存空间分层: 用户空间层, 内核空间层, 硬件层</p>
+<p>用户空间层: 系统调用接口: brk,mmap<br>内核空间: sys_brk, sys_mmap, VMA管理, 缺页中断管理, 匿名页面, page cache, 页面回收, 反向映射, slab分配器, 页表管理<br>硬件层: 处理器的MMU, TLB和cache部件, 板载的物理内存, LPDDR 或 DDR</p>
+<h2 id="内存大小"><a href="#内存大小" class="headerlink" title="内存大小"></a>内存大小</h2><p>DTS device tree source<br>定义内存的起始地址和大小</p>
+<p>太硬了..</p>
 
       
 
@@ -297,7 +288,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/02/Linux系统编程手册tlpi系列(2) - 系统编程概念/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/12/12/Linux内核 - 内存管理/">展开全文 >></a>
         </p>
       
 
@@ -327,110 +318,37 @@
 
 
   
-    <article id="post-Linux系统编程手册tlpi系列(1) - 基本概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-微信读书瞎读系列(1) - Scala机器学习" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/28/Linux系统编程手册tlpi系列(1) - 基本概念/">Linux系统编程手册tlpi系列(1) - 基本概念</a>
+      <a class="article-title" href="/2019/12/10/微信读书瞎读系列(1) - Scala机器学习/">微信读书瞎读系列(1) - Scala机器学习</a>
     </h1>
   
 
         
-        <a href="/2019/11/28/Linux系统编程手册tlpi系列(1) - 基本概念/" class="archive-article-date">
-  	<time datetime="2019-11-28T02:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-28</time>
+        <a href="/2019/12/10/微信读书瞎读系列(1) - Scala机器学习/" class="archive-article-date">
+  	<time datetime="2019-12-10T09:34:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-10</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><blockquote>
-<p>内核: 管理和分配计算机资源(CPU,RAM和设备)的核心词软件<br>    Linux内核可执行文件采用/boot/vmlinuz路径名</p>
+        <blockquote>
+<p>我确实搞过一段时间的Scala机器学习, 就是Spark的KMeans算法嘛~ 其实现在我既对Scala没兴趣(SBT太蛋疼了),<br>    也对机器学习无感(我自己笨比). 不过瞎读嘛, 随机的魅力, 促使我决定花掉人生中不咋重要的那么一小会儿, 在这个<br>    和我现在八杆子打不着的领域逃避现实与焦虑.</p>
 </blockquote>
-<p>内核的职责:</p>
-<ul>
-<li>进程调度: Linux是抢占式多任务操作系统,哪些进程能获得CPU的使用,每个进程能使用多长时间,都由内核进程调度程序决定</li>
-<li>内存管理: 虚拟内存管理机制, 它的优势: 1.进程和进程之间,进程和内核之间彼此隔离,一个进程无法读取或修改内核或其他进程的内存内容<pre><code>2.只需要把进程的一部分保持在内存中,减少进程对内存的需求量,RAM中可以加载更多进程,提高CPU利用率
-</code></pre></li>
-<li>文件系统: 在磁盘之上提供文件系统</li>
-<li>创建和终止进程: 分配,释放资源</li>
-<li>访问设备: 输入输出,仲裁多个进程对设备的访问                                  </li>
-<li>联网: 内核以用户进程的名义收发网络消息</li>
-<li>提供系统调用应用编程接口</li>
-</ul>
-<h2 id="内核态和用户态"><a href="#内核态和用户态" class="headerlink" title="内核态和用户态"></a>内核态和用户态</h2><p>CPU运行状态, 执行硬件指令切换. 对应地,虚拟内存分为用户空间和内核空间.<br>在用户态时,CPU只能访问用户空间内存; 在内核态时,CPU既能访问用户空间内存, 也能访问内核空间内存</p>
-<p>仅当CPU在核心态运行时才能执行某些特定操作: 执行halt指令关闭系统,访问内存管理硬件,设备IO操作的初始化.<br>操作系统置于内核空间,确保用户进程既不能访问内核指令和数据结构,也无法执行不利于系统运行的操作.</p>
+<h2 id="去除分类字段的重复值"><a href="#去除分类字段的重复值" class="headerlink" title="去除分类字段的重复值"></a>去除分类字段的重复值</h2><p>书上用的是gzcat, 但是我的各种环境都没有那个命令, 用zcat就好</p>
 <blockquote>
-<p>进程一无所知,内核全知全能</p>
+<p>zcat chapter01/data/clickstream/clickstream_sample.tsv.gz | less -U</p>
 </blockquote>
-<blockquote>
-<p>shell 是用户进程</p>
-</blockquote>
-<blockquote>
-<p>root用户ID为0,可以发送信号干预系统运行的所有用户进程</p>
-</blockquote>
-<h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><p>正在执行的程序实例,内核会将程序代码载入虚拟内存.为程序分配空间,建立内核记账(bookkeeping)数据结构,记录<br>与进程有关的各种信息:进程ID,用户ID,组ID以及终止状态.</p>
-<p>进程的内存布局: </p>
-<ul>
-<li>文本: 程序指令</li>
-<li>数据: 程序使用的静态变量</li>
-<li>堆: 程序从该区域动态分配额外内存</li>
-<li>栈: 为局部变量和函数调用链接信息分配存储空间</li>
-</ul>
-<p>进程使用fork()创建新进程,内核复制父进程创建子进程, 子进程从父进程处继承数据段,栈段以及堆段的副本</p>
-<p>进程终止:</p>
-<ul>
-<li>使用_exit系统调用, 请求退出</li>
-<li>向进程传递信号,将其杀死.<br>进程终止时会生成终止状态: 一个非负小整数.</li>
-</ul>
-<p>所有进程之父: init进程<br>系统引导时,内核会创建init进程,它的程序文件是/sbin/init, 系统的所有进程不是由init使用fork()创建,就是其后代进程创建.<br>init进程号为1,只有关闭系统才能终止该进程,init的主要任务是创建并监控系统运行所需的一系列进程.</p>
-<p>守护进程:</p>
-<ul>
-<li>在系统引导时启动,系统关闭前结束.</li>
-<li>在后台运行,无法控制终端供其读取或写入数据<br>例子: syslogd, httpd</li>
-</ul>
-<p>环境列表:<br>每个进程一份,fork()的新进程继承父进程的环境副本.<br>export MYVAR=’hello world’</p>
-<p>资源限制:<br>可以消耗的各类资源的上限: setlimit()<br>软限制: 进程可以消耗的资源总量<br>硬限制: 软限制的调整上限</p>
-<h2 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射:"></a>内存映射:</h2><p>调用系统函数mmap()的进程,会在其虚拟地址空间中创建一个新的内存映射.</p>
-<ul>
-<li>文件映射 将文件的部分区域映射到调用进程的虚拟内存. 对文件映射内容的访问转化为对相应内存区域的字节操作.<pre><code>映射页面会按需自动从文件中加载.
-</code></pre></li>
-<li>无文件对应的匿名映射 映射页面的内容会被初始化为0</li>
-</ul>
-<p>映射共享: 1.两个进程都针对某一个文件的相同部分加以映射<br>        2.由fork()创建的子进程自父进程处继承映射<br>用途: 以可执行文件的相应段来初始化进程的文本段,内存分配,文件IO,进程间通信</p>
-<h2 id="静态库和共享库"><a href="#静态库和共享库" class="headerlink" title="静态库和共享库"></a>静态库和共享库</h2><h1 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h1><ul>
-<li>读写磁盘文件</li>
-<li>信号  signal</li>
-<li>管道  |</li>
-<li>套接字</li>
-<li>文件锁定</li>
-<li>消息队列</li>
-<li>信号量  semaphore 同步进程动作</li>
-<li>共享内存 允许两个及以上进程共享一块内存, 当某进程改变了共享内存的内容时, 其他所有进程会立即了解到变化</li>
-</ul>
-<h2 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h2><p>称为”软件中断”<br>发生下列情况之一时, 内核向进程发送信号:</p>
-<ul>
-<li>用户键入中断字符: Control-C</li>
-<li>进程的子进程之一已经终止</li>
-<li>进程设定的定时器已经到期</li>
-<li>进程尝试访问无效的内存地址<blockquote>
-<p>shell中,可使用kill命令向进程发送信号</p>
-</blockquote>
-</li>
-</ul>
-<p>收到信号后, 进程会采用如下动作之一:</p>
-<ul>
-<li>忽略信号, 或使用自己定义的信号处理器</li>
-<li>被信号杀死</li>
-<li>先挂起,之后再被专用信号唤醒</li>
-</ul>
-<h1 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h1><p>每个线程都会执行相同的程序代码,共享同一数据区和堆,拥有自己的栈,装载本地变量和函数调用连接信息<br>线程之间通过共享的全局变量通信,可以使用IPC和同步机制</p>
-<blockquote>
-<p>shell执行的每个程序都会在一个新进程内发起:<br>   根据文件大小排序: ls -l | sort -k5n | less  创建了3个进程</p>
-</blockquote>
+<p>我又在折腾环境…qaq</p>
+<p>Windows上乱七八糟的问题, 在云服务器上搞好了. Windows用户真就没人权呗</p>
+<p>scala 2.13不支持lineStream..</p>
+<p>import scala.sys.process._<br>val histogram = (“zcat chapter01/data/clickstream/clickstream_sample.tsv.gz” #| “cut -f 10” #| “sort” #| “uniq -c” #| “sort -k1nr”).lineStream<br>histogram take(10) foreach println</p>
 
       
 
@@ -445,7 +363,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -454,7 +372,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/28/Linux系统编程手册tlpi系列(1) - 基本概念/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/12/10/微信读书瞎读系列(1) - Scala机器学习/">展开全文 >></a>
         </p>
       
 
@@ -484,47 +402,28 @@
 
 
   
-    <article id="post-Vue新手村毕业总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-算法基础-打开程序设计之门系列(1) - 数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/17/Vue新手村毕业总结/">Vue新手村毕业总结</a>
+      <a class="article-title" href="/2019/12/10/算法基础-打开程序设计之门系列(1) - 数据结构/">算法基础-打开程序设计之门系列(1) - 数据结构</a>
     </h1>
   
 
         
-        <a href="/2019/11/17/Vue新手村毕业总结/" class="archive-article-date">
-  	<time datetime="2019-11-16T16:00:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-17</time>
+        <a href="/2019/12/10/算法基础-打开程序设计之门系列(1) - 数据结构/" class="archive-article-date">
+  	<time datetime="2019-12-10T08:30:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-10</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="新手村毕业总结"><a href="#新手村毕业总结" class="headerlink" title="新手村毕业总结"></a>新手村毕业总结</h1><h2 id="Demo1-架子"><a href="#Demo1-架子" class="headerlink" title="Demo1: 架子"></a>Demo1: 架子</h2><p>当x变化的时候, 页面不会变; message变化时, 页面会变<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &#123;&#123;message&#125;&#125;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    let x = 'hello'</span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            message: x</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    setTimeout(() =&gt; x = 'lala', 2000)</span></span><br><span class="line"><span class="regexp">    setTimeout(() =&gt; app.message = 'daf', 2000)</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="Demo2-绑定DOM属性v-bind"><a href="#Demo2-绑定DOM属性v-bind" class="headerlink" title="Demo2: 绑定DOM属性v-bind"></a>Demo2: 绑定DOM属性v-bind</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;span v-bind:title=<span class="string">"message"</span>&gt;</span><br><span class="line">        悬停</span><br><span class="line">    &lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    &lt;!-- 绑定一个属性 --&gt;</span></span><br><span class="line"><span class="regexp">    &lt;img v-bind:src="imageSrc"&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    &lt;!-- 缩写 --&gt;</span></span><br><span class="line"><span class="regexp">    &lt;img :src="imageSrc"&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    &lt;!-- 内联字符串拼接 --&gt;</span></span><br><span class="line"><span class="regexp">    &lt;img :src="'/</span>path/to/images/<span class="string">' + fileName"&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &lt;!-- 绑定一个有属性的对象 --&gt;</span></span><br><span class="line"><span class="string">    &lt;div v-bind="&#123; id: someProp, '</span>other-attr<span class="string">': otherProp &#125;"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">&lt;/div&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;script&gt;</span></span><br><span class="line"><span class="string">    const app = new Vue(&#123;</span></span><br><span class="line">        el: '#app',</span><br><span class="line">        data: &#123;</span><br><span class="line">            message: <span class="string">'页面加载于 '</span> + <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleDateString()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Demo3-条件v-if"><a href="#Demo3-条件v-if" class="headerlink" title="Demo3: 条件v-if"></a>Demo3: 条件v-if</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p v-<span class="keyword">if</span>=<span class="string">"seen"</span>&gt;看得到我吗&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p v-else&gt;看不到&lt;/</span>p&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    let seen = true</span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            seen: seen</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    setTimeout(() =&gt; app.seen = false, 2000)</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;div v-<span class="keyword">if</span>=<span class="string">"type === 'A'"</span>&gt;</span><br><span class="line">  A</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;div v-else-if="type === 'B'"&gt;</span></span><br><span class="line"><span class="regexp">  B</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br><span class="line">&lt;div v-<span class="keyword">else</span>-<span class="keyword">if</span>=<span class="string">"type === 'C'"</span>&gt;</span><br><span class="line">  C</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;div v-else&gt;</span></span><br><span class="line"><span class="regexp">  Not A/</span>B/C</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;template v-if="loginType === 'username'"&gt;</span></span><br><span class="line"><span class="regexp">  &lt;label&gt;Username&lt;/</span>label&gt;</span><br><span class="line">  &lt;input placeholder=<span class="string">"Enter your username"</span>&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp">&lt;template v-else&gt;</span></span><br><span class="line"><span class="regexp">  &lt;label&gt;Email&lt;/</span>label&gt;</span><br><span class="line">  &lt;input placeholder=<span class="string">"Enter your email address"</span>&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br></pre></td></tr></table></figure>
-<p>如果有频繁的切换, 使用v-show, 它切换元素的 CSS 属性 display</p>
-<h2 id="Demo4-循环v-for"><a href="#Demo4-循环v-for" class="headerlink" title="Demo4: 循环v-for"></a>Demo4: 循环v-for</h2><p>支持可选的第二个参数, 作为索引.<br> <li v-for="(item, index) in items"><br> in 可以用 of 替代<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;ol&gt;</span><br><span class="line">        &lt;li v-<span class="keyword">for</span>=<span class="string">"todo in todos"</span>&gt;</span><br><span class="line">            &#123;&#123;todo.text&#125;&#125;</span><br><span class="line">        &lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>ol&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            todos: [</span></span><br><span class="line"><span class="regexp">                &#123;text: '学习Vue'&#125;,</span></span><br><span class="line"><span class="regexp">                &#123;text: '学习Ocaml'&#125;,</span></span><br><span class="line"><span class="regexp">                &#123;text: '多学习'&#125;</span></span><br><span class="line"><span class="regexp">            ]</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure></li></p>
-<p>v-for可以用来遍历对象, <div v-for="(value, name, index) in object"><br>v-for传入数字: v-for=’i in 10’, 打印1到10</div></p>
-<p>数组更新检测:<br>push()<br>pop()<br>shift()<br>unshift()<br>splice()<br>sort()<br>reverse()</p>
-<h2 id="Demo5-绑定用户事件v-on"><a href="#Demo5-绑定用户事件v-on" class="headerlink" title="Demo5: 绑定用户事件v-on"></a>Demo5: 绑定用户事件v-on</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123;message&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button v-on:click="reverseMessage"&gt;反转字符串&lt;/</span>button&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- 缩写 --&gt;</span><br><span class="line">    &lt;a @click=<span class="string">"doSomething"</span>&gt;...&lt;<span class="regexp">/a&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="keyword">const</span> app = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">        el: <span class="string">'#app'</span>,</span><br><span class="line">        data: &#123;</span><br><span class="line">            message: <span class="string">'Hello Vue'</span></span><br><span class="line">        &#125;,</span><br><span class="line">        methods: &#123;</span><br><span class="line">            reverseMessage: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.message = <span class="keyword">this</span>.message.split(<span class="string">''</span>).reverse().join(<span class="string">''</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
-<p>可以在内联 JavaScript 语句中调用方法 <button v-on:click="say('hi')">Say hi</button></p>
-<h2 id="Demo6-双向绑定v-model"><a href="#Demo6-双向绑定v-model" class="headerlink" title="Demo6: 双向绑定v-model"></a>Demo6: 双向绑定v-model</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123;message&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;input v-model="message"&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">    <span class="keyword">const</span> app = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">        el: <span class="string">'#app'</span>,</span><br><span class="line">        data: &#123;</span><br><span class="line">            message: <span class="string">'Hello Vue'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Demo7-自定义组件"><a href="#Demo7-自定义组件" class="headerlink" title="Demo7: 自定义组件"></a>Demo7: 自定义组件</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;ol&gt;</span><br><span class="line">        &lt;todo-item</span><br><span class="line">            v-<span class="keyword">for</span>=<span class="string">'todo in todos'</span></span><br><span class="line">            v-bind:todo=<span class="string">'todo'</span></span><br><span class="line">            v-bind:key=<span class="string">'todo.id'</span></span><br><span class="line">        &gt;</span><br><span class="line">        &lt;<span class="regexp">/todo-item&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>ol&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    Vue.component('todo-item', &#123;</span></span><br><span class="line"><span class="regexp">        props: ['todo'],</span></span><br><span class="line"><span class="regexp">        template: '&lt;li&gt;&#123;&#123;todo.text&#125;&#125;&lt;/</span>li&gt;<span class="string">'</span></span><br><span class="line"><span class="string">    &#125;)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    const app = new Vue(&#123;</span></span><br><span class="line">        el: '#app',</span><br><span class="line">        data: &#123;</span><br><span class="line">            todos: [</span><br><span class="line">                &#123;<span class="attr">id</span>: <span class="number">0</span>, <span class="attr">text</span>: <span class="string">'吃饭'</span>&#125;,</span><br><span class="line">                &#123;<span class="attr">id</span>: <span class="number">1</span>, <span class="attr">text</span>: <span class="string">'睡觉'</span>&#125;,</span><br><span class="line">                &#123;<span class="attr">id</span>: <span class="number">2</span>, <span class="attr">text</span>: <span class="string">'打豆豆'</span>&#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Demo8-阻止修改属性-响应系统无法再追踪变化-Object-freeze-obj"><a href="#Demo8-阻止修改属性-响应系统无法再追踪变化-Object-freeze-obj" class="headerlink" title="Demo8: 阻止修改属性,响应系统无法再追踪变化: Object.freeze(obj)"></a>Demo8: 阻止修改属性,响应系统无法再追踪变化: Object.freeze(obj)</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123;foo&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button v-on:click="foo = 'baz'"&gt;Change it&lt;/</span>button&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    let obj = &#123;</span></span><br><span class="line"><span class="regexp">        foo: 'bar'</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/ 有了这行代码, 点击无效</span></span><br><span class="line"><span class="regexp">    Object.freeze(obj)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: obj</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="Demo9-侦听器-watch方法"><a href="#Demo9-侦听器-watch方法" class="headerlink" title="Demo9: 侦听器 $watch方法"></a>Demo9: 侦听器 $watch方法</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">'#example'</span>,</span><br><span class="line">  data: data</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">vm.$watch(<span class="string">'a'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">newValue, oldValue</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 这个回调将在 `vm.a` 改变后调用</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="Demo10-生命周期方法-created-mounted-updated-destroyed"><a href="#Demo10-生命周期方法-created-mounted-updated-destroyed" class="headerlink" title="Demo10: 生命周期方法: created,mounted,updated,destroyed"></a>Demo10: 生命周期方法: created,mounted,updated,destroyed</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            a: 1</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        created: function () &#123;</span></span><br><span class="line"><span class="regexp">            console.log('a is ' + this.a)</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="Demo11-只渲染一次v-once"><a href="#Demo11-只渲染一次v-once" class="headerlink" title="Demo11: 只渲染一次v-once"></a>Demo11: 只渲染一次v-once</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 单个元素 --&gt;</span><br><span class="line">&lt;span v-once&gt;This will never change: &#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">&lt;!-- 有子元素 --&gt;</span></span><br><span class="line"><span class="regexp">&lt;div v-once&gt;</span></span><br><span class="line"><span class="regexp">  &lt;h1&gt;comment&lt;/</span>h1&gt;</span><br><span class="line">  &lt;p&gt;&#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br><span class="line">&lt;!-- 组件 --&gt;</span><br><span class="line">&lt;my-component v-once :comment=<span class="string">"msg"</span>&gt;&lt;<span class="regexp">/my-component&gt;</span></span><br><span class="line"><span class="regexp">&lt;!-- `v-for` 指令--&gt;</span></span><br><span class="line"><span class="regexp">&lt;ul&gt;</span></span><br><span class="line"><span class="regexp">  &lt;li v-for="i in list" v-once&gt;&#123;&#123;i&#125;&#125;&lt;/</span>li&gt;</span><br><span class="line">&lt;<span class="regexp">/ul&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Demo12-渲染原始html-v-html"><a href="#Demo12-渲染原始html-v-html" class="headerlink" title="Demo12: 渲染原始html v-html"></a>Demo12: 渲染原始html v-html</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;Using mustaches: &#123;&#123; rawHtml &#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">&lt;p&gt;Using v-html directive: &lt;span v-html="rawHtml"&gt;&lt;/</span>span&gt;&lt;<span class="regexp">/p&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Demo13-计算属性computed"><a href="#Demo13-计算属性computed" class="headerlink" title="Demo13: 计算属性computed"></a>Demo13: 计算属性computed</h2><p>只要 message 还没有发生改变，多次访问 reversedMessage 计算属性会立即返回之前的计算结果，而不必再次执行函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p&gt;message: &#123;&#123;message&#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p&gt;reversed message: &#123;&#123;reversedMessage&#125;&#125;&lt;/</span>p&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            message: 'hello'</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        computed: &#123;</span></span><br><span class="line"><span class="regexp">            /</span><span class="regexp">/ 计算属性的getter</span></span><br><span class="line"><span class="regexp">            reversedMessage: function () &#123;</span></span><br><span class="line"><span class="regexp">                return this.message.split('').reverse().join('')</span></span><br><span class="line"><span class="regexp">            &#125;</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">    /</span><span class="regexp">/ setter</span></span><br><span class="line"><span class="regexp">    computed: &#123;</span></span><br><span class="line"><span class="regexp">        fullName: &#123;</span></span><br><span class="line"><span class="regexp">            /</span><span class="regexp">/ getter</span></span><br><span class="line"><span class="regexp">            get: function () &#123;</span></span><br><span class="line"><span class="regexp">              return this.firstName + ' ' + this.lastName</span></span><br><span class="line"><span class="regexp">            &#125;,</span></span><br><span class="line"><span class="regexp">            /</span><span class="regexp">/ setter</span></span><br><span class="line"><span class="regexp">            set: function (newValue) &#123;</span></span><br><span class="line"><span class="regexp">                var names = newValue.split(' ')</span></span><br><span class="line"><span class="regexp">                this.firstName = names[0]</span></span><br><span class="line"><span class="regexp">                this.lastName = names[names.length - 1]</span></span><br><span class="line"><span class="regexp">            &#125;</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="Demo14-使用axios-防抖-watch的例子"><a href="#Demo14-使用axios-防抖-watch的例子" class="headerlink" title="Demo14: 使用axios, 防抖, watch的例子"></a>Demo14: 使用axios, 防抖, watch的例子</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;div id=<span class="string">'app'</span>&gt;</span><br><span class="line">    &lt;p&gt;Ask a yes/no question:</span><br><span class="line">        &lt;input v-model=<span class="string">"question"</span>&gt;</span><br><span class="line">    &lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p&gt;&#123;&#123;answer&#125;&#125;&lt;/</span>p&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">    const app = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">        el: '#app',</span></span><br><span class="line"><span class="regexp">        data: &#123;</span></span><br><span class="line"><span class="regexp">            question: '',</span></span><br><span class="line"><span class="regexp">            answer: 'I cannot give you an answer until you ask a question'</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        watch: &#123;</span></span><br><span class="line"><span class="regexp">          question: function (newQuestion, oldQuestion) &#123;</span></span><br><span class="line"><span class="regexp">              this.answer = 'Waiting for you to stop typing...'</span></span><br><span class="line"><span class="regexp">              this.debouncedGetAnswer()</span></span><br><span class="line"><span class="regexp">          &#125;</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        created: function() &#123;</span></span><br><span class="line"><span class="regexp">            this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        methods: &#123;</span></span><br><span class="line"><span class="regexp">            getAnswer: function () &#123;</span></span><br><span class="line"><span class="regexp">                if (!this.question.includes('?')) &#123;</span></span><br><span class="line"><span class="regexp">                    this.answer = 'Question usually contain a question mark...'</span></span><br><span class="line"><span class="regexp">                    return</span></span><br><span class="line"><span class="regexp">                &#125;</span></span><br><span class="line"><span class="regexp">                this.answer = 'Thinking...'</span></span><br><span class="line"><span class="regexp">                var vm = this</span></span><br><span class="line"><span class="regexp">                axios.get('https:/</span><span class="regexp">/yesno.wtf/</span>api<span class="string">')</span></span><br><span class="line"><span class="string">                    .then(function (response) &#123;</span></span><br><span class="line"><span class="string">                        vm.answer = _.capitalize(response.data.answer)</span></span><br><span class="line"><span class="string">                    &#125;)</span></span><br><span class="line"><span class="string">                    .catch(function (error) &#123;</span></span><br><span class="line"><span class="string">                        vm.answer = '</span><span class="built_in">Error</span>! could not reach the api<span class="string">' + error</span></span><br><span class="line"><span class="string">                    &#125;)</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;)</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="Demo11"><a href="#Demo11" class="headerlink" title="Demo11:"></a>Demo11:</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="Demo11-1"><a href="#Demo11-1" class="headerlink" title="Demo11:"></a>Demo11:</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="Demo11-2"><a href="#Demo11-2" class="headerlink" title="Demo11:"></a>Demo11:</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        <h2 id="堆排序算法"><a href="#堆排序算法" class="headerlink" title="堆排序算法"></a>堆排序算法</h2><p>复杂度: O(logN), 不稳定排序<br>实现: </p>
+
       
 
       
@@ -538,7 +437,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/前端框架//" class="article-tag-list-link color5">前端框架</a>
+        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
         		</li>
       		
 		</ul>
@@ -547,7 +446,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/17/Vue新手村毕业总结/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/12/10/算法基础-打开程序设计之门系列(1) - 数据结构/">展开全文 >></a>
         </p>
       
 
@@ -579,7 +478,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
     </nav>
   
 

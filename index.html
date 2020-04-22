@@ -151,70 +151,42 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Java线程池ThreadPoolExecutor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-ICMP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Java线程池ThreadPoolExecutor/">Java线程池ThreadPoolExecutor</a>
+      <a class="article-title" href="/2020/04/22/ICMP协议/">ARP协议</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Java线程池ThreadPoolExecutor/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/22/ICMP协议/" class="archive-article-date">
+  	<time datetime="2020-04-22T07:34:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code>目的
-    线程是稀缺资源，不能频繁的创建。
-    解耦作用；线程的创建与执行完全分开，方便维护。
-    应当将其放入一个池子中，可以给其他任务进行复用。
-    提高线程的可管理性：线程池可以统一管理、分配、调优和监控
-    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗
-    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    
-
-四个构造函数,其中的一些参数: 
-    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
-                            除非将allowCoreThreadTimeOut设置为true。
-
-    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
-                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
-
-    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
-
-    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
-                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
-
-    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
-                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
-
-    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
-
-    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
-                                        会调用RejectedExecutionHandler的rejectedExecution方法。
-
-线程池规则
-
-    下面都假设任务队列没有大小限制：
-
-        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
-        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
-        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
-
-        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
-        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
-
-    任务队列大小有限时
-
-        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
-        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
-</code></pre>
+        <h1 id="ICMP协议-Internet-Control-Message-Protocol-控制报文协议"><a href="#ICMP协议-Internet-Control-Message-Protocol-控制报文协议" class="headerlink" title="ICMP协议  Internet Control Message Protocol 控制报文协议"></a>ICMP协议  Internet Control Message Protocol 控制报文协议</h1><p>在IP主机和路由器之间传递控制消息, 描述网络是否通畅, 主机是否可达, 路由器是否可用等网络状态.</p>
+<ul>
+<li><p>为啥有ICMP?   因为IP协议不可靠,无连接</p>
+</li>
+<li><p>ICMP的作用    为了了解数据包在传输过程中在哪个环节出现了问题.  它可以跟踪消息, 把问题反馈给源主机.</p>
+</li>
+</ul>
+<h1 id="ICMP报文结构-8个字节"><a href="#ICMP报文结构-8个字节" class="headerlink" title="ICMP报文结构  8个字节"></a>ICMP报文结构  8个字节</h1><ul>
+<li>类型        1字节</li>
+<li>代码         1字节</li>
+<li>校验和       2字节</li>
+<li>扩展内容字段  4字节</li>
+</ul>
+<h1 id="路由跟踪"><a href="#路由跟踪" class="headerlink" title="路由跟踪"></a>路由跟踪</h1><p>检测发出数据包的主机到目标主机之间所经过的网关,并监听来自网关ICMP的应答</p>
+<p>traceroute <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a></p>
+<h1 id="ICMP时间戳请求"><a href="#ICMP时间戳请求" class="headerlink" title="ICMP时间戳请求"></a>ICMP时间戳请求</h1>
       
 
       
@@ -228,7 +200,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -237,7 +209,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Java线程池ThreadPoolExecutor/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/22/ICMP协议/">展开全文 >></a>
         </p>
       
 
@@ -267,31 +239,82 @@
 
 
   
-    <article id="post-flutter痛苦翻来覆去系列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-ARP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/flutter痛苦翻来覆去系列/">flutter痛苦翻来覆去系列</a>
+      <a class="article-title" href="/2020/04/22/ARP协议/">ARP协议</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/flutter痛苦翻来覆去系列/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/22/ARP协议/" class="archive-article-date">
+  	<time datetime="2020-04-22T02:19:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>hello, Simple Material App</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'package:flutter/material.dart'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(MaterialApp(</span><br><span class="line">    title: <span class="string">'Simple Material App'</span>,</span><br><span class="line">    home: Scaffold(</span><br><span class="line">      appBar: AppBar(</span><br><span class="line">        title: Text(<span class="string">'Complex Material App'</span>),</span><br><span class="line">      ),</span><br><span class="line">      body: Container(</span><br><span class="line">        child: Center(</span><br><span class="line">          child: Text(<span class="string">"Hello Fultter~"</span>),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  ));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="ARP-Address-Resolution-Protocol"><a href="#ARP-Address-Resolution-Protocol" class="headerlink" title="ARP  Address Resolution Protocol"></a>ARP  Address Resolution Protocol</h1><p>根据IP地址获取物理地址的一个TCP/IP协议, 解决网际层和网络访问层的衔接问题.</p>
+<ul>
+<li><p>ARP请求<br>主机A以广播形式向网络中所有主机发送ARP请求，请求包中包含了目标IP地址</p>
 </li>
-<li></li>
+<li><p>ARP响应<br>主机B接收到请求，发现自己就是主机A要找的主机，返回响应。响应包中包含自己的MAC地址</p>
+</li>
+<li><p>ARP缓存<br>查看arp缓存</p>
+<blockquote>
+<p>arp -a </p>
+</blockquote>
+</li>
+</ul>
+<h1 id="ARP协议包结构"><a href="#ARP协议包结构" class="headerlink" title="ARP协议包结构"></a>ARP协议包结构</h1><ul>
+<li><p>硬件类型<br>指明了发送方想知道的硬件接口类型，以太网的值为1</p>
+</li>
+<li><p>协议类型<br>表示要映射的协议地址类型。它的值为0x0800，表示IP地址</p>
+</li>
+<li><p>硬件地址长度和协议长度<br>分别指出硬件地址和协议的长度，以字节为单位。对于以太网上IP地址的ARP请求或应答来说，它们的值分别为6和4</p>
+</li>
+<li><p>操作类型<br>用来表示这个报文的类型，ARP请求为1, ARP响应为2, RARP请求为3, RARP响应为4</p>
+</li>
+<li><p>发送方MAC地址：发送方设备的硬件地址。</p>
+</li>
+<li>发送方IP地址：发送方设备的IP地址。</li>
+<li>目标MAC地址：接收方设备的硬件地址。</li>
+<li>目标IP地址：接收方设备的IP地址。</li>
+</ul>
+<p>ARP数据包分为请求包和响应包，对应报文中的某些字段值也有所不同。</p>
+<ol>
+<li>ARP请求包报文的操作类型（op）字段的值为request ，目标MAC地址字段的值为Target 00:00:00_00:00:00 (00:00:00:00:00:00)（广播地址）。</li>
+<li>ARP响应包报文中操作类型（op）字段的值为reply ，目标MAC地址字段的值为目标主机的硬件地址。</li>
+</ol>
+<ul>
+<li>构造ARP包<blockquote>
+<p>./netwox 33</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="免费ARP包-Gratuitous-ARP"><a href="#免费ARP包-Gratuitous-ARP" class="headerlink" title="免费ARP包  Gratuitous ARP"></a>免费ARP包  Gratuitous ARP</h1><p>当主机启动的时候，发送一个Gratuitous ARP请求，即请求自己的IP地址的MAC地址,目标IP地址是自己的IP地址</p>
+<h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><ol>
+<li>宣告. 告诉其他计算机自己的IP地址和MAC地址</li>
+<li>检测IP地址冲突. 当一台主机发送了免费ARP请求报文后，如果收到了ARP响应报文，则说明网络内已经存在使用该IP地址的主机</li>
+<li>更新其他主机的ARP缓存表</li>
+</ol>
+<h1 id="基于ARP协议扫描"><a href="#基于ARP协议扫描" class="headerlink" title="基于ARP协议扫描"></a>基于ARP协议扫描</h1><p>如果目标主机存在,将会返回MAC地址, 可以用来判断目标主机是否启用.</p>
+<ol>
+<li><p>扫描主机是否启用</p>
+<blockquote>
+<p>./netwox 55 -i 192.168.59.135</p>
+</blockquote>
+</li>
+<li><p>扫描多个主机</p>
+<blockquote>
+<p>./netwox 71 -i 192.168.59.133,192.168.59.134,192.168.59.135</p>
+</blockquote>
+</li>
 </ol>
 
       
@@ -307,7 +330,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Flutter//" class="article-tag-list-link color3">Flutter</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -316,7 +339,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/flutter痛苦翻来覆去系列/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/22/ARP协议/">展开全文 >></a>
         </p>
       
 
@@ -346,56 +369,69 @@
 
 
   
-    <article id="post-java中==和equals的区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TCP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/java中==和equals的区别/">java中==和equals的区别</a>
+      <a class="article-title" href="/2020/04/20/TCP协议/">TCP协议</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/java中==和equals的区别/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/20/TCP协议/" class="archive-article-date">
+  	<time datetime="2020-04-20T08:13:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-20</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>java中==和equals的区别<br>    public boolean equals(Object obj) {<br>        return (this == obj);<br>    }</p>
-<pre><code>基本概念:
-    值类型是存储在内存中的堆栈（以后简称栈），而引用类型的变量在栈中仅仅是存储引用类型变量的地址，而其本身则存储在堆中。
-    ==操作比较的是两个变量的值是否相等，对于引用型变量表示的是两个变量在堆中存储的地址是否相同，即栈中的内容是否相同。
-    equals操作表示的两个变量是否是对同一个对象的引用，即堆中的内容是否相同。
-    ==比较的是2个对象的地址，而equals比较的是2个对象的内容。
+        <h1 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h1><p>提供了应用进程之间的端到端连接</p>
+<ul>
+<li>作用<ul>
+<li>为网络应用程序提供接口</li>
+<li>为端到端连接提供流量控制,差错控制,服务质量等管理服务</li>
+<li>提供多路复用,多路分解机制</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>面向连接<br>双方在通信时, 要先建立通信线路, 然后再进行通信.<br>三个阶段: 1.建立连接 2.数据传输 3.释放连接</p>
+</li>
+<li><p>无连接<br>通信双方不需要事先建立通信线路, 而是把每个带有目的地址的包发送到线路上,由系统选定线路进行传输,不需要目标方进行回复.</p>
+</li>
+</ol>
+<blockquote>
+<p>在数据链路层中，通过MAC地址来寻找局域网中的主机；<br>在网际层中，通过IP地址来寻找网络中互连的主机或路由器。<br>在传输层中，需要通过端口进行寻址，来识别同一计算机中同时通信的不同应用程序</p>
+</blockquote>
+<ol start="3">
+<li><p>套接字 - 主机的IP地址加上主机上的端口号</p>
+</li>
+<li></li>
+</ol>
+<ul>
+<li><p>多路复用<br>从源主机的不同套接字中收集数据块,并为每个数据块封装首部信息,从而生成报文段, 然后将报文段传递到网络层中</p>
+</li>
+<li><p>多路分解<br>将传输层报文段中的数据交付到正确的套接字</p>
+</li>
+</ul>
+<h1 id="TCP协议-Transmission-Control-Protocol"><a href="#TCP协议-Transmission-Control-Protocol" class="headerlink" title="TCP协议 Transmission Control Protocol"></a>TCP协议 Transmission Control Protocol</h1><p>面向连接的, 可靠的, 基于字节流的传输层通信协议.</p>
+<h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><ul>
+<li>面向流的处理   一个字节一个字节地接受数据, 把接收到的数据组成长度不同的段, 再传递到网际层.</li>
+<li>重新排序      如果数据以错误的顺序到达目的地, TCP模块能够对数据重新排序, 恢复原始数据</li>
+<li>流量控制      TCP能确保数据传输不会超过目的计算机接收数据的能力</li>
+<li>优先级与安全   为TCP连接设置可选的优先级和安全</li>
+<li>适当的关闭     确保所有数据被发送或接收以后, 再进行关闭</li>
+</ul>
+<h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><p>服务端和客户端模式</p>
+<h2 id="TCP数据格式"><a href="#TCP数据格式" class="headerlink" title="TCP数据格式"></a>TCP数据格式</h2><ul>
+<li>源端口         16位</li>
+<li>目的端口       16位</li>
+</ul>
 
-常见误区:
-    程序在运行的时候会创建一个字符串缓冲池当使用 s2 = &quot;Monday&quot; 这样的表达是创建字符串的时候，
-    程序首先会在这个String缓冲池中寻找相同值的对象，在第一个程序中，s1先被放到了池中，所以在s2被创建的时候，
-    程序找到了具有相同值的 s1
-    使用了 new 操作符，新的&quot;Monday&quot;Sting对象被创建在内存中。他们的值相同，但是位置不同.
-
-     String str1 = new String(&quot;hello&quot;);
-     String str2 = new String(&quot;hello&quot;);
-     String str3 = &quot;hello&quot;;
-     String str4 = &quot;hello&quot;;
-     System.out.println(str1==str2);//false  栈里面内容是否相等
-     System.out.println(str1.equals(str2));//true 堆里面内容是否相等
-
-    System.out.println(str1==str3);//false
-    System.out.println(str1.equals(str3));//true
-
-    System.out.println(str3==str4);//true
-    System.out.println(str3.equals(str4));//true
-
-拓展:
-    String的intern()方法检查字符串池里是否存在&quot;abc&quot;这么一个字符串，如果存在，就返回池里的字符串；如果不存在，
-    该方法会把&quot;abc&quot;添加到字符串池中，然后再返回它的引用。
-</code></pre>
       
 
       
@@ -409,7 +445,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -418,7 +454,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/java中==和equals的区别/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/20/TCP协议/">展开全文 >></a>
         </p>
       
 
@@ -448,27 +484,92 @@
 
 
   
-    <article id="post-邓小平传" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-IP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/邓小平传/">邓小平传</a>
+      <a class="article-title" href="/2020/04/20/IP协议/">IP协议</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/邓小平传/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/20/IP协议/" class="archive-article-date">
+  	<time datetime="2020-04-20T06:19:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-20</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>提供一种分层的, 与硬件无关的寻址系统.<br>将多个交换网络连接起来, 在源地址和目的地址之间传送数据包, 提供数据重新组装功能</p>
+<h1 id="IP协议工作方式"><a href="#IP协议工作方式" class="headerlink" title="IP协议工作方式"></a>IP协议工作方式</h1><ul>
+<li><p>同网段<br>  如果源地址主机和目标地址主机在同一网段, 目标IP地址被ARP解析为MAC地址, 然后根据MAC地址, 直接发送</p>
+</li>
+<li><p>不同网段<br>  (1) 网关(即路由器) 的IP地址被ARP协议解析为MAC地址, 根据该地址, 源主机将数据包发送到网关<br>  (2) 网关根据数据中的网段ID寻找目标网络, 如果找到,将数据包发送到目标网段, 如果没找到,重复(1)将数据包发送到上一级网关<br>  (3) 数据包经过网关被发送到正确的网段中, 目标IP地址被ARP协议解析为MAC地址, 根据该MAC地址, 数据包被发送到目标地址的主机</p>
+</li>
+</ul>
+<h1 id="IP报文"><a href="#IP报文" class="headerlink" title="IP报文"></a>IP报文</h1><p>由首部和数据两部分组成, 首部的前一部分是固定长度: 20字节, 后一部分是可选字段, 长度可变</p>
+<h2 id="IP报头字段"><a href="#IP报头字段" class="headerlink" title="IP报头字段"></a>IP报头字段</h2><ul>
+<li><p>版本 version   4位, 表示IP协议版本号, 如IPv4</p>
+</li>
+<li><p>首部长度(IHL)   4位, 二进制的数转换为十进制后乘以4, 最大值是60字节, 始终是4的倍数, 不够的话要填充</p>
+<pre><code>最常用的首部长度就是20字节, 0101, 不用任何选项.  
+</code></pre></li>
+<li><p>区分服务(tos)   8位, 也叫服务类型, 没用</p>
+</li>
+<li><p>总长度(totlen)  16位, 首部和数据之和, 因此数据报的最大长度是 2^16-1 = 65535字节</p>
+</li>
+<li><p>标识(identification) 16位, 标识数据报, IP协议在存储器里有一个计数器, 每产生一个数据报, 计数器就加1,</p>
+<pre><code>并赋值给标识字段. 当数据报的长度超过网络的MTU而必须分片时, 这个标识字段的值
+就会被复制到所有的数据报的标识字段中, 具有相同的标识字段值的分片报文会被重组成原来的数据报
+</code></pre></li>
+<li><p>标志(flag)         3位, 第一位不用,为0.  第二位为DF, 表示是否允许分片: 0-允许分片, 1-不允许分片</p>
+<pre><code>第三位为MF, 表示是否还有分片正在传输, 0-没有更多分片需要发送或数据报没有分片 
+</code></pre></li>
+<li><p>片偏移(offsetfrag)  13位, 当报文被分片后, 标记该分片在原报文中的相对位置, 片偏移以8个字节为偏移单位, 除了最后一个</p>
+<pre><code>分片,其他分片的偏移值都是8字节的整数倍
+</code></pre></li>
+<li><p>生存时间(TTL)        8位, 表示数据报在网络中的寿命。该字段由发出数据报的源主机设置。其目的是防止无法交付的数据报无限制地在网络中传输，从而消耗网络资源。</p>
+<pre><code>路由器在转发数据报之前，先把TTL值减1。若TTL值减少到0，则丢弃这个数据报，不再转发。因此，TTL指明数据报在网络中最多可经过多少个路由器。
+TTL的最大数值为255。若把TTL的初始值设为1，则表示这个数据报只能在本局域网中传送。
+</code></pre></li>
+<li><p>协议          8位, 表示该数据报文所携带的数据所使用的协议类型。该字段可以方便目的主机的IP层知道按照什么协议来处理数据部分。</p>
+<pre><code>不同的协议有专门不同的协议号。例如，TCP的协议号为6, UDP的协议号为17, ICMP的协议号为1。
+</code></pre></li>
+<li><p>首部校验和(checksum) 16位,用于校验数据报的首部。数据报每经过一个路由器，首部的字段都可能发生变化（如TTL），</p>
+<pre><code>所以需要重新校验。而数据部分不发生变化，所以不用重新生成校验值。                
+</code></pre></li>
+<li><p>源地址        32位, 表示数据报的源IP地址                        </p>
+</li>
+<li><p>目的地址       32位, 表示数据报的目的IP地址, 该字段用于校验发送是否正确</p>
+</li>
+<li><p>可选字段       用于测试,调试,安全目的. 包括严格源路由（数据报必须经过指定的路由）、网际时间戳（经过每个路由器时的时间戳记录）和安全限制。</p>
+</li>
+<li><p>填充          由于可选字段中的长度不是固定的，使用若干个0填充该字段，可以保证整个报头的长度是32位的整数倍。</p>
+</li>
+</ul>
+<h2 id="数据部分"><a href="#数据部分" class="headerlink" title="数据部分"></a>数据部分</h2><p>表示传输层的数据，如保存TCP、UDP、ICMP或IGMP的数据。数据部分的长度不固定</p>
+<h1 id="构造IP数据包"><a href="#构造IP数据包" class="headerlink" title="构造IP数据包"></a>构造IP数据包</h1><blockquote>
+<p>./netwox 38<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xDBB8=56248__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0xC57A_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="指定源地址和目标地址"><a href="#指定源地址和目标地址" class="headerlink" title="指定源地址和目标地址"></a>指定源地址和目标地址</h2><blockquote>
+<p>./netwox 38 -l 192.168.59.132 -m 192.168.12.101<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xE5D3=58835__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0x0BDD_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|________________________192.168.59.132_________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|________________________192.168.12.101_________________________|</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="指定IP数据报的以太层字段"><a href="#指定IP数据报的以太层字段" class="headerlink" title="指定IP数据报的以太层字段"></a>指定IP数据报的以太层字段</h2><blockquote>
+<p>./netwox 34<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Ethernet________________________________________________________.</span><br><span class="line">| 00:FF:AA:BB:CC:DD-&gt;00:08:09:0A:0B:0C type:0x0800              |</span><br><span class="line">|_______________________________________________________________|</span><br><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0x6333=25395__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0x3E00_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>./netwox 34 -a 00:0C:29:C4:8A:DE -b 00:0C:29:D0:21:23</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Ethernet________________________________________________________.</span><br><span class="line">| 00:0C:29:C4:8A:DE-&gt;00:0C:29:D0:21:23 type:0x0800              |</span><br><span class="line">|_______________________________________________________________|</span><br><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xEF24=61220__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0xB20E_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure>
+<p>没有在wireshark中捕获到</p>
+<h1 id="分片洪水攻击"><a href="#分片洪水攻击" class="headerlink" title="分片洪水攻击"></a>分片洪水攻击</h1><blockquote>
+<p>./netwox 74 -i 192.168.59.135</p>
+</blockquote>
+
       
 
       
@@ -477,10 +578,21 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/邓小平传/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/20/IP协议/">展开全文 >></a>
         </p>
       
 
@@ -512,7 +624,7 @@
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 

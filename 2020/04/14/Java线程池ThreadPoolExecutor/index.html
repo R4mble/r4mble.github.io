@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Java线程池ThreadPoolExecutor | 三石的QQ空间</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目的     线程是稀缺资源，不能频繁的创建。     解耦作用；线程的创建与执行完全分开，方便维护。     应当将其放入一个池子中，可以给其他任务进行复用。     提高线程的可管理性：线程池可以统一管理、分配、调优和监控     降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗     提高响应速度：任务到达时不需要等待线程创建就可以立即执行      四个构造函数,其中的一些">
+  <meta name="description" content="目的    线程是稀缺资源，不能频繁的创建。    解耦作用；线程的创建与执行完全分开，方便维护。    应当将其放入一个池子中，可以给其他任务进行复用。    提高线程的可管理性：线程池可以统一管理、分配、调优和监控    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗    提高响应速度：任务到达时不需要等待线程创建就可以立即执行     四个构造函数,其中的一些参数:int">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java线程池ThreadPoolExecutor">
 <meta property="og:url" content="http://yoursite.com/2020/04/14/Java线程池ThreadPoolExecutor/index.html">
 <meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="目的     线程是稀缺资源，不能频繁的创建。     解耦作用；线程的创建与执行完全分开，方便维护。     应当将其放入一个池子中，可以给其他任务进行复用。     提高线程的可管理性：线程池可以统一管理、分配、调优和监控     降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗     提高响应速度：任务到达时不需要等待线程创建就可以立即执行      四个构造函数,其中的一些">
+<meta property="og:description" content="目的    线程是稀缺资源，不能频繁的创建。    解耦作用；线程的创建与执行完全分开，方便维护。    应当将其放入一个池子中，可以给其他任务进行复用。    提高线程的可管理性：线程池可以统一管理、分配、调优和监控    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗    提高响应速度：任务到达时不需要等待线程创建就可以立即执行     四个构造函数,其中的一些参数:int">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-14T02:17:34.793Z">
+<meta property="og:updated_time" content="2020-04-14T08:35:29.853Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java线程池ThreadPoolExecutor">
-<meta name="twitter:description" content="目的     线程是稀缺资源，不能频繁的创建。     解耦作用；线程的创建与执行完全分开，方便维护。     应当将其放入一个池子中，可以给其他任务进行复用。     提高线程的可管理性：线程池可以统一管理、分配、调优和监控     降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗     提高响应速度：任务到达时不需要等待线程创建就可以立即执行      四个构造函数,其中的一些">
+<meta name="twitter:description" content="目的    线程是稀缺资源，不能频繁的创建。    解耦作用；线程的创建与执行完全分开，方便维护。    应当将其放入一个池子中，可以给其他任务进行复用。    提高线程的可管理性：线程池可以统一管理、分配、调优和监控    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗    提高响应速度：任务到达时不需要等待线程创建就可以立即执行     四个构造函数,其中的一些参数:int">
   
     <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
   
@@ -170,50 +170,21 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code>目的
-    线程是稀缺资源，不能频繁的创建。
-    解耦作用；线程的创建与执行完全分开，方便维护。
-    应当将其放入一个池子中，可以给其他任务进行复用。
-    提高线程的可管理性：线程池可以统一管理、分配、调优和监控
-    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗
-    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    
+        <p>目的<br>    线程是稀缺资源，不能频繁的创建。<br>    解耦作用；线程的创建与执行完全分开，方便维护。<br>    应当将其放入一个池子中，可以给其他任务进行复用。<br>    提高线程的可管理性：线程池可以统一管理、分配、调优和监控<br>    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗<br>    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    </p>
+<p>四个构造函数,其中的一些参数:<br>int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。<br>                        除非将allowCoreThreadTimeOut设置为true。</p>
+<p>int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。<br>                        当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。</p>
+<p>long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。</p>
+<p>TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。<br>                        当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。</p>
+<p>BlockingQueue<runnable> workQueue,  线程池中的任务队列.<br>                                    常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。</runnable></p>
+<p>ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能</p>
+<p>RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，<br>                                    会调用RejectedExecutionHandler的rejectedExecution方法。</p>
+<p>线程池规则</p>
+<p>下面都假设任务队列没有大小限制：</p>
+<p>如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。<br>如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。<br>如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。</p>
+<p>如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。<br>如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。</p>
+<p>任务队列大小有限时</p>
+<p>当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。<br>SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。</p>
 
-四个构造函数,其中的一些参数: 
-    int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。
-                            除非将allowCoreThreadTimeOut设置为true。
-
-    int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。
-                            当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
-
-    long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。
-
-    TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。
-                            当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
-
-    BlockingQueue&lt;Runnable&gt; workQueue,  线程池中的任务队列.
-                                        常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。
-
-    ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能
-
-    RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，
-                                        会调用RejectedExecutionHandler的rejectedExecution方法。
-
-线程池规则
-
-    下面都假设任务队列没有大小限制：
-
-        如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。
-        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。
-        如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。
-
-        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。
-        如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。
-
-    任务队列大小有限时
-
-        当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。
-        SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。
-</code></pre>
       
 
       
@@ -296,9 +267,18 @@
   
 <nav id="article-nav">
   
+    <a href="/2020/04/14/JVM内存模型/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          JVM内存模型
+        
+      </div>
+    </a>
   
-    <a href="/2020/04/14/flutter痛苦翻来覆去系列/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">flutter痛苦翻来覆去系列</div>
+  
+    <a href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Kubernetes</div>
       <i class="icon-circle-right"></i>
     </a>
   

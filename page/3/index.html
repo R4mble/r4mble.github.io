@@ -151,33 +151,34 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-css心得" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Golang东一榔头西一棒槌系列(6) -Struct与面向对象" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/css心得/">css心得</a>
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(6) -Struct与面向对象/">Golang东一榔头西一棒槌系列(6) -Struct与面向对象</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/css心得/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(6) -Struct与面向对象/" class="archive-article-date">
+  	<time datetime="2020-04-14T10:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>怎么裁减图片<br>给图片加个div, div的宽高比img小, 并且overflow: hidden, 就能把多的盖住</p>
-</li>
-<li><p>怎么让图片弹性布局<br>display: flex;<br>flex-wrap: wrap;</p>
-</li>
-</ol>
-
+        <h1 id="匿名字段"><a href="#匿名字段" class="headerlink" title="匿名字段"></a>匿名字段</h1><p>struct中的字段可以提供类型, 而不写字段名</p>
+<p>实现字段的继承</p>
+<h1 id="method"><a href="#method" class="headerlink" title="method"></a>method</h1><p>A method is a function with an implicit first argument, called a receiver.</p>
+<p>func (r ReceiverType) funcName(parameters) (results)</p>
+<h1 id="指针作为receiver"><a href="#指针作为receiver" class="headerlink" title="指针作为receiver"></a>指针作为receiver</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"math"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> person <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="keyword">string</span></span><br><span class="line">	age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> student <span class="keyword">struct</span> &#123;</span><br><span class="line">	person</span><br><span class="line">	grade <span class="keyword">float32</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Rectangle <span class="keyword">struct</span> &#123;</span><br><span class="line">	width, height <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Circle <span class="keyword">struct</span> &#123;</span><br><span class="line">	radius <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r Rectangle)</span> <span class="title">area</span><span class="params">()</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> r.width * r.height</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Circle)</span> <span class="title">area</span><span class="params">()</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> c.radius * c.radius * math.Pi</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> P person</span><br><span class="line">	P.name = <span class="string">"asdf"</span></span><br><span class="line">	P.age = <span class="number">12</span></span><br><span class="line">	fmt.Println(P)</span><br><span class="line"></span><br><span class="line">	P2 := person&#123;<span class="string">"Tom"</span>, <span class="number">23</span>&#125;</span><br><span class="line">	fmt.Println(P2)</span><br><span class="line"></span><br><span class="line">	st := student&#123;</span><br><span class="line">		person: person&#123;<span class="string">"mark"</span>, <span class="number">134</span>&#125;,</span><br><span class="line">		grade:  <span class="number">0</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(st)</span><br><span class="line">	fmt.Println(st.person.age)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="method继承"><a href="#method继承" class="headerlink" title="method继承"></a>method继承</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Human <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="keyword">string</span></span><br><span class="line">	age <span class="keyword">int</span></span><br><span class="line">	phone <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Student <span class="keyword">struct</span> &#123;</span><br><span class="line">	Human</span><br><span class="line">	school <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Employee <span class="keyword">struct</span> &#123;</span><br><span class="line">	Human</span><br><span class="line">	company <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h *Human)</span> <span class="title">SayHi</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"Hi, I am %s you can call me on %s\n"</span>, h.name, h.phone)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	Mark := Student&#123;Human&#123;<span class="string">"Mark"</span>, <span class="number">23</span>, <span class="string">"123"</span>&#125;, <span class="string">"MIT"</span>&#125;</span><br><span class="line">	Sam := Employee&#123;Human&#123;<span class="string">"Sam"</span>, <span class="number">33</span>, <span class="string">"321"</span>&#125;, <span class="string">"Google"</span>&#125;</span><br><span class="line">	Mark.SayHi()</span><br><span class="line">	Sam.SayHi()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="interface"><a href="#interface" class="headerlink" title="interface"></a>interface</h1><p>interface可以被任意的对象实现, 一个对象可以实现任意多个interface</p>
+<h2 id="嵌入interface"><a href="#嵌入interface" class="headerlink" title="嵌入interface"></a>嵌入interface</h2>
       
 
       
@@ -186,21 +187,10 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/FontEnd//" class="article-tag-list-link color3">FontEnd</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/css心得/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(6) -Struct与面向对象/">展开全文 >></a>
         </p>
       
 
@@ -230,19 +220,19 @@
 
 
   
-    <article id="post-express" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-快排" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/express/">express</a>
+      <a class="article-title" href="/2020/04/14/快排/">快排</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/express/" class="archive-article-date">
+        <a href="/2020/04/14/快排/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -250,33 +240,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>其实nodejs写起来挺爽的~</p>
-<h1 id="mvc"><a href="#mvc" class="headerlink" title="mvc"></a>mvc</h1><ol>
-<li><p>__dirname<br>常量: 当前目录</p>
-</li>
-<li><p>path.join(<strong>dirname, ‘public’)<br>路径拼接<br>path.join(</strong>dirname, ‘..’, ‘controllers’);<br>两个点表示返回上一层</p>
-</li>
-<li><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">app.response.message = <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sess = <span class="keyword">this</span>.req.session;</span><br><span class="line">  sess.messages = sess.messages || [];</span><br><span class="line">  sess.messages.push(msg);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>给response定义一个message函数, 把msg存到session里</p>
-<ol start="4">
-<li><p>!module.parent<br>用于在没有require语句的情况下直接运行某段代码，如果有require语句，则不执行</p>
-</li>
-<li><p>app.use([path,] callback [, callback…])<br>这个callback既可以是router对象又可以是函数</p>
-</li>
-</ol>
-<p>app.use(‘/home’,router)<br>router路由对象中的路由都会匹配到”/home”路由后面</p>
-<p>app.use(express.static(‘public’));<br>传递一个包含静态资源的目录给express.static中间件用于立即开始提供文件</p>
-<p>app.use(methodOverride(‘_method’));<br>把表单的post请求改写成put, 通过在url里加参数: ?_method=put</p>
-<p>app.use(express.urlencoded({ extended: true }))<br>解析请求体</p>
-<ol start="6">
-<li>!null=true<br>!undefined=true<br>!’’=true<br>!!a 的意思就是 a不为null 且 a不为undefined 且 a不为空字符串</li>
-</ol>
-<ol start="7">
-<li><h1 id="模板引擎-template-engine"><a href="#模板引擎-template-engine" class="headerlink" title="模板引擎 template engine"></a>模板引擎 template engine</h1>我之前是用的jade, 那种缩进式风格深得我意.<br>express官方Example里用的是ejs.<br>设置模板引擎: <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.set(<span class="string">'view engine'</span>, <span class="string">'ejs'</span>)</span><br></pre></td></tr></table></figure></li>
-</ol>
-
+        <p>快排的思路就是: 找到一个轴, 它左边的都比它小, 它右边的都比它大, 然后递归下去</p>
+<p>快速排序最优的情况:  每一次取到的元素都刚好平分整个数组<br>时间复杂度为：O(nlogn)<br>空间复杂度为：O(logn)</p>
+<p>快速排序最差的情况:  每一次取到的元素就是数组中最小/最大的，这种情况其实就是冒泡排序了(每一次都排好一个元素的顺序)<br>时间复杂度为： O(n^2)<br>空间复杂度为：O(n)</p>
+<p>平均时间复杂度<br>       快速排序的平均时间复杂度也是：O(nlogn)</p>
+<p>第二种用时: 1534ms<br>第一种用时: 27ms</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">quickSort</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (list.size() &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> pivot = list.get(<span class="number">0</span>);</span><br><span class="line">        List&lt;Integer&gt; less = list.stream()</span><br><span class="line">                                .skip(<span class="number">1</span>)</span><br><span class="line">                                .filter(ele -&gt; ele &lt;= pivot)</span><br><span class="line">                                .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">        List&lt;Integer&gt; greater = list.stream()                                </span><br><span class="line">                                    .skip(<span class="number">1</span>)</span><br><span class="line">                                    .filter(ele -&gt; ele &gt; pivot)</span><br><span class="line">                                    .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Stream.of(quickSort(less).stream(),</span><br><span class="line">                        Stream.of(pivot), </span><br><span class="line">                        quickSort(greater).stream())</span><br><span class="line">                .flatMap(Function.identity())</span><br><span class="line">                .collect(Collectors.toList());                                 ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    quickSort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">        <span class="keyword">int</span> pivot = partition(arr, low, high);</span><br><span class="line">        quickSort(arr, low, pivot - <span class="number">1</span>);</span><br><span class="line">        quickSort(arr, pivot + <span class="number">1</span>, high);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">        <span class="comment">// 右边的比它大, 就ok</span></span><br><span class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[high]) &#123;</span><br><span class="line">            high--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 不比它大, 移到左边来</span></span><br><span class="line">        arr[low] = arr[high];</span><br><span class="line">        <span class="comment">// 左边的比它小, 就ok</span></span><br><span class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[low] &lt;= pivot) &#123;</span><br><span class="line">            low++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 不比它小, 移到右边来</span></span><br><span class="line">        arr[high] = arr[low];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 放回去</span></span><br><span class="line">    arr[low] = pivot;</span><br><span class="line">    <span class="keyword">return</span> low;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
 
       
@@ -284,13 +254,24 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">排序算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/FontEnd//" class="article-tag-list-link color3">FontEnd</a>
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
         		</li>
       		
 		</ul>
@@ -299,7 +280,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/express/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/快排/">展开全文 >></a>
         </p>
       
 
@@ -329,19 +310,19 @@
 
 
   
-    <article id="post-Emacs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java中的ThreadLocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Emacs/">Emacs</a>
+      <a class="article-title" href="/2020/04/14/Java中的ThreadLocal/">Java中的ThreadLocal</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Emacs/" class="archive-article-date">
+        <a href="/2020/04/14/Java中的ThreadLocal/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -349,13 +330,27 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>M-&lt;：整个文章的首部<br>M-&gt;：整个文章的尾部</p>
-<p>C-v 向下翻一页<br>M-v 向上翻一页</p>
-<p>C-u：是输入数字的命令，比如C-u 8 C-f 相当于向右移动8行，C-u 8 i 输入8个i<br>C-d: 删除当前行</p>
-<p>M-d：删除下一个单词<br>M-del: 删除上一个单词</p>
-<p>C-k：从当前位置，删除到整个行末尾</p>
-<p>M-u 使从光标位置到单词结尾处的字母变成大写<br>M-c 使从光标位置开始的单词的首字母变为大写</p>
-<p>C-@    设置开始标记<br>M-w    复制标记区内容<br>C-y    帖粘</p>
+        <p>ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。</p>
+<p>首先，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，<br>键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。</p>
+<p>　　 初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，<br>并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。</p>
+<p>　　  然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。</p>
+<p>join的作用<br>    调用某个线程的这个方法时，这个方法会挂起调用线程，直到被调用线程结束执行，调用线程才会继续执行。</p>
+<pre><code>join逻辑
+
+    Parent 调用 child.join()，child.join() 再调用 child.join(0) （此时 Parent 会获得 child 实例作为锁，其他线程可以进入 child.join() ，但不可以进入 child.join(0)， 
+    因为无法获取锁）。child.join(0) 会不断地检查 child 线程是否是 Active。
+
+    如果 child 线程是 Active，则循环调用 child.wait(0)（为了防止 Spurious wakeup, 需要将 wait(0) 放入 for 循环体中；此时 Parent 会释放 child 实例锁，
+    其他线程可以竞争锁并进入 child.join(0)。我们可以得知，可以有多个线程等待某个线程执行完毕）。
+
+    一旦 child 线程不为 Active （状态为 TERMINATED）, child.join(0) 会直接返回到 child.join(), 
+    child.join() 会直接返回到 Parent 父线程，Parent 父线程就可以继续运行下去了。
+</code></pre><p>1）实际的通过ThreadLocal创建的副本是存储在每个线程自己的threadLocals中的；</p>
+<p>　　  为何threadLocals的类型ThreadLocalMap的键值为ThreadLocal对象，因为每个线程中可有多个threadLocal变量，就像上面代码中的longLocal和stringLocal；</p>
+<p>　　  在进行get之前，必须先set，否则会报空指针异常；</p>
+<p>　　  如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法。</p>
+<p>最常见的ThreadLocal使用场景为 用来解决 数据库连接、Session管理等</p>
+<p>实现:<br>    内部类<br>        ThreadLocalMap<br>            内部类<br>                Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt;<br>        public T get()</p>
 
       
 
@@ -365,10 +360,21 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Emacs/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Java中的ThreadLocal/">展开全文 >></a>
         </p>
       
 
@@ -398,19 +404,19 @@
 
 
   
-    <article id="post-沪江网校新标日语(4)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-阿里" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/沪江网校新标日语(4)/">沪江网校新标日语(4)</a>
+      <a class="article-title" href="/2020/04/14/阿里/">阿里</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/沪江网校新标日语(4)/" class="archive-article-date">
+        <a href="/2020/04/14/阿里/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -418,17 +424,66 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>李さん、それは何（なん）ですか。<br>小李, 那是什么?</p>
-<p>これですか。家族（かぞく）の写真（しゃしん）です。<br>这个吗? 是家人的照片.</p>
-<p>この方（かた）は どなた ですか。<br>这位是哪位?<br>どなた　是 だれ 的敬称</p>
-<p>私（わたし）の母（はは）です。<br>我妈.</p>
-<p>お母(かあ)さんは おいくつ ですか。<br>你妈多大了?</p>
-<p>52歳（さい）です。</p>
-<h2 id="52岁"><a href="#52岁" class="headerlink" title="52岁."></a>52岁.</h2><p>小野さん、これ、どうぞ。<br>小野, 这个, 请收下.</p>
-<p>え、何ですか。</p>
-<p>お土産（おみやげ）です。</p>
-<p>わあ、</p>
-<p>どうも　ありがとう　ございます。</p>
+        <p>阿里巴巴<br>一面（36分钟）芝麻信用<br>1.HashMap和Hashtable区别<br><img src="../Algorithm/HashMap&amp;Hashtable&amp;ConcurrentHashMap.md" alt="HashMap&amp;Hashtable&amp;ConcurrentHashMap"></p>
+<p>2.为什么产生死锁<br>线程A持有锁a等待获取锁b, 线程B持有锁b等待获取锁a</p>
+<ul>
+<li>竞争资源: 1.可剥夺资源:某进程获得这类资源后,该资源可以被其他进程或系统剥夺, 如CPU和主存<pre><code>2. 不可剥夺资源: 当系统把这类资源分配给某进程后, 再不能强行收回, 只能在进程用完后自行释放, 如磁带机,打印机等
+3. 临时资源: 硬件中断,信号,消息,缓存区内的消息等
+</code></pre>  产生死锁的竞争资源: 不可剥夺资源, 临时资源</li>
+</ul>
+<p>死锁产生的4个必要条件:<br>    1.互斥条件: 进程要求对所分配的资源进行排它性控制，即在一段时间内某资源仅为一进程所占用。<br>    2.请求和保持条件: 当进程因请求资源而阻塞时，对已获得的资源保持不放。<br>    3.不剥夺条件: 进程已获得的资源在未使用完之前，不能剥夺，只能在使用完时由自己释放。<br>    4.环路等待条件: 在发生死锁时，必然存在一个进程–资源的环形链。</p>
+<p>解决死锁的方法:<br>    1.资源一次性分配: 一次性分配所有资源，这样就不会再有请求了：（破坏请求条件）<br>    2.只要有一个资源得不到分配, 也不给这个进程分配其他的资源（破坏请保持条件）<br>    3.可剥夺资源: 当某进程获得了部分资源,但得不到其他资源,则释放已占有的资源（破坏不可剥夺条件）<br>    4.资源有序分配法: 系统给每类资源赋予一个编号,每一个进程按编号递增的顺序请求进程,释放则相反(破坏环路等待条件)</p>
+<p>死锁检测: Jstack命令 JConsole工具</p>
+<p>3.jvm类加载<br><img src="JVM类加载机制.md" alt="JVM类加载机制"></p>
+<p>4.java反射获取私有属性，改变值</p>
+<p>Class类: 代表类的实体<br>Field类: 代表类的成员变量<br>Method类: 代表类的方法<br>Constructor类: 代表类的构造方法<br>        Class&lt;?&gt; classBook = Class.forName(“reflect.Book”);<br>        Object objectBook = classBook.newInstance();<br>        Field fieldTag = classBook.getDeclaredField(“tag”);<br>        fieldTag.setAccessible(true);<br>        fieldTag.set(objectBook, “interesting”);</p>
+<pre><code>System.out.println(objectBook);
+</code></pre><p>5.反射用途</p>
+<ul>
+<li>根据类名创建实例(类名可以从配置文件读取)</li>
+<li>用Method.invoke执行方法</li>
+</ul>
+<p>6.所用数据库<br>PostgreSQL MySQl</p>
+<ul>
+<li>MySQL的text字段要区分small text, middle text, large text, PostgreSQL没有这个限制,text可以支持各种大小</li>
+<li>MySQL需要utf8mb4显示emoji, PG不用</li>
+<li>PG有jsonb</li>
+</ul>
+<p>7.项目难点，问题<br>8.如何解决项目中遇到的问题<br>9.项目中遇到最自豪的地方<br>10.会什么算法</p>
+<p>二面（44分钟）支付宝创新<br>1.讲项目<br>2.数据库乐观锁使用</p>
+<p>事务的四个特性: 原子性,一致性,隔离性,持久性 ACID<br>              一致性由主键,外键约束保证, 持久性由预写日志和数据库管理系统的恢复子系统保证, 原子性和隔离性由事务管理器和MVCC来控制</p>
+<p>非预期现象: 脏读,不可重复读,幻读,序列化异常<br>脏读: 第一个事务读到了第二个事务已经修改但还未提交的数据, 当第二个事务不提交并执行ROLLBACK后, 第一个事务读到的数据是不正确的, 即脏读<br>不可重复读: 一个事务第一次读取数据后,被读取的数据被另一个已经提交的事务进行了修改,事务再次读取这些数据时发现数据已经被另一个事务修改,<br>            两次查询结果不一致, 即不可重复读<br>幻读: 一个事务两次查询的结果集记录数不一致. 幻读可以认为是受INSERT DELETE影响的不可重复读的一种特殊场景</p>
+<p>四种隔离级别: 读未提交,读已提交,可重复读,可序列化<br>读未提交: 所有事务都可以看到其他未提交事务的执行结果, 性能不比其他隔离级别好, 很少用<br>读已提交: PG的默认隔离级别,一个事务只能看见已提交事务<br>可重复读: 确保同一个事务的多个实例在并发读取数据时, 会看到同样的数据行.<br>可序列化: 强制事务排序, 在每个读的数据行上加上共享锁, 可能导致大量的超时现象和锁竞争</p>
+<p>并发控制模型: 基于锁的并发控制, 基于多版本的并发控制<br>基于锁的并发控制: 排他锁: 被加锁的对象只能被持有锁的事务读取和修改, 其他事务无法在该对象上加其他锁,也不能读取和修改该对象<br>               共享锁: 被加锁的对象可以被持锁事务读取, 但不能被修改, 其他事务也可以在上面再加共享锁.</p>
+<p>封锁对象的大小被称为封锁粒度: 可以是逻辑单元: 属性值,属性值的集合,元组,关系,索引项,整个索引项甚至整个数据库<br>                         也可以是物理单元: 页(数据页或索引页), 物理记录等</p>
+<p>基于多版本的并发控制: MVCC, 乐观锁:<br>    每一个写操作创建一个新的版本, 当事务发出一个读操作时,并发控制管理器选择一个版本进行读取.<br>    即: 为数据增加一个版本标识, 读取时连同版本号一起读出, 更新时对版本号加一.</p>
+<pre><code>一个事务无论运行多长时间, 在同一个事务里都能看到一致的数据.
+根据事务开始的时间不同,同一个时刻不同事务看到的相同表里的数据可能不同.
+</code></pre><p>PG为每一个事务分配一个递增的,int32的整型数作为唯一事务id, 称为xid.<br>每一行记录有4个与事务可见性相关的隐藏列: xmin,xmax,cmin,cmax<br>cmin,cmax分别是插入和删除该元组的命令在事务中的命令序列标识<br>xmin,xmax与事务对其他事务的可见性相关,用于同一个事务中的可见性判断</p>
+<p>插入一行数据时, PG会将插入这行数据的事务的xid存储在xmin中.<br>a.由回滚的事务或未提交的事务创建的行对于其他事物都是不可见的<br>b.无论提交成功或回滚的事务,xid都会递增</p>
+<p>一个事务元组的xmin小于另一个事务的xmin,那么另一个事务对这个事务是不可见的</p>
+<p>3.状态机<br>State<br>Event<br>Action<br>Transition</p>
+<p>4.如何解决状态机不对问题</p>
+<p>5.如何分库分表<br>对于因为表多而数据多,适合垂直切分,把关系紧密的表切分出来放到一个server上;<br>对于表不多数据多, 适合水平切分, 把表按照某种规则(如按ID散列)切分到多个数据库(server)上.</p>
+<p>要解决的问题:<br>    事务问题: 1.使用分布式事务   2.由应用程序和数据库共同控制<br>    跨节点Join: 分两次查询<br>    跨节点count,order by, group by: 在各个节点得到结果后在应用程序端进行合并<br>    数据迁移,容量规划,扩容: 对2的倍数取余（如对4取余得1的数对2取余也是1）  ,可以向前兼容.<br>    ID: 不能依赖自增主键.<br>        UUID: 长,占用空间大, 建立索引和基于索引进行查询都有性能问题.<br>        Sequence表 (table_name, next_id): 该表容易成为系统性能瓶颈,一旦该表失效,整个程序都崩; 读写1:1<br>        Twitter分布式自增ID算法Snowflake:   1位未使用(可用作long的符号位) + 毫秒级时间41位 + 机器ID 10位 + 毫秒内序列12位<br>                                         每秒产生26万ID</p>
+<p>6.MySQL极限<br>7.HashMap源码<br><img src="../Algorithm/HashMap&amp;Hashtable&amp;ConcurrentHashMap.md" alt="HashMap"></p>
+<p>8.设计一个线程安全的HashMap</p>
+<ul>
+<li>所有public方法加上synchronized, Hashtable思路, Collections.synchronizedMap()</li>
+<li>每个桶都加一个锁</li>
+<li>锁分离: 把桶均匀分成16部分, 每个部分加一个锁, JDK7的ConcurrentHashMap思路</li>
+<li>CAS指令, 链表太长转换为红黑树</li>
+</ul>
+<p>9.快排的实现，时间复杂度和空间复杂度<br><img src="../Algorithm/快排.md" alt="快排"></p>
+<p>10.会什么算法<br>11.如何把项目变成SOA架构</p>
+<p>12.Spring源码，最深刻的模块，aop用途</p>
+<p>13.JVM内存模型</p>
+<p>14.垃圾回收机制</p>
+<p>15.项目中查看垃圾回收</p>
+<p>三面(33分钟)菜鸟国际<br>1.项目中的权限管理<br>2.登录状态如何储存<br>3.session和cookie的区别,session如何管理<br>4.HashMap底层结构<br>5.synchronized关键字的用法<br>6.synchronized修饰类方法和普通方法的锁区别,获取类锁之后还能获取对象锁吗<br>7.类加载器的双亲委派模型的作用,能重复加载某个类吗<br>8.类加载器的类的缓存,key是什么<br>9.介绍Redis<br>10.如何将数据分布在不同的Redis<br>11.有了解过取余算法?<br>12.spring的apo实现<br>13.字节码结构<br>14.浏览器输入网址过程,结合springmvc</p>
+<p>四面(36分钟)菜鸟国际供应链<br>1.HashMap在大量哈希冲突该怎么处理<br>2.红黑树比BST优点<br>3.MySQL为什么使用B+树<br>4.多个索引会有多份数据吗<br>5.数据库的隔离级别和解决的问题<br>6.数据库默认隔离级别,一定会产生幻读吗,怎么解决<br>7.输入网址到展示的整个过程,结合springmvc来讲<br>8.负载均衡的算法<br>9.哈弗曼编码,如何解决译码问题<br>10.实习会对工作有影响吗<br>11.用英文介绍一个项目<br>12.如何查看系统负载<br>13.描述一个解决问题的过程<br>14.如何把文件从服务器复制到本地,用什么命令</p>
+<p>五面（27分钟）菜鸟技术部<br>1.当时怎么找到百度这个机会的<br>2.项目中用的哪些技术<br>3.项目如何设计流程流转，如果是你的话该怎么设计<br>4.MySQL使用的索引结构，查找效率<br>5.MySQL查询优化<br>6.MySQL慢查询开启，语句分析<br>7.HashMap查找效率<br>8.JVM内存模型<br>9.设计模式，策略模式的使用场景<br>10.如何确保单例线程安全<br>11.Spring的bean的默认范围<br>12.对Netty的了解<br>13.未来发展规划<br>14.如何让代码可读性更加复杂</p>
+<p>六面（22分钟）HR面<br>1.说一下发展方向<br>2.说一下经验不足导致的问题<br>3.说一下挑战杯的工作内容<br>4.说一下你给挑战杯项目的主要贡献<br>5.实习时间<br>6.拿到了哪些offer，你是怎么考虑的<br>7.为什么不选择腾讯<br>8.腾讯技术栈和阿里技术栈的区别</p>
 
       
 
@@ -443,7 +498,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
+        			<a href="/categories/面经//" class="article-tag-list-link color3">面经</a>
         		</li>
       		
 		</ul>
@@ -452,7 +507,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/沪江网校新标日语(4)/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/阿里/">展开全文 >></a>
         </p>
       
 
@@ -484,7 +539,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 

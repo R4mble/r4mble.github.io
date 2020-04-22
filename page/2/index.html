@@ -151,271 +151,115 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-阿里" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-从实践中学习TCP-IP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/阿里/">阿里</a>
+      <a class="article-title" href="/2020/04/16/从实践中学习TCP-IP协议/">从实践中学习TCP-IP协议</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/阿里/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/16/从实践中学习TCP-IP协议/" class="archive-article-date">
+  	<time datetime="2020-04-16T04:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-16</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>阿里巴巴<br>一面（36分钟）芝麻信用<br>1.HashMap和Hashtable区别<br><img src="../Algorithm/HashMap&amp;Hashtable&amp;ConcurrentHashMap.md" alt="HashMap&amp;Hashtable&amp;ConcurrentHashMap"></p>
-<p>2.为什么产生死锁<br>线程A持有锁a等待获取锁b, 线程B持有锁b等待获取锁a</p>
+        <h1 id="OSI协议层次"><a href="#OSI协议层次" class="headerlink" title="OSI协议层次"></a>OSI协议层次</h1><ul>
+<li>物理层<br>利用传输介质为数据链路层提供物理连接, 实现比特流的透明传输<blockquote>
+<p>netwox 169</p>
+</blockquote>
+</li>
+</ul>
+<p>计算机中的两类网络适配器: Lo 和 Eth<br>Lo是 回环接口, 是虚拟网络适配器<br>Eth是 以太网网络适配器 </p>
 <ul>
-<li>竞争资源: 1.可剥夺资源:某进程获得这类资源后,该资源可以被其他进程或系统剥夺, 如CPU和主存<pre><code>2. 不可剥夺资源: 当系统把这类资源分配给某进程后, 再不能强行收回, 只能在进程用完后自行释放, 如磁带机,打印机等
-3. 临时资源: 硬件中断,信号,消息,缓存区内的消息等
-</code></pre>  产生死锁的竞争资源: 不可剥夺资源, 临时资源</li>
+<li><p>数据链路层<br>物理地址寻址, 数据的成帧, 流量控制, 数据检错重发</p>
+</li>
+<li><p>网络层<br>寻找地址和路由选择, 拥塞控制, 网际互联</p>
+</li>
+<li><p>传输层</p>
+</li>
+<li><p>会话层<br>建立和断开通信连接</p>
+</li>
+<li><p>表示层</p>
+</li>
 </ul>
-<p>死锁产生的4个必要条件:<br>    1.互斥条件: 进程要求对所分配的资源进行排它性控制，即在一段时间内某资源仅为一进程所占用。<br>    2.请求和保持条件: 当进程因请求资源而阻塞时，对已获得的资源保持不放。<br>    3.不剥夺条件: 进程已获得的资源在未使用完之前，不能剥夺，只能在使用完时由自己释放。<br>    4.环路等待条件: 在发生死锁时，必然存在一个进程–资源的环形链。</p>
-<p>解决死锁的方法:<br>    1.资源一次性分配: 一次性分配所有资源，这样就不会再有请求了：（破坏请求条件）<br>    2.只要有一个资源得不到分配, 也不给这个进程分配其他的资源（破坏请保持条件）<br>    3.可剥夺资源: 当某进程获得了部分资源,但得不到其他资源,则释放已占有的资源（破坏不可剥夺条件）<br>    4.资源有序分配法: 系统给每类资源赋予一个编号,每一个进程按编号递增的顺序请求进程,释放则相反(破坏环路等待条件)</p>
-<p>死锁检测: Jstack命令 JConsole工具</p>
-<p>3.jvm类加载<br><img src="JVM类加载机制.md" alt="JVM类加载机制"></p>
-<p>4.java反射获取私有属性，改变值</p>
-<p>Class类: 代表类的实体<br>Field类: 代表类的成员变量<br>Method类: 代表类的方法<br>Constructor类: 代表类的构造方法<br>        Class&lt;?&gt; classBook = Class.forName(“reflect.Book”);<br>        Object objectBook = classBook.newInstance();<br>        Field fieldTag = classBook.getDeclaredField(“tag”);<br>        fieldTag.setAccessible(true);<br>        fieldTag.set(objectBook, “interesting”);</p>
-<pre><code>System.out.println(objectBook);
-</code></pre><p>5.反射用途</p>
 <ul>
-<li>根据类名创建实例(类名可以从配置文件读取)</li>
-<li>用Method.invoke执行方法</li>
+<li>应用层<br>为应用程序提供服务并规定应用程序中相关的通信细节<br>包括: 超文本传输协议(HTTP), 简单邮件传送协议(SMTP), 远程登录协议(Telnet)</li>
 </ul>
-<p>6.所用数据库<br>PostgreSQL MySQl</p>
-<ul>
-<li>MySQL的text字段要区分small text, middle text, large text, PostgreSQL没有这个限制,text可以支持各种大小</li>
-<li>MySQL需要utf8mb4显示emoji, PG不用</li>
-<li>PG有jsonb</li>
+<h1 id="TCP-IP协议层次"><a href="#TCP-IP协议层次" class="headerlink" title="TCP/IP协议层次"></a>TCP/IP协议层次</h1><ul>
+<li>网络访问层</li>
+<li>网际层</li>
+<li>传输层</li>
+<li>应用层</li>
 </ul>
-<p>7.项目难点，问题<br>8.如何解决项目中遇到的问题<br>9.项目中遇到最自豪的地方<br>10.会什么算法</p>
-<p>二面（44分钟）支付宝创新<br>1.讲项目<br>2.数据库乐观锁使用</p>
-<p>事务的四个特性: 原子性,一致性,隔离性,持久性 ACID<br>              一致性由主键,外键约束保证, 持久性由预写日志和数据库管理系统的恢复子系统保证, 原子性和隔离性由事务管理器和MVCC来控制</p>
-<p>非预期现象: 脏读,不可重复读,幻读,序列化异常<br>脏读: 第一个事务读到了第二个事务已经修改但还未提交的数据, 当第二个事务不提交并执行ROLLBACK后, 第一个事务读到的数据是不正确的, 即脏读<br>不可重复读: 一个事务第一次读取数据后,被读取的数据被另一个已经提交的事务进行了修改,事务再次读取这些数据时发现数据已经被另一个事务修改,<br>            两次查询结果不一致, 即不可重复读<br>幻读: 一个事务两次查询的结果集记录数不一致. 幻读可以认为是受INSERT DELETE影响的不可重复读的一种特殊场景</p>
-<p>四种隔离级别: 读未提交,读已提交,可重复读,可序列化<br>读未提交: 所有事务都可以看到其他未提交事务的执行结果, 性能不比其他隔离级别好, 很少用<br>读已提交: PG的默认隔离级别,一个事务只能看见已提交事务<br>可重复读: 确保同一个事务的多个实例在并发读取数据时, 会看到同样的数据行.<br>可序列化: 强制事务排序, 在每个读的数据行上加上共享锁, 可能导致大量的超时现象和锁竞争</p>
-<p>并发控制模型: 基于锁的并发控制, 基于多版本的并发控制<br>基于锁的并发控制: 排他锁: 被加锁的对象只能被持有锁的事务读取和修改, 其他事务无法在该对象上加其他锁,也不能读取和修改该对象<br>               共享锁: 被加锁的对象可以被持锁事务读取, 但不能被修改, 其他事务也可以在上面再加共享锁.</p>
-<p>封锁对象的大小被称为封锁粒度: 可以是逻辑单元: 属性值,属性值的集合,元组,关系,索引项,整个索引项甚至整个数据库<br>                         也可以是物理单元: 页(数据页或索引页), 物理记录等</p>
-<p>基于多版本的并发控制: MVCC, 乐观锁:<br>    每一个写操作创建一个新的版本, 当事务发出一个读操作时,并发控制管理器选择一个版本进行读取.<br>    即: 为数据增加一个版本标识, 读取时连同版本号一起读出, 更新时对版本号加一.</p>
-<pre><code>一个事务无论运行多长时间, 在同一个事务里都能看到一致的数据.
-根据事务开始的时间不同,同一个时刻不同事务看到的相同表里的数据可能不同.
-</code></pre><p>PG为每一个事务分配一个递增的,int32的整型数作为唯一事务id, 称为xid.<br>每一行记录有4个与事务可见性相关的隐藏列: xmin,xmax,cmin,cmax<br>cmin,cmax分别是插入和删除该元组的命令在事务中的命令序列标识<br>xmin,xmax与事务对其他事务的可见性相关,用于同一个事务中的可见性判断</p>
-<p>插入一行数据时, PG会将插入这行数据的事务的xid存储在xmin中.<br>a.由回滚的事务或未提交的事务创建的行对于其他事物都是不可见的<br>b.无论提交成功或回滚的事务,xid都会递增</p>
-<p>一个事务元组的xmin小于另一个事务的xmin,那么另一个事务对这个事务是不可见的</p>
-<p>3.状态机<br>State<br>Event<br>Action<br>Transition</p>
-<p>4.如何解决状态机不对问题</p>
-<p>5.如何分库分表<br>对于因为表多而数据多,适合垂直切分,把关系紧密的表切分出来放到一个server上;<br>对于表不多数据多, 适合水平切分, 把表按照某种规则(如按ID散列)切分到多个数据库(server)上.</p>
-<p>要解决的问题:<br>    事务问题: 1.使用分布式事务   2.由应用程序和数据库共同控制<br>    跨节点Join: 分两次查询<br>    跨节点count,order by, group by: 在各个节点得到结果后在应用程序端进行合并<br>    数据迁移,容量规划,扩容: 对2的倍数取余（如对4取余得1的数对2取余也是1）  ,可以向前兼容.<br>    ID: 不能依赖自增主键.<br>        UUID: 长,占用空间大, 建立索引和基于索引进行查询都有性能问题.<br>        Sequence表 (table_name, next_id): 该表容易成为系统性能瓶颈,一旦该表失效,整个程序都崩; 读写1:1<br>        Twitter分布式自增ID算法Snowflake:   1位未使用(可用作long的符号位) + 毫秒级时间41位 + 机器ID 10位 + 毫秒内序列12位<br>                                         每秒产生26万ID</p>
-<p>6.MySQL极限<br>7.HashMap源码<br><img src="../Algorithm/HashMap&amp;Hashtable&amp;ConcurrentHashMap.md" alt="HashMap"></p>
-<p>8.设计一个线程安全的HashMap</p>
-<ul>
-<li>所有public方法加上synchronized, Hashtable思路, Collections.synchronizedMap()</li>
-<li>每个桶都加一个锁</li>
-<li>锁分离: 把桶均匀分成16部分, 每个部分加一个锁, JDK7的ConcurrentHashMap思路</li>
-<li>CAS指令, 链表太长转换为红黑树</li>
+<h1 id="网络工具-netwox-和-wireshark"><a href="#网络工具-netwox-和-wireshark" class="headerlink" title="网络工具 - netwox 和 wireshark"></a>网络工具 - netwox 和 wireshark</h1><h2 id="netwox"><a href="#netwox" class="headerlink" title="netwox"></a>netwox</h2><p>(git bash属实给劲, windows用户的救星)</p>
+<h2 id="wireshark"><a href="#wireshark" class="headerlink" title="wireshark"></a>wireshark</h2><p>Frame: 数据包物理层的数据帧概况<br>Ethernet : 数据链路层以太网帧头部信息<br>Internet Protocol Version 4: 网际层IP包头部信息<br>Transmission Control Protocol: 传输层的数据段头部信息<br>Hypertext Transfer Protocol: 应用层信息</p>
+<h1 id="网络体系的四大类型"><a href="#网络体系的四大类型" class="headerlink" title="网络体系的四大类型"></a>网络体系的四大类型</h1><ul>
+<li>IEEE 802.3 (以太网) 在大多数办公室使用的基于线缆的网络, 常见的有线局域网</li>
+<li>IEEE 802.11 (无线网络) 无线网络技术, 如wifi</li>
+<li>IEEE 802.16 (WiMAX) 用于移动通信长距离无线连接的技术</li>
+<li>点到点协议(PPP) 使用Modem通过电话线进行连接的技术, 拨号方式建立的网络连接</li>
 </ul>
-<p>9.快排的实现，时间复杂度和空间复杂度<br><img src="../Algorithm/快排.md" alt="快排"></p>
-<p>10.会什么算法<br>11.如何把项目变成SOA架构</p>
-<p>12.Spring源码，最深刻的模块，aop用途</p>
-<p>13.JVM内存模型</p>
-<p>14.垃圾回收机制</p>
-<p>15.项目中查看垃圾回收</p>
-<p>三面(33分钟)菜鸟国际<br>1.项目中的权限管理<br>2.登录状态如何储存<br>3.session和cookie的区别,session如何管理<br>4.HashMap底层结构<br>5.synchronized关键字的用法<br>6.synchronized修饰类方法和普通方法的锁区别,获取类锁之后还能获取对象锁吗<br>7.类加载器的双亲委派模型的作用,能重复加载某个类吗<br>8.类加载器的类的缓存,key是什么<br>9.介绍Redis<br>10.如何将数据分布在不同的Redis<br>11.有了解过取余算法?<br>12.spring的apo实现<br>13.字节码结构<br>14.浏览器输入网址过程,结合springmvc</p>
-<p>四面(36分钟)菜鸟国际供应链<br>1.HashMap在大量哈希冲突该怎么处理<br>2.红黑树比BST优点<br>3.MySQL为什么使用B+树<br>4.多个索引会有多份数据吗<br>5.数据库的隔离级别和解决的问题<br>6.数据库默认隔离级别,一定会产生幻读吗,怎么解决<br>7.输入网址到展示的整个过程,结合springmvc来讲<br>8.负载均衡的算法<br>9.哈弗曼编码,如何解决译码问题<br>10.实习会对工作有影响吗<br>11.用英文介绍一个项目<br>12.如何查看系统负载<br>13.描述一个解决问题的过程<br>14.如何把文件从服务器复制到本地,用什么命令</p>
-<p>五面（27分钟）菜鸟技术部<br>1.当时怎么找到百度这个机会的<br>2.项目中用的哪些技术<br>3.项目如何设计流程流转，如果是你的话该怎么设计<br>4.MySQL使用的索引结构，查找效率<br>5.MySQL查询优化<br>6.MySQL慢查询开启，语句分析<br>7.HashMap查找效率<br>8.JVM内存模型<br>9.设计模式，策略模式的使用场景<br>10.如何确保单例线程安全<br>11.Spring的bean的默认范围<br>12.对Netty的了解<br>13.未来发展规划<br>14.如何让代码可读性更加复杂</p>
-<p>六面（22分钟）HR面<br>1.说一下发展方向<br>2.说一下经验不足导致的问题<br>3.说一下挑战杯的工作内容<br>4.说一下你给挑战杯项目的主要贡献<br>5.实习时间<br>6.拿到了哪些offer，你是怎么考虑的<br>7.为什么不选择腾讯<br>8.腾讯技术栈和阿里技术栈的区别</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/面经//" class="article-tag-list-link color3">面经</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/阿里/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java中的ThreadLocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Java中的ThreadLocal/">Java线程池ThreadPoolExecutor</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/Java中的ThreadLocal/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。</p>
-<p>首先，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，<br>键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。</p>
-<p>　　 初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，<br>并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。</p>
-<p>　　  然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。</p>
-<p>join的作用<br>    调用某个线程的这个方法时，这个方法会挂起调用线程，直到被调用线程结束执行，调用线程才会继续执行。</p>
-<pre><code>join逻辑
-
-    Parent 调用 child.join()，child.join() 再调用 child.join(0) （此时 Parent 会获得 child 实例作为锁，其他线程可以进入 child.join() ，但不可以进入 child.join(0)， 
-    因为无法获取锁）。child.join(0) 会不断地检查 child 线程是否是 Active。
-
-    如果 child 线程是 Active，则循环调用 child.wait(0)（为了防止 Spurious wakeup, 需要将 wait(0) 放入 for 循环体中；此时 Parent 会释放 child 实例锁，
-    其他线程可以竞争锁并进入 child.join(0)。我们可以得知，可以有多个线程等待某个线程执行完毕）。
-
-    一旦 child 线程不为 Active （状态为 TERMINATED）, child.join(0) 会直接返回到 child.join(), 
-    child.join() 会直接返回到 Parent 父线程，Parent 父线程就可以继续运行下去了。
-</code></pre><p>1）实际的通过ThreadLocal创建的副本是存储在每个线程自己的threadLocals中的；</p>
-<p>　　  为何threadLocals的类型ThreadLocalMap的键值为ThreadLocal对象，因为每个线程中可有多个threadLocal变量，就像上面代码中的longLocal和stringLocal；</p>
-<p>　　  在进行get之前，必须先set，否则会报空指针异常；</p>
-<p>　　  如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法。</p>
-<p>最常见的ThreadLocal使用场景为 用来解决 数据库连接、Session管理等</p>
-<p>实现:<br>    内部类<br>        ThreadLocalMap<br>            内部类<br>                Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt;<br>        public T get()</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Java中的ThreadLocal/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Kubernetes权威指南-从Docker到Kubernetes实践全接触" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">Kubernetes</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><ul>
-<li>拥有唯一指定的名称 (如mysql-server)</li>
-<li>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP, Service IP 或 VIP.</li>
-<li>能够提供某种远程服务能力</li>
-<li>被映射到提供这种服务能力的一组容器应用上</li>
-</ul>
-<p>Service与Pod之间通过Label关联, 给运行MySQL的Pod贴上name=mysql的标签, 给Service定义Label Selector,<br>MySQL Service的标签选择器的选择条件为name=mysql</p>
-<p>一个Node上运行着几百个Pod</p>
-<p>一个Pod里有一个Pause容器和多个业务容器</p>
-<h2 id="例子-运行在Tomcat里的WebApp"><a href="#例子-运行在Tomcat里的WebApp" class="headerlink" title="例子: 运行在Tomcat里的WebApp"></a>例子: 运行在Tomcat里的WebApp</h2><p>两个容器: WebApp容器和MySQL容器<br>webapp需要访问mysql容器</p>
-<ul>
-<li>docker时代: 把mysql容器的ip地址通过环境变量注入到webapp中, 把webapp的8080端口映射到宿主机的8080端口</li>
-<li>kubernetes时代: </li>
-</ul>
+<h1 id="物理地址"><a href="#物理地址" class="headerlink" title="物理地址"></a>物理地址</h1><p>物理地址只在当前局域网有效</p>
 <ol>
-<li>为mysql服务创建RC(Replication Controller)定义文件 mysql-rc.yaml</li>
+<li>显示网络主机MAC地址信息<blockquote>
+<p>./netwox 5 -i 172.16.0.119</p>
+</blockquote>
+</li>
+<li>显示局域网中所有的主机的MAC地址<blockquote>
+<p>./netwox 5 -i 172.16.0.0/24</p>
+</blockquote>
+</li>
+<li>根据MAC地址获取主机其他信息<blockquote>
+<p>./netwox 4 -e 80:FA:5B:64:5B:0D </p>
+</blockquote>
+</li>
 </ol>
-
+<h1 id="以太帧-以太网链路中传输的数据包"><a href="#以太帧-以太网链路中传输的数据包" class="headerlink" title="以太帧  以太网链路中传输的数据包"></a>以太帧  以太网链路中传输的数据包</h1><ul>
+<li>前同步码: 使接收端的适配器在接收MAC帧时能够迅速调整时钟频率,使它和发送端的频率相同.</li>
+<li>帧开始定界符</li>
+<li>目的地址: 网卡收到一个数据帧,会先检查目的地址是否与当前适配器的物理地址相同,相同的话进一步处理,否则丢弃</li>
+<li>源地址</li>
+<li>类型: 上层协议的类型, 标识数据交付给哪个协议处理, 如 0x0800 表示数据交付给IP协议</li>
+<li>数据: 最小为46字节, 不足的话,会填充到最小长度. 最大值1500字节, 也叫MTU, 最大传输单元.</li>
+<li>帧检验序列FCS: 检测该帧是否出错, 发送方计算帧的循环冗余码校验(CRC), 接收方重新计算并比较, 如果不同,则重传 </li>
+</ul>
+<h2 id="构建-以太帧"><a href="#构建-以太帧" class="headerlink" title="构建 以太帧"></a>构建 以太帧</h2><p> WinPCAP &gt;= 3.0 is not found<br> 下载WinPCAP, 以兼容模式安装</p>
+<ol>
+<li><p>查看以太网数据帧</p>
+<blockquote>
+<p>./netwox 32<br>00:FF:AA:BB:CC:DD-&gt;00:08:09:0A:0B:0C type:0x0000</p>
+</blockquote>
+<p>00:FF:AA:BB:CC:DD 是源MAC地址,即当前主机的MAC地址<br>00:08:09:0A:0B:0C 是目标MAC地址<br>0x0000 是以太网类型</p>
+</li>
+<li><p>构建以太帧</p>
+<blockquote>
+<p> ./netwox 32 -a 00:FF:AA:BB:CC:DE -b 00:08:09:0A:0B:0E</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>显示网络配置信息<blockquote>
+<p>./netwox 1</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>显示某域名的所有主机的IP地址,主机名,MAC地址信息</li>
+</ul>
+<pre><code>$ ./netwox 3 -a www.google.com
+IP address:  31.13.72.34
+Hostname:    edge-mqtt-mini-shv-01-arn2.facebook.com
+Hostnames:   edge-mqtt-mini-shv-01-arn2.facebook.com
+Eth address: 00:00:0C:07:AC:01
+</code></pre>
       
 
       
@@ -429,7 +273,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -438,7 +282,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/16/从实践中学习TCP-IP协议/">展开全文 >></a>
         </p>
       
 
@@ -468,27 +312,28 @@
 
 
   
-    <article id="post-WebRTC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Golang东一榔头西一棒槌系列(8) -Web" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/WebRTC/">WebRTC</a>
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(8) -Web/">Golang东一榔头西一棒槌系列(8) -Web</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/WebRTC/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(8) -Web/" class="archive-article-date">
+  	<time datetime="2020-04-14T15:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="getUserMedia-浏览器获取用户的摄像头-麦克风"><a href="#getUserMedia-浏览器获取用户的摄像头-麦克风" class="headerlink" title="getUserMedia() 浏览器获取用户的摄像头,麦克风"></a>getUserMedia() 浏览器获取用户的摄像头,麦克风</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> constraints = &#123;<span class="attr">audio</span>: <span class="literal">false</span>, <span class="attr">video</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> video = <span class="built_in">document</span>.querySelector(<span class="string">"video"</span>);</span><br><span class="line"></span><br><span class="line">navigator.mediaDevices.getUserMedia(constraints)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span> (<span class="params">stream</span>) </span>&#123;</span><br><span class="line">        video.srcObject = stream</span><br><span class="line">        video.onloadedmetadata = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            video.play()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(<span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"getUserMedia error: "</span>, err);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+        <p>用户的每一次请求都是在一个新的goroutine去服务<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"strings"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sayHelloName</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span>  &#123;</span><br><span class="line">	r.ParseForm()</span><br><span class="line">	fmt.Println(r.Form)</span><br><span class="line">	fmt.Println(<span class="string">"path"</span>, r.URL.Path)</span><br><span class="line">	fmt.Println(<span class="string">"scheme"</span>, r.URL.Scheme)</span><br><span class="line">	fmt.Println(r.Form[<span class="string">"a"</span>])</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> k, v := <span class="keyword">range</span> r.Form &#123;</span><br><span class="line">		fmt.Println(<span class="string">"key"</span>, k)</span><br><span class="line">		fmt.Println(<span class="string">"val"</span>, strings.Join(v, <span class="string">""</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Fprintf(w, <span class="string">"Hello~"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/"</span>, sayHelloName)</span><br><span class="line">	err := http.ListenAndServe(<span class="string">":9090"</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(<span class="string">"ListenAndServe: "</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Go http的两个核心功能: Conn, ServeMux<br>客户端的每次请求都会创建一个Conn, 保存了此次请求的信息, 传到对应的handler</p>
 
       
 
@@ -501,7 +346,169 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/WebRTC/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(8) -Web/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Golang东一榔头西一棒槌系列(9) -Gin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(9) -Gin/">Golang东一榔头西一棒槌系列(9) -Gin</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(9) -Gin/" class="archive-article-date">
+  	<time datetime="2020-04-14T15:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>老web框架质检员了</p>
+</blockquote>
+<h1 id="开启服务-监听端口"><a href="#开启服务-监听端口" class="headerlink" title="开启服务,监听端口"></a>开启服务,监听端口</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">r := gin.Default()</span><br><span class="line">r.Run(<span class="string">":5221"</span>)</span><br></pre></td></tr></table></figure>
+<p>gin.Default()返回一个Engine的实例, 自带Logger和Recovery中间件</p>
+<h1 id="路径匹配-url映射"><a href="#路径匹配-url映射" class="headerlink" title="路径匹配, url映射"></a>路径匹配, url映射</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.GET(<span class="string">"/ping"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    c.JSON(<span class="number">200</span>, gin.H&#123;<span class="string">"message"</span>: <span class="string">"pong"</span>&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>H就是:  type H map[string]interface{}</p>
+<h1 id="路径变量-查询参数"><a href="#路径变量-查询参数" class="headerlink" title="路径变量, 查询参数"></a>路径变量, 查询参数</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">router.GET(<span class="string">"/user/:name"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    name := c.Param(<span class="string">"name"</span>)</span><br><span class="line">    c.String(http.StatusOK, <span class="string">"Hello %s"</span>, name)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>匹配/user/john,  不匹配/user/ 和 /user</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">router.GET(<span class="string">"/user/:name/*action"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    name := c.Param(<span class="string">"name"</span>)</span><br><span class="line">    action := c.Param(<span class="string">"action"</span>)</span><br><span class="line">    message := name + <span class="string">" is "</span> + action</span><br><span class="line">    c.String(http.StatusOK, message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>匹配/user/john/ 和 /user/john/send (注意这里的action是 /send)</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">router.POST(<span class="string">"/user/:name/*action"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    c.FullPath() == <span class="string">"/user/:name/*action"</span> <span class="comment">// true</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>对于每个请求, context都有它的路由定义 c.FullPath()</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">router.GET(<span class="string">"/welcome"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    firstname := c.DefaultQuery(<span class="string">"firstname"</span>, <span class="string">"Guest"</span>)</span><br><span class="line">    lastname := c.Query(<span class="string">"lastname"</span>) <span class="comment">// shortcut for c.Request.URL.Query().Get("lastname")</span></span><br><span class="line"></span><br><span class="line">    c.String(http.StatusOK, <span class="string">"Hello %s %s"</span>, firstname, lastname)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>获取请求参数, c.DefaultQuery()自带默认参数</p>
+<h1 id="Form参数"><a href="#Form参数" class="headerlink" title="Form参数"></a>Form参数</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">router.POST(<span class="string">"/form_post"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    message := c.PostForm(<span class="string">"message"</span>)</span><br><span class="line">    nick := c.DefaultPostForm(<span class="string">"nick"</span>, <span class="string">"anonymous"</span>)</span><br><span class="line"></span><br><span class="line">    c.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">        <span class="string">"status"</span>:  <span class="string">"posted"</span>,</span><br><span class="line">        <span class="string">"message"</span>: message,</span><br><span class="line">        <span class="string">"nick"</span>:    nick,</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>By the way, curl发 带form参数的请求是<br>curl -s –location –request POST ‘localhost:8080/form_post’ –form ‘message=hello’<br>注解: -L/–location 如果请求的页面已被移动, 3xx, curl使用新的地址重新访问<br>     -X/–request 指定http method<br>      -F/–form  模拟用户在浏览器上提交表单</p>
+<h2 id="QueryMap-和-PostFromMap"><a href="#QueryMap-和-PostFromMap" class="headerlink" title="QueryMap 和 PostFromMap"></a>QueryMap 和 PostFromMap</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">router.POST(<span class="string">"/post"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    ids := c.QueryMap(<span class="string">"ids"</span>)</span><br><span class="line">    names := c.PostFormMap(<span class="string">"names"</span>)</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"ids: %v; names: %v"</span>, ids, names)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>curl -X POST ‘localhost:8080/post?ids[a]=1234&amp;ids[b]=hello’ –form ‘names[first]=thinkerou’ –form ‘names[second]=tianou’</p>
+<blockquote>
+<p>有点奇怪这个</p>
+</blockquote>
+<h1 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Set a lower memory limit for multipart forms (default is 32 MiB)</span></span><br><span class="line"><span class="comment">// router.MaxMultipartMemory = 8 &lt;&lt; 20  // 8 MiB</span></span><br><span class="line">router.POST(<span class="string">"/upload"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    <span class="comment">// single file</span></span><br><span class="line">    file, _ := c.FormFile(<span class="string">"file"</span>)</span><br><span class="line">    log.Println(file.Filename)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Upload the file to specific dst.</span></span><br><span class="line">    <span class="comment">// c.SaveUploadedFile(file, dst)</span></span><br><span class="line"></span><br><span class="line">    c.String(http.StatusOK, fmt.Sprintf(<span class="string">"'%s' uploaded!"</span>, file.Filename))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="多文件上传"><a href="#多文件上传" class="headerlink" title="多文件上传"></a>多文件上传</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">router.POST(<span class="string">"/upload"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    <span class="comment">// Multipart form</span></span><br><span class="line">    form, _ := c.MultipartForm()</span><br><span class="line">    files := form.File[<span class="string">"pics"</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _, file := <span class="keyword">range</span> files &#123;</span><br><span class="line">        log.Println(file.Filename)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Upload the file to specific dst.</span></span><br><span class="line">        <span class="comment">// c.SaveUploadedFile(file, dst)</span></span><br><span class="line">    &#125;</span><br><span class="line">    c.String(http.StatusOK, fmt.Sprintf(<span class="string">"%d files uploaded!"</span>, <span class="built_in">len</span>(files)))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h1 id="路由组"><a href="#路由组" class="headerlink" title="路由组"></a>路由组</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">v1 := router.Group(<span class="string">"/v1"</span>)</span><br><span class="line">&#123;</span><br><span class="line">    v1.POST(<span class="string">"/login"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span>  &#123;</span><br><span class="line">        c.String(<span class="number">200</span>, <span class="string">"%s"</span>, <span class="string">"v1 -- login"</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">v2 := router.Group(<span class="string">"/v2"</span>)</span><br><span class="line">&#123;</span><br><span class="line">    v2.POST(<span class="string">"/login"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span>  &#123;</span><br><span class="line">        c.String(<span class="number">200</span>, <span class="string">"%s"</span>, <span class="string">"v2 -- login"</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="使用中间件"><a href="#使用中间件" class="headerlink" title="使用中间件"></a>使用中间件</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Creates a router without any middleware by default</span></span><br><span class="line">r := gin.New()</span><br><span class="line"></span><br><span class="line"><span class="comment">// Global middleware</span></span><br><span class="line"><span class="comment">// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.</span></span><br><span class="line"><span class="comment">// By default gin.DefaultWriter = os.Stdout</span></span><br><span class="line">r.Use(gin.Logger())</span><br><span class="line"></span><br><span class="line"><span class="comment">// Recovery middleware recovers from any panics and writes a 500 if there was one.</span></span><br><span class="line">r.Use(gin.Recovery())</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(9) -Gin/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Golang东一榔头西一棒槌系列(7) -并发与goroutine" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(7) -并发与goroutine/">Golang东一榔头西一棒槌系列(7) -并发与goroutine</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(7) -并发与goroutine/" class="archive-article-date">
+  	<time datetime="2020-04-14T12:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="goroutine-通过Go语言runtime管理的一个线程管理器"><a href="#goroutine-通过Go语言runtime管理的一个线程管理器" class="headerlink" title="goroutine 通过Go语言runtime管理的一个线程管理器"></a>goroutine 通过Go语言runtime管理的一个线程管理器</h1><p>比线程更小, 十几个goroutine可能就是五六个线程, goroutine需要极少的栈内存</p>
+<blockquote>
+<p>不要通过共享来通信, 要通过通信来共享</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"runtime"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">say</span><span class="params">(s <span class="keyword">string</span>)</span></span>  &#123;</span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;<span class="number">5</span>; i++ &#123;</span><br><span class="line">        <span class="comment">// 让CPU把时间片让给别人,下次某个时候继续恢复执行该goroutine</span></span><br><span class="line">		runtime.Gosched()</span><br><span class="line">		fmt.Println(s)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> say(<span class="string">"world"</span>)</span><br><span class="line">	say(<span class="string">"Hello"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="channels-goroutine之间的通信机制"><a href="#channels-goroutine之间的通信机制" class="headerlink" title="channels goroutine之间的通信机制"></a>channels goroutine之间的通信机制</h1><p>channel接收和发送数据都是阻塞的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sum</span><span class="params">(a []<span class="keyword">int</span>, c <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	sum := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> a &#123;</span><br><span class="line">		sum += v</span><br><span class="line">	&#125;</span><br><span class="line">	c &lt;- sum</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	a := []<span class="keyword">int</span>&#123;<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>,&#125;</span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">go</span> sum(a[:<span class="built_in">len</span>(a)/<span class="number">2</span>], c)</span><br><span class="line">	<span class="keyword">go</span> sum(a[<span class="built_in">len</span>(a)/<span class="number">2</span>:], c)</span><br><span class="line">	x, y := &lt;-c, &lt;-c</span><br><span class="line">	fmt.Println(x, y, x+y)</span><br><span class="line">	<span class="comment">//ci := make(chan int)</span></span><br><span class="line">	<span class="comment">//cs := make(chan string)</span></span><br><span class="line">	<span class="comment">//cf := make(chan interface&#123;&#125;)</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">//// 发送v到channel ch</span></span><br><span class="line">	<span class="comment">//ch &lt;- v</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">//// 从ch中接收数据, 并赋值给v</span></span><br><span class="line">	<span class="comment">//v := &lt;- ch</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Buffered-Channels"><a href="#Buffered-Channels" class="headerlink" title="Buffered Channels"></a>Buffered Channels</h2><pre><code>创建可以存储4个元素的bool型channel, 前4个元素可以无阻塞写入
+当写入第5个元素时,代码将阻塞, 直到其他goroutine从channel中读取一些元素, 腾出空间 
+ch := make(chan bool, 4)
+</code></pre><h2 id="range-和-close"><a href="#range-和-close" class="headerlink" title="range 和 close"></a>range 和 close</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(n <span class="keyword">int</span>, c <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	x, y := <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;n; i++ &#123;</span><br><span class="line">		c &lt;- x</span><br><span class="line">		x, y = y, x + y</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">close</span>(c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">10</span>)</span><br><span class="line">	<span class="keyword">go</span> fib(<span class="built_in">cap</span>(c), c)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> c &#123;</span><br><span class="line">		fmt.Println(i)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="select-监听channel上的数据流动"><a href="#select-监听channel上的数据流动" class="headerlink" title="select 监听channel上的数据流动"></a>select 监听channel上的数据流动</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(c, quit <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	x, y := <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> c &lt;- x:</span><br><span class="line">			x, y = y, x + y</span><br><span class="line">		<span class="keyword">case</span> &lt;- quit:</span><br><span class="line">			fmt.Println(<span class="string">"quit"</span>)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	quit := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++ &#123;</span><br><span class="line">			fmt.Println(&lt;-c)</span><br><span class="line">		&#125;</span><br><span class="line">		quit &lt;- <span class="number">0</span></span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	fib(c, quit)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(7) -并发与goroutine/">展开全文 >></a>
         </p>
       
 
@@ -533,7 +540,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 

@@ -151,195 +151,46 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Japanese系列(2) - こいのうた" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-缓存进化史" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Japanese系列(2) - こいのうた/">Japanese系列(2) - こいのうた.md</a>
+      <a class="article-title" href="/2019/04/02/缓存进化史/">缓存进化史</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/Japanese系列(2) - こいのうた/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/02/缓存进化史/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>こい 　うた<br>恋爱　　歌曲</p>
-<ol>
-<li>生きてゆく力が その手にあるうちは<br>只要手中还握着活下去的勇气</li>
+        <ol>
+<li>数据同步加Redis<br> 通过消息队列进行数据同步到Redis,用Java去取缓存.<br> 优点: 分布式缓存,数据更新快.<br> 缺点: 依赖Redis稳定性.</li>
 </ol>
-<p>生きて ゆく 力が<br>生存下去的力量</p>
-<p>その 手に ある うちは<br>在那双手中</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">生きて</th>
-<th style="text-align:center">いきて</th>
-<th style="text-align:center">i ki te</th>
-<th style="text-align:center">活着</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ゆく</td>
-<td style="text-align:center">ゆく</td>
-<td style="text-align:center">yu ku</td>
-<td style="text-align:center">过去</td>
-</tr>
-<tr>
-<td style="text-align:center">力が</td>
-<td style="text-align:center">ちからが</td>
-<td style="text-align:center">chi ka ra ga</td>
-<td style="text-align:center">力量</td>
-</tr>
-<tr>
-<td style="text-align:center">手</td>
-<td style="text-align:center">て</td>
-<td style="text-align:center">te</td>
-<td style="text-align:center">手</td>
-</tr>
-<tr>
-<td style="text-align:center">ある</td>
-<td style="text-align:center">ある</td>
-<td style="text-align:center">a ru</td>
-<td style="text-align:center">有</td>
-</tr>
-</tbody>
-</table>
-<ol start="2">
-<li>笑わせてて いつも いつも<br>就愿为你的笑颜</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">笑</th>
-<th style="text-align:center">　わら</th>
-<th style="text-align:center">wa ra</th>
-<th style="text-align:center">笑</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">せてて</td>
-<td style="text-align:center">せてて</td>
-<td style="text-align:center">se te te</td>
-<td style="text-align:center">让我来</td>
-</tr>
-<tr>
-<td style="text-align:center">いつも</td>
-<td style="text-align:center">いつも</td>
-<td style="text-align:center">i tsu mo</td>
-<td style="text-align:center">总是</td>
-</tr>
-</tbody>
-</table>
-<ol start="3">
-<li>うたっていて 欲しいよ<br>而唱起歌</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">欲しいよ</th>
-<th style="text-align:center">ほしいよ</th>
-<th style="text-align:center">　ho shi i yo</th>
-<th style="text-align:center">想要</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">せてて</td>
-<td style="text-align:center">せてて</td>
-<td style="text-align:center">se te te</td>
-<td style="text-align:center">让我来</td>
-</tr>
-</tbody>
-</table>
+<p>2-3. Java Map到Guava cache<br>    进程内缓存作为一级缓存,Redis作为二级缓存.<br>    优点: 不受外部系统影响.<br>    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.</p>
 <ol start="4">
-<li>きっとこの恋は 口に出すこともなく<br> 这份爱恋 永远开不了口</li>
+<li><p>Guava Cache刷新<br> 设置写后刷新时间,进行刷新.</p>
+</li>
+<li><p>外部缓存异步刷新.</p>
+</li>
 </ol>
+<p>HashMap<br>    无法数据淘汰,内存会无限制增长.<br>    不需要淘汰机制时,使用HashMap做缓存.<br>LRUHashMap<br>    FIFO: 队列, 命中率不行.<br>    LRU: 最近最少使用算法, 每次访问数据放在队尾, 淘汰数据时直接淘汰队首. 不能保证热点数据存留.<br>    LFU: 最近最少频率使用, 利用额外的空间记录每个数据的使用频率,对频率最低的进行淘汰.</p>
+<pre><code>实现LRUMap: 继承LinkedHashMap,重写removeEldestEntry方法.
+缺点: 锁竞争严重,不支持过期时间,不支持自动刷新.
+</code></pre><p>Guava Cache<br>    分段锁: 锁太少竞争依然激烈, 锁太多会出现随机淘汰.根据一定的算法进行分段<br>    过期时间: expireAfterWrite 写后多久过期<br>             expireAfterAccess 读后多久过期<br>    虚引用: 两个引用队列, 记录被回收的引用，其中每个队列记录了每个被回收的Entry的hash，这样回收了之后通过这个队列中的hash值就能把以前的             Entry进行删除。<br>    删除监听器: 获取数据被淘汰的原因: 被用户删除, 被用户替代, 过期, 驱逐收集, 由于大小被淘汰.</p>
+<p>Caffeine<br>    W-TinyLfu(LFU+LRU算法变种)<br>    LFU只要数据访问模式中的概率分布随时间保持不变,命中率就非常高. 但难以淘汰某些过去访问量高,但现在访问量低的数据.<br>    基于时间周期进行衰减,使用额外空间记录数据访问频率.</p>
+<pre><code>频率记录
+    Count-Min Sketch记录访问频率, 布隆过滤器的变种.
 
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/Japanese系列(2) - こいのうた/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/分布式消息队列实践/">分布式消息队列实践</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/分布式消息队列实践/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
-<p>ArrayBlockingQueue</p>
-<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
-<pre><code>    功能命令
-
-    传输层协议
-
-MQTT
-
-STOMP
-
-XMPP
-
-JMS
+异步读写
+    使用RingBuffer
 </code></pre>
       
 
@@ -348,24 +199,13 @@ JMS
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">消息队列</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
         		</li>
       		
 		</ul>
@@ -374,7 +214,7 @@ JMS
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/分布式消息队列实践/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/缓存进化史/">展开全文 >></a>
         </p>
       
 
@@ -404,27 +244,28 @@ JMS
 
 
   
-    <article id="post-堆" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-汉诺塔问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/堆/">堆</a>
+      <a class="article-title" href="/2019/04/02/汉诺塔问题/">汉诺塔问题</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/堆/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/02/汉诺塔问题/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>堆是完全二叉树, 使用数组表示. 从数组下标1开始放置.<br>节点i的子节点在 2i 和 2i+1 处. 父节点在 i/2 处, 根除外.</p>
+        <p>看&lt;&lt;七周七Web框架&gt;&gt;的时候里面提到了这个问题,突然想看看怎么解决它.<br>当A有两个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C<br>当A有三个盘子,则:<br>    1 -&gt; C, 2 -&gt; B, 1 -&gt; B, 3 -&gt; C, 1 -&gt; A, 2 -&gt; C, 1 -&gt; C<br>当A有四个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C, 3 -&gt; B, 1 -&gt; A, 2 -&gt; B, 1 -&gt; B, 4 -&gt; C 然后就是三个盘子的问题</p>
+<p>Java实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Hanoi().hanoi(<span class="number">5</span>, <span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b, <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            hanoi(n - <span class="number">1</span>, a, c, b);</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">            hanoi(n - <span class="number">1</span>, b, a, c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b)</span> </span>&#123;</span><br><span class="line">        count++;</span><br><span class="line">        System.out.println(<span class="string">"第"</span> + count + <span class="string">"次: "</span> + n + <span class="string">"号盘子从"</span> + a + <span class="string">"移动到"</span> + b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -433,17 +274,6 @@ JMS
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
@@ -459,7 +289,7 @@ JMS
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/堆/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/汉诺塔问题/">展开全文 >></a>
         </p>
       
 
@@ -489,31 +319,122 @@ JMS
 
 
   
-    <article id="post-SpringCloud - 重新定义SpringCloud实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TCP粘包和拆包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/SpringCloud - 重新定义SpringCloud实战/">SpringCloud - 重新定义SpringCloud实战</a>
+      <a class="article-title" href="/2019/04/02/TCP粘包和拆包/">TCP粘包和拆包</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/SpringCloud - 重新定义SpringCloud实战/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/02/TCP粘包和拆包/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>单体应用架构 -&gt; 分布式架构 -&gt; SOA -&gt; 微服务</p>
-<p>分布式架构: 按照业务垂直切分, 每个应用都是单体架构, 通过API互相调用<br>SOA: 服务提供者(Provider)和服务消费者(Consumer), Dubbo<br>微服务: Martin’s SOA</p>
-<p>中间件: 向下屏蔽异构的硬件,软件,网络等计算资源, 向上提供应用开发,运行,维护等全生命周期的统一计算环境与管理.<br>常见的中间件: 服务治理中间件,配置中心,全链路监控,分布式事务,分布式定时任务,消息中间件,API网关,分布式缓存,数据库中间件.</p>
-<p>Spring Cloud是一个中间件.<br>包括: 服务注册与发现,配置中心,全链路监控,API网关,熔断器</p>
-<p>Feign: 一个声明式的Web</p>
+        <p>TCP是没有界限的一串数据，它会根据TCP缓冲区的实际情况进行包的划分。<br>一个完整的包会被TCP拆分为多个包进行发送，多个小包也可能会被封装为一个<br>大的数据包发送， 这就是TCP粘包和拆包问题。</p>
+<p>发生的原因：<br>    1.应用程序write写入的字节大小大于套接口发送缓冲区大小。<br>    2.进行MSS大小的TCP分段<br>    3.以太网帧的payload大于MTU进行IP分片</p>
+<p>底层无法保证数据包不被拆分，只能通过上层应用协议栈设计来解决。<br>    解决方案：<br>        1.消息定长，如每个报文固定大小为200字节，不够的话空位补空格<br>        2.在包尾增加回车换行符进行分割，如FTP协议<br>        3.将消息分为消息头和消息体，消息头中包含表示消息总长度的字段。<br>            通常为消息头的第一个字段使用int32来表示消息的总长度。</p>
+<p>Netty解决TCP粘包问题<br>    LineBasedFrameDecoder:<br>        依次遍历ByteBuf中的可读字节，判断是否有\n或\r\n，如果有，就以此为结束标志，<br>        从可读索引到结束位置区间的字节就组成了一行。<br>        它是以换行符为结束标志的解码器，支持携带结束符或者不携带结束符两种解码方式，<br>        同时支持配置单行的最大长度。如果连续读到最大长度后仍然没有发现换行符，就会抛出<br>        异常，同时忽略之前读到的异常码流。</p>
+<pre><code>StringDecoder:
+    将接收到的对象转换成字符串，然后继续调用后面的Handler。
+
+
+LineBasedFrameDecoder + StringDecoder组合就是按行切换的文本解码器。
+
+指定分隔符：
+DelimiterBasedFrameDecoder + StringDecoder
+定长：
+FixedLengthFrameDecoder + StringDecoder
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/TCP粘包和拆包/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-简历" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/简历/">简历</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/简历/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>熟练掌握Java, JavaScript, Python等编程语言</li>
+<li>熟练掌握MySQL, PostgreSQL, Redis, Elasticsearch, MongoDB等数据仓库工具.</li>
+<li>熟练掌握Git, Maven, Linux, Docker, Kubernete等开发工具</li>
+<li>熟练掌握Spring, MyBatis, Netty等框架</li>
+<li>熟练掌握虚拟机结构, 多线程编程.</li>
+<li>熟练掌握常见数据结构和算法, 设计模式</li>
+</ul>
+<p>&lt;&lt;流畅的Python&gt;&gt;</p>
 
       
 
@@ -523,10 +444,21 @@ JMS
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/SpringCloud - 重新定义SpringCloud实战/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/简历/">展开全文 >></a>
         </p>
       
 
@@ -558,7 +490,7 @@ JMS
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/41/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="page-number current">42</span><a class="page-number" href="/page/43/">43</a><a class="extend next" rel="next" href="/page/43/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/41/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="page-number current">42</span><a class="page-number" href="/page/43/">43</a><a class="page-number" href="/page/44/">44</a><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/43/">Next &raquo;</a>
     </nav>
   
 

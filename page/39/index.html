@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>三石的QQ空间</title>
+  <title>笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="击空明兮溯流光">
 <meta property="og:type" content="website">
-<meta property="og:title" content="三石的QQ空间">
+<meta property="og:title" content="笔记本">
 <meta property="og:url" content="http://yoursite.com/page/39/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
+<meta property="og:site_name" content="笔记本">
 <meta property="og:description" content="击空明兮溯流光">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三石的QQ空间">
+<meta name="twitter:title" content="笔记本">
 <meta name="twitter:description" content="击空明兮溯流光">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -157,120 +157,27 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-MyBatis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Git技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/MyBatis/">MyBatis</a>
+      <a class="article-title" href="/2019/04/05/Git技巧/">Git技巧</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/MyBatis/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/05/Git技巧/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="MyBatis实操经验"><a href="#MyBatis实操经验" class="headerlink" title="MyBatis实操经验"></a>MyBatis实操经验</h2><h2 id="MyBatis整体架构"><a href="#MyBatis整体架构" class="headerlink" title="MyBatis整体架构"></a>MyBatis整体架构</h2><ul>
-<li><p>基础支持层</p>
-<ul>
-<li>数据源模块（连接池功能，检测连接状态）</li>
-<li>事务管理模块，缓存模块（一级、二级缓存，运行在同一个JVM）</li>
-<li>Binding模块（将用户自定义的Mapper接口与映射配置文件关联起来）</li>
-<li>反射模块（封装java原生的反射，提供优化，缓存了类的元数据，提高反射性能）</li>
-<li>类型转换模块（别名机制，JDBC类型和Java类型的转换）</li>
-<li>日志模块（集成第三方日志模块）</li>
-<li>资源加载模块（对类加载器进行封装，确定类加载器的使用顺序</li>
-<li>提供了加载类文件和其他资源文件的功能）</li>
-<li>解析器模块（对XPath进行封装，为解析config文件提供支持；为处理动态SQL语句中的占位符提供支持）</li>
-</ul>
-</li>
-<li><p>核心处理层</p>
-<ul>
-<li>配置解析（加载mybatis-config.xml、*Mapper.xml和Mapper接口中的注解信息，解析后形成相应的对象保存到Configuration对象中，利用该对象创建SqlSessionFactory）</li>
-<li>参数映射，SQL解析，SQL执行（Executor维护一级、二级缓存，提供事务管理的相关操作，将数据库相关操作委托给StatementHandler完成。StatementHandler通过<pre><code>ParameterHandler完成SQL语句的实参绑定，然后通过java.sql.Statement对象执行SQL语句并得到结果集ResultSet，最后通过ResultSetHandler完成结果集映射，得到结果并返回），结果集映射，插件（拦截SQL语句进行重写）。
-</code></pre></li>
-</ul>
-</li>
-<li><p>接口层：SqlSession</p>
-</li>
-<li><p>解析器模块, XML解析方式</p>
-<ul>
-<li>DOM(Document Object Model)<ul>
-<li>树形结构解析，将整个XML文档读入内存构建DOM树：文档节点、元素节点、属性节点、文本节点、注释节点。</li>
-<li>易于编程、节点间导航和修改数据，资源消耗大。</li>
-</ul>
-</li>
-<li>SAX(Simple API for XML)<ul>
-<li>基于事件模型解析，推模式。解析到某类型节点时会触发注册在该类型节点上的回调函数。</li>
-<li>流式处理，需要自己维护节点之间的关系。</li>
-</ul>
-</li>
-<li>StAX(Streaming API for XML)<ul>
-<li>拉模式，应用程序通过调用解析器推进解析进程。<ul>
-<li>两套API：基于指针的，效率高但抽象程度低；基于迭代器的，应用程序把XML文档当做一系列事件对象来处理，效率低但抽象程度高。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>MyBatis在初始化过程中使用DOM解析方式。XPath是一种查询XML文档的语言。</p>
-</blockquote>
-<blockquote>
-<p>Java基本类型有默认值，在动态SQL部分属性判断总不为空，因此在实体类中使用包装类型。<br>Java中的byte[]对应数据库中的BOLB、LONGVARBINARY等<br>insert标签包含flushCache属性，默认为true，语句被调用时清空一、二级缓存。<br>给参数配置@Param注解后，MyBatis自动将参数封装为Map类型，@Param注解值作为Map中的key。</p>
-</blockquote>
-<p>动态SQL：</p>
-<ul>
-<li>if：用在where语句中，通过判断参数值来决定是否使用某个查询条件；用在update语句中判断是否更新某一个字段；用在insert语句中判断是否插入某个字段的值。</li>
-<li>choose(when、otherwise)：实现if…else逻辑</li>
-<li>trim(where、set)：<ul>
-<li>where: 如果该标签有返回值，就插入一个where，如果where后面的字符串是以and和or开头，则将它们剔除。</li>
-<li>set： 如果该标签有返回值，就插入一个set，如果set后面的字符串是以逗号结尾，则将逗号剔除。</li>
-<li>如果set元素中没有内容，set后面连着where，会产生SQL错误，因此需要在set标签最后加上id = #{id}</li>
-</ul>
-</li>
-<li>trim: <ul>
-<li>prefix: 当trim元素包含内容时，给内容增加prefix指定的前缀</li>
-<li>suffix: 当trim元素包含内容时，给内容增加suffix指定的前缀</li>
-<li>prefixOverrides: 当trim元素包含内容时，会把内容中匹配的前缀字符串去掉</li>
-<li>suffixOverrides: 当trim元素包含内容时，会把内容中匹配的后缀字符串去掉</li>
-</ul>
-</li>
-<li>foreach：${} 配合 in 的方式不能防止sql注入。可以用#{} 配合 foreach<ul>
-<li>collection: 要迭代循环的属性</li>
-<li>item：变量名</li>
-<li>index：索引属性名，List中为当前索引值，Map中为key</li>
-<li>open：整个循环内容开头的字符串</li>
-<li>close：整个循环内容结尾的字符串</li>
-<li>separator：每次循环的分隔符</li>
-<li>collection的属性设置<ul>
-<li>只有一个数组参数或者集合参数</li>
-<li>批量插入</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>bind： 防止sql注入。创建变量并绑定到上下文中。</li>
-</ul>
-<p>${} 与 #{}</p>
-<pre><code>#{}：解析为一个JDBC预编译语句的参数标记符，参数占位符。
-${}: 仅仅为String替换，在动态SQL解析阶段进行变量替换。
-</code></pre><p>高级查询<br>    高级结果映射</p>
-<pre><code>存储过程
-
-枚举或其他对象
-</code></pre><p>缓存配置<br>    一级缓存    </p>
-<pre><code>二级缓存
-</code></pre><p>@SpringBootTest 注解必须要加<br>路径前面的/不能省略<br>@RequestBody 在实体类上加上 @JsonRootName(value = “user”)<br>这么写json {“user”:{“email”:”<a href="mailto:sanshi.30@qq.com" target="_blank" rel="noopener">sanshi.30@qq.com</a>“,”username”:”Ramble”,”password”:”1234567”}}</p>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line">git技巧</span><br><span class="line"></span><br><span class="line">后悔药系列:</span><br><span class="line">    撤销存入暂存区操作</span><br><span class="line">    git reset head &lt;filename&gt; </span><br><span class="line"></span><br><span class="line">    删除暂存区文件</span><br><span class="line">    git rm --cache xxx.zip</span><br><span class="line">    </span><br><span class="line">    放弃本地修改</span><br><span class="line">    git checkout xxx.java</span><br><span class="line"></span><br><span class="line">    命令放弃本次合并</span><br><span class="line">    git merge --abort </span><br><span class="line"></span><br><span class="line">    退回到改之前的版本</span><br><span class="line">    git checkout &lt;hash&gt; &lt;filename&gt;</span><br><span class="line"></span><br><span class="line">    放弃本地修改，强制拉取更新   </span><br><span class="line">    git fetch --all                                git fetch 指令是下载远程仓库最新内容，不做合并 </span><br><span class="line">    git reset --hard origin/master                 git reset 指令把HEAD指向master最新版本</span><br><span class="line"></span><br><span class="line">提交:</span><br><span class="line">    相当于git add . 加上 git commit -m &quot;xxx&quot;  只会add修改的文件,不add新增的文件.</span><br><span class="line">    git commit -am &quot;xxx&quot; </span><br><span class="line"></span><br><span class="line">    提交会与上一次提交合并成一个新的提交，之前的提交会被废弃掉。</span><br><span class="line">    git commit --amend  </span><br><span class="line"></span><br><span class="line">    放弃commit, 回到未提交状态</span><br><span class="line">    git reset --soft HEAD^</span><br><span class="line"></span><br><span class="line">    git reset --hard xxxx</span><br><span class="line"></span><br><span class="line">后悔药的后悔药:</span><br><span class="line">    git reflog</span><br><span class="line"></span><br><span class="line">推分支到远程</span><br><span class="line">    git push origin local_branch:remote_branch</span><br><span class="line">删除远程分支</span><br><span class="line">    git push origin --delete remote_branch</span><br><span class="line"></span><br><span class="line">查看历史:</span><br><span class="line">    来查看最近一次提交的差异，当然也可以使用 git log -p 来查看所有的差异</span><br><span class="line">    git log -p -1   </span><br><span class="line"></span><br><span class="line">    git log --pretty=oneline </span><br><span class="line">    git log --oneline --graph --all </span><br><span class="line">    </span><br><span class="line">标签:</span><br><span class="line">    git tag -a 版本号 -m &apos;tag 信息&apos;来创建“轻量标签”</span><br><span class="line"></span><br><span class="line">    git show v1.1.1 来查看v1.1.1处的相关信息</span><br><span class="line"></span><br><span class="line">    给之前的某个commit打一个tag, 将commit号追加到打标签的命令后方</span><br><span class="line">    git tag -a vx.x.x -m &apos;message&apos; commit-hash</span><br><span class="line"></span><br><span class="line">    将本地创建的所有 tag 推送到远端origin</span><br><span class="line">    git push origin --tags</span><br><span class="line"></span><br><span class="line">别名:</span><br><span class="line">    创建别名</span><br><span class="line">    git config --global alias.s status </span><br><span class="line"></span><br><span class="line">    查看设置过的所有别名</span><br><span class="line">    git config -l</span><br><span class="line"></span><br><span class="line">开发中分支合并最新master且不新增提交:</span><br><span class="line">1.在开发分支合并最新的master.</span><br><span class="line">2.切换至master,使用git read-tree -m -u &lt;开发分支&gt;, 获得开发改动的代码的 未提交状态.</span><br><span class="line">3.在master新建开发分支</span><br><span class="line"></span><br><span class="line">理论知识:</span><br><span class="line">    Git 保存的不是文件差异或者变化量，而只是一系列文件快照。</span><br><span class="line"></span><br><span class="line">    git add时, 暂存操作会为每个文件计算校验和,把当前版本的文件使用bolb对象保存到Git仓库中.</span><br><span class="line"></span><br><span class="line">    git commit时, 提交操作会计算每一个子目录的校验和, 在Git仓库中将这些校验和</span><br><span class="line">    保存为树对象. 然后Git创建一个提交对象, 包含一个指向暂存内容快照的指针,作者的</span><br><span class="line">    姓名邮箱,提交时的输入信息和指向父对象的指针, 指向树对象的指针.</span><br><span class="line"></span><br><span class="line">        此时Git仓库中的对象:</span><br><span class="line">            bolb对象: 保存文件快照.</span><br><span class="line">            树对象: 记录着目录结构和blob对象索引.</span><br><span class="line">            提交对象: 包含着指向前面树对象的指针和所有的提交信息.</span><br><span class="line"></span><br><span class="line">    Git分支: 指向提交对象的可变指针. 实质上是包含所指向对象校验和的文件. </span><br><span class="line">    创建分支: 创建一个可以移动的新指针. 相当于往一个文件中0  写41个字节(40个SHA-1字符和1个换行符).</span><br><span class="line">    HEAD指针: 指向当前所在的分支</span><br><span class="line"></span><br><span class="line">Fast-forward</span><br><span class="line">    如果顺着一个分支走下去能够达到另一个分支, 那么Git在合并时只会简单的将指针前进.</span><br><span class="line">&apos;recursive&apos; strategy 合并提交</span><br><span class="line">    选取一个共同祖先, 作为合并的基础, 做一个新的快照并自动创建一个提交指向它.</span><br><span class="line"></span><br><span class="line">git rebase</span><br><span class="line">    将提交到某一分支上的所有修改都应用到另一分支.</span><br><span class="line">    原理: 先找到最近共同祖先, 对比当前分支相对于该祖先的历次提交,</span><br><span class="line">        提取相应的修改并存为临时文件,然后将当前分支指向目标基底,</span><br><span class="line">        将之前另存为临时文件的修改依序应用.</span><br><span class="line">    实质: 丢弃一些现有的提交, 然后相应地新建一些内容一样但不同的提交.</span><br><span class="line">    结果: 最终结果和git merge没有任何区别, 只是让提交历史变成一串.</span><br><span class="line">    特殊选项: </span><br><span class="line">        --onto</span><br><span class="line">            取出 client 分支，找出处于 client 分支和 server 分支的共同祖先之后的修改，然后把它们在 master 分支上重放一遍</span><br><span class="line">            git rebase --onto master server client</span><br><span class="line">        </span><br><span class="line">        将特性分支变基到目标分支</span><br><span class="line">        git rebase [basebranch] [topicbranch]</span><br><span class="line"></span><br><span class="line">    风险: 丢弃掉已经被人依赖的提交, 导致这边丢不掉, 那边提交重复.</span><br><span class="line">    解决办法: 用rebase解决rebase.</span><br><span class="line">            git rebase teamone/master</span><br><span class="line">        过程:1. 检查哪些提交是我们分支独有的.</span><br><span class="line">            2. 检查其中哪些提交不是合并操作的结果.</span><br><span class="line">            3. 检查其中哪些提交在对方覆盖更新时并没有被纳入目标分支.</span><br><span class="line">            4. 把查到的这些提交应用到teamone/master上.</span><br><span class="line">            </span><br><span class="line">    原则: 只对尚未推送或分享给别人的本地修改执行rebase操作清理历史,</span><br><span class="line">         不对已推送至别处的提交执行rebase.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">git多账户配置</span><br><span class="line">1. ssh-keygen -t rsa -C &apos;your_email@example.com&apos; -f ~/.ssh/id_rsa_github</span><br><span class="line">2. 在./ssh目录下创建config文件, 修改为:</span><br><span class="line"></span><br><span class="line">#Default GitHub</span><br><span class="line">Host github.com</span><br><span class="line">HostName github.com</span><br><span class="line">User git</span><br><span class="line">IdentityFile ~/.ssh/id_rsa</span><br><span class="line"></span><br><span class="line">Host r4mble</span><br><span class="line">HostName github.com</span><br><span class="line">User git</span><br><span class="line">IdentityFile ~/.ssh/id_rsa_github</span><br><span class="line"></span><br><span class="line">注意改的是Host而不是HostName</span><br><span class="line"></span><br><span class="line">3. 在某项目仓库中修改.git目录下的config文件, 把url里的@github.com改成上一步修改后的Host</span><br></pre></td></tr></table></figure>
 
       
 
@@ -285,7 +192,7 @@ ${}: 仅仅为String替换，在动态SQL解析阶段进行变量替换。
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/MyBatis//" class="article-tag-list-link color3">MyBatis</a>
+        			<a href="/categories/Git//" class="article-tag-list-link color4">Git</a>
         		</li>
       		
 		</ul>
@@ -294,7 +201,7 @@ ${}: 仅仅为String替换，在动态SQL解析阶段进行变量替换。
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/MyBatis/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Git技巧/">展开全文 >></a>
         </p>
       
 
@@ -324,342 +231,28 @@ ${}: 仅仅为String替换，在动态SQL解析阶段进行变量替换。
 
 
   
-    <article id="post-PostgreSQL Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java实现2048" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/PostgreSQL Notes/">PostgreSQL</a>
+      <a class="article-title" href="/2019/04/05/Java实现2048/">Java实现2048</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/PostgreSQL Notes/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/05/Java实现2048/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:28:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
-<li>multi-version concurrency control (MVCC), Oracle中的快照隔离</li>
-<li>面向对象, 可以添加自定义函数.</li>
-<li>可拓展, 可以自定义数据类型,索引类型. </li>
-</ul>
-<h2 id="PostgreSQL与MySQL的对比"><a href="#PostgreSQL与MySQL的对比" class="headerlink" title="PostgreSQL与MySQL的对比:"></a>PostgreSQL与MySQL的对比:</h2><ol>
-<li>MySQL多表连接查询只支持Nest Loop,不支持hash join和sort merge join,子查询性能较低,不支持sequence</li>
-<li>性能优化工具和度量信息不足, 异步复制,无法通过主从做到数据零丢失</li>
-<li>在线操作功能弱.</li>
-</ol>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
-<li>基本数据类型: Integer, Numeric, String, Boolean, 二进制bytea, </li>
-<li>字符型: varchar(n), char(n), text</li>
-<li>位串类型: bit(n), bit varying(n)</li>
-<li>枚举类型: enum</li>
-<li>网络地址类型: cidr, inet, macaddr</li>
-<li>结构型: Data/Time, Array, Range, UUID</li>
-<li>文档型: JSON, XML, K-V</li>
-<li>几何型: 点, 线, 圈, 多边形</li>
-<li>定制型: 组合, 定制类型</li>
-</ul>
-<h2 id="数据完整性"><a href="#数据完整性" class="headerlink" title="数据完整性"></a>数据完整性</h2><ul>
-<li>UNIQUE, NOT NULL</li>
-<li>主键</li>
-<li>外键</li>
-<li>排除约束</li>
-<li>Explicit Locks</li>
-<li>Advisory Locks</li>
-</ul>
-<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><ul>
-<li><p>创建   </p>
-<blockquote>
-<p>   create table test_array (</p>
-<pre><code>id          integer,
-array_i     integer[],
-array_t     text[]
-</code></pre><p>  )</p>
-</blockquote>
-</li>
-<li><p>插入</p>
-<ul>
-<li>花括号表示<blockquote>
-<p>   insert into test_array(id, array_i, array_t)<br>   values (1, ‘{1,2,3}’, ‘{“a”, “b”, “c”}’);</p>
-</blockquote>
-</li>
-<li>array关键字<blockquote>
-<p>  insert into test_array(id, array_i, array_t)<br>  values (1, array[1,2,3], array[‘a’, ‘b’, ‘c’]);</p>
-</blockquote>
-</li>
-</ul>
-</li>
-<li>查询<ul>
-<li>查询数组所有元素<blockquote>
-<p>select array_i from test_array where id=1;</p>
-</blockquote>
-</li>
-<li>查询数组指定索引. 索引为1到n, n是数组长度<blockquote>
-<p>select array_i[1], array_t[3] from test_array where id=1;    </p>
-</blockquote>
-</li>
-</ul>
-</li>
-<li>追加<blockquote>
-<p>select array_append(array[1,2,3], 4);  </p>
-<pre><code>select array[1,2,3] || 4;
-</code></pre></blockquote>
-</li>
-<li>删除<br>  移除数组中所有等于给定值的元素<blockquote>
-<p>select array_remove(array[1,2,3,2], 2);  </p>
-</blockquote>
-</li>
-<li>修改      <blockquote>
-<p>update test_array set array_i[3]=4 where id=1;<br>  更新整个数组:<br>  update test_array set array_i=array[5,6,7] where id=1;</p>
-</blockquote>
-</li>
-<li><p>替换</p>
-<blockquote>
-<p>array_replace(arr, srcEle, tarEle) 替换数组元素<br>  select array_replace(array[1,2,5,4], 5, 10);<br>  =&gt; {1,2,10,4}</p>
-</blockquote>
-</li>
-<li><p>元素第一次出现的位置</p>
-<blockquote>
-<p>select array_position(array[‘a’,’b’,’c’,’d’], ‘d’);<br>  =&gt; 4   </p>
-</blockquote>
-</li>
-<li><p>to_string   </p>
-<blockquote>
-<p>array_to_string(arr, separator, replaceNull)<br>  select array_to_string(array[1,2,null,3], ‘, ‘, ‘10’);<br>  =&gt; 1,2,10,3</p>
-</blockquote>
-</li>
-<li><p>其他函数</p>
-<blockquote>
-<p>@&gt; 包含  </p>
-<pre><code>&lt;@ 被包含   
-&amp;&amp; 重叠  
-|| 串接  
-array_length 数组长度  
-</code></pre></blockquote>
-</li>
-</ul>
-<h2 id="json-jsonb"><a href="#json-jsonb" class="headerlink" title="json/jsonb"></a>json/jsonb</h2><h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><ol>
-<li>json数据类型存储格式为文本,而jsonb数据类型存储格式为二进制<br>检索json数据时必须重新解析,而jsonb类型不需要.<br>因此, json写入比jsonb快,检索比jsonb慢</li>
-<li>jsonb输出键的顺序和输入不一样, json输出键的顺序和输入完全一样</li>
-<li>jsonb类型会去掉输入数据键值的空格, json不会删掉空格.</li>
-<li>jsonb会删掉重复的键,仅保留最后一个. json会保留重复的键值.<blockquote>
-<p>推荐: 大多数场景下使用jsonb, 对json的键顺序有要求时可以使用json</p>
-</blockquote>
-</li>
-</ol>
-<ul>
-<li>创建<blockquote>
-<p>create table test_json(id serial primary key, name json);</p>
-</blockquote>
-</li>
-<li>插入<blockquote>
-<p>insert into test_json(name) values (‘{“col1”:1, “col2”:”francs”, “col3”: “male”}’);</p>
-</blockquote>
-</li>
-<li><p>查询</p>
-<blockquote>
-<p>select name -&gt; ‘col2’ from test_json where id=1;  </p>
-<pre><code>=&gt; &quot;francs&quot;  (json)
-以文本格式返回json字段键值  
-select name -&gt;&gt; &apos;col2&apos; from test_json where id=1;  
-=&gt; &quot;francs&quot; (text)
-</code></pre></blockquote>
-</li>
-<li><p>字符串是否为顶层键值</p>
-<blockquote>
-<p>select ‘{“a”:1, “b”:2}’::jsonb ? ‘a’;<br>  =&gt; true</p>
-</blockquote>
-</li>
-<li>删除json数据的键/值    <blockquote>
-<p>select ‘{“a”:1, “b”:2}’::jsonb - ‘a’;<br>  =&gt; “{“b”: 2}” (jsonb)  </p>
-<ul>
-<li>删除json数组中的值,索引从0开始.<br>select ‘[“red”, “green”, “blue”]’::jsonb -0;<br>=&gt; [“green”, “blue”]</li>
-<li>删除嵌套json使用#-加上数组形式的删除路径<br>select ‘{“name”:  “James”,  “contact”:  {“phone”:  “01234  567890”,  “fax”:<br>  “01987543210”}}’::jsonb #- ‘{contact, fax}’::text[]<br>=&gt; “{“name”: “James”, “contact”: {“phone”: “01234  567890”}}”</li>
-<li>删除嵌套的json数组: 使用text数组指明要删除的位置<br>select ‘{“name”: “James”, “aliases”: [“Jamie”, “The Jamester”, “J Man”]}’<br>:: jsonb #- ‘{alias,1}’::text[];<br>=&gt; “{“name”: “James”, “aliases”: [“Jamie”, “J Man”]}”</li>
-</ul>
-</blockquote>
-</li>
-</ul>
-<ul>
-<li>扩展最外层json对象成一组键值结果集<blockquote>
-<p>select * from json_each(‘{“a”:”foo”, “b”:”bar”}’);<br>  =&gt;key text  value json  </p>
-<pre><code>a    &quot;foo&quot;  
-b    &quot;bar&quot;  
-以文本形式返回:  
-select * from json_each_text(&apos;{&quot;a&quot;:&quot;foo&quot;, &quot;b&quot;:&quot;bar&quot;}&apos;);  
-</code></pre><p>  =&gt;key text  value text  </p>
-<pre><code>a    foo  
-b    bar  
-</code></pre></blockquote>
-</li>
-<li>把行作为json对象返回<blockquote>
-<p>select row_to_json(test_copy) from test_copy where id=1;       </p>
-</blockquote>
-</li>
-<li><p>返回最外层的json对象中的键的集合</p>
-<blockquote>
-<p>select * from json_object_keys(‘{“a”:”foo”, “b”:”bar”}’);<br>   a<br>   b  </p>
-</blockquote>
-</li>
-<li><p>jsonb追加</p>
-<blockquote>
-<p>select ‘{“name”:”francs”, “age”:”31”}’::jsonb || ‘{“gender”:”male”}’::jsonb;<br>  =&gt; “{“age”: “31”, “name”: “francs”, “gender”: “male”}” </p>
-</blockquote>
-</li>
-<li><p>更新</p>
-<ul>
-<li>覆盖更新<blockquote>
-<p>select ‘{“name”:”francs”, “age”:”31”}’ :: jsonb || ‘{“age”: “32”, “name”: “francs”}’;    </p>
-</blockquote>
-</li>
-<li>jsonb_set, true:键不存在则添加, false:键不存在则不添加<blockquote>
-<p>select jsonb_set(‘{“name”:”francs”, “age”:”31”}’ :: jsonb, ‘{age}’, ‘“32”‘::jsonb, true);<br>  注意32前后有单引号<br>=&gt; “{“age”: “32”, “name”: “francs”}”<br>select jsonb_set(‘{“name”:”francs”, “age”:”31”}’::jsonb, ‘{sex}’, ‘“male”‘::jsonb, true);<br>=&gt;  {“age”: “31”, “sex”: “male”, “name”: “francs”}</p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><ul>
-<li>varchar转为text<blockquote>
-<p>select cast(varchar ‘123’ as text);</p>
-</blockquote>
-</li>
-<li>varchar转为int4    <blockquote>
-<p>select cast(varchar ‘123’ as int4);</p>
-</blockquote>
-</li>
-<li>通过::操作符转换<blockquote>
-<p>select 1::int4, 3/2::numeric;   </p>
-</blockquote>
-</li>
-</ul>
-<h2 id="with查询"><a href="#with查询" class="headerlink" title="with查询"></a>with查询</h2><pre><code>with t as (
-    select generate_series(1,3)
-)
-select * from t;
------------
-1
-2
-3 
-</code></pre><ul>
-<li>递归查询</li>
-</ul>
-<pre><code>with recursive t (x) as (
-    select 1
-    union
-    select x + 1
-    from t
-    where x &lt; 5
-)    
-select sum(x) from t;
-</code></pre><p>层级查询实例:</p>
-<pre><code>CREATE TABLE test_area(id int4, name varchar(32), fatherid int4);
-INSERT INTO test_area VALUES (1, &apos;中国&apos;   ,0);
-INSERT INTO test_area VALUES (2, &apos;辽宁&apos;   ,1);
-INSERT INTO test_area VALUES (3, &apos;山东&apos;   ,1);
-INSERT INTO test_area VALUES (4, &apos;沈阳&apos;   ,2);
-INSERT INTO test_area VALUES (5, &apos;大连&apos;   ,2);
-INSERT INTO test_area VALUES (6, &apos;济南&apos;   ,3);
-INSERT INTO test_area VALUES (7, &apos;和平区&apos; ,4);
-INSERT INTO test_area VALUES (8, &apos;沈河区&apos; ,4);    
-
--- 找到和平区的所有父节点
-with recursive r as (
-    select * from test_area where id = 7
-    union all
-    select test_area.* from test_area, r where test_area.id = r.fatherid
-)
-select * from r order by id;
-
--- 拼接name字段, 输出&quot;中国辽宁沈阳和平区&quot;
- with recursive r as (
-        select * from test_area where id = 7
-        union all
-        select test_area.* from test_area, r where test_area.id = r.fatherid
-    )
-    select string_agg(name, &apos;&apos;) from (select name from r order by id) as n;
-
- -- 查找沈阳市及管辖的区
- with recursive r as (
-     select * from test_area where id = 4
-     union all
-     select test_area.* from test_area, r where test_area.fatherid = r.id
- )
- select * from r order by id;
-</code></pre><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
-<li>简化SQL代码,减少SQL嵌套次数,提高可读性</li>
-<li>计算一次,在主查询中多次使用</li>
-<li>不需要共享查询结果时,比视图更轻量.    </li>
-</ul>
-<h2 id="批量插入"><a href="#批量插入" class="headerlink" title="批量插入"></a>批量插入</h2><ul>
-<li>通过表数据或函数批量插入<blockquote>
-<p>insert into tbl(id, name) select id, name from user_ini;<br>insert into tbl(id, info) select generate_series(1,5), ‘batch2’;</p>
-</blockquote>
-</li>
-<li>insert into values(),(),()<blockquote>
-<p>insert into tble(id, name) values (1,’a’), (2,’b’);<br>  减少和数据库的交互,减少数据库wal日志生成,提升插入效率.</p>
-</blockquote>
-</li>
-<li>copy或\copy元命令  <blockquote>
-<p>导出<br>   copy pguser.tbl to ‘/home/pg10/tbl.txt’<br>  导入  </p>
-<pre><code>copy pguser.tbl from &apos;/home/pg10/tbl.txt&apos;  
-</code></pre></blockquote>
-</li>
-</ul>
-<h2 id="returning"><a href="#returning" class="headerlink" title="returning"></a>returning</h2><p>INSERT语句后接RETURNING属性返回插入的数据；<br>UPDATE语句后接RETURNING属性返回更新后的新值；<br>DELETE语句后接RETURNING属性返回删除的数据      </p>
-<blockquote>
-<p>insert into test_re(flag) values(‘a’) returning id;</p>
-</blockquote>
-<h2 id="upsert"><a href="#upsert" class="headerlink" title="upsert"></a>upsert</h2><p>insert … on conflict update</p>
-<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><ul>
-<li>select 连接两列合并为一列<blockquote>
-<p>select first_name  || ‘ ‘ ||  last_name as full_name, email from customer;</p>
-</blockquote>
-</li>
-<li>order by时升序NULL在最后，降序NULL在最前</li>
-<li>distinct bcolor, fcolor 这样使用distinct时会把这两列作为整体进行去重</li>
-<li><blockquote>
-<p>select distinct on (bcolor) bcolor, fcolor from t1 order by bcolor ,fcolor;     </p>
-</blockquote>
-<p>  先按照bcolor, fcolor对行进行排序，每一组重复的bcolor中选取第一个所在的行。</p>
-</li>
-<li><blockquote>
-<p>limit n offset m </p>
-</blockquote>
-<p>  跳过m个，选取n个. 注意m数量不要太大  </p>
-<p> fetch是postgresql对sql标准的实现，和limit offset功能相同</p>
-<blockquote>
-<p>OFFSET start { ROW | ROWS } FETCH { FIRST | NEXT } [ row_count ] { ROW | ROWS } ONLY        </p>
-<ul>
-<li>where in 既可以接列表，也可以接一个子查询。</li>
-<li>like匹配符： % 匹配任意个字符， _ 匹配单个字符</li>
-<li>和null做 = 比较，永远为false， 因此使用 is null 和 is not null</li>
-</ul>
-</blockquote>
-</li>
-<li><p>找到表a中有的b中没有的行: </p>
-<blockquote>
-<p>basket_a a LEFT JOIN basket_b b ON a.fruit = b.fruit WHERE b.id IS NULL;  </p>
-</blockquote>
-</li>
-<li>找到表a和表b中各自独特的行：<blockquote>
-<p>basket_a a FULL JOIN basket_b b ON a.fruit = b.fruit WHERE a.id IS NULL OR b.id IS NULL;</p>
-</blockquote>
-</li>
-<li>join 等价于 inner join</li>
-<li>self-join 查询有层级体系的数据，同一张表中比较行。</li>
-<li>json与jsonb：<ul>
-<li>json是对输入文本的完整拷贝，保留输入的空格，重复键和顺序。处理函数必须在每个执行上重新解析。存储快，读取慢。</li>
-<li>jsonb是解析输入后保存的二进制，在解析时会删除不必要的空格和重复键，顺序也会不同，使用时不用再次解析。支持索引。存储慢，读取快。</li>
-</ul>
-</li>
-</ul>
+        <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.swing.JFrame;</span><br><span class="line"><span class="keyword">import</span> javax.swing.JPanel;</span><br><span class="line"><span class="keyword">import</span> javax.swing.WindowConstants;</span><br><span class="line"><span class="keyword">import</span> java.awt.Color;</span><br><span class="line"><span class="keyword">import</span> java.awt.Dimension;</span><br><span class="line"><span class="keyword">import</span> java.awt.Font;</span><br><span class="line"><span class="keyword">import</span> java.awt.FontMetrics;</span><br><span class="line"><span class="keyword">import</span> java.awt.Graphics;</span><br><span class="line"><span class="keyword">import</span> java.awt.Graphics2D;</span><br><span class="line"><span class="keyword">import</span> java.awt.RenderingHints;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.KeyAdapter;</span><br><span class="line"><span class="keyword">import</span> java.awt.event.KeyEvent;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Game2048</span> <span class="keyword">extends</span> <span class="title">JPanel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Tile[] myTiles;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> myScore;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> myWin;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> myLose;</span><br><span class="line">    <span class="keyword">private</span> Color BG_COLOR = <span class="keyword">new</span> Color(<span class="number">0xbbada0</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String FONT_NAME = <span class="string">"Arial"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TILE_SIZE = <span class="number">64</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TILES_MARGIN = <span class="number">16</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Game2048</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        setPreferredSize(<span class="keyword">new</span> Dimension(<span class="number">340</span>, <span class="number">400</span>));</span><br><span class="line">        setFocusable(<span class="keyword">true</span>);</span><br><span class="line">        addKeyListener(<span class="keyword">new</span> KeyAdapter() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">keyPressed</span><span class="params">(KeyEvent e)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (e.getKeyCode() == KeyEvent.VK_ESCAPE) &#123;</span><br><span class="line">                    resetGame();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (!canMove()) &#123;</span><br><span class="line">                    myLose = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!myWin &amp;&amp; !myLose) &#123;</span><br><span class="line">                    <span class="keyword">switch</span> (e.getKeyCode()) &#123;</span><br><span class="line">                        <span class="keyword">case</span> KeyEvent.VK_LEFT:</span><br><span class="line">                            left();</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> KeyEvent.VK_RIGHT:</span><br><span class="line">                            right();</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> KeyEvent.VK_DOWN:</span><br><span class="line">                            down();</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> KeyEvent.VK_UP:</span><br><span class="line">                            up();</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!myWin &amp;&amp; !canMove()) &#123;</span><br><span class="line">                    myLose = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                repaint();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        resetGame();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">down</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        myTiles = rotate(<span class="number">90</span>);</span><br><span class="line">        left();</span><br><span class="line">        myTiles = rotate(<span class="number">270</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Tile[] rotate(<span class="keyword">int</span> angle) &#123;</span><br><span class="line">        Tile[] newTiles = <span class="keyword">new</span> Tile[<span class="number">4</span> * <span class="number">4</span>];</span><br><span class="line">        <span class="keyword">int</span> offsetX = <span class="number">3</span>, offsetY = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">if</span> (angle == <span class="number">90</span>) &#123;</span><br><span class="line">            offsetY = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (angle == <span class="number">270</span>) &#123;</span><br><span class="line">            offsetX = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">double</span> rad = Math.toRadians(angle);</span><br><span class="line">        <span class="keyword">int</span> cos = (<span class="keyword">int</span>) Math.cos(rad);</span><br><span class="line">        <span class="keyword">int</span> sin = (<span class="keyword">int</span>) Math.sin(rad);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; <span class="number">4</span>; x++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; <span class="number">4</span>; y++) &#123;</span><br><span class="line">                <span class="keyword">int</span> newX = (x * cos) - (y * sin) + offsetX;</span><br><span class="line">                <span class="keyword">int</span> newY = (x * sin) + (y * cos) + offsetY;</span><br><span class="line">                newTiles[newX + newY * <span class="number">4</span>] = tileAt(x, y);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newTiles;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">right</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        myTiles = rotate(<span class="number">180</span>);</span><br><span class="line">        left();</span><br><span class="line">        myTiles = rotate(<span class="number">180</span>);&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">up</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        myTiles = rotate(<span class="number">270</span>);</span><br><span class="line">        left();</span><br><span class="line">        myTiles = rotate(<span class="number">90</span>);&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">resetGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        myScore = <span class="number">0</span>;</span><br><span class="line">        myWin = <span class="keyword">false</span>;</span><br><span class="line">        myLose = <span class="keyword">false</span>;</span><br><span class="line">        myTiles = <span class="keyword">new</span> Tile[<span class="number">4</span> * <span class="number">4</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; myTiles.length; i++) &#123;</span><br><span class="line">            myTiles[i] = <span class="keyword">new</span> Tile();</span><br><span class="line">        &#125;</span><br><span class="line">        addTile();</span><br><span class="line">        addTile();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">left</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> needAddTile = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            Tile[] line = getLine(i);</span><br><span class="line">            Tile[] merged = mergeLine(moveLine(line));</span><br><span class="line">            setLine(i, merged);</span><br><span class="line">            <span class="keyword">if</span> (!needAddTile &amp;&amp; !compare(line, merged)) &#123;</span><br><span class="line">                needAddTile = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (needAddTile) &#123;</span><br><span class="line">            addTile();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">compare</span><span class="params">(Tile[] line1, Tile[] line2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (line1 == line2) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (line1.length != line2.length) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; line1.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (line1[i].value != line2[i].value) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Tile <span class="title">tileAt</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> myTiles[x + y * <span class="number">4</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addTile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Tile&gt; list = availableSpace();</span><br><span class="line">        <span class="keyword">if</span> (!list.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">int</span> index = (<span class="keyword">int</span>) (Math.random() * list.size()) % list.size();</span><br><span class="line">            Tile temp = list.get(index);</span><br><span class="line">            temp.value = Math.random() &lt; <span class="number">0.9</span> ? <span class="number">2</span> : <span class="number">4</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> List&lt;Tile&gt; <span class="title">availableSpace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;Tile&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Tile t : myTiles) &#123;</span><br><span class="line">            <span class="keyword">if</span> (t.isEmpty()) &#123;</span><br><span class="line">                list.add(t);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> availableSpace().size() == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">canMove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!isFull()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; <span class="number">4</span>; x++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; <span class="number">4</span>; y++) &#123;</span><br><span class="line">                Tile t = tileAt(x, y);</span><br><span class="line">                <span class="keyword">if</span> ((x &lt; <span class="number">3</span> &amp;&amp; t.value == tileAt(x + <span class="number">1</span>, y).value)</span><br><span class="line">                    || ((y &lt; <span class="number">3</span>) &amp;&amp; t.value == tileAt(x, y + <span class="number">1</span>).value)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Tile[] moveLine(Tile[] oldLine) &#123;</span><br><span class="line">        LinkedList&lt;Tile&gt; l = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!oldLine[i].isEmpty()) &#123;</span><br><span class="line">                l.addLast(oldLine[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (l.size() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> oldLine;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Tile[] newLine = <span class="keyword">new</span> Tile[<span class="number">4</span>];</span><br><span class="line">            ensureSize(l, <span class="number">4</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">                newLine[i] = l.removeFirst();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> newLine;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Tile[] mergeLine(Tile[] oldLine) &#123;</span><br><span class="line">        LinkedList&lt;Tile&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span> &amp;&amp; !oldLine[i].isEmpty(); i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> num = oldLine[i].value;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; <span class="number">3</span> &amp;&amp; oldLine[i].value == oldLine[i + <span class="number">1</span>].value) &#123;</span><br><span class="line">                num *= <span class="number">2</span>;</span><br><span class="line">                myScore += num;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    MusicDemo.playMusic();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">int</span> target = <span class="number">2048</span>;</span><br><span class="line">                <span class="keyword">if</span> (num == target) &#123;</span><br><span class="line">                    myWin = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line">            list.add(<span class="keyword">new</span> Tile(num));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (list.size() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> oldLine;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ensureSize(list, <span class="number">4</span>);</span><br><span class="line">            <span class="keyword">return</span> list.toArray(<span class="keyword">new</span> Tile[<span class="number">4</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureSize</span><span class="params">(List&lt;Tile&gt; l, <span class="keyword">int</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (l.size() != s) &#123;</span><br><span class="line">            l.add(<span class="keyword">new</span> Tile());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Tile[] getLine(<span class="keyword">int</span> index) &#123;</span><br><span class="line">        Tile[] result = <span class="keyword">new</span> Tile[<span class="number">4</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            result[i] = tileAt(i, index);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setLine</span><span class="params">(<span class="keyword">int</span> index, Tile[] res)</span> </span>&#123;</span><br><span class="line">        System.arraycopy(res, <span class="number">0</span>, myTiles, index * <span class="number">4</span>, <span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paint</span><span class="params">(Graphics g)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.paint(g);</span><br><span class="line">        g.setColor(BG_COLOR);</span><br><span class="line">        g.fillRect(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">this</span>.getSize().width, <span class="keyword">this</span>.getSize().height);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; <span class="number">4</span>; y++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; <span class="number">4</span>; x++) &#123;</span><br><span class="line">                drawTile(g, myTiles[x + y * <span class="number">4</span>], x, y);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawTile</span><span class="params">(Graphics g2, Tile tile, <span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        Graphics2D g = (Graphics2D) g2;</span><br><span class="line">        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);</span><br><span class="line">        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);</span><br><span class="line">        <span class="keyword">int</span> value = tile.value;</span><br><span class="line">        <span class="keyword">int</span> xOffset = offsetCoors(x);</span><br><span class="line">        <span class="keyword">int</span> yOffset = offsetCoors(y);</span><br><span class="line">        g.setColor(tile.getBackground());</span><br><span class="line">        g.fillRoundRect(xOffset, yOffset, TILE_SIZE, TILE_SIZE, <span class="number">14</span>, <span class="number">14</span>);</span><br><span class="line">        g.setColor(tile.getForeground());</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> size = value &lt; <span class="number">100</span> ? <span class="number">36</span> : value &lt; <span class="number">1000</span> ? <span class="number">32</span> : <span class="number">24</span>;</span><br><span class="line">        <span class="keyword">final</span> Font font = <span class="keyword">new</span> Font(FONT_NAME, Font.BOLD, size);</span><br><span class="line">        g.setFont(font);</span><br><span class="line"></span><br><span class="line">        String s = String.valueOf(value);</span><br><span class="line">        FontMetrics fm = getFontMetrics(font);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> w = fm.stringWidth(s);</span><br><span class="line">        <span class="keyword">int</span> h = -(<span class="keyword">int</span>) fm.getLineMetrics(s, g).getBaselineOffsets()[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (value != <span class="number">0</span>) &#123;</span><br><span class="line">            g.drawString(s, xOffset + (TILE_SIZE - w) / <span class="number">2</span>, yOffset + TILE_SIZE - (TILE_SIZE - h) / <span class="number">2</span> - <span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (myWin || myLose) &#123;</span><br><span class="line">            g.setColor(<span class="keyword">new</span> Color(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">30</span>));</span><br><span class="line">            g.fillRect(<span class="number">0</span>, <span class="number">0</span>, getWidth(), getHeight());</span><br><span class="line">            g.setColor(<span class="keyword">new</span> Color(<span class="number">78</span>, <span class="number">139</span>, <span class="number">202</span>));</span><br><span class="line">            g.setFont(<span class="keyword">new</span> Font(FONT_NAME, Font.BOLD, <span class="number">48</span>));</span><br><span class="line">            <span class="keyword">if</span> (myWin) &#123;</span><br><span class="line">                g.drawString(<span class="string">"You Won!"</span>, <span class="number">68</span>, <span class="number">150</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (myLose) &#123;</span><br><span class="line">                g.drawString(<span class="string">"Game over!"</span>, <span class="number">50</span>, <span class="number">130</span>);</span><br><span class="line">                g.drawString(<span class="string">"You lose!"</span>, <span class="number">64</span>, <span class="number">200</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (myWin || myLose) &#123;</span><br><span class="line">                g.setFont(<span class="keyword">new</span> Font(FONT_NAME, Font.PLAIN, <span class="number">16</span>));</span><br><span class="line">                g.setColor(<span class="keyword">new</span> Color(<span class="number">128</span>, <span class="number">128</span>, <span class="number">128</span>, <span class="number">128</span>));</span><br><span class="line">                g.drawString(<span class="string">"Press ESC to play again"</span>, <span class="number">80</span>, getHeight() - <span class="number">40</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        g.setFont(<span class="keyword">new</span> Font(FONT_NAME, Font.PLAIN, <span class="number">18</span>));</span><br><span class="line">        g.drawString(<span class="string">"Score: "</span> + myScore, <span class="number">200</span>, <span class="number">365</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">offsetCoors</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> arg * (TILES_MARGIN + TILE_SIZE) + TILES_MARGIN;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        JFrame game = <span class="keyword">new</span> JFrame();</span><br><span class="line">        game.setTitle(<span class="string">"2048"</span>);</span><br><span class="line">        game.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);</span><br><span class="line">        game.setSize(<span class="number">340</span>, <span class="number">400</span>);</span><br><span class="line">        game.setResizable(<span class="keyword">false</span>);</span><br><span class="line">        game.add(<span class="keyword">new</span> Game2048());</span><br><span class="line">        game.setLocationRelativeTo(<span class="keyword">null</span>);</span><br><span class="line">        game.setVisible(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Music<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sun.audio.AudioPlayer;</span><br><span class="line"><span class="keyword">import</span> sun.audio.AudioStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.FileInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.FileNotFoundException;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MusicDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"><span class="comment">// 创建音乐文件输入流对象</span></span><br><span class="line">        InputStream in = <span class="keyword">new</span> FileInputStream(<span class="string">"C:\\Users\\Ramble\\Desktop\\study\\wyl-2048\\src\\1.wav"</span>);</span><br><span class="line"><span class="comment">// 创建音频流对象</span></span><br><span class="line">        <span class="keyword">final</span> AudioStream audioStream = <span class="keyword">new</span> AudioStream(in);</span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line"><span class="comment">// 使用音频播放器播放声音</span></span><br><span class="line">            AudioPlayer.player.start(audioStream);</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止声音播放</span></span><br><span class="line">        AudioPlayer.player.stop(audioStream);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">playMusic</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">// 创建音乐文件输入流对象</span></span><br><span class="line">        InputStream in = <span class="keyword">new</span> FileInputStream(<span class="string">"C:\\Users\\Ramble\\Desktop\\study\\wyl-2048\\src\\3.wav"</span>);</span><br><span class="line"><span class="comment">// 创建音频流对象</span></span><br><span class="line">        <span class="keyword">final</span> AudioStream audioStream = <span class="keyword">new</span> AudioStream(in);</span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line"><span class="comment">// 使用音频播放器播放声音</span></span><br><span class="line">            AudioPlayer.player.start(audioStream);</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止声音播放</span></span><br><span class="line">        AudioPlayer.player.stop(audioStream);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
 
@@ -674,7 +267,7 @@ select * from r order by id;
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/SQL//" class="article-tag-list-link color4">SQL</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -683,7 +276,7 @@ select * from r order by id;
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/PostgreSQL Notes/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Java实现2048/">展开全文 >></a>
         </p>
       
 
@@ -713,61 +306,33 @@ select * from r order by id;
 
 
   
-    <article id="post-Ramda碎碎念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-SICP目录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Ramda碎碎念/">Ramda碎碎念</a>
+      <a class="article-title" href="/2019/04/05/SICP目录/">计算机程序的构造和解释</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Ramda碎碎念/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/05/SICP目录/" class="archive-article-date">
+  	<time datetime="2019-04-04T18:24:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>prop基于path实现.<br>    prop = (p, obj) =&gt; path([p], obj)</p>
-<pre><code>path一层层索引
+        <p>计算机程序的构造和解释</p>
+<p>第1章 构造过程抽象<br>1.1 程序设计的基本元素<br>1.2 过程与它们所产生的计算<br>1.3 用高阶函数做抽象</p>
+<p>第2章 构造数据抽象<br>2.1 数据抽象导引<br>2.2 层次性数据和闭包性质<br>2.3 符号数据<br>    2.3.1 引进将任意符号作为数据的功能<br>    2.3.2 符号求导<br>2.4 抽象数据的多重表示<br>    2.4.1 复数的表示<br>2.5 带有通用型操作的系统</p>
+<p>第3章 模块化、对象和状态<br>3.1 赋值和局部状态<br>3.2 求值的环境模型<br>3.3 用变动数据做模拟<br>3.4 并发：时间是一个本质问题<br>3.5 流</p>
+<p>第4章 元语言抽象<br>4.1 元循环求值器<br>4.2 Scheme的变形——惰性求值<br>4.3 Scheme的变形——非确定性计算<br>4.4 逻辑程序设计</p>
+<p>第5章 寄存器机器里的计算<br>5.1 寄存器机器的设计<br>5.2 一个寄存器机器模拟器<br>5.3 存储分配和废料收集<br>5.4 显式控制的求值器<br>5.5 编译</p>
 
-    R.path([&apos;a&apos;, &apos;b&apos;], {a: {b: 2}}); //=&gt; 2a
-    R.prop(&apos;x&apos;, {x: 100}); //=&gt; 100
-</code></pre><p>descend = (f, a, b) =&gt; f(a) &gt; f(b) ? -1 : f(a) &lt; f(b) ? 1 : 0<br>类似地: ascend…</p>
-<p>sort = (comparator, list) =&gt; Array.prototype.slice.call(list, 0).sort(comparator)<br>sort函数实现直接用的原生实现,不过返回了新list,而且curry了.</p>
-<p>comparator :: a -&gt; b -&gt; Int</p>
-<p>thrush combinator 接受一个值, 并将函数作用于其上.  applyTo = (x, f) =&gt; f(x)<br>    const t42 = R.applyTo(42);<br>    t42(R.identity); //=&gt; 42<br>    t42(R.add(1)); //=&gt; 43</p>
-<p>keys 返回对象最外层key    </p>
-<p>applySpec : 接受一个属性值为函数的对象,返回的函数使用传入的参数调用对象的每个属性位对应的函数，来生成相应属性的值。</p>
-<pre><code>const getMetrics = R.applySpec({
-    sum: (a,b,c) =&gt; a+b+c,
-    nested: { mul: (a,b,c) =&gt; a*b*c }
-});
-print(getMetrics(2, 5, 4)) // { sum: 11, nested: { mul: 40 } }
-
-内部函数: mapValues = (f, obj) =&gt; 
-            R.keys(obj).reduce((acc, key) =&gt; {
-                acc[key] = f(obj[key])
-                return acc
-            }, {})
-        是为了避免specs函数也包含map
-
-pluck 从列表内的每个对象元素中取出特定名称的属性，组成一个新的列表
-    pluck = (p, list) =&gt; map(prop(p), list)
-
-    var getAges = R.pluck(&apos;age&apos;);
-    getAges([{name: &apos;fred&apos;, age: 29}, {name: &apos;wilma&apos;, age: 27}]); //=&gt; [29, 27]
-
-    R.pluck(0, [[1, 2], [3, 4]]);               //=&gt; [1, 3]
-    R.pluck(&apos;val&apos;, {a: {val: 3}, b: {val: 5}}); //=&gt; {a: 3, b: 5}
-</code></pre><p>addIndex: 没咋看懂<br>adjust: 将数组中指定索引处的值替换为经函数变换的值<br>    R.adjust(1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);      //=&gt; [‘a’, ‘B’, ‘c’, ‘d’]<br>    R.adjust(-1, R.toUpper, [‘a’, ‘b’, ‘c’, ‘d’]);     //=&gt; [‘a’, ‘b’, ‘c’, ‘D’]</p>
-<pre><code>实现: 统一索引,利用_concat新建list,将索引处值替换.
-</code></pre>
       
 
       
@@ -780,28 +345,17 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
 	</div>
 
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Ramda碎碎念/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/SICP目录/">展开全文 >></a>
         </p>
       
 
@@ -831,43 +385,33 @@ pluck 从列表内的每个对象元素中取出特定名称的属性，组成�
 
 
   
-    <article id="post-Nodejs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Caffeine Cache" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/04/Nodejs/">nodejs</a>
+      <a class="article-title" href="/2019/04/05/Caffeine Cache/">Caffeine Cache</a>
     </h1>
   
 
         
-        <a href="/2019/04/04/Nodejs/" class="archive-article-date">
-  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+        <a href="/2019/04/05/Caffeine Cache/" class="archive-article-date">
+  	<time datetime="2019-04-04T16:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Nodejs适合I/O密集型应用,而不适合计算密集型应用(模板渲染, 压缩/解压缩, 加/解密).<br>数据密集型实时应用程序(data-intensive real-time): 在线协作的白板, 多人在线游戏<br>应用场景: 1.JSON APIs, Node.js非阻塞IO模型和对JSON的支持</p>
-<pre><code>2. 单页面,多Ajax请求应用, 处理大量异步请求. 如Gmail
-3. UNIX命令行工具, Node.js可以大量生产子进程,并以流的方式输出
-4. 流式数据, 传统Web应用会把HTTP请求和响应看成原子事件, 而Node.js可以使用流式数据, 如实时文件上传系统transloadit
-5. 准实时应用系统: 聊天系统,微博系统. JS的GC会使系统停止工作, 导致响应时间不平滑
-</code></pre><p>Node.js优点: 事件驱动, 异步编程, 非阻塞IO</p>
-<p>Node standard library: http, net, stream, events, buffer…<br>Node bindings: JavaScript通过bindings调用C++,相互交换数据<br>基础构件: V8(JavaScript VM), libuv(提供跨平台,线程池,事件池,异步IO能力),<br>        C-ares(提供异步处理DNS相关能力), http_parser,OpenSSL,zlib(提供HTTP解析,SSL,数据压缩等能力)</p>
-<p>全局变量:<br>    process:<br>        process.argv 命令行参数数组,第一个元素是node,第二个是脚本名称,之后是运行参数<br>        process.stdout<br>        process.stdin<br>        process.nextTick(callback) 为事件循环设置一项任务,Node.js会在下次事件循环调响应<br>                                                      时调用callback.<br>                    目的: 缩短事件的执行时间<br>        process.platform<br>        process.pid<br>        process.execPath<br>        process.memoryUsage()    </p>
-<pre><code>util:
-    util.inherits 
-event:
-    EventEmitter.on(event, listener)
-    EventEmitter.emit(event, [args])
-    EventEmitter.once(event, listener) 单次监听器,触发后解除.
-    EventEmitter.removeListener(event, listener)
-    EventEmitter.removeAllListener(event)
-</code></pre>
+        <p>Cache接口: 定义通用缓存操作的接口<br>    获取缓存的名字<br>    获取底层的缓存提供者</p>
+<p>CacheManager接口: spring的核心缓存管理服务提供接口<br>    获取给定名字的缓存<br>    获取此缓存管理器的所有缓存名字集合</p>
+<p>ApplicationListener接口: 事件监听器, 观察者模式.<br>    void onApplicationEvent(E event); 处理事件</p>
+<p>ContextRefreshedEvent类: 当ApplicationContext初始化或者刷新时该事件触发</p>
+<p>CacheRefreshNotifier类:<br>    利用PostgreSQL的Notify/Listen机制,配合触发器函数notify_data_change(), 监听表数据的增删改,对缓存进行同步刷新</p>
+<p>注解:<br>    @EnableCaching: 开启缓存管理<br>    @Cacheable: 执行方法的结果可以被缓存<br>    @CacheEvict: 方法会触发清除缓存操作</p>
+
       
 
       
@@ -881,7 +425,7 @@ event:
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
         		</li>
       		
 		</ul>
@@ -890,7 +434,7 @@ event:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/04/Nodejs/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/Caffeine Cache/">展开全文 >></a>
         </p>
       
 
@@ -922,7 +466,7 @@ event:
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/38/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="page-number current">39</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/40/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/38/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="page-number current">39</span><a class="page-number" href="/page/40/">40</a><a class="page-number" href="/page/41/">41</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/40/">Next &raquo;</a>
     </nav>
   
 
@@ -934,7 +478,7 @@ event:
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

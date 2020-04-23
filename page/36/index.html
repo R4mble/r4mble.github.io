@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>三石的QQ空间</title>
+  <title>笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="击空明兮溯流光">
 <meta property="og:type" content="website">
-<meta property="og:title" content="三石的QQ空间">
+<meta property="og:title" content="笔记本">
 <meta property="og:url" content="http://yoursite.com/page/36/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
+<meta property="og:site_name" content="笔记本">
 <meta property="og:description" content="击空明兮溯流光">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三石的QQ空间">
+<meta name="twitter:title" content="笔记本">
 <meta name="twitter:description" content="击空明兮溯流光">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -157,349 +157,27 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Spark实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JavaScript函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spark实战/">Spark实战</a>
+      <a class="article-title" href="/2019/04/05/JavaScript函数式编程/">JavaScript函数式编程</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Spark实战/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:38:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/JavaScript函数式编程/" class="archive-article-date">
+  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Spark<br>    快速: Spark有一个Directed Acyclic Graph(DAG有向无环图)执行引擎,支持循环数据流和内存计算.</p>
-<pre><code>Spark Core
-    任务调度,内存管理,故障恢复,存储系统的交互
-    核心思想: 将数据集缓存在内存中,用Lineage机制来进行容错
-
-    RDD
-        自动容错,位置感知调度,可伸缩性
-        容错性方式:
-            数据检查点(传输成本高), 记录数据的更新(只支持粗粒度的转换)
-
-    编程接口,2类API
-        Transformations (懒策略, 只有在action提交时才被触发执行)
-            map, filter, union, sample, join
-        Actions
-            count, collect, save, reduce, lookup
-
-    依赖关系
-        窄依赖
-            一个父RDD最多被一个子RDD引用,如 map, filter, union
-        宽依赖
-           一个父RDD被多个子RDD引用,如groupByKey
-
-    Stage DAG
-        Spark提交Job生成多个Stage, Stage之间存在依赖, 这些依赖关系构成了DAG
-        对于窄依赖,spark尽量把RDD转换放在一个Stage中
-        对于宽依赖,spark将Stage定义为ShuffleMapStage,以便向MapOutputTracker
-            注册shuffle操作. Spark将shuffle操作定义为stage的边界.
-
-Spark Streaming
-    对实时数据流进行高通量,容错处理的流式处理系统,可以对多种数据源(Kafka,Flume)
-      进行map,reduce,join,window等操作,并将结果保存到外部文件系统,数据库等.
-
-     原理: 将Stream数据分成小的时间片段,以类似batch批量处理的方式来处理这一小部分数据
-
-GraphX
-    提供了一套图算法工具包,方便用户对图进行分析
-        分布式图计算框架
-            图存储模式
-                边分割
-                    每个顶点存储一次,但有的边会被打断分到两台机器
-                    好处: 节省存储空间
-                    坏处: 对一条两个顶点被分到不同的机器上的边来说,要跨机器通信
-                            传输数据,内网通信流量大
-
-                点分割
-                    每条边存储一次.邻居多的点会被复制到多台机器上,增加了存储开销
-                       引发数据同步问题
-
-            图计算模型
-                BSP(Bulk Synchronous Parallel)计算模式
-                    一次计算过程由一系列全局超步组成,每一个超步由并发计算,通信和
-                    栅栏同步三个步骤组成. 同步完成标志着这个超步的完成以及下一个
-                    超步的开始.
-
-                 Pregel模型
-                    消息通信范式. 只需要实现一个顶点更新函数, 让框架在遍历
-                    顶点时进行调用.
-
-                 GAS模型
-                    共享内存.Gather,Apply,Scatter
-
-
-Spark SQL
-
-MLlib
-    二元分类
-        监督学习.如判断邮件是否是垃圾邮件. 返回一个模型,对标签未知的新个体进行
-        潜在标签预测.
-
-        两个适用于二元分类的标准模型家族
-            线性支持向量机(SVMs)
-            逻辑回归
-
-            输入一个正则项参数和多个梯度下降相关参数
-
-
-    线性回归
-        监督学习.
-
-    聚类
-        非监督学习.KMeans
-    协同过滤
-        用于推荐系统. 交替最小二乘法.
-
-    梯度下降优化基础算法
-    朴素贝叶斯算法
-    决策树的解析
-
-Spark整体流程
-    Client(提交应用) -&gt; Master(找到Worker,启动Driver) -&gt; Driver -&gt; RDD Graph (由DAGScheduler转化为有向无环图) -&gt; TaskScheduler -&gt; Executor
-
-Spark算子
-    Value型Transformation
-        输入分区与输出分区一对一
-            map
-            flatMap
-            mapPartitions
-            glom
-
-        输入分区与输出分区多对一
-            union
-            cartesian 笛卡尔积
-
-        输入分区与输出分区多对多
-            groupBy
-
-        输出分区为输入分区子集
-            filter
-            distinct
-            subtract
-            sample
-            takeSample
-
-        一对一 Cache型
-            cache
-            persist
-
-
-    Key-Value型Transformation
-
-    Action型,会触发SparkContext提交Job
-        无输出
-            foreach
-        HDFS
-            saveAsTextFile
-            saveAsObjectFile
-        Scala
-            collect
-            collectAsMap
-            reduceByKeyLocally  先reduce再collectAsMap
-            lookup
-            count
-            top
-            reduce
-            fold
-            aggregate
-
-
-Spark工作机制
-    Spark主要模块
-        调度与任务分配
-            RDD的Action触发Job提交,生成RDD DAG,由DAGScheduler转化为
-              Stage DAG,每个Stage中产生相应的Task集合,TaskScheduler将
-              任务分发到Executor执行.Executor创建线程池,并发执行
-              每个任务对应相应的一个数据块,使用
-              用户定义的函数处理数据块.
-
-              对RDD的块管理通过BlockManager完成.
-
-            层次
-                应用
-
-                Job
-
-                Stage
-
-                Task
-            算法
-                FIFO
-                FAIR
-
-        I/O模块
-            将数据以块为单位管理
-
-        通信控制模块
-            AKKA框架
-
-        容错模块
-            Lineage Checkpoint
-        Shuffle模块
-</code></pre><h1 id="Spark-SQL"><a href="#Spark-SQL" class="headerlink" title="Spark SQL"></a>Spark SQL</h1><h1 id="Spark-Streaming"><a href="#Spark-Streaming" class="headerlink" title="Spark Streaming"></a>Spark Streaming</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spark实战/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
         
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Netty-in-action" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Netty-in-action/">Netty in action</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Netty-in-action/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:36:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Netty   异步和事件驱动</p>
-<pre><code>Netty核心组件:
-        Bootstrap 和 ServerBootstrap
-            提供了一个用于应用程序网络层配置的容器
-
-            Bootstrap
-                连接远程主机,有1个EventLoopGroup
-
-            ServerBootstrap 绑定本地端口
-                在服务器监听一个端口轮询客户端的Bootstrap或DatagramChannel是否
-                    连接服务器.   调用Bootstrap类的connect方法,也可以先bind()
-                    再connect(),之后使用的Channel包含在bind()返回的ChannelFuture中
-                一个ServerBootstrap有2个Channel集合.(EventLoopGroup)
-                    1.包含一个单例ServerChannel,代表持有一个绑定了本地端口的socket
-                    2.包含所有创建的Channel,处理服务器所接收到的客户端进来的连接.
-
-        Channel
-            代表了一个用于连接到实体如硬件设备,文件,网络套接字或程序组件,能够执行一个或多个不同的IO操作的开放连接.
-            底层网络传输API必须提供给应用I/O操作的接口.如读/写/绑定等.
-            定义了与socket丰富交互的操作集:bind,close,config,connect,
-                isActive,isOpen,isWritable,read,write.
-
-        ChannelHandler
-            支持很多协议,提供用于数据处理的容器. 应用程序的核心
-            由特定事件触发
-            ChannelInboundHandler
-                数据从远程主机到用户应用程序
-            ChannelOutboundHandler
-                数据从用户应用程序到远程主机
-            体现了关注点分离的设计原则,并简化业务逻辑的迭代开发的要求.
-                    每一个方法覆盖到hook在活动周期适当的点.
-                    覆盖channelRead0因为需要处理所有接收到的数据
-                    覆盖exceptionCaught可以应对任何Throwable的子类型,
-                    这种情况记录并关闭所有可能处于未知状态的连接.
-            每一个Channel都有一个关联的ChannelPipeline,它代表了ChannelHandler实例
-            的链.适配器处理的实现是将一个处理方法转发到链中的下一个处理器.
-            因此提供至少一个实现exceptionCaught的ChannelHandler
-            ChannelHandler给不同类型的事件调用应用程序实现或扩展ChannelHandler挂接到事件生命周期和提供自定义应用逻辑
-
-        Callback 回调   回调事件由接口ChannelHandler的实现来处理
-            // 一旦一个新的连接建立, channelActive方法就会被调用
-            public class ConnectHandler extends ChannelInboundHandlerAdapter {
-                @Override
-                public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                    System.out.println(&quot;Client &quot; + ctx.channel().remoteAddress() + &quot; connected&quot;);
-                }
-            }
-
-        ChannelFuture
-            Netty所有的I/O操作都是异步的,当操作完成时可以被通知.
-            一个未来执行操作结果的占位符.
-
-        ChannelPipeline
-            提供一个容器给ChannelHandler链并提供一个API用于管理沿着链入站
-            和出站事件的流动.
-            每个Channel都有自己的ChannelPipeline,当Channel创建时自动创建
-
-            实现了ChannelHandler的抽象ChannelInitializer.
-            ChannelInitializer子类通过ServerBootstrap注册.
-            当它的方法initChannel()被调用时,这个对象将安装自定义的ChannelHandler集到
-            pipeline. 当这个操作完成时,ChannelInitializer子类从ChannelPipeline
-            自动删除自身.
-
-        EventLoop
-            处理Channel的I/O操作. 一个单一的EventLoop会处理多个Channel事件.
-            一个EventLoopGroup可以含有多于一个的EventLoop和提供了一种迭代用于
-            检索清单中的下一个.
-
-
-        Channel Event 和 I/O
-            Netty 非阻塞,事件驱动的网络框架
-                使用多线程处理I/O事件.
-                Netty的设计保证程序处理事件不会有同步. 不需要在Channel之间共享ChannelHandler实例
-
-                一个EventLoopGroup有一个或多个EventLoop,一个EventLoop作为一个线程给Channel执行工作
-
-                当创建一个Channel,Netty通过一个单独的EventLoop实例来注册该Channel的通道的使用寿命.
-                所有Channel的I/O始终用相同的线程来执行,所以不需要同步Netty的I/O操作.
-</code></pre><p>引导服务器<br>    监听和接收进来的连接请求<br>    配置Channel来通知一个关于入站消息的EchoServerHandler实例</p>
-
       
 
       
@@ -512,7 +190,7 @@ Spark工作机制
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
         		</li>
       		
 		</ul>
@@ -524,7 +202,7 @@ Spark工作机制
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Netty//" class="article-tag-list-link color1">Netty</a>
+        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
         		</li>
       		
 		</ul>
@@ -533,7 +211,7 @@ Spark工作机制
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Netty-in-action/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/JavaScript函数式编程/">展开全文 >></a>
         </p>
       
 
@@ -563,58 +241,75 @@ Spark工作机制
 
 
   
-    <article id="post-GitFlow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(4)-缓存淘汰" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/GitFlow/">Git Flow</a>
+      <a class="article-title" href="/2019/04/05/(4)-缓存淘汰/">(4)-缓存淘汰</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/GitFlow/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/(4)-缓存淘汰/" class="archive-article-date">
+  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>集中式工作流<br>    工作方式<br>        以中央仓库作为项目所有修改的单点实体,所有修改提交到这个分支<br>        上,只用到master这一个分支.<br>    冲突解决<br>        开发者提交之前,需要先fetch中央库的新增提交,rebase自己提交到<br>        中央仓库提交历史之上.[把自己的修改加到别人已经完成的修改上]</p>
-<pre><code>git pull --rebase origin master
-    --rebase选项把提交已到同步了中央仓库修改后的master分支的顶部.
-</code></pre><p>功能分支工作流<br>    所有的功能开发应该在一个专门的分支</p>
-<p>GitFlow工作流<br>    历史分支<br>        使用两个分支来记录项目的历史,master分支存储了正式发布的历史,develop<br>        分支作为功能的集成分支.<br>    功能分支<br>        使用develop作为父分支,新功能完成时合并回develop分支.<br>    发布分支<br>        从develop分支上fork一个发布分支,新建的分支用于开始发布循环,发布分支<br>        合并到master分支并分配一个版本号打好Tag.</p>
-<pre><code>示例
-    git checkout -b some-feature develop
+        <pre><code> Redis是一个Key-value存储系统。它支持存储的value类型很多，包括String（字符串）、链表(list)、set（集合）、zset（有序集合） hash。
+ Redis支持各种不同方式的排序。可以把周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件。
 
-    git status
-    git add 
-    git commit
+缓存穿透
+    缓存系统按照KEY去查询VALUE,当KEY对应的VALUE一定不存在的时候并对KEY并发请求量很大的时候，就会对后端造成很大的压力。
 
-    git pull origin develop
-    git checkout develop
-    git merge some-feature
-    git push
-    git branch -d some-feature
+    解决办法
+        布隆过滤器
+            将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。
+        缓存层缓存空值
+            如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。
+               存储层更新代码了，缓存层还是空值。（优化：后台设置时主动删除空值，并缓存把值进去）
 
-    git checkout -b release-0.1 develop
+缓存雪崩（缓存失效）
+     如果缓存集中在一段时间内失效，发生大量的缓存穿透，所有的查询都落在数据库上，造成了缓存雪崩。
 
-    git checkout master
-    git merge release-0.1
-    git push
-    git checkout develop
-    git merge release-0.1
-    git push
-    git branch -d release-0.1
+     解决办法
+        1.在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。
+        2.可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存
+        3.不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀
+        4.做二级缓存，或者双缓存策略。A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期。
 
-    git tag -a 0.1 -m &quot;Initial public release&quot; master
-    git push --tag
-</code></pre><p>Forking工作流</p>
+热点key
+    将热点key对应value并缓存在客户端本地，并且设置一个失效时间。
+    对于每次读请求，将首先检查key是否存在于本地缓存中，如果存在则直接返回，如果不存在再去访问分布式缓存的机器。
 
+    将热点key分散为多个子key，然后存储到缓存集群的不同机器上，这些子key对应的value都和热点key是一样的。
+    当通过热点key去查询数据时，通过某种hash算法随机选择一个子key，然后再去访问缓存机器，将热点分散到了多个子key上。
+
+
+淘汰策略
+    noeviction: 不删除策略, 达到最大内存限制时, 如果需要更多内存, 直接返回错误信息。 大多数写命令都会导致占用更多的内存(有极少数会例外, 如 DEL )。
+    allkeys-lru: 所有key通用; 优先删除最近最少使用(less recently used ,LRU) 的 key。
+    volatile-lru: 只限于设置了 expire 的部分; 优先删除最近最少使用(less recently used ,LRU) 的 key。
+    allkeys-random: 所有key通用; 随机删除一部分 key。
+    volatile-random: 只限于设置了 expire 的部分; 随机删除一部分 key。
+    volatile-ttl: 只限于设置了 expire 的部分; 优先删除剩余时间(time to live,TTL) 短的key。
+
+    如果分为热数据与冷数据, 推荐使用 allkeys-lru 策略。 也就是, 其中一部分key经常被读写. 如果不确定具体的业务特征,
+     那么 allkeys-lru 是一个很好的选择。
+
+     如果需要循环读写所有的key, 或者各个key的访问频率差不多, 可以使用 allkeys-random 策略, 即读写所有元素的概率差不多。
+
+     假如要让 Redis 根据 TTL 来筛选需要删除的key, 请使用 volatile-ttl 策略。
+
+     volatile-lru 和 volatile-random 策略主要应用场景是: 既有缓存,又有持久key的实例中。
+      一般来说, 像这类场景, 应该使用两个单独的 Redis 实例。
+      值得一提的是, 设置 expire 会消耗额外的内存, 所以使用 allkeys-lru 策略, 可以更高效地利用内存, 因为这样就可以不再设置过期时间了。
+</code></pre>
       
 
       
@@ -628,7 +323,7 @@ Spark工作机制
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Git//" class="article-tag-list-link color4">Git</a>
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -637,7 +332,7 @@ Spark工作机制
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/GitFlow/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/(4)-缓存淘汰/">展开全文 >></a>
         </p>
       
 
@@ -667,28 +362,134 @@ Spark工作机制
 
 
   
-    <article id="post-Git技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(3)-数据持久化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Git技巧/">Git技巧</a>
+      <a class="article-title" href="/2019/04/05/(3)-数据持久化/">(3)-数据持久化</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Git技巧/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:33:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/05/(3)-数据持久化/" class="archive-article-date">
+  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line">git技巧</span><br><span class="line"></span><br><span class="line">后悔药系列:</span><br><span class="line">    撤销存入暂存区操作</span><br><span class="line">    git reset head &lt;filename&gt; </span><br><span class="line"></span><br><span class="line">    删除暂存区文件</span><br><span class="line">    git rm --cache xxx.zip</span><br><span class="line">    </span><br><span class="line">    放弃本地修改</span><br><span class="line">    git checkout xxx.java</span><br><span class="line"></span><br><span class="line">    命令放弃本次合并</span><br><span class="line">    git merge --abort </span><br><span class="line"></span><br><span class="line">    退回到改之前的版本</span><br><span class="line">    git checkout &lt;hash&gt; &lt;filename&gt;</span><br><span class="line"></span><br><span class="line">    放弃本地修改，强制拉取更新   </span><br><span class="line">    git fetch --all                                git fetch 指令是下载远程仓库最新内容，不做合并 </span><br><span class="line">    git reset --hard origin/master                 git reset 指令把HEAD指向master最新版本</span><br><span class="line"></span><br><span class="line">提交:</span><br><span class="line">    相当于git add . 加上 git commit -m &quot;xxx&quot;  只会add修改的文件,不add新增的文件.</span><br><span class="line">    git commit -am &quot;xxx&quot; </span><br><span class="line"></span><br><span class="line">    提交会与上一次提交合并成一个新的提交，之前的提交会被废弃掉。</span><br><span class="line">    git commit --amend  </span><br><span class="line"></span><br><span class="line">    放弃commit, 回到未提交状态</span><br><span class="line">    git reset --soft HEAD^</span><br><span class="line"></span><br><span class="line">    git reset --hard xxxx</span><br><span class="line"></span><br><span class="line">后悔药的后悔药:</span><br><span class="line">    git reflog</span><br><span class="line"></span><br><span class="line">推分支到远程</span><br><span class="line">    git push origin local_branch:remote_branch</span><br><span class="line">删除远程分支</span><br><span class="line">    git push origin --delete remote_branch</span><br><span class="line"></span><br><span class="line">查看历史:</span><br><span class="line">    来查看最近一次提交的差异，当然也可以使用 git log -p 来查看所有的差异</span><br><span class="line">    git log -p -1   </span><br><span class="line"></span><br><span class="line">    git log --pretty=oneline </span><br><span class="line">    git log --oneline --graph --all </span><br><span class="line">    </span><br><span class="line">标签:</span><br><span class="line">    git tag -a 版本号 -m &apos;tag 信息&apos;来创建“轻量标签”</span><br><span class="line"></span><br><span class="line">    git show v1.1.1 来查看v1.1.1处的相关信息</span><br><span class="line"></span><br><span class="line">    给之前的某个commit打一个tag, 将commit号追加到打标签的命令后方</span><br><span class="line">    git tag -a vx.x.x -m &apos;message&apos; commit-hash</span><br><span class="line"></span><br><span class="line">    将本地创建的所有 tag 推送到远端origin</span><br><span class="line">    git push origin --tags</span><br><span class="line"></span><br><span class="line">别名:</span><br><span class="line">    创建别名</span><br><span class="line">    git config --global alias.s status </span><br><span class="line"></span><br><span class="line">    查看设置过的所有别名</span><br><span class="line">    git config -l</span><br><span class="line"></span><br><span class="line">开发中分支合并最新master且不新增提交:</span><br><span class="line">1.在开发分支合并最新的master.</span><br><span class="line">2.切换至master,使用git read-tree -m -u &lt;开发分支&gt;, 获得开发改动的代码的 未提交状态.</span><br><span class="line">3.在master新建开发分支</span><br><span class="line"></span><br><span class="line">理论知识:</span><br><span class="line">    Git 保存的不是文件差异或者变化量，而只是一系列文件快照。</span><br><span class="line"></span><br><span class="line">    git add时, 暂存操作会为每个文件计算校验和,把当前版本的文件使用bolb对象保存到Git仓库中.</span><br><span class="line"></span><br><span class="line">    git commit时, 提交操作会计算每一个子目录的校验和, 在Git仓库中将这些校验和</span><br><span class="line">    保存为树对象. 然后Git创建一个提交对象, 包含一个指向暂存内容快照的指针,作者的</span><br><span class="line">    姓名邮箱,提交时的输入信息和指向父对象的指针, 指向树对象的指针.</span><br><span class="line"></span><br><span class="line">        此时Git仓库中的对象:</span><br><span class="line">            bolb对象: 保存文件快照.</span><br><span class="line">            树对象: 记录着目录结构和blob对象索引.</span><br><span class="line">            提交对象: 包含着指向前面树对象的指针和所有的提交信息.</span><br><span class="line"></span><br><span class="line">    Git分支: 指向提交对象的可变指针. 实质上是包含所指向对象校验和的文件. </span><br><span class="line">    创建分支: 创建一个可以移动的新指针. 相当于往一个文件中0  写41个字节(40个SHA-1字符和1个换行符).</span><br><span class="line">    HEAD指针: 指向当前所在的分支</span><br><span class="line"></span><br><span class="line">Fast-forward</span><br><span class="line">    如果顺着一个分支走下去能够达到另一个分支, 那么Git在合并时只会简单的将指针前进.</span><br><span class="line">&apos;recursive&apos; strategy 合并提交</span><br><span class="line">    选取一个共同祖先, 作为合并的基础, 做一个新的快照并自动创建一个提交指向它.</span><br><span class="line"></span><br><span class="line">git rebase</span><br><span class="line">    将提交到某一分支上的所有修改都应用到另一分支.</span><br><span class="line">    原理: 先找到最近共同祖先, 对比当前分支相对于该祖先的历次提交,</span><br><span class="line">        提取相应的修改并存为临时文件,然后将当前分支指向目标基底,</span><br><span class="line">        将之前另存为临时文件的修改依序应用.</span><br><span class="line">    实质: 丢弃一些现有的提交, 然后相应地新建一些内容一样但不同的提交.</span><br><span class="line">    结果: 最终结果和git merge没有任何区别, 只是让提交历史变成一串.</span><br><span class="line">    特殊选项: </span><br><span class="line">        --onto</span><br><span class="line">            取出 client 分支，找出处于 client 分支和 server 分支的共同祖先之后的修改，然后把它们在 master 分支上重放一遍</span><br><span class="line">            git rebase --onto master server client</span><br><span class="line">        </span><br><span class="line">        将特性分支变基到目标分支</span><br><span class="line">        git rebase [basebranch] [topicbranch]</span><br><span class="line"></span><br><span class="line">    风险: 丢弃掉已经被人依赖的提交, 导致这边丢不掉, 那边提交重复.</span><br><span class="line">    解决办法: 用rebase解决rebase.</span><br><span class="line">            git rebase teamone/master</span><br><span class="line">        过程:1. 检查哪些提交是我们分支独有的.</span><br><span class="line">            2. 检查其中哪些提交不是合并操作的结果.</span><br><span class="line">            3. 检查其中哪些提交在对方覆盖更新时并没有被纳入目标分支.</span><br><span class="line">            4. 把查到的这些提交应用到teamone/master上.</span><br><span class="line">            </span><br><span class="line">    原则: 只对尚未推送或分享给别人的本地修改执行rebase操作清理历史,</span><br><span class="line">         不对已推送至别处的提交执行rebase.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">git多账户配置</span><br><span class="line">1. ssh-keygen -t rsa -C &apos;your_email@example.com&apos; -f ~/.ssh/id_rsa_github</span><br><span class="line">2. 在./ssh目录下创建config文件, 修改为:</span><br><span class="line"></span><br><span class="line">#Default GitHub</span><br><span class="line">Host github.com</span><br><span class="line">HostName github.com</span><br><span class="line">User git</span><br><span class="line">IdentityFile ~/.ssh/id_rsa</span><br><span class="line"></span><br><span class="line">Host r4mble</span><br><span class="line">HostName github.com</span><br><span class="line">User git</span><br><span class="line">IdentityFile ~/.ssh/id_rsa_github</span><br><span class="line"></span><br><span class="line">注意改的是Host而不是HostName</span><br><span class="line"></span><br><span class="line">3. 在某项目仓库中修改.git目录下的config文件, 把url里的@github.com改成上一步修改后的Host</span><br></pre></td></tr></table></figure>
+        <p>Redis in action</p>
+<pre><code>4. 数据安全与性能保障
+    数据持久化到硬盘
+    数据复制到其他机器
+    处理系统故障
+    Redis事物
+    非事物型流水线
+    诊断性能问题
 
+    4.1 持久化选项
+        4.1.1 快照 snapshotting
+            将存在于某一时刻的所有数据都写入硬盘里面
+
+            如果新的快照文件创建完毕之前,Redis,系统或硬件这三者
+            之中的任意一个崩溃,那么Redis将丢失最近一次创建快照之后
+            写入的所有数据.
+            快照持久化只适用于即使丢失一部分数据也不会造成问题的应用程序
+
+            创建快照的方法:
+                客户端向Redis发送bgsave命令来创建一个快照.
+                Redis会调用fork来创建一个子进程,然后子进程负责
+                将快照写入硬盘,父进程继续处理命令请求
+
+                客户端向Redis发送save命令来创建一个快照.
+                Redis在创建完毕之前不再响应其他任何命令.
+                在没有足够内存的情况,或者等待持久化操作执行完毕
+                也无所谓的情况下 才会使用此命令.
+
+                如果用户设置了save配置选项.如save 60 10000
+                Redis从最近一次创建快照算起,当60秒之内有10000次
+                写入时,Redis自动触发bgsave
+
+                Redis接收到shutdown命令或者接收到标准TERM信号时,
+                会执行save命令.save完成后关闭.
+
+                当一个Redis服务器连接另一个Redis服务器,并向对方发送sync
+                命令来开始一次复制操作时,如果主服务器没有在执行bgsave,或者
+                并非刚刚执行完bgsave,那么主服务器会执行bgsave.
+
+            使用快照持久化的场景:
+                1.个人开发
+                    降低快照持久化带来的资源消耗.
+                    save 900 1
+                    如果距离上次生成快照超过900秒,并在此期间执行了至少
+                    一次写入操作.那么触发一次新的bgsave
+
+                2.对日志进行聚合计算
+                    恢复因故障而被中断的日志处理操作
+
+
+
+
+        4.1.2只追加文件 append-only file AOF
+            在执行写命令时,将被执行的写命令复制到硬盘里面.以记录数据的变化.
+            Redis只要从头到尾重新执行一次AOF文件包含的所有写命令,就可以
+            恢复AOF文件所记录的数据集.
+            appendonly yes
+            appendfsync选项:
+                always
+                everysec
+                no
+
+        4.1.3 重写/压缩AOF文件
+             bgrewriteaof命令会移除aof文件中的冗余命令并重写aof文件,
+             使aof文件体积尽量变小, 工作原理与bgsave相似
+
+    4.2复制
+        主服务器向多个从服务器发送更新,并使用从服务器来处理所有的读请求.
+
+        4.2.1  从服务器的配置
+                启动redis服务器时,指定一个包含slaveof host port的配置文件.
+                redis服务器会根据ip和端口来连接主服务器.
+
+                正在运行的redis服务器,可以发送slaveof no one命令使服务器
+                终止复制操作,不再接受主服务器的数据更新
+                发送 slaveof host port来让服务器开始复制一个新的主服务器.
+</code></pre><h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><p>默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)<br>手动持久化命令:</p>
+<ol>
+<li>SAVE: 阻塞Redis服务器进程</li>
+<li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
+</ol>
+<p>持久化<br>    快照: 全量备份, 内存数据的二进制序列化形式,存储紧凑<br>        调用glibc的函数fork产生一个子进程,快照持久化完全交给子进程来处理,<br>        父进程继续处理客户端请求. 子进程刚产生时与父进程共享内存中的代码段<br>        和数据段.<br>        fork函数会在父子进程同时返回, 父进程中返回子进程的pid, 子进程返回0<br>        如果操作系统内存资源不足,pid会是负数,表示fork失败.</p>
+<pre><code>    Copy on Write: 数据段页面分离, 父进程对一个页面的数据进行修改时,会将
+        被共享的页面复制一份分离出来, 然后对这个复制的页面进行修改, 这时子进程
+        对应的页面没有变化, 还是进程产生时那一瞬间的数据.
+
+AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会在长期运行中
+      变得很庞大,数据库重启时需要加载AOF日志进行指令重放,时间很长.
+      需要定期AOF重写.
+      Redis会在收到客户端修改指令后,先进行参数校验,如果没问题就立即将该指令文本
+      存储到AOF日志中, 先存到磁盘再执行指令.
+
+      AOF重写
+          bgrewriteaof
+           开启一个子进程对内存进行遍历转换成一系列Redis的操作指令,序列化到一个新的
+           AOF日志文件中, 序列化完成后再将操作期间发生的增量AOF日志追加到这个新的AOF
+           日志文件中,追加后立即替代旧的AOF日志文件.
+
+        fsync(int fd)
+            程序对AOF日志文件进行写操作时,实际上是将内容写到了内核为文件描述符分配的一个
+            内存缓存中, 然后内核会异步将脏数据刷回到磁盘.
+            fsync将指定文件的内容强制从内核缓存刷新到磁盘.
+            通常在生产环境的服务器里,  每隔1s左右执行一次fsync操作.
+
+持久化操作主要在从节点进行.
+混合持久化:
+    Redis重启时先加载rdb内容,再重放增量AOF.
+</code></pre>
       
 
       
@@ -702,7 +503,7 @@ Spark工作机制
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Git//" class="article-tag-list-link color4">Git</a>
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -711,7 +512,80 @@ Spark工作机制
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Git技巧/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/(3)-数据持久化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Scala实现并行框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/Scala实现并行框架/">Scala实现并行框架</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/Scala实现并行框架/" class="archive-article-date">
+  	<time datetime="2019-04-05T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接收一个未求值的A,返回一个并行结果(传名函数)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//从并行结果里抽取结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//组合两个并行计算的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Par分配到另一个独立的逻辑线程中运行</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//派生组合子的一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazyUnit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = fork(unit(a))</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">Par</span>[<span class="type">A</span>] </span>= <span class="type">ExecutorService</span> =&gt; <span class="type">Future</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](s: <span class="type">ExecutorService</span>)(a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Future</span>[<span class="type">A</span>] = a(s)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Par</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = (es: <span class="type">ExecutorService</span>) =&gt; <span class="type">UnitFuture</span>(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitFuture</span>[<span class="type">A</span>](<span class="params">get: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Future</span>[<span class="type">A</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isDone</span> </span>= <span class="literal">true</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>(timeout: <span class="type">Long</span>, units: <span class="type">TimeUnit</span>) = get</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isCancelled</span> </span>= <span class="literal">false</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(evenIfRunning: <span class="type">Boolean</span>) : <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>] =</span><br><span class="line">        (es: <span class="type">ExecutorService</span>) =&gt; &#123;</span><br><span class="line">            <span class="keyword">val</span> af = a(es)</span><br><span class="line">            <span class="keyword">val</span> bf = b(es)</span><br><span class="line">            <span class="type">UnitFuture</span>(f(af.get, bf.getb))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>] =</span><br><span class="line">        es =&gt; es.submit(<span class="keyword">new</span> <span class="type">Callable</span>[<span class="type">A</span>] &#123;</span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">call</span> </span>= a(es).get</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/05/Scala实现并行框架/">展开全文 >></a>
         </p>
       
 
@@ -743,7 +617,7 @@ Spark工作机制
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/35/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/37/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/35/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/37/">Next &raquo;</a>
     </nav>
   
 
@@ -755,7 +629,7 @@ Spark工作机制
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

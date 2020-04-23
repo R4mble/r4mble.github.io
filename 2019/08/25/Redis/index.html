@@ -6,21 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Redis | 三石的QQ空间</title>
+  <title>Redis | 笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  数据类型字符串(string)常规操作: set name &amp;quot;Tom&amp;quot; get name append name &amp;quot;Jack&amp;quot; exists name del name 批量操作: MGET name1 name2 name3">
+  <meta name="description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  相当于SortedSet和HashMap的结合.一方面作为Set保证value的唯一性,另一方面给value赋予score,使用跳跃列表的数据结构来排序. 跳跃列表    层级结构,最下面一层所有元素串起来,每隔几个元素挑出一个代表,将这几个    代表使用另外一级指">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis">
 <meta property="og:url" content="http://yoursite.com/2019/08/25/Redis/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  数据类型字符串(string)常规操作: set name &amp;quot;Tom&amp;quot; get name append name &amp;quot;Jack&amp;quot; exists name del name 批量操作: MGET name1 name2 name3">
+<meta property="og:site_name" content="笔记本">
+<meta property="og:description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  相当于SortedSet和HashMap的结合.一方面作为Set保证value的唯一性,另一方面给value赋予score,使用跳跃列表的数据结构来排序. 跳跃列表    层级结构,最下面一层所有元素串起来,每隔几个元素挑出一个代表,将这几个    代表使用另外一级指">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-14T02:17:34.729Z">
+<meta property="og:updated_time" content="2020-04-22T10:12:18.161Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis">
-<meta name="twitter:description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  数据类型字符串(string)常规操作: set name &amp;quot;Tom&amp;quot; get name append name &amp;quot;Jack&amp;quot; exists name del name 批量操作: MGET name1 name2 name3">
+<meta name="twitter:description" content="用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.  相当于SortedSet和HashMap的结合.一方面作为Set保证value的唯一性,另一方面给value赋予score,使用跳跃列表的数据结构来排序. 跳跃列表    层级结构,最下面一层所有元素串起来,每隔几个元素挑出一个代表,将这几个    代表使用另外一级指">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -179,82 +179,9 @@
         <blockquote>
 <p> 用途:  数据库, 缓存, 消息中间件, timeline, 计数器, 反向索引, 排行榜, 任务调度, 队列, 分布式锁.</p>
 </blockquote>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="字符串-string"><a href="#字符串-string" class="headerlink" title="字符串(string)"></a>字符串(string)</h3><p>常规操作:</p>
-<pre><code>set name &quot;Tom&quot;
-get name
-append name &quot;Jack&quot;
-exists name
-del name
-</code></pre><p>批量操作:</p>
-<pre><code>MGET name1 name2 name3
-MSET name1 tom name2 jerry name3 jack
-</code></pre><p>设置过期:</p>
-<pre><code>EXPIRE name 5        #5s后过期
-SETEX name 5 &quot;tom&quot;  #5s后过期
-</code></pre><p>计数:</p>
-<pre><code>SET counter 1000
-INCR counter 
-DECR counter
-INCRBY counter 5
-
-SETNX name &quot;jerry&quot;        #如果name不存在,则创建.
-</code></pre><blockquote>
-</blockquote>
-<h3 id="列表-list"><a href="#列表-list" class="headerlink" title="列表(list)"></a>列表(list)</h3><pre><code>LPUSH lists redis mongodb golang
-RPUSH lists mysql postgre
-LPOP lists
-RPOP lists
-LRANGE lists 0 10
-</code></pre><blockquote>
-<p>lindex对链表进行遍历, 性能随index变大而变差. index为-1表示倒数第一个元素.<br>  ltrim 保留start_index和end_index之间的区间, 其他的去掉.</p>
-</blockquote>
-<blockquote>
-<p>数据量较少时会使用一块连续的内存存储,压缩列表ziplist将元素连续存储.<br>  数据量较多时使用quicklist.<br>  Redis将链表和ziplist结合组成quicklist,多个ziplist使用双向<br>  指针串起来使用.这样既可以快速插入删除,也不会出现太大的空间冗余.</p>
-</blockquote>
-<h3 id="散列-hash"><a href="#散列-hash" class="headerlink" title="散列(hash)"></a>散列(hash)</h3><pre><code>HMSET car name &quot;volvo&quot; color &quot;black&quot; price 20
-HMGET car name
-HEXISTS car name
-HDEL car price
-</code></pre><blockquote>
-<p>数组 + 链表的二维结构, 第一维数组位置碰撞后,使用链表将元素串接起来.<br>    与Java的HashMap的不同点:<br>        Redis字典只能是字符串;<br>        Redis采用渐进式rehash策略,HashMap采用一次性全部rehash.<br>            Redis不堵塞服务,实现了高性能.</p>
-</blockquote>
-<pre><code>渐进式rehash: 在rehash的同时保留新旧两个hash结构,查询时会同时查询两个
-hash结构,然后在后续的定时任务中以及hash的子指令中,逐渐将旧hash内容迁移到
-新hash结构中.当hash移除了最后一个元素后,该数据结构自动被删除,内存被回收.
-
-HashMap的rehash: 
-</code></pre><h3 id="集合-set"><a href="#集合-set" class="headerlink" title="集合(set)"></a>集合(set)</h3><pre><code>SADD letters a
-SADD letters a b c
-SREM letters c d
-SMEMBERS letters
-SADD setA 1 2 3
-SDIFF setA setB
-</code></pre><p>相当于value为NULL的字典.</p>
-<h3 id="有序集合-zset"><a href="#有序集合-zset" class="headerlink" title="有序集合(zset)"></a>有序集合(zset)</h3><pre><code>ZADD tutorials 1 redis 2 mongodb 3 mysql
-ZRANGE tutorials 0 10 WITHSOCRES
-ZRANGE bookstore 0 -1       默认按score从低到高排
-ZREVRANGE bookstore 0 -1    按score从高到低排
-ZCARD bookstore                集合中元素的数量,key不存在时返回0
-zscore bookstore &quot;Java Concurrency&quot; 查看score(使用double存储,有精度问题)
-zrank bookstore &quot;Java Concurrency&quot; 排名,按照score从低往高排.
-zrangebysocre bookstore 0 8.9 根据score区间遍历zset
-zrem bookstore &quot;Java Concurrency&quot;
-</code></pre><p>相当于SortedSet和HashMap的结合.<br>一方面作为Set保证value的唯一性,另一方面给value赋予score,使用<br>跳跃列表的数据结构来排序.</p>
+<p>相当于SortedSet和HashMap的结合.<br>一方面作为Set保证value的唯一性,另一方面给value赋予score,使用<br>跳跃列表的数据结构来排序.</p>
 <p>跳跃列表<br>    层级结构,最下面一层所有元素串起来,每隔几个元素挑出一个代表,将这几个<br>    代表使用另外一级指针串起来,然后在这些代表中再挑出二级代表,再串起来.</p>
 <p>容器型数据结构通用规则:<br>    create if not exists<br>    drop if no elements<br>如果字符串已经设置了过期时间, 然后调用set方法修改它, 它的过期时间会消失.</p>
-<h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3><pre><code>setnx(set if not exist)
-分布式锁逻辑流程:
-
-setnx lock:codehole true
-    do something...
-expire lock:codehole 5        
-del lock:codehole
-</code></pre><p>存在问题: setnx和expire操作之间如果进程挂掉就会造成死锁.</p>
-<p>解决办法: redis2.8后加入set指令扩展参数,使这两个指令一起执行.</p>
-<pre><code>set lock:codehole true ex 5 nx
-    do something...
-del lock:codehole
-</code></pre><p>依然存在问题: 如果加锁和释放锁之间逻辑执行时间太长超出锁超时限制,<br>    锁会过期,第二个线程重新持有锁. 第一个线程执行完逻辑后把锁释放了,<br>    第三个线程就会在第二个线程逻辑执行完之前拿到了锁.<br>解决方案: 为set指令的value设置一个随机数,释放锁时检查随机数是否一致,<br>    然后再删除key. 检查value和删除key不是原子操作,需要Lua脚本来处理.</p>
 <p>延时队列<br>    blpop/brpop 阻塞读, 队列没数据时立即进入休眠状态,一旦数据到来,立刻<br>        醒过来,消息延迟几乎为零.<br>    空闲连接自动断开<br>        闲置过久的客户端连接会被服务器主动断开,减少闲置资源占用.这时<br>        blpop/brpop会抛出异常.<br>    分布式锁加锁失败处理:</p>
 <pre><code>    1. 直接抛异常, 通知用户稍后再试.
     2. sleep一会儿再充实.
@@ -262,41 +189,7 @@ del lock:codehole
 延时队列可以用zset来实现,消息序列化为字符串作为zset的value,这个
 消息的到期时间作为score,然后用多个线程轮询zset获取到期的任务进行
 处理.
-</code></pre><h3 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h3><p>比特位组成的数组.<br>用途举例: 存用户一年的签到记录.</p>
-<pre><code>bitcount
-    统计指定位置范围内1的个数,start和end是字节索引,必须是8的倍数.
-    要查找用户某个月签到多少天,需要将这个月覆盖的字节全部取出然后统计.
-bitpos 来查找指定范围内出现的第一个0或1
-bitfield 一次操作多个位
-</code></pre><h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>提供不精确的去重计数方案, 标准误差0.81%</p>
-<pre><code>pfadd uv user1
-pfcount uv
-pfadd uv user2 user3 user1 user4
-pfcount uv  
-</code></pre><p>pfmerge 将多个pf计数值累加形成新的pf值</p>
-<p>布隆过滤器:<br>    场景举例: 推荐内容去重.</p>
-<pre><code>bf.add         bf.madd
-bf.exists         bf.mexists
-</code></pre><p>向布隆过滤器添加key时,使用多个hash函数对key进行hash算得一个整数索引,</p>
-<h3 id="地理空间-geospatial"><a href="#地理空间-geospatial" class="headerlink" title="地理空间(geospatial)."></a>地理空间(geospatial).</h3><h3 id="事务-transaction"><a href="#事务-transaction" class="headerlink" title="事务(transaction)"></a>事务(transaction)</h3><pre><code>MULTI
-INCR likes
-INCR visitors
-EXEC
-</code></pre><h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><pre><code>LPUSH mylist 4 3 2 6 9
-SORT mylist
-LPUSH mylistalpha a d i e p
-SORT mylistalpha ALPHA
-</code></pre><h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><pre><code>SET session uuid11
-EXPIRE session 20 
-TTL session
-</code></pre><h3 id="管道命令-Piplining"><a href="#管道命令-Piplining" class="headerlink" title="管道命令(Piplining)"></a>管道命令(Piplining)</h3><h3 id="发布-订阅"><a href="#发布-订阅" class="headerlink" title="发布/订阅"></a>发布/订阅</h3><pre><code>SUBSCRIBE redisChat
-PUBLISH redisChat &quot;Learn redis&quot;
-</code></pre><h3 id="复制-replication"><a href="#复制-replication" class="headerlink" title="复制(replication)"></a>复制(replication)</h3><h3 id="Lua脚本-Lua-scripting"><a href="#Lua脚本-Lua-scripting" class="headerlink" title="Lua脚本(Lua scripting)"></a>Lua脚本(Lua scripting)</h3><h3 id="LRU驱动事件-LRU-eviction"><a href="#LRU驱动事件-LRU-eviction" class="headerlink" title="LRU驱动事件(LRU eviction)"></a>LRU驱动事件(LRU eviction)</h3><h3 id="磁盘持久化-persistence"><a href="#磁盘持久化-persistence" class="headerlink" title="磁盘持久化(persistence)"></a>磁盘持久化(persistence)</h3><h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><p>默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)<br>手动持久化命令:</p>
-<ol>
-<li>SAVE: 阻塞Redis服务器进程</li>
-<li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
-</ol>
-<h3 id="Redis哨兵-Sentinel"><a href="#Redis哨兵-Sentinel" class="headerlink" title="Redis哨兵(Sentinel)"></a>Redis哨兵(Sentinel)</h3><h3 id="自动分区-Cluster"><a href="#自动分区-Cluster" class="headerlink" title="自动分区(Cluster)"></a>自动分区(Cluster)</h3><h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><pre><code>scan cursor [MATCH pattern] [COUNT count]
+</code></pre><h3 id="地理空间-geospatial"><a href="#地理空间-geospatial" class="headerlink" title="地理空间(geospatial)."></a>地理空间(geospatial).</h3><h3 id="复制-replication"><a href="#复制-replication" class="headerlink" title="复制(replication)"></a>复制(replication)</h3><h3 id="Lua脚本-Lua-scripting"><a href="#Lua脚本-Lua-scripting" class="headerlink" title="Lua脚本(Lua scripting)"></a>Lua脚本(Lua scripting)</h3><h3 id="LRU驱动事件-LRU-eviction"><a href="#LRU驱动事件-LRU-eviction" class="headerlink" title="LRU驱动事件(LRU eviction)"></a>LRU驱动事件(LRU eviction)</h3><h3 id="Redis哨兵-Sentinel"><a href="#Redis哨兵-Sentinel" class="headerlink" title="Redis哨兵(Sentinel)"></a>Redis哨兵(Sentinel)</h3><h3 id="自动分区-Cluster"><a href="#自动分区-Cluster" class="headerlink" title="自动分区(Cluster)"></a>自动分区(Cluster)</h3><h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><pre><code>scan cursor [MATCH pattern] [COUNT count]
 </code></pre><p>Redis中的key存在一个很大的字典中,数组加链表. scan指令返回的游标就是数组的位置索引,</p>
 <ol>
 <li>复杂度为O(n), 通过游标分步进行, 不会阻塞线程.</li>
@@ -331,33 +224,7 @@ PUBLISH redisChat &quot;Learn redis&quot;
 <p>单行字符串: +hello world\r\n<br>多行字符串: $11\r\nhello world\r\n<br>整数: :1024\r\n<br>错误: -WRONGTYPE Operation against a key holding the wrong kind of value<br>数组[1,2,3]: *3\r\n:1\r\n:2\r\n:3\r\n<br>NULL: $-1\r\n<br>空串: $0\r\n\r\n</p>
 <p>客户端向服务器发送指令: 多行字符串数组<br>    set auther codehole<br>    *3\r\n$3\r\nset\r\n$6\r\nauther\r\n$8\r\ncodehole\r\n</p>
 <p>服务器对客户端响应:<br>    单行字符串OK -&gt;  +OK<br>    整数响应1 -&gt; :1</p>
-<p>持久化<br>    快照: 全量备份, 内存数据的二进制序列化形式,存储紧凑<br>        调用glibc的函数fork产生一个子进程,快照持久化完全交给子进程来处理,<br>        父进程继续处理客户端请求. 子进程刚产生时与父进程共享内存中的代码段<br>        和数据段.<br>        fork函数会在父子进程同时返回, 父进程中返回子进程的pid, 子进程返回0<br>        如果操作系统内存资源不足,pid会是负数,表示fork失败.</p>
-<pre><code>    Copy on Write: 数据段页面分离, 父进程对一个页面的数据进行修改时,会将
-        被共享的页面复制一份分离出来, 然后对这个复制的页面进行修改, 这时子进程
-        对应的页面没有变化, 还是进程产生时那一瞬间的数据.
-
-AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会在长期运行中
-      变得很庞大,数据库重启时需要加载AOF日志进行指令重放,时间很长.
-      需要定期AOF重写.
-      Redis会在收到客户端修改指令后,先进行参数校验,如果没问题就立即将该指令文本
-      存储到AOF日志中, 先存到磁盘再执行指令.
-
-      AOF重写
-          bgrewriteaof
-           开启一个子进程对内存进行遍历转换成一系列Redis的操作指令,序列化到一个新的
-           AOF日志文件中, 序列化完成后再将操作期间发生的增量AOF日志追加到这个新的AOF
-           日志文件中,追加后立即替代旧的AOF日志文件.
-
-        fsync(int fd)
-            程序对AOF日志文件进行写操作时,实际上是将内容写到了内核为文件描述符分配的一个
-            内存缓存中, 然后内核会异步将脏数据刷回到磁盘.
-            fsync将指定文件的内容强制从内核缓存刷新到磁盘.
-            通常在生产环境的服务器里,  每隔1s左右执行一次fsync操作.
-
-持久化操作主要在从节点进行.
-混合持久化:
-    Redis重启时先加载rdb内容,再重放增量AOF.
-</code></pre><p>管道<br>    客户端通过对管道中的指令列表改变读写顺序, 节省IO时间.</p>
+<p>管道<br>    客户端通过对管道中的指令列表改变读写顺序, 节省IO时间.</p>
 <pre><code>redis-benchmark -t set -P n -q  管道压力测试
 n表示单个管道内并行的请求数量.
 
@@ -365,52 +232,6 @@ n表示单个管道内并行的请求数量.
 
 对于管道来说: 连续的write操作没有耗时,之后第一个read操作会等待一个网络的来回开销,
 然后所有的响应消息就都已经会送到内核的读缓冲了.后续的read操作直接就可以从缓冲拿到结果.
-</code></pre><p>Redis区<br>     Redis是一个Key-value存储系统。它支持存储的value类型很多，包括String（字符串）、链表(list)、set（集合）、zset（有序集合） hash。<br>     Redis支持各种不同方式的排序。可以把周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件。</p>
-<pre><code>缓存穿透
-    缓存系统按照KEY去查询VALUE,当KEY对应的VALUE一定不存在的时候并对KEY并发请求量很大的时候，就会对后端造成很大的压力。
-
-    解决办法
-        布隆过滤器
-            将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。
-        缓存层缓存空值
-            如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。
-               存储层更新代码了，缓存层还是空值。（优化：后台设置时主动删除空值，并缓存把值进去）
-
-缓存雪崩（缓存失效）
-     如果缓存集中在一段时间内失效，发生大量的缓存穿透，所有的查询都落在数据库上，造成了缓存雪崩。
-
-     解决办法
-        1.在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。
-        2.可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存
-        3.不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀
-        4.做二级缓存，或者双缓存策略。A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期。
-
-热点key
-    将热点key对应value并缓存在客户端本地，并且设置一个失效时间。
-    对于每次读请求，将首先检查key是否存在于本地缓存中，如果存在则直接返回，如果不存在再去访问分布式缓存的机器。
-
-    将热点key分散为多个子key，然后存储到缓存集群的不同机器上，这些子key对应的value都和热点key是一样的。
-    当通过热点key去查询数据时，通过某种hash算法随机选择一个子key，然后再去访问缓存机器，将热点分散到了多个子key上。
-
-
-淘汰策略
-    noeviction: 不删除策略, 达到最大内存限制时, 如果需要更多内存, 直接返回错误信息。 大多数写命令都会导致占用更多的内存(有极少数会例外, 如 DEL )。
-    allkeys-lru: 所有key通用; 优先删除最近最少使用(less recently used ,LRU) 的 key。
-    volatile-lru: 只限于设置了 expire 的部分; 优先删除最近最少使用(less recently used ,LRU) 的 key。
-    allkeys-random: 所有key通用; 随机删除一部分 key。
-    volatile-random: 只限于设置了 expire 的部分; 随机删除一部分 key。
-    volatile-ttl: 只限于设置了 expire 的部分; 优先删除剩余时间(time to live,TTL) 短的key。
-
-    如果分为热数据与冷数据, 推荐使用 allkeys-lru 策略。 也就是, 其中一部分key经常被读写. 如果不确定具体的业务特征,
-     那么 allkeys-lru 是一个很好的选择。
-
-     如果需要循环读写所有的key, 或者各个key的访问频率差不多, 可以使用 allkeys-random 策略, 即读写所有元素的概率差不多。
-
-     假如要让 Redis 根据 TTL 来筛选需要删除的key, 请使用 volatile-ttl 策略。
-
-     volatile-lru 和 volatile-random 策略主要应用场景是: 既有缓存,又有持久key的实例中。
-      一般来说, 像这类场景, 应该使用两个单独的 Redis 实例。
-      值得一提的是, 设置 expire 会消耗额外的内存, 所以使用 allkeys-lru 策略, 可以更高效地利用内存, 因为这样就可以不再设置过期时间了。
 </code></pre>
       
 
@@ -494,18 +315,18 @@ n表示单个管道内并行的请求数量.
   
 <nav id="article-nav">
   
-    <a href="/2019/08/25/RxJava/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/09/14/小红书系列 (1) - 函数式编程初探/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          RxJava
+          小红书系列 (1) - 函数式编程初探
         
       </div>
     </a>
   
   
-    <a href="/2019/07/30/网络协议/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">网络协议</div>
+    <a href="/2019/08/25/RxJava/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">RxJava</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -532,7 +353,7 @@ n表示单个管道内并行的请求数量.
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数据类型"><span class="toc-number">1.</span> <span class="toc-text">数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#字符串-string"><span class="toc-number">1.1.</span> <span class="toc-text">字符串(string)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列表-list"><span class="toc-number">1.2.</span> <span class="toc-text">列表(list)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#散列-hash"><span class="toc-number">1.3.</span> <span class="toc-text">散列(hash)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集合-set"><span class="toc-number">1.4.</span> <span class="toc-text">集合(set)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#有序集合-zset"><span class="toc-number">1.5.</span> <span class="toc-text">有序集合(zset)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分布式锁"><span class="toc-number">1.6.</span> <span class="toc-text">分布式锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#位图-bitmap"><span class="toc-number">1.7.</span> <span class="toc-text">位图(bitmap)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HyperLogLog"><span class="toc-number">1.8.</span> <span class="toc-text">HyperLogLog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#地理空间-geospatial"><span class="toc-number">1.9.</span> <span class="toc-text">地理空间(geospatial).</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#事务-transaction"><span class="toc-number">1.10.</span> <span class="toc-text">事务(transaction)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#排序"><span class="toc-number">1.11.</span> <span class="toc-text">排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生存时间"><span class="toc-number">1.12.</span> <span class="toc-text">生存时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#管道命令-Piplining"><span class="toc-number">1.13.</span> <span class="toc-text">管道命令(Piplining)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#发布-订阅"><span class="toc-number">1.14.</span> <span class="toc-text">发布/订阅</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制-replication"><span class="toc-number">1.15.</span> <span class="toc-text">复制(replication)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lua脚本-Lua-scripting"><span class="toc-number">1.16.</span> <span class="toc-text">Lua脚本(Lua scripting)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LRU驱动事件-LRU-eviction"><span class="toc-number">1.17.</span> <span class="toc-text">LRU驱动事件(LRU eviction)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#磁盘持久化-persistence"><span class="toc-number">1.18.</span> <span class="toc-text">磁盘持久化(persistence)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RDB"><span class="toc-number">1.18.1.</span> <span class="toc-text">RDB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AOF"><span class="toc-number">1.18.2.</span> <span class="toc-text">AOF</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis哨兵-Sentinel"><span class="toc-number">1.19.</span> <span class="toc-text">Redis哨兵(Sentinel)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动分区-Cluster"><span class="toc-number">1.20.</span> <span class="toc-text">自动分区(Cluster)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#scan"><span class="toc-number">1.21.</span> <span class="toc-text">scan</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#地理空间-geospatial"><span class="toc-number">1.</span> <span class="toc-text">地理空间(geospatial).</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制-replication"><span class="toc-number">2.</span> <span class="toc-text">复制(replication)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lua脚本-Lua-scripting"><span class="toc-number">3.</span> <span class="toc-text">Lua脚本(Lua scripting)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LRU驱动事件-LRU-eviction"><span class="toc-number">4.</span> <span class="toc-text">LRU驱动事件(LRU eviction)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis哨兵-Sentinel"><span class="toc-number">5.</span> <span class="toc-text">Redis哨兵(Sentinel)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动分区-Cluster"><span class="toc-number">6.</span> <span class="toc-text">自动分区(Cluster)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#scan"><span class="toc-number">7.</span> <span class="toc-text">scan</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -581,7 +402,7 @@ n表示单个管道内并行的请求数量.
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

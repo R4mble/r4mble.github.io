@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>三石的QQ空间</title>
+  <title>笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="击空明兮溯流光">
 <meta property="og:type" content="website">
-<meta property="og:title" content="三石的QQ空间">
+<meta property="og:title" content="笔记本">
 <meta property="og:url" content="http://yoursite.com/page/34/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
+<meta property="og:site_name" content="笔记本">
 <meta property="og:description" content="击空明兮溯流光">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三石的QQ空间">
+<meta name="twitter:title" content="笔记本">
 <meta name="twitter:description" content="击空明兮溯流光">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -157,45 +157,51 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-神秘的Scala implicit" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes CheetSheet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/神秘的Scala implicit/">神秘的Scala implicit</a>
+      <a class="article-title" href="/2019/04/24/Kubernetes CheetSheet/">Kubernetes CheetSheet</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/神秘的Scala implicit/" class="archive-article-date">
-  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/24/Kubernetes CheetSheet/" class="archive-article-date">
+  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="神秘的Scala-implicit"><a href="#神秘的Scala-implicit" class="headerlink" title="神秘的Scala implicit"></a>神秘的Scala implicit</h1><h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><ul>
-<li>隐式值<br>  编译器会在方法省略隐式参数的情况下去搜索作用域内的隐式值作为缺少参数<br>  例: <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def person(implicit name: String) = name</span><br><span class="line">implicit val p = &quot;ramble&quot;</span><br><span class="line">person  // ramble</span><br></pre></td></tr></table></figure>
-</code></pre></li>
-</ul>
-<ul>
-<li><p>隐式视图</p>
-<ol>
-<li><p>隐式转换为目标类型：把一种类型自动转换到另一种类型<br>例: </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def foo(msg: String) = println(msg)</span><br><span class="line">implicit def intToString(x: Int) = x.toString</span><br></pre></td></tr></table></figure>
+        <ol>
+<li><p>获取指定namespace下的pod列表<br>kubectl -n clink-plus get po<br>kubectl -n clink-plus get pod<br>kubectl -n clink-plus get pods<br>最精缩版:<br>kubectl -n clink-plus get po</p>
 </li>
-<li><p>使对象调用类中本不存在的方法<br>例: </p>
- <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SwingType</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wantLearned</span></span>(sw: <span class="type">String</span>) = println(<span class="string">"兔子已经学会了"</span> + sw)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">swimming</span> </span>&#123;</span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">learningType</span></span>(s: <span class="type">AnimalType</span>) = <span class="keyword">new</span> <span class="type">SwingType</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AnimalType</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">AnimalType</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="keyword">import</span> swimming._</span><br><span class="line">    <span class="keyword">val</span> rabbit = <span class="keyword">new</span> <span class="type">AnimalType</span></span><br><span class="line">    rabbit.wantLearned(<span class="string">"蛙泳"</span>)  <span class="comment">//兔子已经学会了蛙泳</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<li><p>获取指定pod的信息<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl</p>
 </li>
 </ol>
+<p>加了IP和Node的:<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl -o wide</p>
+<p>以yaml格式展示(巨详细,可以看到镜像的版本):<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl -o yaml</p>
+<p>使用describe<br>kubectl -n clink-plus describe pod clink2-app-56568b6ff4-dtvwl</p>
+<ol start="3">
+<li><p>显示node的详细信息<br>kubectl describe node cn-beijing.i-2ze938t1plplf6q7hdvg</p>
 </li>
-</ul>
-<ul>
-<li>隐式类</li>
-</ul>
+<li><p>登录pod<br>kubectl -n clink-plus exec clink2-agent-647c888dfb-s6qv6 -it bash<br>退出bash: exit</p>
+</li>
+<li><p>看日志<br>kubectl -n clink-plus log -f clink2-chat-record-7fcbc899cc-r7v27</p>
+</li>
+</ol>
+<ol start="6">
+<li><p>查看configmap(里面有redis用的几号库)<br>kubectl -n clink-plus get cm<br>kubectl -n clink-plus edit cm clink2-chat-weixin-env</p>
+</li>
+<li><p>部署节点数<br>kubectl -n clink-plus edit deploy clink2-chat-weixin</p>
+</li>
+<li><p>获取节点ip<br>kubectl -n clink2-test5 get ing</p>
+</li>
+</ol>
 
       
 
@@ -210,7 +216,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
         		</li>
       		
 		</ul>
@@ -219,7 +225,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/神秘的Scala implicit/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/Kubernetes CheetSheet/">展开全文 >></a>
         </p>
       
 
@@ -249,119 +255,68 @@
 
 
   
-    <article id="post-Redis-in-action" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Redis-in-action/">Redis in action</a>
+      <a class="article-title" href="/2019/04/24/JWT/">JWT</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Redis-in-action/" class="archive-article-date">
-  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/24/JWT/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Redis in action</p>
-<pre><code>4. 数据安全与性能保障
-    数据持久化到硬盘
-    数据复制到其他机器
-    处理系统故障
-    Redis事物
-    非事物型流水线
-    诊断性能问题
+        <ol>
+<li><p>了解JWT相关知识</p>
+<pre><code>JWT组成: 
+    Header.Payload.Signature
+    头部.负载.签名
 
-    4.1 持久化选项
-        4.1.1 快照 snapshotting
-            将存在于某一时刻的所有数据都写入硬盘里面
+头部:
+    {
+       &quot;alg&quot;: &quot;HS256&quot;,
+        &quot;typ&quot;: &quot;JWT&quot;
+    }
+    alg表示签名的算法，默认是HMAC SHA256, typ表示这个令牌的类型.
 
-            如果新的快照文件创建完毕之前,Redis,系统或硬件这三者
-            之中的任意一个崩溃,那么Redis将丢失最近一次创建快照之后
-            写入的所有数据.
-            快照持久化只适用于即使丢失一部分数据也不会造成问题的应用程序
+负载:
+    iss (issuer)：签发人
+    exp (expiration time)：过期时间
+    sub (subject)：主题
+    aud (audience)：受众
+    nbf (Not Before)：生效时间
+    iat (Issued At)：签发时间
+    jti (JWT ID)：编号
 
-            创建快照的方法:
-                客户端向Redis发送bgsave命令来创建一个快照.
-                Redis会调用fork来创建一个子进程,然后子进程负责
-                将快照写入硬盘,父进程继续处理命令请求
+签名: 对前两部分的签名,防止数据篡改.
+    HMACSHA256(
+        base64UrlEncode(header) + &quot;.&quot; +
+        base64UrlEncode(payload),
+        secret)
+把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用&quot;点&quot;（.）分隔
+</code></pre></li>
+</ol>
+<p>Spring中使用JWT:</p>
+<pre><code>1. 编写由登录对象转为token和由token获取登录对象的方法.
+2. 继承OncePerRequestFilter,重写doFilterInternal方法,对每一次请求进行token检查.
+3. 使用@AuthenticationPrincipal注解, 根据前端传过来的header获取登录对象.
+</code></pre><ol start="2">
+<li>postgresql的具体使用:<pre><code>读取数组属性:
+    1. 定义ArrayTypeHandelr继承BaseTypeHandler,重写get,set方法
+    2. 指定mybatis的类型处理器包的位置为ArrayTypeHandelr所在包.
+    3. 定义数组属性所在类型的resultMap.
+</code></pre></li>
+</ol>
 
-                客户端向Redis发送save命令来创建一个快照.
-                Redis在创建完毕之前不再响应其他任何命令.
-                在没有足够内存的情况,或者等待持久化操作执行完毕
-                也无所谓的情况下 才会使用此命令.
-
-                如果用户设置了save配置选项.如save 60 10000
-                Redis从最近一次创建快照算起,当60秒之内有10000次
-                写入时,Redis自动触发bgsave
-
-                Redis接收到shutdown命令或者接收到标准TERM信号时,
-                会执行save命令.save完成后关闭.
-
-                当一个Redis服务器连接另一个Redis服务器,并向对方发送sync
-                命令来开始一次复制操作时,如果主服务器没有在执行bgsave,或者
-                并非刚刚执行完bgsave,那么主服务器会执行bgsave.
-
-            使用快照持久化的场景:
-                1.个人开发
-                    降低快照持久化带来的资源消耗.
-                    save 900 1
-                    如果距离上次生成快照超过900秒,并在此期间执行了至少
-                    一次写入操作.那么触发一次新的bgsave
-
-                2.对日志进行聚合计算
-                    恢复因故障而被中断的日志处理操作
-
-
-
-
-        4.1.2只追加文件 append-only file AOF
-            在执行写命令时,将被执行的写命令复制到硬盘里面.以记录数据的变化.
-            Redis只要从头到尾重新执行一次AOF文件包含的所有写命令,就可以
-            恢复AOF文件所记录的数据集.
-            appendonly yes
-            appendfsync选项:
-                always
-                everysec
-                no
-
-        4.1.3 重写/压缩AOF文件
-             bgrewriteaof命令会移除aof文件中的冗余命令并重写aof文件,
-             使aof文件体积尽量变小, 工作原理与bgsave相似
-
-    4.2复制
-        主服务器向多个从服务器发送更新,并使用从服务器来处理所有的读请求.
-
-        4.2.1  从服务器的配置
-                启动redis服务器时,指定一个包含slaveof host port的配置文件.
-                redis服务器会根据ip和端口来连接主服务器.
-
-                正在运行的redis服务器,可以发送slaveof no one命令使服务器
-                终止复制操作,不再接受主服务器的数据更新
-                发送 slaveof host port来让服务器开始复制一个新的主服务器.
-
-
-5.使用Redis构建支持程序
-    使用Redis记录日志
-    使用Redis实现计数器并进行数据统计
-    查询IP地址所属的城市和国家
-    服务的发现和配置
-
-6.使用Redis构建应用程序组件
-    构建两个前缀匹配自动补全程序
-
-
-    6.1 自动补全最近联系人
-
-
-8. 构建简单的社交网站
-</code></pre>
       
 
       
@@ -369,24 +324,13 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
         		</li>
       		
 		</ul>
@@ -395,7 +339,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Redis-in-action/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/JWT/">展开全文 >></a>
         </p>
       
 
@@ -425,124 +369,28 @@
 
 
   
-    <article id="post-Scala实现并行框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JVM故障排查" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Scala实现并行框架/">Scala实现并行框架</a>
+      <a class="article-title" href="/2019/04/24/JVM故障排查/">JVM故障排查</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Scala实现并行框架/" class="archive-article-date">
-  	<time datetime="2019-04-05T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/24/JVM故障排查/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接收一个未求值的A,返回一个并行结果(传名函数)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//从并行结果里抽取结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//组合两个并行计算的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Par分配到另一个独立的逻辑线程中运行</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//派生组合子的一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazyUnit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = fork(unit(a))</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">Par</span>[<span class="type">A</span>] </span>= <span class="type">ExecutorService</span> =&gt; <span class="type">Future</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](s: <span class="type">ExecutorService</span>)(a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Future</span>[<span class="type">A</span>] = a(s)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Par</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = (es: <span class="type">ExecutorService</span>) =&gt; <span class="type">UnitFuture</span>(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitFuture</span>[<span class="type">A</span>](<span class="params">get: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Future</span>[<span class="type">A</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isDone</span> </span>= <span class="literal">true</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>(timeout: <span class="type">Long</span>, units: <span class="type">TimeUnit</span>) = get</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isCancelled</span> </span>= <span class="literal">false</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(evenIfRunning: <span class="type">Boolean</span>) : <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>] =</span><br><span class="line">        (es: <span class="type">ExecutorService</span>) =&gt; &#123;</span><br><span class="line">            <span class="keyword">val</span> af = a(es)</span><br><span class="line">            <span class="keyword">val</span> bf = b(es)</span><br><span class="line">            <span class="type">UnitFuture</span>(f(af.get, bf.getb))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>] =</span><br><span class="line">        es =&gt; es.submit(<span class="keyword">new</span> <span class="type">Callable</span>[<span class="type">A</span>] &#123;</span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">call</span> </span>= a(es).get</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Scala实现并行框架/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java里的for-in" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Java里的for-in/">Java里的for in</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/Java里的for-in/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:42:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-         <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
-</blockquote>
-<blockquote>
-<p>答案: <code>没有</code></p>
-</blockquote>
-<p><i class="icon-reorder"></i>把for in 循环换成普通的for循环:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>请问: 上面的ele数组中的元素被实例化了吗?</p>
-</blockquote>
-<blockquote>
-<p>答案: <code>是的</code></p>
-</blockquote>
-<blockquote>
-<p>由此可见: </p>
-<ul>
-<li><strong>for循环是值传导的,获取到的是原对象的拷贝.</strong></li>
-<li><strong>而数组索引就相当于指针,直接修改了内存中的值.</strong></li>
-</ul>
-</blockquote>
-<p>所以自然地:</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Element[] ele = <span class="keyword">new</span> Element[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ele.length; i++) &#123;</span><br><span class="line">    ele[i] = <span class="keyword">new</span> Element();</span><br><span class="line">    ele[i].inner = <span class="string">"fuck js"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (Element e : ele) &#123;</span><br><span class="line">    e = <span class="keyword">new</span> Element();</span><br><span class="line">    e.inner = <span class="string">"fuck java"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Arrays.stream(ele).map(e -&gt; e.inner).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-<p>当然是”fuck js”啦!</p>
+        <h2 id="jps-JVM-Process-Status-Tool"><a href="#jps-JVM-Process-Status-Tool" class="headerlink" title="jps (JVM Process Status Tool)"></a>jps (JVM Process Status Tool)</h2><p>列出正在运行的虚拟机进程<br>-v 输出虚拟机进程启动时JVM参数</p>
+<h2 id="jstat-JVM-Statistics-Monitoring-Tool"><a href="#jstat-JVM-Statistics-Monitoring-Tool" class="headerlink" title="jstat (JVM Statistics Monitoring Tool)"></a>jstat (JVM Statistics Monitoring Tool)</h2><p>监视虚拟机各种运行状态信息</p>
 
       
 
@@ -566,7 +414,92 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Java里的for-in/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/JVM故障排查/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Kotlin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/Kotlin/">Kotlin</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/Kotlin/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>is运算符<br>    检测一个表达式是否某类型的实例.如果是,在检测后可以直接当做该类型使用.<br>for循环<br>    普通的和索引遍历.<br>        for((k, v) in map) print(“$k -&gt; $v”)<br>when表达式<br>    模式匹配, 可以匹配具体的值, 也可以匹配类型.<br>in运算符<br>    检测某个数字是否在指定区间内.<br>        for (x in 9 downTo 0 step 3) print(x)<br>lambda表达式<br>    filter, sortedBy, map, forEach使用大括号<br>    list.filter{it &gt; 0}<br>类的创建<br>    不同指定实例类型, 不用new<br>DTO<br>    data class Customer(val name: String, val email: String)<br>    提供: getters, 对var还有setters<br>         equals(), hashCode(), toString(), copy()<br>默认参数<br>    fun foo(a: Int = 0, b: String = “”) {…}<br>访问map<br>    map[“key”]<br>延迟属性<br>    val p: String by lazy {}<br>扩展函数<br>    fun String.spaceToCamelCase() {…}<br>创建单例<br>    object Resource {<br>        val name = “Name”<br>    }</p>
+<p>if not null缩写<br>    val files = File(“Test”).listFiles()<br>    print(files?.size)</p>
+<p>if not null and else<br>    print(files?.size ?: “empty”)</p>
+<p>if null执行语句<br>    val email = values[“email”] ?: throw IllegalStateException(“Email is missing”)</p>
+<p>在可能会空的集合取第一个元素<br>    val mainEmail = emails.firstOrNull() ?: “”</p>
+<p>if not null执行代码<br>    value?.let {}</p>
+<p>可空布尔<br>    val b: Boolean? = …</p>
+<p>交换变量<br>    a = b.also {b = a}</p>
+<p>三个等号与两个等号<br>    数字装箱的 同一性 相等性</p>
+<p>基本类型<br>    在运行时表示为原生类型值,使用时像普通的类.<br>    较小类型不能隐式转换为较大的类型.</p>
+<p>密封类<br>    表示受限的类继承结构, 当一个值为有限集中的类型,不能有任何其他类型时.</p>
+<p>协程</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kotlin//" class="article-tag-list-link color2">Kotlin</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/Kotlin/">展开全文 >></a>
         </p>
       
 
@@ -598,7 +531,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/33/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="page-number current">34</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/35/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/33/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="page-number current">34</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/35/">Next &raquo;</a>
     </nav>
   
 
@@ -610,7 +543,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

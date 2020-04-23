@@ -6,21 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>精通Redis系列 (3) - 压缩列表 | 三石的QQ空间</title>
+  <title>分库分表 | 笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="ziplist当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合. 存储结构   zlbytes zltail zllen entry zlend         zlbytes: 压缩列表的字节长度,占4个字节zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节z">
+  <meta name="description" content="对于因为表多而数据多,适合垂直切分,把关系紧密的表切分出来放到一个server上;对于表不多数据多, 适合水平切分, 把表按照某种规则(如按ID散列)切分到多个数据库(server)上. 要解决的问题:    事务问题: 1.使用分布式事务   2.由应用程序和数据库共同控制    跨节点Join: 分两次查询    跨节点count,order by, group by: 在各个节点得到结果后在">
 <meta property="og:type" content="article">
-<meta property="og:title" content="精通Redis系列 (3) - 压缩列表">
-<meta property="og:url" content="http://yoursite.com/2019/09/19/精通Redis系列 (3) - 压缩列表/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="ziplist当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合. 存储结构   zlbytes zltail zllen entry zlend         zlbytes: 压缩列表的字节长度,占4个字节zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节z">
+<meta property="og:title" content="分库分表">
+<meta property="og:url" content="http://yoursite.com/2020/04/23/分库分表/index.html">
+<meta property="og:site_name" content="笔记本">
+<meta property="og:description" content="对于因为表多而数据多,适合垂直切分,把关系紧密的表切分出来放到一个server上;对于表不多数据多, 适合水平切分, 把表按照某种规则(如按ID散列)切分到多个数据库(server)上. 要解决的问题:    事务问题: 1.使用分布式事务   2.由应用程序和数据库共同控制    跨节点Join: 分两次查询    跨节点count,order by, group by: 在各个节点得到结果后在">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-14T02:17:34.724Z">
+<meta property="og:updated_time" content="2020-04-23T04:01:39.263Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="精通Redis系列 (3) - 压缩列表">
-<meta name="twitter:description" content="ziplist当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合. 存储结构   zlbytes zltail zllen entry zlend         zlbytes: 压缩列表的字节长度,占4个字节zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节z">
+<meta name="twitter:title" content="分库分表">
+<meta name="twitter:description" content="对于因为表多而数据多,适合垂直切分,把关系紧密的表切分出来放到一个server上;对于表不多数据多, 适合水平切分, 把表按照某种规则(如按ID散列)切分到多个数据库(server)上. 要解决的问题:    事务问题: 1.使用分布式事务   2.由应用程序和数据库共同控制    跨节点Join: 分两次查询    跨节点count,order by, group by: 在各个节点得到结果后在">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -156,46 +156,28 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-精通Redis系列 (3) - 压缩列表" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-分库分表" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      精通Redis系列 (3) - 压缩列表
+      分库分表
     </h1>
   
 
         
-        <a href="/2019/09/19/精通Redis系列 (3) - 压缩列表/" class="archive-article-date">
-  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+        <a href="/2020/04/23/分库分表/" class="archive-article-date">
+  	<time datetime="2020-04-23T04:00:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-23</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>ziplist<br>当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.<br>列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合.</p>
-<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">zlbytes</th>
-<th style="text-align:center">zltail</th>
-<th style="text-align:center">zllen</th>
-<th style="text-align:center">entry</th>
-<th style="text-align:center">zlend</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"></td>
-</tr>
-</tbody>
-</table>
-<p>zlbytes: 压缩列表的字节长度,占4个字节<br>zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节<br>zllen: 压缩列表的元素个数, 占2个字节<br>extry: 压缩列表存储的元素,可以是字节数组或者整数,长度不限.<br>zlend: 压缩列表的结尾, 占1个字节, 为 0xFF</p>
-<p>char* zl指向压缩列表首地址,通过以下宏命令实现压缩列表各个字段的存取<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Return total bytes a ziplist is composed of. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the offset of the last item inside the ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof(uint32_t))))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the length of a ziplist, or UINT16_MAX if the length cannot be</span></span><br><span class="line"><span class="comment"> * determined without scanning the whole ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_LENGTH(zl)      (*((uint16_t*)((zl)+sizeof(uint32_t)*2)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The size of a ziplist header: two 32 bit integers for the total</span></span><br><span class="line"><span class="comment"> * bytes count and last item offset. One 16 bit integer for the number</span></span><br><span class="line"><span class="comment"> * of items field. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_HEADER_SIZE     (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Size of the "end of ziplist" entry. Just one byte. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_END_SIZE        (sizeof(uint8_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the first entry of a ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_HEAD(zl)  ((zl)+ZIPLIST_HEADER_SIZE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last entry of a ziplist, using the</span></span><br><span class="line"><span class="comment"> * last entry offset inside the ziplist header. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_TAIL(zl)  ((zl)+intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last byte of a ziplist, which is, the</span></span><br><span class="line"><span class="comment"> * end of ziplist FF entry. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_END(zl)   ((zl)+intrev32ifbe(ZIPLIST_BYTES(zl))-1)</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="压缩列表元素的存储"><a href="#压缩列表元素的存储" class="headerlink" title="压缩列表元素的存储"></a>压缩列表元素的存储</h3><p>| previous_entry_length | encoding | content |<br>| :—-: | :—-: | :—-: |</p>
+        <p>对于因为表多而数据多,适合垂直切分,把关系紧密的表切分出来放到一个server上;<br>对于表不多数据多, 适合水平切分, 把表按照某种规则(如按ID散列)切分到多个数据库(server)上.</p>
+<p>要解决的问题:<br>    事务问题: 1.使用分布式事务   2.由应用程序和数据库共同控制<br>    跨节点Join: 分两次查询<br>    跨节点count,order by, group by: 在各个节点得到结果后在应用程序端进行合并<br>    数据迁移,容量规划,扩容: 对2的倍数取余（如对4取余得1的数对2取余也是1）  ,可以向前兼容.<br>    ID: 不能依赖自增主键.<br>        UUID: 长,占用空间大, 建立索引和基于索引进行查询都有性能问题.<br>        Sequence表 (table_name, next_id): 该表容易成为系统性能瓶颈,一旦该表失效,整个程序都崩; 读写1:1<br>        Twitter分布式自增ID算法Snowflake:   1位未使用(可用作long的符号位) + 毫秒级时间41位 + 机器ID 10位 + 毫秒内序列12位<br>                                         每秒产生26万ID</p>
 
       
 
@@ -210,7 +192,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="/categories/SQL//" class="article-tag-list-link color4">SQL</a>
         		</li>
       		
 		</ul>
@@ -265,7 +247,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/09/19/精通Redis系列 (3) - 压缩列表/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/04/23/分库分表/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -279,18 +261,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/09/19/精通Redis系列 (0) - 写在前面的话/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2020/04/23/指针/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          精通Redis系列 (0) - 写在前面的话
+          指针
         
       </div>
     </a>
   
   
-    <a href="/2019/09/19/精通Redis系列 (1) - 简单动态字符串/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">精通Redis系列 (0) - 写在前面的话</div>
+    <a href="/2020/04/23/数据库的事务/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">数据库的事务</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -317,7 +299,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#存储结构"><span class="toc-number">1.</span> <span class="toc-text">存储结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#压缩列表元素的存储"><span class="toc-number">1.1.</span> <span class="toc-text">压缩列表元素的存储</span></a></li></ol></li></ol>
+                    目录，不存在的…
                     </div>
                 </span>
             </div>
@@ -331,7 +313,7 @@
   
   <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="精通Redis系列 (3) - 压缩列表" data-title="精通Redis系列 (3) - 压缩列表" data-url="http://yoursite.com/2019/09/19/精通Redis系列 (3) - 压缩列表/"></div>
+	<div class="ds-thread" data-thread-key="分库分表" data-title="分库分表" data-url="http://yoursite.com/2020/04/23/分库分表/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
@@ -366,7 +348,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

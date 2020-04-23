@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>三石的QQ空间</title>
+  <title>笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="击空明兮溯流光">
 <meta property="og:type" content="website">
-<meta property="og:title" content="三石的QQ空间">
+<meta property="og:title" content="笔记本">
 <meta property="og:url" content="http://yoursite.com/page/6/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
+<meta property="og:site_name" content="笔记本">
 <meta property="og:description" content="击空明兮溯流光">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三石的QQ空间">
+<meta name="twitter:title" content="笔记本">
 <meta name="twitter:description" content="击空明兮溯流光">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -157,19 +157,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Golang东一榔头西一棒槌系列(3) -集合" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java线程池ThreadPoolExecutor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/">Golang东一榔头西一棒槌系列(3) -集合</a>
+      <a class="article-title" href="/2020/04/14/Java线程池ThreadPoolExecutor/">Java线程池ThreadPoolExecutor</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/" class="archive-article-date">
+        <a href="/2020/04/14/Java线程池ThreadPoolExecutor/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -177,56 +177,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="array-数组"><a href="#array-数组" class="headerlink" title="array 数组"></a>array 数组</h1><pre><code>// 声明一个int类型数组
-var arr [10]int
-
-// 省略长度, go会自动根据元素算长度
-a := [...]int{3,4,4}
-
-// 二位数组
-doubleArray := [2][4]int{{1, 2, 3, 4}, {5, 6, 7, 8}}
-</code></pre><p>长度也是数组类型的一部分, [3]int和[4]int是不同的类型<br>数组作为参数时, 传入的是该数组的副本, 而不是指针.</p>
-<h1 id="slice-“动态数组”-引用类型-指向一个底层array"><a href="#slice-“动态数组”-引用类型-指向一个底层array" class="headerlink" title="slice “动态数组”,引用类型,指向一个底层array"></a>slice “动态数组”,引用类型,指向一个底层array</h1><pre><code>// 声明一个slice, (少了长度)
-var fslice []int
-
-// 声明两个含有byte的slice
-var a, b [] byte
-
-var ar = [10]byte{0,1,2,3,4,5,6,7,8,9}
-
-// a指向数组的第三个元素开始, 到第5个元素结束, a就是[2 3 4]
-a = ar[2:5]
-</code></pre><p>slice通过arr[i:j]来获取, i是数组的开始位置,j是结束位置,不包含arr[j],长度是j-i</p>
-<p>slice默认开始位置是0, 结束位置是数组长度<br>即: arr[:n]等价于arr[0:n]<br>    arr[n:]等价于arr[n:len(arr)]<br>从一个数组直接获取slice, 可以用arr[:]</p>
-<p>slice的最大长度cap: slice开始位置到数组最后位置的长度, len(arr) - i<br>对slice的slice可以在cap范围内扩展<br>slice的元素变了, 对它切片的slice元素也会相应改变</p>
-<p>append: 向slice里追加一个或多个元素, 返回一个slice(不改变原slice)<br>乱七八糟警告: append函数会改变slice所引用的数组的内容! 同时会影响到引用同一个数组的其他slice<br>            当slice没有剩余空间的时候, 将动态分配新的数组空间, 返回的slice数组将指向这个空间,<br>             原数组内容保持不变, 其他引用此数组的slice不受影响</p>
-<h1 id="map"><a href="#map" class="headerlink" title="map"></a>map</h1><pre><code>// 声明一个key是字符串,值是int的map, 这种声明需要在使用之前使用make初始化
-var numbers map[string] int
-
-// 声明map
-numbers := make(map[string]int)
-
-// 赋值
-numbers[&quot;one&quot;] = 1
-</code></pre><ul>
-<li>map是无序的</li>
-<li>map长度不固定, 是引用类型, 两个map指向一个底层, 一个改变另一个也改变</li>
-<li>内置len函数返回map拥有key的数量</li>
-</ul>
-<pre><code>// 初始化一个map
-rating := map[string]float32 {&quot;c&quot;: 4, &quot;go&quot;: 3.4, &quot;c++&quot;: 1.3} 
-
-// 如果不存在则ok为false, 存在ok为true
-cSharp, ok := rating[&quot;c#&quot;]
-if ok {
-    fmt.Println(&quot;c# is in the map and its rating is &quot;, cSharp)
-} else {
-    fmt.Println(&quot;C# is not found&quot;)
-}
-
-// 删除map中key为c的元素
-delete(rating, &quot;c&quot;)
-</code></pre><h1 id="内建函数make和new"><a href="#内建函数make和new" class="headerlink" title="内建函数make和new"></a>内建函数make和new</h1><p>make用于内建类型(map,slice,channel)的内存分配<br>new用于各种类型的内存分配, 返回一个指针, 指向新分配的类型T的零值</p>
+        <p>目的<br>    线程是稀缺资源，不能频繁的创建。<br>    解耦作用；线程的创建与执行完全分开，方便维护。<br>    应当将其放入一个池子中，可以给其他任务进行复用。<br>    提高线程的可管理性：线程池可以统一管理、分配、调优和监控<br>    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗<br>    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    </p>
+<p>四个构造函数,其中的一些参数:<br>int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。<br>                        除非将allowCoreThreadTimeOut设置为true。</p>
+<p>int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。<br>                        当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。</p>
+<p>long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。</p>
+<p>TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。<br>                        当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。</p>
+<p>BlockingQueue<runnable> workQueue,  线程池中的任务队列.<br>                                    常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。</runnable></p>
+<p>ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能</p>
+<p>RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，<br>                                    会调用RejectedExecutionHandler的rejectedExecution方法。</p>
+<p>线程池规则</p>
+<p>下面都假设任务队列没有大小限制：</p>
+<p>如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。<br>如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。<br>如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。</p>
+<p>如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。<br>如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。</p>
+<p>任务队列大小有限时</p>
+<p>当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。<br>SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。</p>
 
       
 
@@ -236,10 +200,21 @@ delete(rating, &quot;c&quot;)
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Java线程池ThreadPoolExecutor/">展开全文 >></a>
         </p>
       
 
@@ -269,19 +244,19 @@ delete(rating, &quot;c&quot;)
 
 
   
-    <article id="post-Golang东一榔头西一棒槌系列(4) -指针与函数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-WebRTC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">Golang东一榔头西一棒槌系列(4) -指针与函数</a>
+      <a class="article-title" href="/2020/04/14/WebRTC/">WebRTC</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/" class="archive-article-date">
+        <a href="/2020/04/14/WebRTC/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -289,75 +264,8 @@ delete(rating, &quot;c&quot;)
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h1><pre><code>// 和号: 取变量地址
-s := &quot;Hello&quot;
-fmt.Println(&amp;s)
+        <h1 id="getUserMedia-浏览器获取用户的摄像头-麦克风"><a href="#getUserMedia-浏览器获取用户的摄像头-麦克风" class="headerlink" title="getUserMedia() 浏览器获取用户的摄像头,麦克风"></a>getUserMedia() 浏览器获取用户的摄像头,麦克风</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> constraints = &#123;<span class="attr">audio</span>: <span class="literal">false</span>, <span class="attr">video</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> video = <span class="built_in">document</span>.querySelector(<span class="string">"video"</span>);</span><br><span class="line"></span><br><span class="line">navigator.mediaDevices.getUserMedia(constraints)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span> (<span class="params">stream</span>) </span>&#123;</span><br><span class="line">        video.srcObject = stream</span><br><span class="line">        video.onloadedmetadata = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            video.play()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(<span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"getUserMedia error: "</span>, err);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
-//     星号: 访问内存地址
-fmt.Println(*&amp;s)
-
-// 指针类型声明, int型指针
-x *int
-</code></pre><h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><pre><code>func addUp(x int, y int) int  {
-    return x + y
-}
-
-// 返回多个值
-func getPrize() (int, string)  {
-    i := 2
-    s := &quot;goldfish&quot;
-    return i, s
-}
-
-// 不定参函数, numbers是包含所有参数的切片
-func sumNumbers(numbers...int) int  {
-    total := 0
-    for _, number := range numbers {
-        total += number
-    }
-    return total
-}
-
-// 具名返回值, 在返回值声明里指定变量名
-func sayHi() (x, y string)  {
-    x = &quot;hello&quot;
-    y = &quot;world&quot;
-    return x, y
-}
-
-// 具名返回值无需显式地返回相应变量名, naked return
-// 必须是返回值都是 具名返回值
-func sayHi() (x, y string)  {
-    x = &quot;hello&quot;
-    y = &quot;world&quot;
-    return
-}
-
-// 递归函数
-func feedMe(portion int, eaten int) int {
-    eaten = portion + eaten
-    if eaten &gt;= 5 {
-        fmt.Println(&quot;enough&quot;)
-        return eaten
-    }
-    fmt.Println(&quot;not enough&quot;)
-    return feedMe(portion, eaten)
-}
-
-// 函数赋给变量
-fn := func() {fmt.Println(&quot;I&apos;m a fun&quot;)}
-fn()
-
-// 函数做为参数
-func main() {
-    fn := func() string { return &quot;I&apos;m a fun&quot;}
-    fmt.Println(fn2(fn))
-}
-// 接收的f的类型是 func() string
-func fn2(f func() string) string {
-    return f()
-}
-</code></pre>
       
 
       
@@ -369,7 +277,7 @@ func fn2(f func() string) string {
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(4) -指针与函数/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/WebRTC/">展开全文 >></a>
         </p>
       
 
@@ -399,19 +307,19 @@ func fn2(f func() string) string {
 
 
   
-    <article id="post-Golang东一榔头西一棒槌系列(5) -控制流程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-邓小平传" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(5) -控制流程/">Golang东一榔头西一棒槌系列(5) -控制流程</a>
+      <a class="article-title" href="/2020/04/14/邓小平传/">邓小平传</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(5) -控制流程/" class="archive-article-date">
+        <a href="/2020/04/14/邓小平传/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -431,7 +339,7 @@ func fn2(f func() string) string {
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(5) -控制流程/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/邓小平传/">展开全文 >></a>
         </p>
       
 
@@ -560,7 +468,7 @@ func fn2(f func() string) string {
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -572,7 +480,7 @@ func fn2(f func() string) string {
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

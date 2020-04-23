@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>三石的QQ空间</title>
+  <title>笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="击空明兮溯流光">
 <meta property="og:type" content="website">
-<meta property="og:title" content="三石的QQ空间">
+<meta property="og:title" content="笔记本">
 <meta property="og:url" content="http://yoursite.com/page/35/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
+<meta property="og:site_name" content="笔记本">
 <meta property="og:description" content="击空明兮溯流光">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三石的QQ空间">
+<meta name="twitter:title" content="笔记本">
 <meta name="twitter:description" content="击空明兮溯流光">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -157,88 +157,93 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-要记要背" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/要记要背/">要记要背</a>
+      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/要记要背/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:41:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>不要太过强调理解的重要性. 理解当然很重要,但是理解了,并不能说明就掌握了,会了,下一次要用的时候就能想起来,能用上了.<br>作为理科生,也有很多要记要背的东西,理解之后要记忆背诵,记住之后加深理解,二者相辅相成.<br>如何去掉地里的荒草? 除荒草+种庄稼, 只除荒草不中庄稼,荒草很快就会疯长. 只种庄稼不除荒草,庄稼竞争不过荒草.<br>思而不学则殆.</p>
-<p>1.<img src="./java中==和equals的区别.md" alt="java中==和equals的区别"></p>
-<p>2.Java中final关键字<br>    修饰类<br>        这个类不能被继承<br>            final类中的成员变量可以根据需要设为final，但是要注意final类中的所有成员方法都会被隐式地指定为final方法。<br>    修饰方法<br>        把方法锁定，以防任何继承类修改它的含义  禁止该方法在子类中被覆盖<br>            类的private方法会隐式地被指定为final方法。<br>    修饰变量<br>         如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；<br>         如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。</p>
-<pre><code> 当用final作用于类的成员变量时，成员变量（注意是类的成员变量，局部变量只需要保证在使用之前被初始化赋值即可）
- 必须在定义时或者构造器中进行初始化赋值，而且final变量一旦被初始化赋值之后，就不能再被赋值了
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.</p>
+<h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><p>类从加载到卸载的生命周期7个阶段:<br>    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)<br>    解析可以在初始化之后开始.</p>
+<p>5种必须对类进行初始化的情况:</p>
+<pre><code>1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
+2. 使用reflect包方法对类进行反射调用时.
+3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
+4. 虚拟机启动时用户指定要执行的主类
+5. 动态语言支持
+</code></pre><p>不会触发初始化的引用–被动引用:</p>
+<pre><code>1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
+2. 通过数组定义来引用类,不会触发类的初始化
+    package org.fenixsoft.classloading
+        SuperClass[] sca = new SuperClass[10];
+    类org.fenixsoft.classloading.SuperClass不会被初始化.
+    但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
+        创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
+        数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
+3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
+</code></pre><p>对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.</p>
+<h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><p>加载</p>
+<pre><code>1. 通过一个类的全限定名来获取定义此类的二进制字节流
+2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
+3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
+</code></pre><p>验证</p>
+<p>准备</p>
+<p>解析</p>
+<p>初始化</p>
+<p>类加载的三个步骤: 加载,链接,初始化</p>
+<ul>
+<li><p>加载: 把类的class文件读到内存里, 为它创建一个java.lang.Class对象.<br>从本地文件系统加载class文件; 从jar包加载class文件(如JDBC的数据库驱动类); 通过网络加载class文件; 把一个java源文件动态编译,加载</p>
+</li>
+<li><p>链接: 三个阶段: 验证,准备,解析</p>
+<pre><code>验证: 检验被加载的类是否有正确的内部结构
+   文件格式验证: 验证字节流是否符合Class文件格式规范,并且能被当前的虚拟机加载处理,如主次版本号是否在当前虚拟机处理范围内.
+               常量池中是否有不被支持常量类型.
+   元数据验证: 对字节码描述的信息进行语义分析,分析是否符合java的语言语法的规范
+   字节码验证: 分析数据流和控制, 确定语义是合法符合逻辑的
+   符合引用验证: 保证引用会被访问到, 不会出现类无法访问的情况
 
- 当final变量是基本数据类型以及String类型时，如果在编译期间能知道它的确切值，则编译器会把它当做编译期常量使用。
- 也就是说在用到该final变量的地方，相当于直接访问的这个常量，不需要在运行时确定。这种和C语言中的宏替换有点像
+准备: 类准备阶段为类的静态变量分配内存, 设置默认初始值
+解析: 将类的二进制数据中的符号引用替换成直接引用
+</code></pre></li>
+<li><p>初始化: 为类的静态变量赋予正确的初始值.如 private static int a = 10; 在链接的准备阶段, a=0, 在初始化阶段a=10</p>
+</li>
+</ul>
+<p>类加载的时机: 创建类的实例,即new一个对象; 访问某个类或接口的静态变量,或者对该静态变量赋值; 调用类的静态方法;<br>            反射(Class.forName(“com.App”)); 初始化一个类的子类(会先初始化子类的父类); JVM启动时标明的启动类</p>
+<pre><code>对于final类型的静态变量, 如果该变量的值可以在编译时就确定下来, Java编译器会在它出现的位置替换成它的值, 程序访问该
+静态变量, 不会导致该类的初始化.   如果final类型的静态Field的值不能在编译时确定下来, 则必须等到运行时才可以确定该变量
+的值, 访问该静态变量会导致该类被初始化
+</code></pre><p>类加载器: 三种类加载器: 根类加载器, 扩展类加载器, 系统类加载器</p>
+<pre><code>    - 根类加载器(bootstrap class loader): 加载java的核心类,用C++实现,不继承自java.lang.ClassLoader.
+    - 扩展类加载器(extension class loader): 加载JRE的扩展目录, lib/ext或者java.ext.dirs系统属性指定的目录中的JAR包的类
+                                          由java实现, 父加载器为null
+    - 系统类加载器(system class loader): 在JVM启动时加载来自java命令的-classpath选项, java.class.path系统属性,
+                                        或者CLASSPATH所指定的jar包和类路径.用户自定义的类加载器都以此类加载器作为父加载器.
+                                        由java实现, 父加载器为ExtClassLoader
 
-引用变量被final修饰之后，虽然不能再指向其他对象，但是它指向的对象的内容是可变的。
-</code></pre><p>3.cookie和session的区别<br>    cookie机制采用的是在客户端保持状态的方案，<br>    而session机制采用的是在服务器端保持状态的方案</p>
-<pre><code>由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制
-来达到保存标识的目的，但实际上它还有其他选择。
-
-通过sessionId来区分不同的客户，session是以cookie或url重写为基础的，默认用cookie来实现，系统会创造一个JSESSIONID的输出cookie
-</code></pre><p>4.<img src="Java线程池ThreadPoolExecutor.md" alt="线程池ThreadPoolExecutor"></p>
-<p>5 <img src="Java内存结构.md" alt="Java内存结构"></p>
-<p>6.<img src="Java中的ThreadLocal.md" alt="ThreadLocal"></p>
-<p>8.<img src="Java中的垃圾回收算法.md" alt="垃圾回收算法"></p>
-<p>9.<img src="Redis.md" alt="Redis"></p>
-<p>11.进程间通信<br>    方式<br>        信号<br>            用于通知接收进程某个事件已经发生</p>
-<pre><code>    进程间的软件中断通知和处理机制(SIGKILL SIGSTOP SIGCONT)
-    接收处理
-        捕获
-        忽略
-        屏蔽
-
-管道
-    普通管道PIPE： 通常有两种限制,一是单工,只能单向传输;二是只能在父子或者兄弟进程间使用.
-    流管道s_pipe: 去除了第一种限制,为半双工，只能在父子或兄弟进程间使用，可以双向传输.
-    命名管道:name_pipe：去除了第二种限制,可以在许多并不相关的进程之间进行通讯.
-
-    进程间基于内存文件的通信机制
-    子进程从父进程继承文件描述符
-    缺省文件描述符
-    一种半双工的通信方式，数据只能单向流动，而且只能在具有亲缘关系的进程间使用。进程的亲缘关系通常是指父子进程关系。
-
-消息队列
-    操作系统维护的以字节序列为基本单位的间接通信机制
-    由消息的链表，存放在内核中并由消息队列标识符标识
-    消息队列克服了信号传递信息少、管道只能承载无格式字节流以及缓冲区大小受限等缺点。
-
-共享内存
-    把同一个物理内存区域映射到多个进程的内存地址空间的通信机制
-
-信号量
-    信号量是一个计数器，可以用来控制多个进程对共享资源的访问。它常作为一种锁机制，
-    防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程内不同线程之间的同步手段。
-
-套接字
-    可用于不同机器间的进程通信
-</code></pre><p>12.数据库索引<br>    平衡树  </p>
-<pre><code>聚集索引
-
-非聚集索引和聚集索引的区别在于， 通过聚集索引可以查到需要查找的数据， 
-而通过非聚集索引可以查到记录对应的主键值 ， 再使用主键的值通过聚集索引查找到需要的数据
-
-覆盖索引
-    不使用聚集索引就能查询出所需要的数据
-</code></pre><p>15.</p>
-<p>算法区:<br>    1.最小区间：k个有序的数组，找到最小区间使k个数组中每个数组至少有一个数在区间中<br>    3.TOP k<br>        1.快排思路<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &gt;= arr[high]) &#123;</span><br><span class="line">            high--;</span><br><span class="line">        &#125;</span><br><span class="line">        arr[low] = arr[high];</span><br><span class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[low]) &#123;</span><br><span class="line">            low++;</span><br><span class="line">        &#125;</span><br><span class="line">        arr[high] = arr[low];</span><br><span class="line">    &#125;</span><br><span class="line">    arr[low] = pivot;</span><br><span class="line">    <span class="keyword">return</span> low;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">topK</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> low = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> high = arr.length - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> index = partition(arr, low, high);</span><br><span class="line">    <span class="keyword">while</span> (index != k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (index &gt; k) &#123;</span><br><span class="line">            high = index - <span class="number">1</span>;</span><br><span class="line">            partition(arr, low, high);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            low = index + <span class="number">1</span>;</span><br><span class="line">            partition(arr, low, high);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>linux区<br>    常用命令<br>        删除指定日期之前的文件<br>            find /data1/yulei/user_mq/logs -mtime +7 -type f | xargs rm -rf</p>
+类加载器加载Class的8个步骤: 1.检测此Class是否载入过, 缓冲区是否有此Class; 有则跳至8, 否则2
+                         2.如果没有父类加载器,要么父类是根加载器,要么本身就是根加载器,跳至4; 如果父类加载器存在,进入3
+                         3.请求使用父类加载器去载入目标类, 成功则8, 否则5
+                         4.请求使用根类加载器去载入目标类, 成功则8, 否则7
+                         5.当前类加载器尝试寻找Class文件, 找到则6, 否则7
+                         6.从文件中载入Class, 成功则跳至8
+                         7.抛出ClassNotFoundException异常
+                         8.返回对应的java.lang.Class对象
+</code></pre><p>类加载机制: 三种机制: 全盘负责, 双亲委派, 缓存机制<br>        1.全盘负责: 一个类加载器负责加载某个Class时,该Class所依赖和引用其他Class也将由该类加载器负责载入<br>        2.双亲委派: 先让父类加载器试图加载该Class, 只有父类加载器无法加载该类时才尝试从自己的类路径中加载该类<br>                   某个特定的类加载器在接到加载类的请求时, 首先将加载任务委托给父加载器, 依次递归, 父加载器无法<br>                   完成该加载任务时, 才自己去加载<br>        3.缓存机制:  所有加载过的Class都会被缓存, 修改了Class之后, 必须重新启动JVM, 修改才会生效</p>
+<p>根类加载器 &lt;- 扩展类加载器 &lt;- 系统类加载器 &lt;- 用户类加载器<br>双亲委派优势: 1.java类随它的类加载器一起具备了一种优先级的层次关系, 避免类的重复加载<br>            2.java核心api中定义类型不会被随意替换, 假设网络传递一个java.lang.Integer的类, 启动类加载器在发现这个类后,<br>                直接返回已经加载过的Integer.class, 防止核心API库被篡改</p>
 
       
 
@@ -247,255 +252,6 @@
     <div class="article-info article-info-index">
       
       
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/要记要背/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-深入理解Java-Web" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/深入理解Java-Web/">深入理解Java Web</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/深入理解Java-Web/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:40:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Web请求过程<br>    HTTP 无状态的短连接.发起一个http请求就是建立一个socket通信的过程<br>        Request Header<br>            Accept-Charset<br>            Accept-Encoding<br>            Accept-Language<br>            Host<br>            User-Agent<br>            Connection: Keep-Alive<br>        Response Header<br>            Server<br>            Content-Type<br>            Content-Encoding<br>            Content-Language<br>            Content-Length<br>            Keep-Alive: timeout=5,max=120</p>
-<pre><code>    常见状态码
-        200     成功
-        302     临时跳转, 跳转的地址通过Location指定
-        304     文件未变化
-        400     客户端请求有语法错误, 不能被服务器识别
-        403     服务器收到请求, 但是拒绝提供服务
-        404     请求的资源不存在
-        500     服务器发生不可预期的错误
-
-    浏览器缓存
-        Pragma: no-cache
-        Cache-Control: no-cache
-
-    Expires
-
-    Last-Modified/Etag
-        浏览器在请求头中增加If-Modified-Since, 如果是最新的, 返回304
-
-DNS域名解析过程
-    1. 浏览器检查缓存有没有.
-    2. 操作系统缓存. hosts文件
-    3. LDNS
-    4. Root Server
-
-CDN工作机制
-</code></pre><p>java io<br>    Java IO类库<br>        传输数据的数据格式<br>            基于字节操作的IO接口:    InputStream OutputStream<br>            基于字符操作的IO接口:    Writer Reader<br>        传输数据的方式<br>            基于磁盘操作的IO接口:    File<br>            基于网络操作的IO接口:    Socket</p>
-<pre><code>    字符与字节的转化接口
-        InputStreamReader: 字节到字符的转化桥梁
-        OutStreamWriter:    字符到字节的编码过程
-
-磁盘IO工作机制
-    访问文件的方式
-        标准访问文件方式
-            read()
-                检查内核缓存,有的话直接返回, 没有的话从磁盘读取, 缓存在内核地址空间
-            write()
-                从用户地址复制到内核地址空间缓存, 什么时候写到磁盘由操作系统决定,
-                除非显示调用sync同步命令
-
-        直接IO方式
-            直接访问磁盘数据,不经过操作系统内核数据缓冲区.减少一次数据复制.
-            通常是在对数据的缓存管理由应用程序实现的数据库管理系统中.
-
-        同步访问文件方式
-
-        异步访问文件方式
-
-        内存映射的方式
-            将操作系统内存中的某一块区域与磁盘中的文件关联起来.
-</code></pre><p>java编码</p>
-<p>java编译原理:  将java源码编译成java字节码, .java-&gt;.class, 源代码-&gt;二进制数字<br>    模块<br>        词法分析器:  找出语法关键词 -&gt; 规范Token流<br>            Scanner: 具体读取和归类不同词法<br>            JavacParser: 规定了哪些词是符合java语言规范<br>        语法分析器:  检查关键词是否符合java语言规范 -&gt; 抽象语法树<br>        语义分析器:  将复杂的语法转化为简单的语法(foreach 注解) -&gt; 注解过后的语法树<br>        代码生成器:  生成字节码<br>    语法树结构<br>    工作流程详解<br>        词法分析<br>        语法分析<br>        符号表的构建<br>        annotation的处理<br>        标注和语法检查<br>        数据流分析<br>        类型转化<br>        语法<br>    实现内部类<br>    实现对异常的处理<br>    与其他编译器的比较</p>
-<p>class文件结构</p>
-<p>ClassLoader工作机制</p>
-<p>JVM体系结构和工作方式<br>    虚拟内存<br>        多个进程空间上共享物理内存, 逻辑上不能互相访问<br>        一个虚拟地址被映射到一段物理内存,文件或其他可以寻址的存储(Swap分区)<br>    内核空间和用户空间<br>        减少从内核空间到用户空间的数据复制方式:sendfile文件传输方式</p>
-<pre><code>Java中哪些组件需要使用内存
-    Java堆
-        堆的大小在JVM启动时一次向操作系统申请完成.
-        分配完成后堆的大小固定,内存不够时再重新申请.内存空闲时也不能将多余的空间交还.
-
-    线程
-        每个线程创建时JVM都会为它创建一个堆栈, 通常在256KB-756KB之间
-
-    类和类加载器
-        存储在永久代
-
-    NIO
-        基于通道和缓冲区来执行IO的新方式.
-        java.nio.ByteBuffer.allocateDirect()方法分配内存.使用本机内存而不是Java堆上内存.
-            每次分配内存会调用操作系统的os::malloc()函数.
-
-        ByteBuffer产生的数据如果和网络或者磁盘交互都在操作系统的内核空间发生,不需要
-        将数据复制到java内存中.(如果io频繁发送很小的数据,系统调用的开销会抵消掉不用复制的好处)
-
-        直接ByteBuffer对象会自动清理本机缓冲区,这个过程只能作为java堆gc的一部分来执行
-
-    JNI
-
-JVM内存结构
-    PC寄存器
-        一个数据结构,用于保存当前正常执行的程序的内存地址,记录哪个线程当前执行到哪条指令.
-    Java栈
-        每当创建一个线程时,JVM就会为这个线程创建一个对应的java栈,这个栈中又会含有多个帧栈.
-        每运行一个方法创建一个帧栈.帧栈含有内部变量,操作栈,方法返回值等信息
-        每当方法执行完成时,帧栈弹出帧栈的元素作为方法的返回值.
-    堆
-    方法区
-    本地方法区
-    运行时常量池
-</code></pre><p>JVM内存管理</p>
-<p>Servlet工作原理<br>    Servlet容器<br>        启动过程<br>            启动类: org.apache.catalina.startup.Tomcat,创建实例对象并调用start方法.<br>                通过该对象增加和修改Tomcat配置参数, 动态增加Context,Servlet等<br>            基于观察者模式: 所有容器继承Lifecycle接口,它管理容器的整个生命周期,所有<br>                容器的修改和状态的改变都由它去通知已经注册的观察者(Listener)</p>
-<pre><code>Tomcat启动时序图
-    Tomcat start
-        StandardServer start init
-            StandardService init
-                StandardEngine init
-                   Connector
-                    StandardServer start
-                        StandardService start
-                            StandardEngine start
-                                StandardHost init start
-                                    StandardContext init(ContextConfig作为观察者被通知)
-                                    StandardContext init(配置解析)
-                                    StandardContext startInternal
-                                        StandardService start
-                                            Connector init
-                                                Http11Protocol start
-                                                Http11Protocol init
-
-当Context容器初始化状态设为init时, 添加到Context容器的Listener将会被调用.
-ContextConfig继承了LifecycleListener接口, 它是在调用Tomcat.addWebapp时被加入到
-StandardContext容器中的.
-ContextConfig类会负责整个Web应用的配置文件的解析工作.
-
-ContextConfig的init方法
-    创建用于解析XML配置文件的contextDigester对象
-    读取默认的context.xml配置文件,如果存在则解析它
-    读取默认的Host配置文件,如果存在则解析它
-    读取默认的Context自身的配置文件,如果存在则解析它
-    设置Context的DocBase
-
-Context容器的startInternal方法
-    创建读取资源文件的对象
-    创建ClassLoader对象
-    设置应用的工作目录
-    启动相关的辅助类(如Logger,realm,resources)
-    修改启动状态, 通知感兴趣的观察者(Web应用的配置)
-    子容器的初始化
-    获取ServletContext并设置必要的参数
-    初始化&quot;load on startup&quot;的Servlet
-
-Web应用的初始化工作(在ContextConfig的configureStart方法中实现)
-    解析web.xml文件, 其中的各个配置项会被解析成相应的属性保存在WebXml对象中
-    将WebXml对象中的属性设置到Context容器中,包括创建Servlet对象,filter.listener等
-
-    将Servlet包装成Context容器中的StandardWrapper并作为子容器添加到Context中
-
-创建Servlet实例(Wrapper.loadServlet实现)
-    web.xml默认配置项(Tomcat启动时这两个Servlet就会被启动)
-        DefaultServlet
-        JspServlet
-    loadServlet方法获取servletClass,交给InstanceManager去创建一个基于
-    servletClass.class的对象
-    如果这个Servlet配置了jsp-file,那这个servletClass就是JspServlet
-
-初始化Servlet(StandardWrapper的initServlet方法)
-    initServlet
-        调用Servlet的init()方法,同时把包装了StandardWrapper对象
-        的StandardWrapperFacade做为ServletConfig传给Servlet.
-
-
-Servlet体系结构(握手型的交互式:两个模块为了交换数据准备一个交易场景)
-    StandardWrapper和StandardWrapperFacade都实现了ServletConfig接口.
-    StandardWrapperFacade传给Servlet,保证从StandardWrapper中拿到ServletConfig
-    所规定的数据,又不把ServletConfig不关心的数据暴露给Servlet
-
-    ServletContext ApplicationContext ApplicationContextFacade
-        保证ServletContext只能从从容器拿到它该拿的数据.
-</code></pre><p>Session与Cookie</p>
-<p>Tomcat系统架构与设计模式<br>    Tomcat<br>        Container容器<br>            Engine<br>                Host<br>                    Servlet容器<br>                        Context(对应一个Web工程)<br>                            Wrapper(Servlet包装类)</p>
-<p>Jetty工作原理解析</p>
-<p>Spring设计理念</p>
-<p>SpringMVC工作机制</p>
-<p>MyBatis系统架构</p>
-<p>Velocity工作原理</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
@@ -511,7 +267,7 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/深入理解Java-Web/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
         </p>
       
 
@@ -541,61 +297,52 @@ Servlet体系结构(握手型的交互式:两个模块为了交换数据准备�
 
 
   
-    <article id="post-Spring-MVC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-沪江网校新标日语(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spring-MVC/">Spring MVC</a>
+      <a class="article-title" href="/2019/04/14/沪江网校新标日语(1)/">沪江网校新标日语(1)</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Spring-MVC/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/14/沪江网校新标日语(1)/" class="archive-article-date">
+  	<time datetime="2019-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="DispatcherServlet"><a href="#DispatcherServlet" class="headerlink" title="DispatcherServlet"></a>DispatcherServlet</h2><ol>
-<li><p>用户向服务器发送请求,被Spring的前端控制器DispatcherServlet截获.</p>
-</li>
-<li><p>DispatcherServlet对请求URL进行解析,得到URI,调用HandlerMapping获得该<br> Handler配置的所有相关的对象.包括Handler对象以及Handler对象对应的拦截器.<br> 这些对象被封装到一个HandlerExecutionChain对象当中返回<br><code>`</code>java<br>interface HandlerMapping {<br> HandlerExecutionChain getHandler(HttpServletRequest request);<br>}</p>
-</li>
-</ol>
-<p>interface HandlerAdapter {<br>    boolean supports(Object handler);<br>    ModelAndView handle(HttpServletRequest request,<br>                        HttpServletResponse response,<br>                        Object handler);<br>    long getLastModified(HttpServletRequest request, Object handler);<br>}</p>
-<p>public interface Controller {<br>    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response);<br>}</p>
-<p>public interface LastModified {<br>    long getLastModified(HttpServletRequest request);<br>}</p>
-<p>public class SimpleControllerHandlerAdapter implements HandlerAdapter {<br>    public boolean supports(Object handler) {<br>        return (handler instanceof Controller);<br>    }</p>
-<pre><code>public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    return ((Controller) handler).handleRequest(request, response);
-}
-
-public long getLastModified(HttpServletRequest request, Object handler) {
-    if (handler instanceof LastModified) {
-        return ((LastModified) handler).getLastModified(request);
-    }
-    return -1L;
-}
-</code></pre><p>}<br><code>`</code>    </p>
-<ol start="3">
-<li><p>DispatcherServlet根据Handler选择HandlerAdapter,调用实际处理请求的方法.</p>
-</li>
-<li><p>提取请求中的模型数据,执行Handler.在填充Handler入参过程中:<br> 消息转换:   将json,xml等转换成一个对象,将对象转换为指定的响应消息<br> 数据转换:   对请求消息进行数据转换,String转换为Integer,Double等<br> 数据格式化:  如字符串转为格式化数字或格式化日期等<br> 数据验证:   验证数据的有效性,验证结果存到BindingResult或Error中</p>
-</li>
-<li><p>Handler执行完成之后,向DispatcherServlet返回一个ModelAndView对象,包含视图名<br> 或视图名和模型</p>
-</li>
-<li><p>根据ModelAndView选择一个合适的ViewResolver返回给DispatcherServlet</p>
-</li>
-<li><p>ViewSolver结合Model和View来渲染视图</p>
-</li>
-<li><p>将视图返回给客户端</p>
-</li>
-</ol>
+        <p>私<br>wa ta shi<br>わたし<br>我</p>
+<p>あなた　<br>a na ta<br>你</p>
+<p>あの人<br>a no hi to<br>あのひと<br>那个人</p>
+<p>~さん<br>sa nn<br>姓氏之后</p>
+<p>~らやん<br>ra ya nn<br>小孩子或亲近的女孩子</p>
+<p>~君<br>ku nn<br>くん<br>年龄相当或年轻的男性</p>
+<p>日本<br>ni ho nn<br>にほん</p>
+<p>日本人<br>ni ho nn ji nn<br>にほんじん</p>
+<p>中国<br>chu u go ku<br>ちゅうごく</p>
+<p>中国人<br>chu u go ku ji nn<br>ちゅごくじん</p>
+<p>韓国<br>ka nn ko ku<br>かんこく</p>
+<p>韓国人<br>ka nn ko ku ji nn</p>
+<p>先生<br>se nn se i<br>せんせい<br>老师,律师,艺术家,领导人,专家</p>
+<p>学生<br>ga ku se i<br>がくせい<br>大学生</p>
+<p>大学<br>da i ga ku<br>だいがく</p>
+<p>学 ga ku<br>生 se i</p>
+<p>会社<br>ka i sha<br>かいしゃ<br>公司</p>
+<p>会社員<br>ka i sha i nn<br>かいしゃいん<br>公司职员</p>
+<p>社員<br>sha i nn<br>しゃいん<br>职员</p>
+<p>企業<br>ki gyou<br>きぎょう</p>
+<p>企画<br>ki ka ku<br>策划</p>
+<p>はい<br>ha i<br>是</p>
+<p>いいえ<br>i i e<br>不是</p>
+<p>そうです<br>so u de su<br>是的</p>
+<p>違います<br>chi ga i ma su<br>ちがいます<br>不是</p>
+<p>分かりません<br>wa ka ri ma se nn<br>わかりません<br>不知道</p>
 
       
 
@@ -610,7 +357,7 @@ public long getLastModified(HttpServletRequest request, Object handler) {
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
         		</li>
       		
 		</ul>
@@ -619,7 +366,7 @@ public long getLastModified(HttpServletRequest request, Object handler) {
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spring-MVC/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/14/沪江网校新标日语(1)/">展开全文 >></a>
         </p>
       
 
@@ -649,34 +396,133 @@ public long getLastModified(HttpServletRequest request, Object handler) {
 
 
   
-    <article id="post-Spring Cloud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-动态规划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Spring Cloud/">Spring Cloud</a>
+      <a class="article-title" href="/2019/04/08/动态规划/">动态规划</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Spring Cloud/" class="archive-article-date">
-  	<time datetime="2019-04-04T18:39:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/08/动态规划/" class="archive-article-date">
+  	<time datetime="2019-04-08T07:20:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-08</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Spring Cloud<br>    Spring Cloud Config<br>        配置管理工具包<br>    Spring Cloud Netflix<br>        包含Netflix OSS的基础组件:<br>            Eureka: 云端服务管理,基于REST<br>            Hystrix: 断路器,容错机制,降级机制<br>            Zuul: 动态路由,监控,安全,过滤<br>            Ribbon: 云端负载均衡<br>            Feign: REST客户端</p>
-<p>Ribbon<br>    负载均衡器:<br>        功能:<br>            维护服务器的IP,DNS名称等<br>            根据特定的逻辑在服务器列表中循环<br>        子模块:<br>            Rule: 逻辑组件,决定从服务器列表中返回哪个服务器实例.<br>                默认使用RoundRobinRule,轮询服务器列表.<br>                AvailabilityFilteringRule: 忽略无法连接的服务器,忽略并发数过高的服务器.<br>                WeightedResponseTimeRule: 根据服务器的响应时间,设置权重值.<br>                ZoneAvoidanceRule: 根据区域(机架,机房),可用服务器为基础选择服务器.<br>                BestAvailableRule: 忽略短路的服务器,选择并发数较低的服务器.<br>                RandomRule: 随机选.<br>                RetryRule: 如果使用RoundRobinRule选择的服务器无法连接,重新选择服务器.</p>
-<pre><code>Ping: 使用定时器来确保服务器网络可以连接.每隔一段时间Ping服务器,判断是否存活.
+        <h1 id="斐波那契数列"><a href="#斐波那契数列" class="headerlink" title="斐波那契数列"></a>斐波那契数列</h1><h2 id="70-Climbing-Stairs"><a href="#70-Climbing-Stairs" class="headerlink" title="70. Climbing Stairs"></a><a href="https://leetcode.com/problems/climbing-stairs" target="_blank" rel="noopener">70. Climbing Stairs</a></h2><p>主要的难点在于想清楚: 走到第 i 个楼梯的方法数为走到第 i-1 和第 i-2 个楼梯的方法数之和<br>第i-1个楼梯到第i个楼梯只有这一种方法,<br>第i-2个楼梯到第i个楼梯要么直接走2个台阶上去, 一步一步走上去的那种方法已经被算在了前一种方法里.<br>即: dp[i] = dp[i-1] + dp[i-2]<br>可以比较容易地写出下面这种递归的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> climbStairs(n - <span class="number">1</span>) + climbStairs(n - <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不过这个是树形递归的方法, 有很多重复计算.(在LeetCode里面跑会超时)<br>迭代的方法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">climbStairs</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">1</span>, pre2 = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>; i&lt;n; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = pre1 + pre2;</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="198-House-Robber"><a href="#198-House-Robber" class="headerlink" title="198. House Robber"></a><a href="https://leetcode.com/problems/house-robber/" target="_blank" rel="noopener">198. House Robber</a></h2><p>要想清楚: 抢到第 i 个住户时的最大抢劫量为 抢到第i-2个用户的钱加上第i个用户的钱<br>                                       抢到第i-1个用户的钱<br>                                这二者的最大值.<br>即: dp[i] = max(dp[i-2] + nums[i], dp[i-1])<br>容易写出下面的递归写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.length == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> nums[<span class="number">0</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums.length == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(nums[<span class="number">0</span>], nums[<span class="number">1</span>]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(rob(Arrays.copyOf(nums, nums.length - <span class="number">2</span>)) + nums[nums.length - <span class="number">1</span>],</span><br><span class="line">                rob(Arrays.copyOf(nums, nums.length - <span class="number">1</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>和上面的一样,也会超时.<br>迭代的写法:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pre1 = <span class="number">0</span>, pre2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> cur = Math.max(pre1 + nums[i], pre2);</span><br><span class="line">        pre1 = pre2;</span><br><span class="line">        pre2 = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pre2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
 
 
-ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,也可以
-            动态指定,通过动态指定时会有后台的线程来刷新该列表.
-</code></pre><p>Feign   调用REST服务<br>    使用JDK的动态代理,生成的代理类将请求的信息封装,交给feign.Client接口发送请求,该接口的默认实现类<br>    最终使用java.net.HttpURLConnection来发送HTTP请求.</p>
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/08/动态规划/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-神秘的Scala implicit" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/05/神秘的Scala implicit/">神秘的Scala implicit</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/05/神秘的Scala implicit/" class="archive-article-date">
+  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="神秘的Scala-implicit"><a href="#神秘的Scala-implicit" class="headerlink" title="神秘的Scala implicit"></a>神秘的Scala implicit</h1><h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><ul>
+<li>隐式值<br>  编译器会在方法省略隐式参数的情况下去搜索作用域内的隐式值作为缺少参数<br>  例: <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def person(implicit name: String) = name</span><br><span class="line">implicit val p = &quot;ramble&quot;</span><br><span class="line">person  // ramble</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+</ul>
+<ul>
+<li><p>隐式视图</p>
+<ol>
+<li><p>隐式转换为目标类型：把一种类型自动转换到另一种类型<br>例: </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def foo(msg: String) = println(msg)</span><br><span class="line">implicit def intToString(x: Int) = x.toString</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使对象调用类中本不存在的方法<br>例: </p>
+ <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SwingType</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wantLearned</span></span>(sw: <span class="type">String</span>) = println(<span class="string">"兔子已经学会了"</span> + sw)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">swimming</span> </span>&#123;</span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">learningType</span></span>(s: <span class="type">AnimalType</span>) = <span class="keyword">new</span> <span class="type">SwingType</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AnimalType</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">AnimalType</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="keyword">import</span> swimming._</span><br><span class="line">    <span class="keyword">val</span> rabbit = <span class="keyword">new</span> <span class="type">AnimalType</span></span><br><span class="line">    rabbit.wantLearned(<span class="string">"蛙泳"</span>)  <span class="comment">//兔子已经学会了蛙泳</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>隐式类</li>
+</ul>
 
       
 
@@ -691,7 +537,7 @@ ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
         		</li>
       		
 		</ul>
@@ -700,7 +546,7 @@ ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Spring Cloud/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/05/神秘的Scala implicit/">展开全文 >></a>
         </p>
       
 
@@ -732,7 +578,7 @@ ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/34/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="page-number current">35</span><a class="page-number" href="/page/36/">36</a><a class="page-number" href="/page/37/">37</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/36/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/34/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="page-number current">35</span><a class="page-number" href="/page/36/">36</a><a class="page-number" href="/page/37/">37</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/36/">Next &raquo;</a>
     </nav>
   
 
@@ -744,7 +590,7 @@ ServerList: 服务器列表,可以通过静态的配置确定负载的服务器,
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>三石的QQ空间</title>
+  <title>笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="击空明兮溯流光">
 <meta property="og:type" content="website">
-<meta property="og:title" content="三石的QQ空间">
+<meta property="og:title" content="笔记本">
 <meta property="og:url" content="http://yoursite.com/page/32/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
+<meta property="og:site_name" content="笔记本">
 <meta property="og:description" content="击空明兮溯流光">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三石的QQ空间">
+<meta name="twitter:title" content="笔记本">
 <meta name="twitter:description" content="击空明兮溯流光">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -157,152 +157,27 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Kubernetes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Category-Theory" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/Kubernetes/">Kubernetes</a>
+      <a class="article-title" href="/2019/04/27/Category-Theory/">Category Theory</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/Kubernetes/" class="archive-article-date">
-  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+        <a href="/2019/04/27/Category-Theory/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>一切以服务为中心, 一切围绕服务运转.<br>自动化.<br>一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发<br>调度流程,最终在选定的目标节点上启动相应数量的服务实例副本.</p>
-<p>核心组件:</p>
-<ul>
-<li>etcd: 保存整个集群的状态, 所有资源对象的数据</li>
-<li>apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制</li>
-<li>controller manager: 维护集群的状态, 如故障检测,自动扩展,滚动更新等.</li>
-<li>scheduler: 负责资源调度,按照预定的调度策略将Pod调度到相应的机器上.</li>
-<li>kubelet: 负责维护容器的生命周期,也负责Volume(CVI)和网格(CNI)的管理.</li>
-<li>Container runtime: 负责镜像管理以及Pod和容器的真正运行(CRI)</li>
-<li>kube-proxy: 负责为Service提供cluster内部的服务发现和负载均衡.</li>
-</ul>
-<p>Add-ons:<br>    kube-dns: 负责为整个集群提供DNS服务<br>    Ingress Controller: 为服务提供外网入口.<br>    Heapster: 资源监控</p>
-<p>API对象: Kubernetes集群中的管理操作单元.<br>    三大类属性: 元数据metadata<br>                 标识API对象,至少包含:namespace,name和uid. 使用标签来标识和匹配不同的对象.<br>                                如env=dev来标识开发服务.<br>              规范spec<br>                 描述了用户期望的Kubernetes集群中的分布式系统达到的理想状态.如通过Replication Controller设置<br>                    期望的Pod副本数为3.<br>              状态status<br>                 描述了系统实际当前达到的状态,如当前实际Pod副本数为2</p>
-<p>Pod: Kubernetes集群中运行部署应用或服务的最小单元.一个Pod代表集群中运行的一个进程.<br>        支持多个容器在一个Pod中共享网络地址和文件系统,可以通过进程间通信和文件共享的方式完成服务.</p>
-<p>获取可用的节点:</p>
-<blockquote>
-<p>kubectl get nodes</p>
-</blockquote>
-<h2 id="启动Mysql应用"><a href="#启动Mysql应用" class="headerlink" title="启动Mysql应用"></a>启动Mysql应用</h2><p>mysql-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">1</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">mysql</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mysql</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">mysql</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">3306</span> <span class="comment"># 容器应用监听的端口号</span></span><br><span class="line">            <span class="attr">env:</span>                   <span class="comment"># 注入容器内的环境变量</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">            <span class="attr">value:</span> <span class="string">"123456"</span></span><br></pre></td></tr></table></figure></p>
-<p>将RC文件发布到Kubenetes集群:</p>
-<blockquote>
-<p>kubectl create -f mysql-rc.yaml</p>
-</blockquote>
-<p>查看创建的RC:</p>
-<blockquote>
-<p>kubectl get rc</p>
-</blockquote>
-<p>查看pod的创建情况:</p>
-<blockquote>
-<p>kubectl get pods</p>
-</blockquote>
-<p>查看正在运行的容器:</p>
-<blockquote>
-<p>docker ps | grep mysql</p>
-</blockquote>
-<p>创建Kubernetes Service:<br>mysql-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">3306</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span></span><br></pre></td></tr></table></figure></p>
-<p>创建Service:</p>
-<blockquote>
-<p>kubectl create -f mysql-svc.yaml</p>
-</blockquote>
-<p>查看创建的Service:</p>
-<blockquote>
-<p>kubectl get svc</p>
-</blockquote>
-<h2 id="启动Tomcat应用"><a href="#启动Tomcat应用" class="headerlink" title="启动Tomcat应用"></a>启动Tomcat应用</h2><p>创建myweb-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">2</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">myweb</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">myweb</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">kubeguide/tomcat-app:v1</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span> <span class="comment"># 容器应用监听的端口号</span></span><br></pre></td></tr></table></figure></p>
-<p>RC的创建和验证:</p>
-<blockquote>
-<p>kubectl create -f myweb-rc.yaml<br>创建myweb-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">NodePort</span>      <span class="comment"># 此Service开启了NodePort方式的外网访问模式</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">          <span class="attr">nodePort:</span> <span class="number">30001</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span></span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>kubectl create -f myweb-svc.yaml</p>
-</blockquote>
-<p>查看Services:<br>kubectl get services</p>
-<h2 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h2><p>负责整个集群的管理和控制,通常在一个独立的服务器, 基本所有的控制命令都发送给它.</p>
-<ul>
-<li>Kubernetes API Server: 提供HTTP Rest接口的关键服务进程,所有资源增删改查的唯一入口,集群控制的入口进程.</li>
-<li>Kubernetes Controller Manager: 所有资源对象的自动化控制中心</li>
-<li>Kubernetes Scheduler: 资源调度</li>
-<li>etcd服务: 保存所有资源对象的数据</li>
-</ul>
-<h2 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h2><p>可以是物理主机,也可以是虚拟机.<br>工作负载节点.<br>每个Node都运行着:</p>
-<ul>
-<li>kubelet: 负责Pod对应的容器的创建,启停等任务.与Master密切协作,实现集群管理</li>
-<li>kube-proxy: 实现Kubernetes Service的通信与负载均衡机制的重要组件</li>
-<li>Docker Engine: Docker引擎,负责本机的容器创建和管理工作</li>
-</ul>
-<p>查看某个Node的详细信息:</p>
-<blockquote>
-<p>kubectl describe node &lt;node_name&gt;</p>
-</blockquote>
-<h2 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h2><p>根容器: Pause容器<br>业务容器共享Pause容器的IP,挂接的Volume<br>Kubernetes为每个Pod都分配了唯一的IP地址, 即Pod IP.<br>一个Pod里的多个容器共享Pod IP地址.<br>一个Pod里的容器可以与另外主机上的Pod容器能够直接通信</p>
-<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><ul>
-<li>普通Pod<br>放入etcd中存储,被Kubernetes Master调度到某个具体的Node上并进行绑定,随后该Pod被对应的Node上的kubelet进程实例化成<br>一组相关的Docker容器并启动.</li>
-<li>静态Pod<br>不存在etcd存储中,存放在某个具体的Node上的具体文件中,只在此Node上启动,运行</li>
-</ul>
-<h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><p>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP.</p>
-<h2 id="Annotation"><a href="#Annotation" class="headerlink" title="Annotation"></a>Annotation</h2><p>与Label类似,使用key/value键值对的形式进行定义.<br>Annotation是用户任意定义的附加信息,以便外部工具查找.</p>
-<h2 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h2><p>Kubernetes将存储在etcd中的ConfigMap通过Volume映射的方式变成目标Pod内的配置文件,不管目标Pod被调度到哪台服务器,都会<br>完成自动映射.<br>如果ConfigMap中的key-value数据被修改,则映射到Pod中的”配置文件”也会随之更新.</p>
-<h2 id="Kubernetes安装"><a href="#Kubernetes安装" class="headerlink" title="Kubernetes安装"></a>Kubernetes安装</h2><ol start="0">
-<li>关闭防火墙<blockquote>
-<p>systemctl disable firewalld<br>systemctl stop firewalld<br>禁用SELinux, 让容器可以读取主机文件系统:<br>setenforce 0</p>
-</blockquote>
-</li>
-</ol>
-<ol>
-<li><p>修改源:<br>[kuebrnetes]<br>name=Kubernetes Repository<br>baseurl=<a href="http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/" target="_blank" rel="noopener">http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</a><br>enabled=1<br>gpgcheck=0</p>
-</li>
-<li><p>安装kubeadm</p>
-<!-- > yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes -->
-<blockquote>
-<p>yum install -y kubelet-1.14.2 kubeadm-1.14.2 kubectl-1.14.2 –disableexcludes=kubernetes<br>我离气死就差这么点儿距离了..<br>安装了1.6版本的上述kubelet, 后面的死活装不上</p>
-</blockquote>
-</li>
-<li><p>启动docker和kubelet<br>systemctl enable docker &amp;&amp; systemctl start docker<br>systemctl enable kubelet &amp;&amp; systemctl start kubelet</p>
-</li>
-</ol>
-<p>得到默认的初始化参数文件:<br>kubeadm config print init-defaults &gt; init.defaults.yaml</p>
-<ol start="4">
-<li>修改docker的镜像托管站, 重启docker服务<blockquote>
-<p>echo ‘{“registry-mirrors”:[“<a href="https://registry.docker-cn.com&quot;]}&#39;" target="_blank" rel="noopener">https://registry.docker-cn.com&quot;]}&#39;</a> &gt; /etc/docker/daemon.json</p>
-</blockquote>
-</li>
-</ol>
-<p>启动        systemctl start docker<br>守护进程重启   sudo systemctl daemon-reload<br>重启docker服务   systemctl restart docker<br>重启docker服务  sudo service docker restart<br>关闭docker   service docker stop<br>关闭docker  systemctl stop docker</p>
-<ol start="5">
-<li>使用config images pull子命令下载所需镜像:<blockquote>
-<p>kubeadm config images pull –config=init-config.yaml</p>
-</blockquote>
-</li>
-</ol>
-<blockquote>
-<p>kubeadm init –config=init-config.yaml</p>
-</blockquote>
-<p>关掉swap</p>
-<blockquote>
-<p>swapoff -a</p>
-</blockquote>
-<p>不知道这啥错,也不知道这啥办法.<br>$ echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables<br>$ echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-ip6tables</p>
-<blockquote>
-<p>安装成功了, 我离去世就差这么一点点距离了.</p>
-</blockquote>
-<p>kubectl命令需要使用kubernetes-admin来运行，<br>解决方法如下，将主节点中的【/etc/kubernetes/admin.conf】文件拷贝到从节点相同目录下，然后配置环境变量</p>
-<blockquote>
-<p>echo “export KUBECONFIG=/etc/kubernetes/admin.conf” &gt;&gt; ~/.bash_profile</p>
-</blockquote>
-
+        <h1 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h1><h1 id="Abstract-structures"><a href="#Abstract-structures" class="headerlink" title="Abstract structures"></a>Abstract structures</h1><h1 id="Duality"><a href="#Duality" class="headerlink" title="Duality"></a>Duality</h1><h1 id="Groups-and-categories"><a href="#Groups-and-categories" class="headerlink" title="Groups and categories"></a>Groups and categories</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Exponentials"><a href="#Exponentials" class="headerlink" title="Exponentials"></a>Exponentials</h1><h1 id="Functors-and-naturality"><a href="#Functors-and-naturality" class="headerlink" title="Functors and naturality"></a>Functors and naturality</h1><h1 id="Categories-of-diagrams"><a href="#Categories-of-diagrams" class="headerlink" title="Categories of diagrams"></a>Categories of diagrams</h1><h1 id="Adjoints"><a href="#Adjoints" class="headerlink" title="Adjoints"></a>Adjoints</h1><h1 id="Monads-and-algebras"><a href="#Monads-and-algebras" class="headerlink" title="Monads and algebras"></a>Monads and algebras</h1>
       
 
       
@@ -310,13 +185,24 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
+        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
         		</li>
       		
 		</ul>
@@ -325,7 +211,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/Kubernetes/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Category-Theory/">展开全文 >></a>
         </p>
       
 
@@ -355,67 +241,28 @@
 
 
   
-    <article id="post-JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JWT/">JWT</a>
+      <a class="article-title" href="/2019/04/27/Docker/">Docker</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/JWT/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+        <a href="/2019/04/27/Docker/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>了解JWT相关知识</p>
-<pre><code>JWT组成: 
-    Header.Payload.Signature
-    头部.负载.签名
-
-头部:
-    {
-       &quot;alg&quot;: &quot;HS256&quot;,
-        &quot;typ&quot;: &quot;JWT&quot;
-    }
-    alg表示签名的算法，默认是HMAC SHA256, typ表示这个令牌的类型.
-
-负载:
-    iss (issuer)：签发人
-    exp (expiration time)：过期时间
-    sub (subject)：主题
-    aud (audience)：受众
-    nbf (Not Before)：生效时间
-    iat (Issued At)：签发时间
-    jti (JWT ID)：编号
-
-签名: 对前两部分的签名,防止数据篡改.
-    HMACSHA256(
-        base64UrlEncode(header) + &quot;.&quot; +
-        base64UrlEncode(payload),
-        secret)
-把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用&quot;点&quot;（.）分隔
-</code></pre></li>
-</ol>
-<p>Spring中使用JWT:</p>
-<pre><code>1. 编写由登录对象转为token和由token获取登录对象的方法.
-2. 继承OncePerRequestFilter,重写doFilterInternal方法,对每一次请求进行token检查.
-3. 使用@AuthenticationPrincipal注解, 根据前端传过来的header获取登录对象.
-</code></pre><ol start="2">
-<li>postgresql的具体使用:<pre><code>读取数组属性:
-    1. 定义ArrayTypeHandelr继承BaseTypeHandler,重写get,set方法
-    2. 指定mybatis的类型处理器包的位置为ArrayTypeHandelr所在包.
-    3. 定义数组属性所在类型的resultMap.
-</code></pre></li>
-</ol>
+        <p>利用Linux内核提供的namespace和CGroups为应用进程构架起沙箱和资源限制.<br>在沙箱容器中,应用拥有自己的设备文件,进程间通信环境,根文件系统,进程空间,<br>用户账户空间和网络资源空间.<br>进程级资源隔离, 秒级启动.</p>
+<p>docker exec -it mysql /bin/bash</p>
 
       
 
@@ -424,13 +271,24 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        			<a href="/categories/Docker//" class="article-tag-list-link color2">Docker</a>
         		</li>
       		
 		</ul>
@@ -439,7 +297,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JWT/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Docker/">展开全文 >></a>
         </p>
       
 
@@ -469,93 +327,178 @@
 
 
   
-    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Elasticsearch" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
+      <a class="article-title" href="/2019/04/27/Elasticsearch/">Elasticsearch</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+        <a href="/2019/04/27/Elasticsearch/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.</p>
-<h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><p>类从加载到卸载的生命周期7个阶段:<br>    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)<br>    解析可以在初始化之后开始.</p>
-<p>5种必须对类进行初始化的情况:</p>
-<pre><code>1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
-2. 使用reflect包方法对类进行反射调用时.
-3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
-4. 虚拟机启动时用户指定要执行的主类
-5. 动态语言支持
-</code></pre><p>不会触发初始化的引用–被动引用:</p>
-<pre><code>1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
-2. 通过数组定义来引用类,不会触发类的初始化
-    package org.fenixsoft.classloading
-        SuperClass[] sca = new SuperClass[10];
-    类org.fenixsoft.classloading.SuperClass不会被初始化.
-    但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
-        创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
-        数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
-3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
-</code></pre><p>对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.</p>
-<h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><p>加载</p>
-<pre><code>1. 通过一个类的全限定名来获取定义此类的二进制字节流
-2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
-3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
-</code></pre><p>验证</p>
-<p>准备</p>
-<p>解析</p>
-<p>初始化</p>
-<p>类加载的三个步骤: 加载,链接,初始化</p>
-<ul>
-<li><p>加载: 把类的class文件读到内存里, 为它创建一个java.lang.Class对象.<br>从本地文件系统加载class文件; 从jar包加载class文件(如JDBC的数据库驱动类); 通过网络加载class文件; 把一个java源文件动态编译,加载</p>
-</li>
-<li><p>链接: 三个阶段: 验证,准备,解析</p>
-<pre><code>验证: 检验被加载的类是否有正确的内部结构
-   文件格式验证: 验证字节流是否符合Class文件格式规范,并且能被当前的虚拟机加载处理,如主次版本号是否在当前虚拟机处理范围内.
-               常量池中是否有不被支持常量类型.
-   元数据验证: 对字节码描述的信息进行语义分析,分析是否符合java的语言语法的规范
-   字节码验证: 分析数据流和控制, 确定语义是合法符合逻辑的
-   符合引用验证: 保证引用会被访问到, 不会出现类无法访问的情况
+        <blockquote>
+<p>全文搜索引擎,分布式文档数据库,每个字段均是被索引的数据且可被搜索.</p>
+</blockquote>
+<blockquote>
+<p>分片机制, 复制机制.</p>
+</blockquote>
+<blockquote>
+<p>Lucene是一个Java开发的全文检索引擎工具包, Elasticsearch是Lucene加了一层json.</p>
+</blockquote>
+<blockquote>
+<p> Elasticsearch内置了对分布式集群和分布式索引的管理.</p>
+</blockquote>
+<p>Lucene的评分机制, 查询DSL, 底层索引控制.</p>
+<h2 id="Elasticsearch术语"><a href="#Elasticsearch术语" class="headerlink" title="Elasticsearch术语"></a>Elasticsearch术语</h2><pre><code>索引词(term): 能够被索引的精确值.
+文本(text): 普通的非结构化文字, 会被分析成一个个的索引词.
+分析(analysis): 将文本转换为索引词的过程.
+集群(cluster)
+节点(node)
+路由(routing): 存储文档时通过散列值进行选择分片.
+分片(shard): 单个Lucene实例. 索引是指向主分片和副本分片的逻辑空间,索引可以
+    分解为多个分片,Elasticsearch会自动管理集群中的所有分片.
+主分片(primary shard): 默认一个索引有5个主分片.
+副本分片(replica shard): 每一个分片有零个或多个副本.
+    当主分片失败时,可以从副本中选择一个作为主分片.
+    并行操作提高性能和吞吐量.
+索引(index) 具有相同结构的文档集合
+类型(type) 索引中可以定义一个或多个类型,类型是索引的逻辑分区.
+            一个类型被定义为具有一组公共字段的文档.
+            如: 一个博客平台的所有数据存储在一个索引中,在这个索引中,定义一种
+            类型为用户数据,一种类型为博客数据,一种类型为评论数据.
+文档(document) JSON格式的字符串,像关系数据库中的一行.每个文档都有一个类型和一个ID
+映射(mapping) 像关系数据库的表结构,每一个索引都有一个映射,定义了索引中的每一个字段类型,以及一个索引范围内的设置.
+字段(field) 像关系数据库中的列.每个字段对应一个类型: 整数,字符串,对象等.
+来源字段(source field) 原文档被存储在_source这个字段中.
+主键(ID) 
+</code></pre><h2 id="API约定"><a href="#API约定" class="headerlink" title="API约定"></a>API约定</h2><pre><code>多索引参数
+    同时查询多个索引中的数据, 通配符 * : test*表示查询所有以test开头的索引. -test表示排除test
+日期筛选
+    &lt;static_name{date_math_expr{date_format|time_zone}}&gt;
+    static_name: 索引名称
+    date_math_expr: 动态日期计算表达式
+    date_format: 日期格式
+    time_zone: 时区,默认UTC
+通用参数
+    pretty
+    human
+</code></pre><blockquote>
+<p>POST改变对象的当前状态, PUT创建一个对象.        </p>
+</blockquote>
+<blockquote>
+<p>Elasticsearch从5.X引入text和keyword，keyword适用于不分词字段，搜索时只能完全匹配.<br>               6.X彻底移除string, “index”的值只能是boolean变量.</p>
+</blockquote>
 
-准备: 类准备阶段为类的静态变量分配内存, 设置默认初始值
-解析: 将类的二进制数据中的符号引用替换成直接引用
-</code></pre></li>
-<li><p>初始化: 为类的静态变量赋予正确的初始值.如 private static int a = 10; 在链接的准备阶段, a=0, 在初始化阶段a=10</p>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/27/Elasticsearch/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-DDIA系列(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/27/DDIA系列(1)/">DDIA系列(1)</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/27/DDIA系列(1)/" class="archive-article-date">
+  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="设计数据密集型的应用"><a href="#设计数据密集型的应用" class="headerlink" title="设计数据密集型的应用"></a>设计数据密集型的应用</h1><h2 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h2><p>容错: 硬件故障, 软件错误, 人为错误</p>
+<h2 id="可扩展性"><a href="#可扩展性" class="headerlink" title="可扩展性"></a>可扩展性</h2><p>推特获取主页信息流的方法:<br>方法一: </p>
+<ul>
+<li><p>follows table<br>follower_id, followee_id</p>
+</li>
+<li><p>tweets table<br>id, sender_id, text, timestamp</p>
+</li>
+<li><p>users table<br>id, screen_name, profile_image</p>
 </li>
 </ul>
-<p>类加载的时机: 创建类的实例,即new一个对象; 访问某个类或接口的静态变量,或者对该静态变量赋值; 调用类的静态方法;<br>            反射(Class.forName(“com.App”)); 初始化一个类的子类(会先初始化子类的父类); JVM启动时标明的启动类</p>
-<pre><code>对于final类型的静态变量, 如果该变量的值可以在编译时就确定下来, Java编译器会在它出现的位置替换成它的值, 程序访问该
-静态变量, 不会导致该类的初始化.   如果final类型的静态Field的值不能在编译时确定下来, 则必须等到运行时才可以确定该变量
-的值, 访问该静态变量会导致该类被初始化
-</code></pre><p>类加载器: 三种类加载器: 根类加载器, 扩展类加载器, 系统类加载器</p>
-<pre><code>    - 根类加载器(bootstrap class loader): 加载java的核心类,用C++实现,不继承自java.lang.ClassLoader.
-    - 扩展类加载器(extension class loader): 加载JRE的扩展目录, lib/ext或者java.ext.dirs系统属性指定的目录中的JAR包的类
-                                          由java实现, 父加载器为null
-    - 系统类加载器(system class loader): 在JVM启动时加载来自java命令的-classpath选项, java.class.path系统属性,
-                                        或者CLASSPATH所指定的jar包和类路径.用户自定义的类加载器都以此类加载器作为父加载器.
-                                        由java实现, 父加载器为ExtClassLoader
-
-类加载器加载Class的8个步骤: 1.检测此Class是否载入过, 缓冲区是否有此Class; 有则跳至8, 否则2
-                         2.如果没有父类加载器,要么父类是根加载器,要么本身就是根加载器,跳至4; 如果父类加载器存在,进入3
-                         3.请求使用父类加载器去载入目标类, 成功则8, 否则5
-                         4.请求使用根类加载器去载入目标类, 成功则8, 否则7
-                         5.当前类加载器尝试寻找Class文件, 找到则6, 否则7
-                         6.从文件中载入Class, 成功则跳至8
-                         7.抛出ClassNotFoundException异常
-                         8.返回对应的java.lang.Class对象
-</code></pre><p>类加载机制: 三种机制: 全盘负责, 双亲委派, 缓存机制<br>        1.全盘负责: 一个类加载器负责加载某个Class时,该Class所依赖和引用其他Class也将由该类加载器负责载入<br>        2.双亲委派: 先让父类加载器试图加载该Class, 只有父类加载器无法加载该类时才尝试从自己的类路径中加载该类<br>                   某个特定的类加载器在接到加载类的请求时, 首先将加载任务委托给父加载器, 依次递归, 父加载器无法<br>                   完成该加载任务时, 才自己去加载<br>        3.缓存机制:  所有加载过的Class都会被缓存, 修改了Class之后, 必须重新启动JVM, 修改才会生效</p>
-<p>根类加载器 &lt;- 扩展类加载器 &lt;- 系统类加载器 &lt;- 用户类加载器<br>双亲委派优势: 1.java类随它的类加载器一起具备了一种优先级的层次关系, 避免类的重复加载<br>            2.java核心api中定义类型不会被随意替换, 假设网络传递一个java.lang.Integer的类, 启动类加载器在发现这个类后,<br>                直接返回已经加载过的Integer.class, 防止核心API库被篡改</p>
+<p>用户请求主页时间线时:<br>select tweets.<em>, users.</em><br>    from tweets<br>    join users on tweets.sender_id = users.id<br>    join follows on follows.followee_id = users.id<br>    where follows.follower_id = current_user;</p>
+<p>方法二:<br>    为每个用户的主页信息流维护一个缓存, 当一个用户发布推文时, 查找所有关注该用户的人, 将新推文插入到每个主页<br>时间线缓存中<br>    缺点: 大V的粉丝太多, 写入量太大</p>
+<p>解决方案:<br>    大多数用户发的推文写入粉丝主页时间线缓存中, 用户读取主页时间线时, 分别获取该用户关注的每个大v, 再与用户的主页时间线<br>缓存合并.</p>
+<ul>
+<li>可维护性</li>
+</ul>
 
       
 
@@ -564,13 +507,24 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
         		</li>
       		
 		</ul>
@@ -579,92 +533,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Kotlin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/Kotlin/">Kotlin</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/Kotlin/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>is运算符<br>    检测一个表达式是否某类型的实例.如果是,在检测后可以直接当做该类型使用.<br>for循环<br>    普通的和索引遍历.<br>        for((k, v) in map) print(“$k -&gt; $v”)<br>when表达式<br>    模式匹配, 可以匹配具体的值, 也可以匹配类型.<br>in运算符<br>    检测某个数字是否在指定区间内.<br>        for (x in 9 downTo 0 step 3) print(x)<br>lambda表达式<br>    filter, sortedBy, map, forEach使用大括号<br>    list.filter{it &gt; 0}<br>类的创建<br>    不同指定实例类型, 不用new<br>DTO<br>    data class Customer(val name: String, val email: String)<br>    提供: getters, 对var还有setters<br>         equals(), hashCode(), toString(), copy()<br>默认参数<br>    fun foo(a: Int = 0, b: String = “”) {…}<br>访问map<br>    map[“key”]<br>延迟属性<br>    val p: String by lazy {}<br>扩展函数<br>    fun String.spaceToCamelCase() {…}<br>创建单例<br>    object Resource {<br>        val name = “Name”<br>    }</p>
-<p>if not null缩写<br>    val files = File(“Test”).listFiles()<br>    print(files?.size)</p>
-<p>if not null and else<br>    print(files?.size ?: “empty”)</p>
-<p>if null执行语句<br>    val email = values[“email”] ?: throw IllegalStateException(“Email is missing”)</p>
-<p>在可能会空的集合取第一个元素<br>    val mainEmail = emails.firstOrNull() ?: “”</p>
-<p>if not null执行代码<br>    value?.let {}</p>
-<p>可空布尔<br>    val b: Boolean? = …</p>
-<p>交换变量<br>    a = b.also {b = a}</p>
-<p>三个等号与两个等号<br>    数字装箱的 同一性 相等性</p>
-<p>基本类型<br>    在运行时表示为原生类型值,使用时像普通的类.<br>    较小类型不能隐式转换为较大的类型.</p>
-<p>密封类<br>    表示受限的类继承结构, 当一个值为有限集中的类型,不能有任何其他类型时.</p>
-<p>协程</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Kotlin//" class="article-tag-list-link color2">Kotlin</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/Kotlin/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/DDIA系列(1)/">展开全文 >></a>
         </p>
       
 
@@ -696,7 +565,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
     </nav>
   
 
@@ -708,7 +577,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

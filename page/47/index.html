@@ -6,22 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Redis in action | 三石的QQ空间</title>
+  <title>笔记本</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Redis in action 4. 数据安全与性能保障     数据持久化到硬盘     数据复制到其他机器     处理系统故障     Redis事物     非事物型流水线     诊断性能问题      4.1 持久化选项         4.1.1 快照 snapshotting             将存在于某一时刻的所有数据都写入硬盘里面              如果新的快照文">
-<meta name="keywords" content="读书笔记">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Redis in action">
-<meta property="og:url" content="http://yoursite.com/2019/04/05/Redis-in-action/index.html">
-<meta property="og:site_name" content="三石的QQ空间">
-<meta property="og:description" content="Redis in action 4. 数据安全与性能保障     数据持久化到硬盘     数据复制到其他机器     处理系统故障     Redis事物     非事物型流水线     诊断性能问题      4.1 持久化选项         4.1.1 快照 snapshotting             将存在于某一时刻的所有数据都写入硬盘里面              如果新的快照文">
+  <meta name="description" content="击空明兮溯流光">
+<meta property="og:type" content="website">
+<meta property="og:title" content="笔记本">
+<meta property="og:url" content="http://yoursite.com/page/47/index.html">
+<meta property="og:site_name" content="笔记本">
+<meta property="og:description" content="击空明兮溯流光">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-14T02:17:34.730Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis in action">
-<meta name="twitter:description" content="Redis in action 4. 数据安全与性能保障     数据持久化到硬盘     数据复制到其他机器     处理系统故障     Redis事物     非事物型流水线     诊断性能问题      4.1 持久化选项         4.1.1 快照 snapshotting             将存在于某一时刻的所有数据都写入硬盘里面              如果新的快照文">
+<meta name="twitter:title" content="笔记本">
+<meta name="twitter:description" content="击空明兮溯流光">
   
-    <link rel="alternative" href="/atom.xml" title="三石的QQ空间" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="笔记本" type="application/atom+xml">
   
   
     <link rel="icon" href="/images/favicon.ico">
@@ -157,118 +155,42 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Redis-in-action" class="article article-type-post " itemscope itemprop="blogPost">
+            
+  
+    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 class="article-title" itemprop="name">
-      Redis in action
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/分布式消息队列实践/">分布式消息队列实践</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Redis-in-action/" class="archive-article-date">
-  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/02/分布式消息队列实践/" class="archive-article-date">
+  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Redis in action</p>
-<pre><code>4. 数据安全与性能保障
-    数据持久化到硬盘
-    数据复制到其他机器
-    处理系统故障
-    Redis事物
-    非事物型流水线
-    诊断性能问题
+        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
+<p>ArrayBlockingQueue</p>
+<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
+<pre><code>    功能命令
 
-    4.1 持久化选项
-        4.1.1 快照 snapshotting
-            将存在于某一时刻的所有数据都写入硬盘里面
+    传输层协议
 
-            如果新的快照文件创建完毕之前,Redis,系统或硬件这三者
-            之中的任意一个崩溃,那么Redis将丢失最近一次创建快照之后
-            写入的所有数据.
-            快照持久化只适用于即使丢失一部分数据也不会造成问题的应用程序
+MQTT
 
-            创建快照的方法:
-                客户端向Redis发送bgsave命令来创建一个快照.
-                Redis会调用fork来创建一个子进程,然后子进程负责
-                将快照写入硬盘,父进程继续处理命令请求
+STOMP
 
-                客户端向Redis发送save命令来创建一个快照.
-                Redis在创建完毕之前不再响应其他任何命令.
-                在没有足够内存的情况,或者等待持久化操作执行完毕
-                也无所谓的情况下 才会使用此命令.
+XMPP
 
-                如果用户设置了save配置选项.如save 60 10000
-                Redis从最近一次创建快照算起,当60秒之内有10000次
-                写入时,Redis自动触发bgsave
-
-                Redis接收到shutdown命令或者接收到标准TERM信号时,
-                会执行save命令.save完成后关闭.
-
-                当一个Redis服务器连接另一个Redis服务器,并向对方发送sync
-                命令来开始一次复制操作时,如果主服务器没有在执行bgsave,或者
-                并非刚刚执行完bgsave,那么主服务器会执行bgsave.
-
-            使用快照持久化的场景:
-                1.个人开发
-                    降低快照持久化带来的资源消耗.
-                    save 900 1
-                    如果距离上次生成快照超过900秒,并在此期间执行了至少
-                    一次写入操作.那么触发一次新的bgsave
-
-                2.对日志进行聚合计算
-                    恢复因故障而被中断的日志处理操作
-
-
-
-
-        4.1.2只追加文件 append-only file AOF
-            在执行写命令时,将被执行的写命令复制到硬盘里面.以记录数据的变化.
-            Redis只要从头到尾重新执行一次AOF文件包含的所有写命令,就可以
-            恢复AOF文件所记录的数据集.
-            appendonly yes
-            appendfsync选项:
-                always
-                everysec
-                no
-
-        4.1.3 重写/压缩AOF文件
-             bgrewriteaof命令会移除aof文件中的冗余命令并重写aof文件,
-             使aof文件体积尽量变小, 工作原理与bgsave相似
-
-    4.2复制
-        主服务器向多个从服务器发送更新,并使用从服务器来处理所有的读请求.
-
-        4.2.1  从服务器的配置
-                启动redis服务器时,指定一个包含slaveof host port的配置文件.
-                redis服务器会根据ip和端口来连接主服务器.
-
-                正在运行的redis服务器,可以发送slaveof no one命令使服务器
-                终止复制操作,不再接受主服务器的数据更新
-                发送 slaveof host port来让服务器开始复制一个新的主服务器.
-
-
-5.使用Redis构建支持程序
-    使用Redis记录日志
-    使用Redis实现计数器并进行数据统计
-    查询IP地址所属的城市和国家
-    服务的发现和配置
-
-6.使用Redis构建应用程序组件
-    构建两个前缀匹配自动补全程序
-
-
-    6.1 自动补全最近联系人
-
-
-8. 构建简单的社交网站
+JMS
 </code></pre>
       
 
@@ -282,7 +204,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">消息队列</a>
         		</li>
       		
 		</ul>
@@ -294,7 +216,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
         		</li>
       		
 		</ul>
@@ -302,84 +224,16 @@
 
 
       
-
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/分布式消息队列实践/">展开全文 >></a>
+        </p>
       
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
-        </div>
-      </div>
-    </span>
-  </div>
-</div>
 
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/04/05/Redis-in-action/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/04/05/神秘的Scala implicit/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          神秘的Scala implicit
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2019/04/05/Scala实现并行框架/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Scala实现并行框架</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -394,52 +248,303 @@
         </div>
         
         
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    目录，不存在的…
-                    </div>
-                </span>
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-堆" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/堆/">堆</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/堆/" class="archive-article-date">
+  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>堆是完全二叉树, 使用数组表示. 从数组下标1开始放置.<br>节点i的子节点在 2i 和 2i+1 处. 父节点在 i/2 处, 根除外.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/堆/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
             </div>
         </div>
+        
         
     </div>
 </aside>
 
 
 
+
   
-  <div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Redis-in-action" data-title="Redis in action" data-url="http://yoursite.com/2019/04/05/Redis-in-action/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
+    <article id="post-Weekly Contest 130" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/Weekly Contest 130/">Weekly Contest 130</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/Weekly Contest 130/" class="archive-article-date">
+  	<time datetime="2019-04-01T23:01:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1018-Binary-Prefix-Divisible-By-5"><a href="#1018-Binary-Prefix-Divisible-By-5" class="headerlink" title="1018. Binary Prefix Divisible By 5"></a><a href="https://leetcode.com/problems/binary-prefix-divisible-by-5/" target="_blank" rel="noopener">1018. Binary Prefix Divisible By 5</a></h1><h3 id="我想写对个东西怎么就这么难"><a href="#我想写对个东西怎么就这么难" class="headerlink" title="我想写对个东西怎么就这么难 -_-"></a>我想写对个东西怎么就这么难 -_-</h3><hr>
+<ol>
+<li>最开始的初始暴力想法: 把每个位置对应的数转化为题目中要求的数, 然后看是否能被5整除.<br> 简单的写了个双重循环后开始脑壳疼, 数组头部的边界条件不太好写啊, 不要然从后往前遍历.<br> 过于复杂了,看看别人的思路吧.</li>
+<li>这个规则是数组元素往二进制里面加, 思路就是就用左移并且把数组元素是0或1考虑进来.</li>
+<li> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">int</span> acc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : A) &#123;</span><br><span class="line">    acc = (acc &lt;&lt; <span class="number">1</span>) + i;</span><br><span class="line">    res.add(acc % <span class="number">5</span> == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res;</span><br></pre></td></tr></table></figure>
+<p> 按照别人的python解法仿照写的java代码,给的几个Example都没问题,点击Submit,失败.<br> 这种写法的确是符合正常思路,但是题目中给的数组长度是1到30000,而java的int只有2^31,<br> 所以int溢出了.<br> python还是爽啊,写代码跟着思路走就行,你只管岁月静好,自有动态类型替你负重前行.<br> 不过倔强的java程序员不会就此认输,悄悄地把取模移了上去: </p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">int</span> acc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : A) &#123;</span><br><span class="line">    acc = (acc * <span class="number">2</span> + i) % <span class="number">5</span>;</span><br><span class="line">    res.add(acc == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> res;</span><br></pre></td></tr></table></figure>
+<p> 为什么敢移上去呢?就因为int装不下吗?并不:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">证明 (n * <span class="number">2</span> + <span class="number">1</span>) % <span class="number">5</span> 等于 ((n % <span class="number">5</span>) * <span class="number">2</span> + <span class="number">1</span>) % <span class="number">5</span></span><br><span class="line">因为</span><br><span class="line">    (a + b) % p = (a % p + b % p) % p</span><br><span class="line">    (a * b) % p = (a % p * b % p) % p</span><br><span class="line">    a % p == a % p % p</span><br><span class="line">所以</span><br><span class="line">    左边 = ((n * <span class="number">2</span>) % <span class="number">5</span> + <span class="number">1</span> % <span class="number">5</span>) % <span class="number">5</span></span><br><span class="line">        = ((((n % <span class="number">5</span>) * <span class="number">2</span>) % <span class="number">5</span>) + <span class="number">1</span>) % <span class="number">5</span></span><br><span class="line"></span><br><span class="line">    右边 = 左边</span><br></pre></td></tr></table></figure>
+<p> 嗯…不知道这儿又可以引发多少对两种语言的思考.</p>
+</li>
+<li><p>写java的过程中同时又踩了其他的坑—–运算符优先级:<br> 乘除取模 &gt; 加减 &gt; 移位 &gt; 按位或<br> 所以 </p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">acc &lt;&lt; <span class="number">1</span> + a 问题很大</span><br><span class="line">acc &lt;&lt; <span class="number">1</span> | a 还ok</span><br><span class="line">acc &lt;&lt; <span class="number">1</span> | a % <span class="number">5</span> 问题很大</span><br></pre></td></tr></table></figure>
+</code></pre><p> 多写括号可破:</p>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((acc &lt;&lt; <span class="number">1</span>) | a) % <span class="number">5</span></span><br></pre></td></tr></table></figure>
+</code></pre></li>
+<li><p>从移位来考虑应当是 acc &lt;&lt; 1 | a<br> 从二进制转十进制的阶数来考虑是 acc * 2 + 1<br> 两种写法杂糅在一起感觉有些奇怪</p>
+</li>
+</ol>
+<h1 id="1017-Convert-to-Base-2"><a href="#1017-Convert-to-Base-2" class="headerlink" title="1017. Convert to Base -2"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/convert-to-base-2/" target="_blank" rel="noopener">1017. Convert to Base -2</a></h1><p>考虑十进制到二进制的转换:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">base2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    String res = <span class="string">";</span></span><br><span class="line"><span class="string">    while (N != 0) &#123;</span></span><br><span class="line"><span class="string">        res = Integer.toString(N &amp; 1) + res;</span></span><br><span class="line"><span class="string">        N = N &gt;&gt; 1;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    return res == "</span><span class="string">" ? "</span><span class="number">0</span><span class="string">" : res;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>每次把最后一位二进制数留下来,组成一个二进制字符串.<br>对于负二进制:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">baseNeg2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    String res = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">while</span> (N != <span class="number">0</span>) &#123;</span><br><span class="line">        res = Integer.toString(N &amp; <span class="number">1</span>) + res;</span><br><span class="line">        N = -(N &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res == <span class="string">""</span> ? <span class="string">"0"</span> : res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于String的优化:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">baseNeg2</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    StringBuilder res = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">while</span> (N != <span class="number">0</span>) &#123;</span><br><span class="line">        res.insert(<span class="number">0</span>, Integer.toString(N &amp; <span class="number">1</span>));</span><br><span class="line">        N = -(N &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res.toString().equals(<span class="string">""</span>) ? <span class="string">"0"</span> : res.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="1019-Next-Greater-Node-In-Linked-List"><a href="#1019-Next-Greater-Node-In-Linked-List" class="headerlink" title="1019. Next Greater Node In Linked List"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/next-greater-node-in-linked-list/" target="_blank" rel="noopener">1019. Next Greater Node In Linked List</a></h1><p>考查对于链表,栈,数组,线性表的组合使用.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">先把链表的东西都存到线性表来.</span><br><span class="line">遍历线性表的同时</span><br><span class="line">    若栈不为空 且 当前遍历的线性表的值a大于栈顶索引对应的值b,</span><br><span class="line">        则将要返回的数组的a项设置为b,同时出栈.</span><br><span class="line">    否则</span><br><span class="line">        把当前遍历的索引入栈.</span><br><span class="line">```         </span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">public int[] nextLargerNodes(ListNode head) &#123;</span><br><span class="line">    ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">    while (head != null) &#123;</span><br><span class="line">        list.add(head.val);</span><br><span class="line">        head = head.next;</span><br><span class="line">    &#125;</span><br><span class="line">    int[] res = new int[list.size()];</span><br><span class="line">    Stack[Integer] stack = new Stack&lt;&gt;();</span><br><span class="line">    for (int i=0; i&lt;list.size(); i++) &#123;</span><br><span class="line">        while (!stack.isEmpty() &amp;&amp; list.get(i) &gt; list.get(stack.peek())) &#123;</span><br><span class="line">            res[stack.pop()] = list.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">        stack.push(i);</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="1020-Number-of-Enclaves"><a href="#1020-Number-of-Enclaves" class="headerlink" title="1020. Number of Enclaves"></a><a href="https://leetcode.com/contest/weekly-contest-130/problems/number-of-enclaves/" target="_blank" rel="noopener">1020. Number of Enclaves</a></h1><p>神奇的dfs,关键在于构造递归结构,入参,返回值以及终止条件.</p>
+<ol>
+<li>遍历整个二维数组,只对在边上的行列进行dfs</li>
+<li>将可以被边上索引到的1都变为0.</li>
+<li>统计二维数组中剩余的1.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numEnclaves</span><span class="params">(<span class="keyword">int</span>[][] A)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;A.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;A[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i==<span class="number">0</span> || j==<span class="number">0</span> || i==A.length-<span class="number">1</span> || j==A[<span class="number">0</span>].length-<span class="number">1</span>) &#123;</span><br><span class="line">                dfs(A, i, j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;A.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;A[<span class="number">0</span>].length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (A[i][j] == <span class="number">1</span>) &#123;</span><br><span class="line">                result++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span>[][] a, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (i&gt;=<span class="number">0</span> &amp;&amp; i&lt;a.length &amp;&amp; j&gt;=<span class="number">0</span> &amp;&amp; j&lt;a[<span class="number">0</span>].length &amp;&amp; a[i][j]==<span class="number">0</span>) &#123;</span><br><span class="line">        a[i][j] = <span class="number">0</span>;</span><br><span class="line">        dfs(a, i+<span class="number">1</span>, j);</span><br><span class="line">        dfs(a, i-<span class="number">1</span>, j);</span><br><span class="line">        dfs(a, i, j+<span class="number">1</span>);</span><br><span class="line">        dfs(a, i, j-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/Weekly Contest 130/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Android开发" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/07/Android开发/">Android开发</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/07/Android开发/" class="archive-article-date">
+  	<time datetime="2019-01-07T15:53:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>gradle支持java8:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line"> ...</span><br><span class="line"> compileOptions &#123;</span><br><span class="line">     targetCompatibility 1.8</span><br><span class="line">     sourceCompatibility 1.8</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="Android控件"><a href="#Android控件" class="headerlink" title="Android控件"></a>Android控件</h1><p>右上角的三个角”选项”: Toolbar<br>        Toolbar toolbar = findViewById(R.id.toolbar);<br>        setSupportActionBar(toolbar);<br>右下角按钮: FloatingActionButton<br>        FloatingActionButton fab = findViewById(R.id.fab);<br>        fab.setOnClickListener(view -&gt;<br>                Snackbar.make(view, “huohuo”, Snackbar.LENGTH_SHORT)<br>                        .setAction(“Action”, null).show());</p>
+<p>UI界面都是View及其派生类组合而成<br>直接子类: ImageView, TextView, ViewGroup, ProgressBar<br>间接子类: AbsListView, Button, Edittext, CheckBox</p>
+<h1 id="Android四大组件-Activity-Service-Broadcast-Receiver-ContentProvider"><a href="#Android四大组件-Activity-Service-Broadcast-Receiver-ContentProvider" class="headerlink" title="Android四大组件: Activity, Service, Broadcast Receiver, ContentProvider"></a>Android四大组件: Activity, Service, Broadcast Receiver, ContentProvider</h1><h1 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h1><h1 id="多线程开发"><a href="#多线程开发" class="headerlink" title="多线程开发"></a>多线程开发</h1><h1 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h1><h1 id="高级"><a href="#高级" class="headerlink" title="高级"></a>高级</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Android//" class="article-tag-list-link color3">Android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/07/Android开发/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
 
   
   
-  
-
-  
-
-  
-
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/46/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/45/">45</a><a class="page-number" href="/page/46/">46</a><span class="page-number current">47</span>
+    </nav>
   
 
 
@@ -450,7 +555,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 三石的QQ空间
+    		&copy; 2020 笔记本
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -462,8 +567,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: false,
-		isPost: true,
+		isHome: true,
+		isPost: false,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

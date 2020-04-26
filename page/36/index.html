@@ -157,27 +157,27 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-JavaScript函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-算法4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/JavaScript函数式编程/">JavaScript函数式编程</a>
+      <a class="article-title" href="/2019/04/24/算法4/">算法4</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/JavaScript函数式编程/" class="archive-article-date">
-  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/24/算法4/" class="archive-article-date">
+  	<time datetime="2019-04-24T07:49:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2>
       
 
       
@@ -190,7 +190,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -202,7 +202,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
         		</li>
       		
 		</ul>
@@ -211,7 +211,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/JavaScript函数式编程/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/算法4/">展开全文 >></a>
         </p>
       
 
@@ -241,255 +241,52 @@
 
 
   
-    <article id="post-(4)-缓存淘汰" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes CheetSheet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/(4)-缓存淘汰/">(4)-缓存淘汰</a>
+      <a class="article-title" href="/2019/04/24/Kubernetes CheetSheet/">Kubernetes CheetSheet</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/(4)-缓存淘汰/" class="archive-article-date">
-  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/24/Kubernetes CheetSheet/" class="archive-article-date">
+  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code> Redis是一个Key-value存储系统。它支持存储的value类型很多，包括String（字符串）、链表(list)、set（集合）、zset（有序集合） hash。
- Redis支持各种不同方式的排序。可以把周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件。
-
-缓存穿透
-    缓存系统按照KEY去查询VALUE,当KEY对应的VALUE一定不存在的时候并对KEY并发请求量很大的时候，就会对后端造成很大的压力。
-
-    解决办法
-        布隆过滤器
-            将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。
-        缓存层缓存空值
-            如果一个查询返回的数据为空（不管是数据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。
-               存储层更新代码了，缓存层还是空值。（优化：后台设置时主动删除空值，并缓存把值进去）
-
-缓存雪崩（缓存失效）
-     如果缓存集中在一段时间内失效，发生大量的缓存穿透，所有的查询都落在数据库上，造成了缓存雪崩。
-
-     解决办法
-        1.在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。
-        2.可以通过缓存reload机制，预先去更新缓存，再即将发生大并发访问前手动触发加载缓存
-        3.不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀
-        4.做二级缓存，或者双缓存策略。A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期。
-
-热点key
-    将热点key对应value并缓存在客户端本地，并且设置一个失效时间。
-    对于每次读请求，将首先检查key是否存在于本地缓存中，如果存在则直接返回，如果不存在再去访问分布式缓存的机器。
-
-    将热点key分散为多个子key，然后存储到缓存集群的不同机器上，这些子key对应的value都和热点key是一样的。
-    当通过热点key去查询数据时，通过某种hash算法随机选择一个子key，然后再去访问缓存机器，将热点分散到了多个子key上。
-
-
-淘汰策略
-    noeviction: 不删除策略, 达到最大内存限制时, 如果需要更多内存, 直接返回错误信息。 大多数写命令都会导致占用更多的内存(有极少数会例外, 如 DEL )。
-    allkeys-lru: 所有key通用; 优先删除最近最少使用(less recently used ,LRU) 的 key。
-    volatile-lru: 只限于设置了 expire 的部分; 优先删除最近最少使用(less recently used ,LRU) 的 key。
-    allkeys-random: 所有key通用; 随机删除一部分 key。
-    volatile-random: 只限于设置了 expire 的部分; 随机删除一部分 key。
-    volatile-ttl: 只限于设置了 expire 的部分; 优先删除剩余时间(time to live,TTL) 短的key。
-
-    如果分为热数据与冷数据, 推荐使用 allkeys-lru 策略。 也就是, 其中一部分key经常被读写. 如果不确定具体的业务特征,
-     那么 allkeys-lru 是一个很好的选择。
-
-     如果需要循环读写所有的key, 或者各个key的访问频率差不多, 可以使用 allkeys-random 策略, 即读写所有元素的概率差不多。
-
-     假如要让 Redis 根据 TTL 来筛选需要删除的key, 请使用 volatile-ttl 策略。
-
-     volatile-lru 和 volatile-random 策略主要应用场景是: 既有缓存,又有持久key的实例中。
-      一般来说, 像这类场景, 应该使用两个单独的 Redis 实例。
-      值得一提的是, 设置 expire 会消耗额外的内存, 所以使用 allkeys-lru 策略, 可以更高效地利用内存, 因为这样就可以不再设置过期时间了。
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/(4)-缓存淘汰/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-(3)-数据持久化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/(3)-数据持久化/">(3)-数据持久化</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/(3)-数据持久化/" class="archive-article-date">
-  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Redis in action</p>
-<pre><code>4. 数据安全与性能保障
-    数据持久化到硬盘
-    数据复制到其他机器
-    处理系统故障
-    Redis事物
-    非事物型流水线
-    诊断性能问题
-
-    4.1 持久化选项
-        4.1.1 快照 snapshotting
-            将存在于某一时刻的所有数据都写入硬盘里面
-
-            如果新的快照文件创建完毕之前,Redis,系统或硬件这三者
-            之中的任意一个崩溃,那么Redis将丢失最近一次创建快照之后
-            写入的所有数据.
-            快照持久化只适用于即使丢失一部分数据也不会造成问题的应用程序
-
-            创建快照的方法:
-                客户端向Redis发送bgsave命令来创建一个快照.
-                Redis会调用fork来创建一个子进程,然后子进程负责
-                将快照写入硬盘,父进程继续处理命令请求
-
-                客户端向Redis发送save命令来创建一个快照.
-                Redis在创建完毕之前不再响应其他任何命令.
-                在没有足够内存的情况,或者等待持久化操作执行完毕
-                也无所谓的情况下 才会使用此命令.
-
-                如果用户设置了save配置选项.如save 60 10000
-                Redis从最近一次创建快照算起,当60秒之内有10000次
-                写入时,Redis自动触发bgsave
-
-                Redis接收到shutdown命令或者接收到标准TERM信号时,
-                会执行save命令.save完成后关闭.
-
-                当一个Redis服务器连接另一个Redis服务器,并向对方发送sync
-                命令来开始一次复制操作时,如果主服务器没有在执行bgsave,或者
-                并非刚刚执行完bgsave,那么主服务器会执行bgsave.
-
-            使用快照持久化的场景:
-                1.个人开发
-                    降低快照持久化带来的资源消耗.
-                    save 900 1
-                    如果距离上次生成快照超过900秒,并在此期间执行了至少
-                    一次写入操作.那么触发一次新的bgsave
-
-                2.对日志进行聚合计算
-                    恢复因故障而被中断的日志处理操作
-
-
-
-
-        4.1.2只追加文件 append-only file AOF
-            在执行写命令时,将被执行的写命令复制到硬盘里面.以记录数据的变化.
-            Redis只要从头到尾重新执行一次AOF文件包含的所有写命令,就可以
-            恢复AOF文件所记录的数据集.
-            appendonly yes
-            appendfsync选项:
-                always
-                everysec
-                no
-
-        4.1.3 重写/压缩AOF文件
-             bgrewriteaof命令会移除aof文件中的冗余命令并重写aof文件,
-             使aof文件体积尽量变小, 工作原理与bgsave相似
-
-    4.2复制
-        主服务器向多个从服务器发送更新,并使用从服务器来处理所有的读请求.
-
-        4.2.1  从服务器的配置
-                启动redis服务器时,指定一个包含slaveof host port的配置文件.
-                redis服务器会根据ip和端口来连接主服务器.
-
-                正在运行的redis服务器,可以发送slaveof no one命令使服务器
-                终止复制操作,不再接受主服务器的数据更新
-                发送 slaveof host port来让服务器开始复制一个新的主服务器.
-</code></pre><h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><p>默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)<br>手动持久化命令:</p>
-<ol>
-<li>SAVE: 阻塞Redis服务器进程</li>
-<li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
+        <ol>
+<li><p>获取指定namespace下的pod列表<br>kubectl -n clink-plus get po<br>kubectl -n clink-plus get pod<br>kubectl -n clink-plus get pods<br>最精缩版:<br>kubectl -n clink-plus get po</p>
+</li>
+<li><p>获取指定pod的信息<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl</p>
+</li>
 </ol>
-<p>持久化<br>    快照: 全量备份, 内存数据的二进制序列化形式,存储紧凑<br>        调用glibc的函数fork产生一个子进程,快照持久化完全交给子进程来处理,<br>        父进程继续处理客户端请求. 子进程刚产生时与父进程共享内存中的代码段<br>        和数据段.<br>        fork函数会在父子进程同时返回, 父进程中返回子进程的pid, 子进程返回0<br>        如果操作系统内存资源不足,pid会是负数,表示fork失败.</p>
-<pre><code>    Copy on Write: 数据段页面分离, 父进程对一个页面的数据进行修改时,会将
-        被共享的页面复制一份分离出来, 然后对这个复制的页面进行修改, 这时子进程
-        对应的页面没有变化, 还是进程产生时那一瞬间的数据.
+<p>加了IP和Node的:<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl -o wide</p>
+<p>以yaml格式展示(巨详细,可以看到镜像的版本):<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl -o yaml</p>
+<p>使用describe<br>kubectl -n clink-plus describe pod clink2-app-56568b6ff4-dtvwl</p>
+<ol start="3">
+<li><p>显示node的详细信息<br>kubectl describe node cn-beijing.i-2ze938t1plplf6q7hdvg</p>
+</li>
+<li><p>登录pod<br>kubectl -n clink-plus exec clink2-agent-647c888dfb-s6qv6 -it bash<br>退出bash: exit</p>
+</li>
+<li><p>看日志<br>kubectl -n clink-plus log -f clink2-chat-record-7fcbc899cc-r7v27</p>
+</li>
+</ol>
+<ol start="6">
+<li><p>查看configmap(里面有redis用的几号库)<br>kubectl -n clink-plus get cm<br>kubectl -n clink-plus edit cm clink2-chat-weixin-env</p>
+</li>
+<li><p>部署节点数<br>kubectl -n clink-plus edit deploy clink2-chat-weixin</p>
+</li>
+<li><p>获取节点ip<br>kubectl -n clink2-test5 get ing</p>
+</li>
+</ol>
 
-AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会在长期运行中
-      变得很庞大,数据库重启时需要加载AOF日志进行指令重放,时间很长.
-      需要定期AOF重写.
-      Redis会在收到客户端修改指令后,先进行参数校验,如果没问题就立即将该指令文本
-      存储到AOF日志中, 先存到磁盘再执行指令.
-
-      AOF重写
-          bgrewriteaof
-           开启一个子进程对内存进行遍历转换成一系列Redis的操作指令,序列化到一个新的
-           AOF日志文件中, 序列化完成后再将操作期间发生的增量AOF日志追加到这个新的AOF
-           日志文件中,追加后立即替代旧的AOF日志文件.
-
-        fsync(int fd)
-            程序对AOF日志文件进行写操作时,实际上是将内容写到了内核为文件描述符分配的一个
-            内存缓存中, 然后内核会异步将脏数据刷回到磁盘.
-            fsync将指定文件的内容强制从内核缓存刷新到磁盘.
-            通常在生产环境的服务器里,  每隔1s左右执行一次fsync操作.
-
-持久化操作主要在从节点进行.
-混合持久化:
-    Redis重启时先加载rdb内容,再重放增量AOF.
-</code></pre>
       
 
       
@@ -503,7 +300,7 @@ AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
         		</li>
       		
 		</ul>
@@ -512,7 +309,7 @@ AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/(3)-数据持久化/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/Kubernetes CheetSheet/">展开全文 >></a>
         </p>
       
 
@@ -542,27 +339,152 @@ AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会�
 
 
   
-    <article id="post-Scala实现并行框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Kubernetes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/Scala实现并行框架/">Scala实现并行框架</a>
+      <a class="article-title" href="/2019/04/24/Kubernetes/">Kubernetes</a>
     </h1>
   
 
         
-        <a href="/2019/04/05/Scala实现并行框架/" class="archive-article-date">
-  	<time datetime="2019-04-05T01:21:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
+        <a href="/2019/04/24/Kubernetes/" class="archive-article-date">
+  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接收一个未求值的A,返回一个并行结果(传名函数)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//从并行结果里抽取结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">A</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//组合两个并行计算的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//将Par分配到另一个独立的逻辑线程中运行</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//派生组合子的一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazyUnit</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = fork(unit(a))</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">type</span> <span class="title">Par</span>[<span class="type">A</span>] </span>= <span class="type">ExecutorService</span> =&gt; <span class="type">Future</span>[<span class="type">A</span>]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>[<span class="type">A</span>](s: <span class="type">ExecutorService</span>)(a: <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Future</span>[<span class="type">A</span>] = a(s)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Par</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit</span></span>[<span class="type">A</span>](a: <span class="type">A</span>) : <span class="type">Par</span>[<span class="type">A</span>] = (es: <span class="type">ExecutorService</span>) =&gt; <span class="type">UnitFuture</span>(a)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">UnitFuture</span>[<span class="type">A</span>](<span class="params">get: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Future</span>[<span class="type">A</span>] </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isDone</span> </span>= <span class="literal">true</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get</span></span>(timeout: <span class="type">Long</span>, units: <span class="type">TimeUnit</span>) = get</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">isCancelled</span> </span>= <span class="literal">false</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(evenIfRunning: <span class="type">Boolean</span>) : <span class="type">Boolean</span> = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map2</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](a: <span class="type">Par</span>[<span class="type">A</span>], b: <span class="type">Par</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>) : <span class="type">Par</span>[<span class="type">C</span>] =</span><br><span class="line">        (es: <span class="type">ExecutorService</span>) =&gt; &#123;</span><br><span class="line">            <span class="keyword">val</span> af = a(es)</span><br><span class="line">            <span class="keyword">val</span> bf = b(es)</span><br><span class="line">            <span class="type">UnitFuture</span>(f(af.get, bf.getb))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fork</span></span>[<span class="type">A</span>](a: =&gt; <span class="type">Par</span>[<span class="type">A</span>]) : <span class="type">Par</span>[<span class="type">A</span>] =</span><br><span class="line">        es =&gt; es.submit(<span class="keyword">new</span> <span class="type">Callable</span>[<span class="type">A</span>] &#123;</span><br><span class="line">            <span class="function"><span class="keyword">def</span> <span class="title">call</span> </span>= a(es).get</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>一切以服务为中心, 一切围绕服务运转.<br>自动化.<br>一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发<br>调度流程,最终在选定的目标节点上启动相应数量的服务实例副本.</p>
+<p>核心组件:</p>
+<ul>
+<li>etcd: 保存整个集群的状态, 所有资源对象的数据</li>
+<li>apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制</li>
+<li>controller manager: 维护集群的状态, 如故障检测,自动扩展,滚动更新等.</li>
+<li>scheduler: 负责资源调度,按照预定的调度策略将Pod调度到相应的机器上.</li>
+<li>kubelet: 负责维护容器的生命周期,也负责Volume(CVI)和网格(CNI)的管理.</li>
+<li>Container runtime: 负责镜像管理以及Pod和容器的真正运行(CRI)</li>
+<li>kube-proxy: 负责为Service提供cluster内部的服务发现和负载均衡.</li>
+</ul>
+<p>Add-ons:<br>    kube-dns: 负责为整个集群提供DNS服务<br>    Ingress Controller: 为服务提供外网入口.<br>    Heapster: 资源监控</p>
+<p>API对象: Kubernetes集群中的管理操作单元.<br>    三大类属性: 元数据metadata<br>                 标识API对象,至少包含:namespace,name和uid. 使用标签来标识和匹配不同的对象.<br>                                如env=dev来标识开发服务.<br>              规范spec<br>                 描述了用户期望的Kubernetes集群中的分布式系统达到的理想状态.如通过Replication Controller设置<br>                    期望的Pod副本数为3.<br>              状态status<br>                 描述了系统实际当前达到的状态,如当前实际Pod副本数为2</p>
+<p>Pod: Kubernetes集群中运行部署应用或服务的最小单元.一个Pod代表集群中运行的一个进程.<br>        支持多个容器在一个Pod中共享网络地址和文件系统,可以通过进程间通信和文件共享的方式完成服务.</p>
+<p>获取可用的节点:</p>
+<blockquote>
+<p>kubectl get nodes</p>
+</blockquote>
+<h2 id="启动Mysql应用"><a href="#启动Mysql应用" class="headerlink" title="启动Mysql应用"></a>启动Mysql应用</h2><p>mysql-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">1</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">mysql</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mysql</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">mysql</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">3306</span> <span class="comment"># 容器应用监听的端口号</span></span><br><span class="line">            <span class="attr">env:</span>                   <span class="comment"># 注入容器内的环境变量</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">            <span class="attr">value:</span> <span class="string">"123456"</span></span><br></pre></td></tr></table></figure></p>
+<p>将RC文件发布到Kubenetes集群:</p>
+<blockquote>
+<p>kubectl create -f mysql-rc.yaml</p>
+</blockquote>
+<p>查看创建的RC:</p>
+<blockquote>
+<p>kubectl get rc</p>
+</blockquote>
+<p>查看pod的创建情况:</p>
+<blockquote>
+<p>kubectl get pods</p>
+</blockquote>
+<p>查看正在运行的容器:</p>
+<blockquote>
+<p>docker ps | grep mysql</p>
+</blockquote>
+<p>创建Kubernetes Service:<br>mysql-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">3306</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span></span><br></pre></td></tr></table></figure></p>
+<p>创建Service:</p>
+<blockquote>
+<p>kubectl create -f mysql-svc.yaml</p>
+</blockquote>
+<p>查看创建的Service:</p>
+<blockquote>
+<p>kubectl get svc</p>
+</blockquote>
+<h2 id="启动Tomcat应用"><a href="#启动Tomcat应用" class="headerlink" title="启动Tomcat应用"></a>启动Tomcat应用</h2><p>创建myweb-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">2</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">myweb</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">myweb</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">kubeguide/tomcat-app:v1</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span> <span class="comment"># 容器应用监听的端口号</span></span><br></pre></td></tr></table></figure></p>
+<p>RC的创建和验证:</p>
+<blockquote>
+<p>kubectl create -f myweb-rc.yaml<br>创建myweb-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">NodePort</span>      <span class="comment"># 此Service开启了NodePort方式的外网访问模式</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">          <span class="attr">nodePort:</span> <span class="number">30001</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span></span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>kubectl create -f myweb-svc.yaml</p>
+</blockquote>
+<p>查看Services:<br>kubectl get services</p>
+<h2 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h2><p>负责整个集群的管理和控制,通常在一个独立的服务器, 基本所有的控制命令都发送给它.</p>
+<ul>
+<li>Kubernetes API Server: 提供HTTP Rest接口的关键服务进程,所有资源增删改查的唯一入口,集群控制的入口进程.</li>
+<li>Kubernetes Controller Manager: 所有资源对象的自动化控制中心</li>
+<li>Kubernetes Scheduler: 资源调度</li>
+<li>etcd服务: 保存所有资源对象的数据</li>
+</ul>
+<h2 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h2><p>可以是物理主机,也可以是虚拟机.<br>工作负载节点.<br>每个Node都运行着:</p>
+<ul>
+<li>kubelet: 负责Pod对应的容器的创建,启停等任务.与Master密切协作,实现集群管理</li>
+<li>kube-proxy: 实现Kubernetes Service的通信与负载均衡机制的重要组件</li>
+<li>Docker Engine: Docker引擎,负责本机的容器创建和管理工作</li>
+</ul>
+<p>查看某个Node的详细信息:</p>
+<blockquote>
+<p>kubectl describe node &lt;node_name&gt;</p>
+</blockquote>
+<h2 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h2><p>根容器: Pause容器<br>业务容器共享Pause容器的IP,挂接的Volume<br>Kubernetes为每个Pod都分配了唯一的IP地址, 即Pod IP.<br>一个Pod里的多个容器共享Pod IP地址.<br>一个Pod里的容器可以与另外主机上的Pod容器能够直接通信</p>
+<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><ul>
+<li>普通Pod<br>放入etcd中存储,被Kubernetes Master调度到某个具体的Node上并进行绑定,随后该Pod被对应的Node上的kubelet进程实例化成<br>一组相关的Docker容器并启动.</li>
+<li>静态Pod<br>不存在etcd存储中,存放在某个具体的Node上的具体文件中,只在此Node上启动,运行</li>
+</ul>
+<h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><p>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP.</p>
+<h2 id="Annotation"><a href="#Annotation" class="headerlink" title="Annotation"></a>Annotation</h2><p>与Label类似,使用key/value键值对的形式进行定义.<br>Annotation是用户任意定义的附加信息,以便外部工具查找.</p>
+<h2 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h2><p>Kubernetes将存储在etcd中的ConfigMap通过Volume映射的方式变成目标Pod内的配置文件,不管目标Pod被调度到哪台服务器,都会<br>完成自动映射.<br>如果ConfigMap中的key-value数据被修改,则映射到Pod中的”配置文件”也会随之更新.</p>
+<h2 id="Kubernetes安装"><a href="#Kubernetes安装" class="headerlink" title="Kubernetes安装"></a>Kubernetes安装</h2><ol start="0">
+<li>关闭防火墙<blockquote>
+<p>systemctl disable firewalld<br>systemctl stop firewalld<br>禁用SELinux, 让容器可以读取主机文件系统:<br>setenforce 0</p>
+</blockquote>
+</li>
+</ol>
+<ol>
+<li><p>修改源:<br>[kuebrnetes]<br>name=Kubernetes Repository<br>baseurl=<a href="http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/" target="_blank" rel="noopener">http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</a><br>enabled=1<br>gpgcheck=0</p>
+</li>
+<li><p>安装kubeadm</p>
+<!-- > yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes -->
+<blockquote>
+<p>yum install -y kubelet-1.14.2 kubeadm-1.14.2 kubectl-1.14.2 –disableexcludes=kubernetes<br>我离气死就差这么点儿距离了..<br>安装了1.6版本的上述kubelet, 后面的死活装不上</p>
+</blockquote>
+</li>
+<li><p>启动docker和kubelet<br>systemctl enable docker &amp;&amp; systemctl start docker<br>systemctl enable kubelet &amp;&amp; systemctl start kubelet</p>
+</li>
+</ol>
+<p>得到默认的初始化参数文件:<br>kubeadm config print init-defaults &gt; init.defaults.yaml</p>
+<ol start="4">
+<li>修改docker的镜像托管站, 重启docker服务<blockquote>
+<p>echo ‘{“registry-mirrors”:[“<a href="https://registry.docker-cn.com&quot;]}&#39;" target="_blank" rel="noopener">https://registry.docker-cn.com&quot;]}&#39;</a> &gt; /etc/docker/daemon.json</p>
+</blockquote>
+</li>
+</ol>
+<p>启动        systemctl start docker<br>守护进程重启   sudo systemctl daemon-reload<br>重启docker服务   systemctl restart docker<br>重启docker服务  sudo service docker restart<br>关闭docker   service docker stop<br>关闭docker  systemctl stop docker</p>
+<ol start="5">
+<li>使用config images pull子命令下载所需镜像:<blockquote>
+<p>kubeadm config images pull –config=init-config.yaml</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>kubeadm init –config=init-config.yaml</p>
+</blockquote>
+<p>关掉swap</p>
+<blockquote>
+<p>swapoff -a</p>
+</blockquote>
+<p>不知道这啥错,也不知道这啥办法.<br>$ echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables<br>$ echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-ip6tables</p>
+<blockquote>
+<p>安装成功了, 我离去世就差这么一点点距离了.</p>
+</blockquote>
+<p>kubectl命令需要使用kubernetes-admin来运行，<br>解决方法如下，将主节点中的【/etc/kubernetes/admin.conf】文件拷贝到从节点相同目录下，然后配置环境变量</p>
+<blockquote>
+<p>echo “export KUBECONFIG=/etc/kubernetes/admin.conf” &gt;&gt; ~/.bash_profile</p>
+</blockquote>
+
       
 
       
@@ -576,7 +498,7 @@ AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
         		</li>
       		
 		</ul>
@@ -585,7 +507,147 @@ AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/Scala实现并行框架/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/24/Kubernetes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.</p>
+<h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><p>类从加载到卸载的生命周期7个阶段:<br>    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)<br>    解析可以在初始化之后开始.</p>
+<p>5种必须对类进行初始化的情况:</p>
+<pre><code>1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
+2. 使用reflect包方法对类进行反射调用时.
+3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
+4. 虚拟机启动时用户指定要执行的主类
+5. 动态语言支持
+</code></pre><p>不会触发初始化的引用–被动引用:</p>
+<pre><code>1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
+2. 通过数组定义来引用类,不会触发类的初始化
+    package org.fenixsoft.classloading
+        SuperClass[] sca = new SuperClass[10];
+    类org.fenixsoft.classloading.SuperClass不会被初始化.
+    但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
+        创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
+        数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
+3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
+</code></pre><p>对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.</p>
+<h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><p>加载</p>
+<pre><code>1. 通过一个类的全限定名来获取定义此类的二进制字节流
+2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
+3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
+</code></pre><p>验证</p>
+<p>准备</p>
+<p>解析</p>
+<p>初始化</p>
+<p>类加载的三个步骤: 加载,链接,初始化</p>
+<ul>
+<li><p>加载: 把类的class文件读到内存里, 为它创建一个java.lang.Class对象.<br>从本地文件系统加载class文件; 从jar包加载class文件(如JDBC的数据库驱动类); 通过网络加载class文件; 把一个java源文件动态编译,加载</p>
+</li>
+<li><p>链接: 三个阶段: 验证,准备,解析</p>
+<pre><code>验证: 检验被加载的类是否有正确的内部结构
+   文件格式验证: 验证字节流是否符合Class文件格式规范,并且能被当前的虚拟机加载处理,如主次版本号是否在当前虚拟机处理范围内.
+               常量池中是否有不被支持常量类型.
+   元数据验证: 对字节码描述的信息进行语义分析,分析是否符合java的语言语法的规范
+   字节码验证: 分析数据流和控制, 确定语义是合法符合逻辑的
+   符合引用验证: 保证引用会被访问到, 不会出现类无法访问的情况
+
+准备: 类准备阶段为类的静态变量分配内存, 设置默认初始值
+解析: 将类的二进制数据中的符号引用替换成直接引用
+</code></pre></li>
+<li><p>初始化: 为类的静态变量赋予正确的初始值.如 private static int a = 10; 在链接的准备阶段, a=0, 在初始化阶段a=10</p>
+</li>
+</ul>
+<p>类加载的时机: 创建类的实例,即new一个对象; 访问某个类或接口的静态变量,或者对该静态变量赋值; 调用类的静态方法;<br>            反射(Class.forName(“com.App”)); 初始化一个类的子类(会先初始化子类的父类); JVM启动时标明的启动类</p>
+<pre><code>对于final类型的静态变量, 如果该变量的值可以在编译时就确定下来, Java编译器会在它出现的位置替换成它的值, 程序访问该
+静态变量, 不会导致该类的初始化.   如果final类型的静态Field的值不能在编译时确定下来, 则必须等到运行时才可以确定该变量
+的值, 访问该静态变量会导致该类被初始化
+</code></pre><p>类加载器: 三种类加载器: 根类加载器, 扩展类加载器, 系统类加载器</p>
+<pre><code>    - 根类加载器(bootstrap class loader): 加载java的核心类,用C++实现,不继承自java.lang.ClassLoader.
+    - 扩展类加载器(extension class loader): 加载JRE的扩展目录, lib/ext或者java.ext.dirs系统属性指定的目录中的JAR包的类
+                                          由java实现, 父加载器为null
+    - 系统类加载器(system class loader): 在JVM启动时加载来自java命令的-classpath选项, java.class.path系统属性,
+                                        或者CLASSPATH所指定的jar包和类路径.用户自定义的类加载器都以此类加载器作为父加载器.
+                                        由java实现, 父加载器为ExtClassLoader
+
+类加载器加载Class的8个步骤: 1.检测此Class是否载入过, 缓冲区是否有此Class; 有则跳至8, 否则2
+                         2.如果没有父类加载器,要么父类是根加载器,要么本身就是根加载器,跳至4; 如果父类加载器存在,进入3
+                         3.请求使用父类加载器去载入目标类, 成功则8, 否则5
+                         4.请求使用根类加载器去载入目标类, 成功则8, 否则7
+                         5.当前类加载器尝试寻找Class文件, 找到则6, 否则7
+                         6.从文件中载入Class, 成功则跳至8
+                         7.抛出ClassNotFoundException异常
+                         8.返回对应的java.lang.Class对象
+</code></pre><p>类加载机制: 三种机制: 全盘负责, 双亲委派, 缓存机制<br>        1.全盘负责: 一个类加载器负责加载某个Class时,该Class所依赖和引用其他Class也将由该类加载器负责载入<br>        2.双亲委派: 先让父类加载器试图加载该Class, 只有父类加载器无法加载该类时才尝试从自己的类路径中加载该类<br>                   某个特定的类加载器在接到加载类的请求时, 首先将加载任务委托给父加载器, 依次递归, 父加载器无法<br>                   完成该加载任务时, 才自己去加载<br>        3.缓存机制:  所有加载过的Class都会被缓存, 修改了Class之后, 必须重新启动JVM, 修改才会生效</p>
+<p>根类加载器 &lt;- 扩展类加载器 &lt;- 系统类加载器 &lt;- 用户类加载器<br>双亲委派优势: 1.java类随它的类加载器一起具备了一种优先级的层次关系, 避免类的重复加载<br>            2.java核心api中定义类型不会被随意替换, 假设网络传递一个java.lang.Integer的类, 启动类加载器在发现这个类后,<br>                直接返回已经加载过的Integer.class, 防止核心API库被篡改</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
         </p>
       
 
@@ -617,7 +679,7 @@ AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会�
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/35/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/37/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/35/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="page-number current">36</span><a class="page-number" href="/page/37/">37</a><a class="page-number" href="/page/38/">38</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/37/">Next &raquo;</a>
     </nav>
   
 
@@ -725,11 +787,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -737,11 +803,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -754,10 +820,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

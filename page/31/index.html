@@ -157,354 +157,63 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-编程的数学原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux epoll&amp;select&amp;poll" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/28/编程的数学原理/">编程的数学原理</a>
+      <a class="article-title" href="/2019/06/29/Linux epoll&select&poll/">Linux epoll&amp;select&amp;poll</a>
     </h1>
   
 
         
-        <a href="/2019/04/28/编程的数学原理/" class="archive-article-date">
-  	<time datetime="2019-04-28T04:32:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
+        <a href="/2019/06/29/Linux epoll&select&poll/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="群-group"><a href="#群-group" class="headerlink" title="群(group)"></a>群(group)</h1><p>群是一个集合G与其上定义的某种二元关系运算.</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
-<li>消去公理: 对任何a ∈ G, 都存在一个逆元a<sup>-1</sup>使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e</li>
-</ol>
-<p>例子: 整数加法群, 整数模5加法群</p>
-<h1 id="幺半群-monoid"><a href="#幺半群-monoid" class="headerlink" title="幺半群(monoid)"></a>幺半群(monoid)</h1><p>幺半群是一个集合S和其上定义的二元运算</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
-</ol>
-<p>例子: 字符串的拼接, 列表的连接</p>
-<h1 id="半群-semigroup"><a href="#半群-semigroup" class="headerlink" title="半群(semigroup)"></a>半群(semigroup)</h1><p>半群是一个集合S和其上定义的二元运算</p>
-<ol>
-<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
-<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
-</ol>
-<p>例子: 全体正整数构成的加法半群, 乘法半群; 全体偶数构成的加法半群, 乘法半群</p>
-<h2 id="群的性质"><a href="#群的性质" class="headerlink" title="群的性质"></a>群的性质</h2><blockquote>
-<p>群的单位元是惟一的<br>群中的任意元素a,都存在且仅存在一个逆元使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e<br>有限群的每个元素都有有限的阶<br>    对群的一个元a,能够满足a<sup>m</sup> = e的最小整数m叫做a的阶<br>    如果m不存在,则称a的阶是无限的.</p>
-</blockquote>
-<p>存在从某个集合A到另一个集合B的映射f<br>a和b是A中的两个元, f(a)和f(b)是它们在B中的像<br>考虑在A上的二元封闭运算产生的元a · b,在映射下在B中的像f(a · b)<br>如果对B上的二元封闭运算总有<br>    f(a) · f(b) = f(a · b)</p>
-<p>则称f是从A到B的同态映射<br>如果f是满射(即B中所有元素都在A中有原像),则称为同态满射<br>例:奇偶判定函数odd: Z -&gt; Bool,接受一个整数,如果是奇数返回True,否则返回False<br>    布尔集合{True,False  }在逻辑或运算下构成一个群</p>
-<p> 如果f不仅是满射,还是单射,那么它就是一一映射.称f是从A到B的同构映射,简称同构,记做A ≌ B<br>    例: a=2,f(a)=4<br>        b=3,f(b)=9<br>        ab=6,f(ab)=f(a)f(b)=36</p>
-<h2 id="范畴Category"><a href="#范畴Category" class="headerlink" title="范畴Category"></a>范畴Category</h2><p>一个范畴C包括一组对象（Object），记为A,B,C,…，和一组箭头<br>（Arrow），记为f,g,h,…。它们之上定义了以下四种操作：</p>
-<ul>
-<li>成为源和目标</li>
-<li>id</li>
-<li>组合<br>两条公理:</li>
-<li>结合</li>
-<li>单位元<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">Monoid</span> <span class="type">String</span> <span class="keyword">where</span></span></span><br><span class="line">    e = <span class="string">""</span></span><br><span class="line">    (*) = (++)</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>字符串幺半群(S, ++, “”)<br>    r ++ (s ++ t) = (r ++ s) ++ t<br>    “” ++ s = s = s ++ “”<br>字符集幺半群(C, ∪, {})<br>自然数幺半群(N, +, 0)</p>
-<p>S到C的态射: 把串中用到的字符组成一个字符集 S -&gt; C  φ: s -&gt; {c | c ∈ s}<br>    φ(s ++ r) = φ(s) ∪ φ(r)<br>    φ(“”) = {}<br>C到N的态射: 集合的大小映射为自然数,空集的大小映射为0 C −→ N  ψ : c → |c|<br>    ψ(s) ∪ ψ(r) = ψ(s + r)<br>    {} = ψ(0)</p>
-<p>S -&gt; C -&gt; N<br>幺半群范畴Mon,对象是幺半群,箭头是态射,恒等箭头是从一个幺半群到它自己的态射</p>
-<p>只有一个对象的幺半群范畴:<br>    对象是字符串幺半群(S, ++, “”), 箭头是前缀映射,单位元是空串””</p>
-<p>预序 preset</p>
-<ul>
-<li>自反性 任何集合中的元素a都有a ≤ a；</li>
-<li>传递性 若a ≤ b且b ≤ c，则a ≤ c；<br>在预序基础上满足 </li>
-<li>反对称性 若a ≤ b且b ≤ a，则a = b；<br>称为偏序 poset</li>
-</ul>
-<p>偏序集例子: 族谱, {x,y,z}的所有子集在包含关系下</p>
+        <p>阻塞blocking IO<br>非阻塞nonblocking IO<br>io多路复用技术 IO multiplexing<br>        select 和 poll<br>事件驱动 epoll</p>
+<p>epoll 多路复用IO接口select/poll的增强版本<br>        显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率.<br>        原因: 1.复用文件描述符集合来传递结果,而不用迫使开发者每次等待事件之前都必须重新准备要被侦听的文件描述符集合.<br>              2.获取事件时,无须遍历整个被侦听的描述符集合,只要遍历那些被内核IO事件异步唤醒而加入Ready队列的描述符集合.<br>              3.epoll除了提供select/poll那种IO事件的电平触发(Level Triggered),还提供了边沿触发(Edge Triggered),使得用户空间<br>                程序有可能缓存IO状态,减少epoll_wait/epoll_pwait的调用,提高应用程序效率.<br>              4.epoll没有文件描述符的上限,select/poll有限定数量.<br>              5.select/poll会轮询所有fd,有数据就处理,没数据就跳过.epoll只处理就绪的fd,它有一个就绪设备的队列,<br>                每次只轮询该队列的数据,然后进行处理.<br>              6.epoll使用mmap(文件/对象的内存映射,被映射到多个内存页上),同一块内存避免fd在操作过程中的拷贝问题.</p>
+<pre><code>epoll的两种工作方式
+        LT(电平触发 Level Triggered, 只要有数据可以读,不管怎样都会通知): 默认工作方式,同时支持block和no_block_socket. 
+                这种工作方式下,内核会通知你一个fd是否就绪,然后才可以对这个就绪的fd进行IO操作. 
+                即使没有任何操作,系统还是会继续提示fd已就绪,select/poll也是使用这种工作方式.
 
-      
+        ET(边沿触发 Edge Triggered, 只有状态发生变化时才会通知): 高速工作方式,仅支持no_block_socket,当fd从未就绪变为就绪时,
+                内核会通知fd已就绪,并且不会再次通知,除非因为某些操作导致fd就绪状态发生变化. only once.
+                当一直不对这个fd进行IO操作,导致fd变为未就绪时,内核同样不会发送更多的通知. 这种方式出错率较高,需要检测程序.
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
+函数
+        int epoll_create(int size);
+                创建一个epoll实例,通知内核监听size个fd. 创建成功后会占用一个fd,使用完之后要close(),否则fd可能会被耗尽
+        int epoll_ctl(int epfd, int op, int fd, struct epoll_events* event);
+                注册每一个文件描述符,一旦某个文件描述符就绪,内核采用回调机制,迅速激活文件描述符
+        int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
+                返回一个代表就绪描述符数量的值. mmap内存映射技术,省掉文件描述符在系统调用时复制的开销
 
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
-        		</li>
-      		
-		</ul>
-	</div>
+Nginx使用了边缘触发:
+        ee.events = EPOLLIN|EPOLLOUT|EPOLLET
+</code></pre><p>select<br>        文件描述符集合1 文件描述符集合2 文件描述符集合3<br>        可读事件        可写事件        异常事件</p>
+<pre><code>创建三个关注事件的文件描述符,死循环,依次遍历所有的文件描述符集合,判断是否由可读,可写,异常事件,
+遍历完,如果有事件或超时,返回事件个数,否则阻塞一定时间.
+每次调用select,都需要把三个fd集合从用户态拷贝到内核态.
 
+文件描述符个数有限制: 1024, 数据结构: 位图.
+</code></pre><p>poll<br>        共用一个文件描述符集合,数据结构:链表,<br>        没有最大文件描述符数量的限制</p>
+<pre><code>select和poll一般不会丢失就绪的消息,使用水平触发. 将就绪的文件告诉进程后,如果进程没有对其进行IO操作,下次调用select()或poll()时
+将再次报告这些文件描述符.
+</code></pre><p>epoll<br>        epoll_ctl: 1.增加监听的fd到红黑树中<br>                   2.从红黑树中删除fd<br>                   3.修改已经注册的fd的监听事件</p>
+<pre><code>epoll_wait:如果就绪队列不为空或超时,结束循环,否则阻塞一段时间继续下一次循环,
+          如果就绪队列不为空,拷贝就绪文件描述符到用户空间,返回就绪个数.
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/28/编程的数学原理/">展开全文 >></a>
-        </p>
-      
+当设备就绪后,会通过注册的回调函数自动将就绪文件描述符加入就绪队列.
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-范畴论-贺伟" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/28/范畴论-贺伟/">范畴论 贺伟</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/28/范畴论-贺伟/" class="archive-article-date">
-  	<time datetime="2019-04-27T18:23:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><ul>
-<li>obC 范畴C的全体对象</li>
-<li>C(A,B) 对象A到B的态射集</li>
-<li>MorC 范畴C的全体态射</li>
-<li>dom(f) 态射f的定义域</li>
-<li>cod(f) 态射f的值域</li>
-<li>$1_A$ 对象A到自身的单位态射</li>
-<li>$1_C$ 范畴C到自身的单位函子</li>
-</ul>
-<h1 id="范畴与函子"><a href="#范畴与函子" class="headerlink" title="范畴与函子"></a>范畴与函子</h1><h2 id="范畴的定义"><a href="#范畴的定义" class="headerlink" title="范畴的定义"></a>范畴的定义</h2><ol>
-<li>一族对象obC</li>
-<li></li>
-</ol>
-<ul>
-<li>(a) 复合运算律</li>
-<li>(b) 结合律</li>
-<li>(c) 单位态射：每一个对象A,存在一个态射$1_A ∈ C(A,A)$使得对任意的f ∈ C(A,B)及g ∈ C(C,A),有<br>$f1_A = f,   1_Ag = g$</li>
-</ul>
-<hr>
-<h3 id="对偶原理-duality-principle"><a href="#对偶原理-duality-principle" class="headerlink" title="对偶原理(duality principle)"></a>对偶原理(duality principle)</h3><pre><code>态射反向，称为对偶。
-</code></pre><h3 id="B上的切片范畴-slice-category-over-B-C-B"><a href="#B上的切片范畴-slice-category-over-B-C-B" class="headerlink" title="B上的切片范畴(slice category over B) C/B"></a>B上的切片范畴(slice category over B) C/B</h3><pre><code>任意两个以B为值域的态射,
-</code></pre><h2 id="函子"><a href="#函子" class="headerlink" title="函子"></a>函子</h2><h2 id="自然变换"><a href="#自然变换" class="headerlink" title="自然变换"></a>自然变换</h2><h2 id="单态射与满态射"><a href="#单态射与满态射" class="headerlink" title="单态射与满态射"></a>单态射与满态射</h2><h2 id="子对象与商对象"><a href="#子对象与商对象" class="headerlink" title="子对象与商对象"></a>子对象与商对象</h2><h2 id="Yoneda引理与可表达函子"><a href="#Yoneda引理与可表达函子" class="headerlink" title="Yoneda引理与可表达函子"></a>Yoneda引理与可表达函子</h2><h2 id="射影对象与单射对象"><a href="#射影对象与单射对象" class="headerlink" title="射影对象与单射对象"></a>射影对象与单射对象</h2>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/28/范畴论-贺伟/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-es doc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/es doc/">es doc</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/27/es doc/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>新建文档</li>
-</ul>
-<pre><code>PUT /customer/_doc/1
-{
-&quot;name&quot;: &quot;John Doe&quot;
-}
-</code></pre><ul>
-<li>获取文档</li>
-</ul>
-<pre><code>GET /customer/_doc/1
-</code></pre><ul>
-<li>批量导入</li>
-</ul>
-<pre><code>curl -H &quot;Content-Type: application/json&quot; -XPOST &quot;localhost:9200/bank/_bulk?pretty&amp;refresh&quot; --data-binary &quot;@accounts.json&quot;
-curl &quot;localhost:9200/_cat/indices?v&quot;
-</code></pre><ul>
-<li>搜索</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;match_all&quot;: {}
-    },
-    &quot;sort&quot;: [
-        {
-            &quot;account_number&quot;: {
-                &quot;order&quot;: &quot;desc&quot;
-            }
-        }
-    ],
-    &quot;from&quot;: 10,
-    &quot;size&quot;: 10
-}
-from和size做分页
-</code></pre><ul>
-<li>匹配搜索</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;match&quot;: {
-            &quot;address&quot;: &quot;mill lane&quot;
-        }
-    }
-}    
-</code></pre><ul>
-<li>精确搜索</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;match_phrase&quot;: {
-            &quot;address&quot;: &quot;mill lane&quot;
-        }
-    }
-}
-</code></pre><ul>
-<li>must,should,must_not从句<br>  must: 文档必须完全匹配条件<br>  should: should下面会带一个以上的条件，至少满足一个条件，这个文档就符合should<br>  must_not: 文档必须不匹配条件</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;bool&quot;: {
-            &quot;must&quot;: [
-                {&quot;match&quot;: {&quot;age&quot;: &quot;40&quot;}}
-            ],
-            &quot;must_not&quot;: [
-                {&quot;match&quot;: {&quot;state&quot;: &quot;ID&quot;}}
-            ]
-        }
-    }
-}
-</code></pre><ul>
-<li>范围过滤器</li>
-</ul>
-<pre><code>GET /bank/_search
-{
-    &quot;query&quot;: {
-        &quot;bool&quot;: {
-            &quot;must&quot;: {&quot;match_all&quot;: {}},
-            &quot;filter&quot;: {
-                &quot;range&quot;: {
-                    &quot;balance&quot;: {
-                        &quot;gte&quot;: 20000,
-                        &quot;lte&quot;: 30000
-                    }
-                }
-            }
-        }
-    }
-}
+    数据结构:红黑树
 </code></pre>
       
 
@@ -513,24 +222,13 @@ from和size做分页
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
         		</li>
       		
 		</ul>
@@ -539,7 +237,7 @@ from和size做分页
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/es doc/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Linux epoll&select&poll/">展开全文 >></a>
         </p>
       
 
@@ -569,238 +267,72 @@ from和size做分页
 
 
   
-    <article id="post-Elasticsearch速查手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-MongoDB" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Elasticsearch速查手册/">Elasticsearch</a>
+      <a class="article-title" href="/2019/06/29/MongoDB/">MongoDB</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/Elasticsearch速查手册/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+        <a href="/2019/06/29/MongoDB/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li><p>创建库  </p>
-<pre><code>PUT http://127.0.0.1:9200/secisland
-</code></pre></li>
-<li><p>查看库状态    </p>
-<pre><code>GET http://127.0.0.1:9200/_cat/indices?v
-</code></pre></li>
-<li><p>插入数据</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/secilog/1
-参数:
-    {
-        &quot;computer&quot;: &quot;x1 carbon&quot;,
-        &quot;message&quot; : &quot;for coding&quot;
-    }
-</code></pre></li>
-<li><p>修改文档</p>
-<pre><code>POST http://127.0.0.1:9200/secisland/secilog/1/_update
-参数:
-    {
-        &quot;doc&quot;: {
-            &quot;computer&quot;: &quot;x1 carbon&quot;,
-            &quot;message&quot;: &quot;lenovo&quot;
-        }
-    }
-</code></pre></li>
-<li><p>查询文档</p>
-<pre><code>GET  http://127.0.0.1:9200/secisland/secilog/1/
-</code></pre></li>
-<li><p>删除文档</p>
-<pre><code>DELETE http://127.0.0.1:9200/secisland/secilog/1/
-</code></pre></li>
-<li><p>删除库</p>
-<pre><code>DELETE http://127.0.0.1:9200/secisland/
-</code></pre></li>
-</ul>
-<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ul>
-<li><p>创建三个主分片,两个副本分片的索引</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/
-参数: 
-    {
-        &quot;settings&quot;: {
-            &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
-        }
-    }
-修改副本数量
-    PUT http://127.0.0.1:9200/secisland/_settings/
-    参数:
-     {
-        &quot;number_of_replicas&quot;: 1
-     }
-</code></pre></li>
-</ul>
-<p>创建自定义字段类型</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland
-参数:
-    {
-        &quot;settings&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2},
-        &quot;mappings&quot;: {
-            &quot;secilog&quot;: 
-                {
-                    &quot;properties&quot;: 
-                        {
-                            &quot;logType&quot;: 
-                                {
-                                   &quot;type&quot;: &quot;text&quot;, 
-                                   &quot;index&quot;: &quot;not_analyzed&quot;
-                                }
-                        }
-                }
-            }
-    }
-</code></pre><h2 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h2><p>增加映射</p>
-<ul>
-<li><p>添加索引名为secisland, 文档类型为log, 其中包含字段message, 字段类型是字符串.</p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/
-参数:
-{
-    &quot;mappings&quot;: {
-        &quot;log&quot;: {
-            &quot;properties&quot;: {
-                &quot;message&quot;: {&quot;type&quot;: &quot;text&quot;}
-            }
-        }
-    }
-}
-</code></pre></li>
-</ul>
-<ul>
-<li><p>向已存在的索引secisland添加文档类型为user, 包含字段name, 字段类型是keyword </p>
-<pre><code>PUT http://127.0.0.1:9200/secisland/_mapping/user
-  {
-      &quot;properties&quot;: {
-          &quot;name&quot;: {&quot;type&quot;: &quot;keyword&quot;}
-      }
-  }
-</code></pre></li>
-<li><p>多个索引设置映射</p>
-<pre><code>PUT http://127.0.0.1:9200/{index}/_mapping/{type}
-{body}
-</code></pre></li>
-<li><p>获取映射</p>
-<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog
-</code></pre></li>
-<li><p>获取字段映射</p>
-<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog/field/description
+        <p>查看数据库<br>    show dbs<br>查看数据表<br>    show tables</p>
+<p>集合<br>    创建集合<br>        db.createColleaction(name, options)<br>            name: 集合名称<br>            options:<br>                capped: 是否创建固定大小集合,当达到最大值时,自动覆盖最早的文档<br>                size: 固定集合字节大小<br>                antoIndexId: 是否自动在_id字段创建索引.默认为false<br>                max: 固定集合中包含文档的最大数量<br>            插入文档时,先检查size再检查max<br>    删除集合<br>        db.col.drop()</p>
+<pre><code>插入文档
+    db.col.insert(document)
+    例:
+        db.col.insert({
+            title: &apos;MongoDB 教程&apos;, 
+            tags: [&apos;mongodb&apos;, &apos;database&apos;, &apos;NoSQL&apos;],
+            likes: 100
+        })
 
-只返回字段为description的内容.
-</code></pre></li>
-</ul>
-<h2 id="索引别名"><a href="#索引别名" class="headerlink" title="索引别名:"></a>索引别名:</h2><pre><code>类似数据库中的视图.
-</code></pre><ul>
-<li><p>为索引添加别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {&quot;add&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
-}
-</code></pre></li>
-<li><p>删除别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {&quot;remove&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
-}
-</code></pre></li>
-<li><p>创建过滤索引别名</p>
-<pre><code>PUT http://127.0.0.1:9200/_alias
-{
-    &quot;actions&quot;: {
-        &quot;add&quot;: {
-            &quot;index&quot;: &quot;test1&quot;, &quot;alias&quot;: &quot;alias2&quot;,
-            &quot;filter&quot;: {&quot;term&quot;: {&quot;user&quot;: &quot;ramble&quot;}}
-        }
-    }
-}
-</code></pre></li>
-</ul>
-<ul>
-<li><p>新建文档(不需要先创建索引)</p>
-<pre><code>PUT http://127.0.0.1:9200/blog/article/2 
-{
-    &quot;title&quot;: &quot;SB ES&quot;,
-    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
-    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
-}
+查看文档
+    db.col.find()
 
-返回结果
-{
-    &quot;_index&quot;: &quot;blog&quot;,
-    &quot;_type&quot;: &quot;article&quot;,
-    &quot;_id&quot;: &quot;2&quot;,
-    &quot;_version&quot;: 1,
-    &quot;result&quot;: &quot;created&quot;,
-    &quot;_shards&quot;: {
-        &quot;total&quot;: 2,
-        &quot;successful&quot;: 1,
-        &quot;failed&quot;: 0
-    },
-    &quot;_seq_no&quot;: 0,
-    &quot;_primary_term&quot;: 1
-}
-</code></pre><p>  再执行一次的话, _version, _seq_no会加一, result会变成updated</p>
-</li>
-<li><p>不指定id, ES会自动生成唯一标识符.(改用了POST方法,因为是更改而不是创建)</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article
-{
-    &quot;title&quot;: &quot;SB ES&quot;,
-    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
-    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
-}
-返回结果
-{
-    &quot;_index&quot;: &quot;blog&quot;,
-    &quot;_type&quot;: &quot;article&quot;,
-    &quot;_id&quot;: &quot;_qm_l2sBFUlcgb1-d5N2&quot;,
-    &quot;_version&quot;: 1,
-    &quot;result&quot;: &quot;created&quot;,
-    &quot;_shards&quot;: {
-        &quot;total&quot;: 2,
-        &quot;successful&quot;: 1,
-        &quot;failed&quot;: 0
-    },
-    &quot;_seq_no&quot;: 0,
-    &quot;_primary_term&quot;: 1
-}
-</code></pre></li>
-<li><p>检索文档</p>
-<pre><code>GET http://127.0.0.1:9200/blog/article/2 
-</code></pre></li>
-<li><p>更新文档</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
-{
-    &quot;script&quot;: &quot;ctx._source.content = \&quot;new content\&quot;&quot;
-}
-只修改了content字段和version.
-</code></pre></li>
-</ul>
-<p>要更新索引中的文档, ES先获取文档,从_source属性获得数据,删除旧的<br>文件,更改_source属性,然后把它作为新的文档来索引.<br>信息一旦在Lucene的倒排索引中存储,就不能再被更改,ES通过一个带_update<br>参数的脚本来实现它.</p>
-<ul>
-<li><p>如果文档中没有该字段,使用upsert来提供该字段的默认值.</p>
-<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
-{
-    &quot;script&quot;: {
-        &quot;source&quot;: &quot;ctx._source.counter += params.count&quot;,
-        &quot;lang&quot;: &quot;painless&quot;,
-        &quot;params&quot;: {
-            &quot;count&quot;: 4
+更新文档
+    db.col.update(
+        &lt;query&gt;,
+        &lt;update&gt;,
+        {
+            upsert: &lt;boolean&gt;,
+            multi: &lt;boolean&gt;,
+            writeConcern: &lt;document&gt;
         }
-    },
-    &quot;upsert&quot;: {&quot;counter&quot;: 0}
-}
-</code></pre></li>
-</ul>
+    )
 
+    query : update的查询条件
+    update : update的对象和一些更新的操作符（如$,$inc...）
+    upsert : 可选，这个参数的意思是，如果不存在update的记录，是否插入,默认是false不插入
+    multi : 可选，mongodb 默认是false,只更新找到的第一条记录，如果这个参数为true,就把按条件查出来多条记录全部更新。
+    writeConcern :可选，抛出异常的级别。
+
+    例: 
+        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}})
+        要修改多条参数:
+        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}}, multi: true)
+
+查询文档:
+        db.col.find({likes: 100})
+    小于,大于: 
+        db.col.find({likes: {$lt:50}}) 
+        db.col.find({likes: {$gt:50}})
+    AND:
+        db.col.find({key1:value1, key2:value2})
+    OR:
+        db.col.find({$or: [{key1: value1}, {key2:value2}]})
+</code></pre>
       
 
       
@@ -808,24 +340,13 @@ from和size做分页
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        			<a href="/categories/MongoDB//" class="article-tag-list-link color3">MongoDB</a>
         		</li>
       		
 		</ul>
@@ -834,7 +355,162 @@ from和size做分页
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Elasticsearch速查手册/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/MongoDB/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/30/linux/">linux</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/30/linux/" class="archive-article-date">
+  	<time datetime="2019-05-30T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h1><p>平均负载是指单位时间内,系统处于可运行状态和不可中断状态的平均进程数.即平均活跃进程数.</p>
+<p>内核架构<br>    Linux内核上下层通信方式</p>
+<p>常用命令:<br>nc -l port &gt; test.txt<br>nc -q 0 MachineIP Port &lt; test.txt</p>
+<p>nohup npm start &amp;</p>
+<p>1、tar包的创建<br>tar -cvf  file.tar file1  file2<br>tar -zcvf  file.tar.gz  file1  file2<br>tar -jcvf   file.tar.bz2  file1  file2</p>
+<p>2、tar包的查看<br>tar -tvf  file.tar<br>tar -ztvf  file.tar.gz<br>tar -jtvf  file.tar.bz2</p>
+<p>3、释放tar包<br>tar -xvf  file.tar<br>tar -zxvf  file.tar.gz<br>tar -jxvf  file.tar.bz2</p>
+<p>主选项：<br>-x    从档案文件中释放文件。<br>-c    创建新的档案文件。如果用户想备份一个目录或是一些文件，就要选择这个选项。<br>-r     把要存档的文件追加到档案文件的末尾。例如用户已经做好备份文件，又发现还有一个目录或<br>         是一些文件忘 记备份了，这时可以使用该选项，将忘记的目录或文件追加到备份文件中。<br>-t       列出档案文件的内容，查看已经备份了哪些文件。<br>-u      更新文件。就是说，用新增的文件取代原备份文件，如果在备份文件中找不到要更新的文件，<br>          则把它追加到备份文件的最后。</p>
+<p>辅助选项：<br>-j         代表使用‘bzip2’程序进行文件的压缩    tar.bz2<br>-z       用gzip来压缩/解压缩文件，加上该选项后可以将档案文件进行压缩，但还原时也一定要使用该<br>            选项进行解压缩。   tar.gz<br>-v       详细报告tar处理的文件信息。如无此选项，tar不报告文件信息。<br>-b     该选项是为磁带机设定的，其后跟一数字，用来说明区块的大小，系统预设值为20（20×512 bytes）。<br>-f       使用档案文件或设备，这个选项通常是必选的。<br>-k       保存已经存在的文件。例如把某个文件还原，在还原的过程中遇到相同的文件，不会进行覆盖。<br>-m       在还原文件时，把所有文件的修改时间设定为。<br>-M      创建多卷的档案文件，以便在几个磁盘中存放。<br>-w           每一步都要求确认。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/30/linux/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-撸个ioc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/30/撸个ioc/">撸个ioc</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/30/撸个ioc/" class="archive-article-date">
+  	<time datetime="2019-05-30T03:43:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/30/撸个ioc/">展开全文 >></a>
         </p>
       
 
@@ -866,7 +542,7 @@ from和size做分页
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/30/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/32/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/30/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/32/">Next &raquo;</a>
     </nav>
   
 
@@ -974,11 +650,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -986,11 +666,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1003,10 +683,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

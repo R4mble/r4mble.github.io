@@ -157,39 +157,106 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Golang东一榔头西一棒槌系列(7) -并发与goroutine" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(1)-数据类型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(7) -并发与goroutine/">Golang东一榔头西一棒槌系列(7) -并发与goroutine</a>
+      <a class="article-title" href="/2020/04/22/(1)-数据类型/">(1)-数据类型</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(7) -并发与goroutine/" class="archive-article-date">
-  	<time datetime="2020-04-14T12:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/22/(1)-数据类型/" class="archive-article-date">
+  	<time datetime="2020-04-22T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="goroutine-通过Go语言runtime管理的一个线程管理器"><a href="#goroutine-通过Go语言runtime管理的一个线程管理器" class="headerlink" title="goroutine 通过Go语言runtime管理的一个线程管理器"></a>goroutine 通过Go语言runtime管理的一个线程管理器</h1><p>比线程更小, 十几个goroutine可能就是五六个线程, goroutine需要极少的栈内存</p>
+        <h3 id="字符串-string"><a href="#字符串-string" class="headerlink" title="字符串(string)"></a>字符串(string)</h3><pre><code>set name &quot;Tom&quot;
+get name
+append name &quot;Jack&quot;
+exists name
+del name
+</code></pre><p>批量操作:</p>
+<pre><code>mget name1 name2 name3
+mset name1 tom name2 jerry name3 jack
+</code></pre><p>设置过期:</p>
+<pre><code>expire name 5        #5s后过期
+setex name 5 &quot;tom&quot;  #5s后过期
+</code></pre><p>计数:</p>
+<pre><code>set counter 1000
+incr counter 
+decr counter
+incrby counter 5
+
+setnx name &quot;jerry&quot;        #如果name不存在,则创建.
+</code></pre><h3 id="列表-list"><a href="#列表-list" class="headerlink" title="列表(list)"></a>列表(list)</h3><pre><code>lpush lists redis mongodb golang
+rpush lists mysql postgre
+lpop lists
+rpop lists
+lrange lists 0 10
+</code></pre><h4 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h4><p>LPUSH mylist 4 3 2 6 9<br>SORT mylist<br>LPUSH mylistalpha a d i e p<br>SORT mylistalpha ALPHA</p>
 <blockquote>
-<p>不要通过共享来通信, 要通过通信来共享</p>
+<p>lindex对链表进行遍历, 性能随index变大而变差. index为-1表示倒数第一个元素.<br>  ltrim 保留start_index和end_index之间的区间, 其他的去掉.</p>
 </blockquote>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"runtime"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">say</span><span class="params">(s <span class="keyword">string</span>)</span></span>  &#123;</span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;<span class="number">5</span>; i++ &#123;</span><br><span class="line">        <span class="comment">// 让CPU把时间片让给别人,下次某个时候继续恢复执行该goroutine</span></span><br><span class="line">		runtime.Gosched()</span><br><span class="line">		fmt.Println(s)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> say(<span class="string">"world"</span>)</span><br><span class="line">	say(<span class="string">"Hello"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="channels-goroutine之间的通信机制"><a href="#channels-goroutine之间的通信机制" class="headerlink" title="channels goroutine之间的通信机制"></a>channels goroutine之间的通信机制</h1><p>channel接收和发送数据都是阻塞的</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sum</span><span class="params">(a []<span class="keyword">int</span>, c <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	sum := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> a &#123;</span><br><span class="line">		sum += v</span><br><span class="line">	&#125;</span><br><span class="line">	c &lt;- sum</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	a := []<span class="keyword">int</span>&#123;<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>,&#125;</span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">go</span> sum(a[:<span class="built_in">len</span>(a)/<span class="number">2</span>], c)</span><br><span class="line">	<span class="keyword">go</span> sum(a[<span class="built_in">len</span>(a)/<span class="number">2</span>:], c)</span><br><span class="line">	x, y := &lt;-c, &lt;-c</span><br><span class="line">	fmt.Println(x, y, x+y)</span><br><span class="line">	<span class="comment">//ci := make(chan int)</span></span><br><span class="line">	<span class="comment">//cs := make(chan string)</span></span><br><span class="line">	<span class="comment">//cf := make(chan interface&#123;&#125;)</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">//// 发送v到channel ch</span></span><br><span class="line">	<span class="comment">//ch &lt;- v</span></span><br><span class="line">	<span class="comment">//</span></span><br><span class="line">	<span class="comment">//// 从ch中接收数据, 并赋值给v</span></span><br><span class="line">	<span class="comment">//v := &lt;- ch</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Buffered-Channels"><a href="#Buffered-Channels" class="headerlink" title="Buffered Channels"></a>Buffered Channels</h2><pre><code>创建可以存储4个元素的bool型channel, 前4个元素可以无阻塞写入
-当写入第5个元素时,代码将阻塞, 直到其他goroutine从channel中读取一些元素, 腾出空间 
-ch := make(chan bool, 4)
-</code></pre><h2 id="range-和-close"><a href="#range-和-close" class="headerlink" title="range 和 close"></a>range 和 close</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(n <span class="keyword">int</span>, c <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	x, y := <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;n; i++ &#123;</span><br><span class="line">		c &lt;- x</span><br><span class="line">		x, y = y, x + y</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">close</span>(c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">10</span>)</span><br><span class="line">	<span class="keyword">go</span> fib(<span class="built_in">cap</span>(c), c)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="keyword">range</span> c &#123;</span><br><span class="line">		fmt.Println(i)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="select-监听channel上的数据流动"><a href="#select-监听channel上的数据流动" class="headerlink" title="select 监听channel上的数据流动"></a>select 监听channel上的数据流动</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(c, quit <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span>  &#123;</span><br><span class="line">	x, y := <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> c &lt;- x:</span><br><span class="line">			x, y = y, x + y</span><br><span class="line">		<span class="keyword">case</span> &lt;- quit:</span><br><span class="line">			fmt.Println(<span class="string">"quit"</span>)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	quit := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i:=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++ &#123;</span><br><span class="line">			fmt.Println(&lt;-c)</span><br><span class="line">		&#125;</span><br><span class="line">		quit &lt;- <span class="number">0</span></span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	fib(c, quit)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>数据量较少时会使用一块连续的内存存储,压缩列表ziplist将元素连续存储.<br>  数据量较多时使用quicklist.<br>  Redis将链表和ziplist结合组成quicklist,多个ziplist使用双向<br>  指针串起来使用.这样既可以快速插入删除,也不会出现太大的空间冗余.</p>
+</blockquote>
+<h3 id="散列-hash"><a href="#散列-hash" class="headerlink" title="散列(hash)"></a>散列(hash)</h3><pre><code>hmset car name &quot;volvo&quot; color &quot;black&quot; price 20
+hmget car name
+hexists car name
+hdel car price
+</code></pre><blockquote>
+<p>数组 + 链表的二维结构, 第一维数组位置碰撞后,使用链表将元素串接起来.<br>    与Java的HashMap的不同点:<br>        Redis字典只能是字符串;<br>        Redis采用渐进式rehash策略,HashMap采用一次性全部rehash.<br>            Redis不堵塞服务,实现了高性能.</p>
+</blockquote>
+<pre><code>渐进式rehash: 在rehash的同时保留新旧两个hash结构,查询时会同时查询两个
+hash结构,然后在后续的定时任务中以及hash的子指令中,逐渐将旧hash内容迁移到
+新hash结构中.当hash移除了最后一个元素后,该数据结构自动被删除,内存被回收.
 
+HashMap的rehash: 
+</code></pre><h3 id="集合-set"><a href="#集合-set" class="headerlink" title="集合(set)"></a>集合(set)</h3><pre><code>sadd letters a
+sadd letters a b c
+srem letters c d
+smembers letters
+sadd setA 1 2 3
+sdiff setA setB
+</code></pre><p>相当于value为NULL的字典.</p>
+<h3 id="有序集合-zset"><a href="#有序集合-zset" class="headerlink" title="有序集合(zset)"></a>有序集合(zset)</h3><pre><code>zadd tutorials 1 redis 2 mongodb 3 mysql
+zrange tutorials 0 10 WITHSOCRES
+zrange bookstore 0 -1       默认按score从低到高排
+zrevrange bookstore 0 -1    按score从高到低排
+zcard bookstore                集合中元素的数量,key不存在时返回0
+zscore bookstore &quot;Java Concurrency&quot; 查看score(使用double存储,有精度问题)
+zrank bookstore &quot;Java Concurrency&quot; 排名,按照score从低往高排.
+zrangebysocre bookstore 0 8.9 根据score区间遍历zset
+zrem bookstore &quot;Java Concurrency&quot;
+</code></pre><h3 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h3><p>比特位组成的数组.<br>用途举例: 存用户一年的签到记录.</p>
+<pre><code>bitcount
+    统计指定位置范围内1的个数,start和end是字节索引,必须是8的倍数.
+    要查找用户某个月签到多少天,需要将这个月覆盖的字节全部取出然后统计.
+bitpos 来查找指定范围内出现的第一个0或1
+bitfield 一次操作多个位
+</code></pre><h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>提供不精确的去重计数方案, 标准误差0.81%</p>
+<pre><code>pfadd uv user1
+pfcount uv
+pfadd uv user2 user3 user1 user4
+pfcount uv  
+</code></pre><p>pfmerge 将多个pf计数值累加形成新的pf值</p>
+<p>布隆过滤器:<br>    场景举例: 推荐内容去重.</p>
+<pre><code>bf.add         bf.madd
+bf.exists         bf.mexists
+</code></pre><p>向布隆过滤器添加key时,使用多个hash函数对key进行hash算得一个整数索引,</p>
+<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><pre><code>SET session uuid11
+EXPIRE session 20 
+TTL session
+</code></pre><h3 id="发布-订阅"><a href="#发布-订阅" class="headerlink" title="发布/订阅"></a>发布/订阅</h3><pre><code>SUBSCRIBE redisChat
+PUBLISH redisChat &quot;Learn redis&quot;
+</code></pre>
       
 
       
@@ -198,10 +265,21 @@ ch := make(chan bool, 4)
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(7) -并发与goroutine/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/22/(1)-数据类型/">展开全文 >></a>
         </p>
       
 
@@ -231,116 +309,39 @@ ch := make(chan bool, 4)
 
 
   
-    <article id="post-Golang东一榔头西一棒槌系列(6) -Struct与面向对象" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(2)-分布式锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(6) -Struct与面向对象/">Golang东一榔头西一棒槌系列(6) -Struct与面向对象</a>
+      <a class="article-title" href="/2020/04/22/(2)-分布式锁/">(2)-分布式锁</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(6) -Struct与面向对象/" class="archive-article-date">
-  	<time datetime="2020-04-14T10:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/22/(2)-分布式锁/" class="archive-article-date">
+  	<time datetime="2020-04-22T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="匿名字段"><a href="#匿名字段" class="headerlink" title="匿名字段"></a>匿名字段</h1><p>struct中的字段可以提供类型, 而不写字段名</p>
-<p>实现字段的继承</p>
-<h1 id="method"><a href="#method" class="headerlink" title="method"></a>method</h1><p>A method is a function with an implicit first argument, called a receiver.</p>
-<p>func (r ReceiverType) funcName(parameters) (results)</p>
-<h1 id="指针作为receiver"><a href="#指针作为receiver" class="headerlink" title="指针作为receiver"></a>指针作为receiver</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"math"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> person <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="keyword">string</span></span><br><span class="line">	age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> student <span class="keyword">struct</span> &#123;</span><br><span class="line">	person</span><br><span class="line">	grade <span class="keyword">float32</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Rectangle <span class="keyword">struct</span> &#123;</span><br><span class="line">	width, height <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Circle <span class="keyword">struct</span> &#123;</span><br><span class="line">	radius <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r Rectangle)</span> <span class="title">area</span><span class="params">()</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> r.width * r.height</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Circle)</span> <span class="title">area</span><span class="params">()</span> <span class="title">float64</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> c.radius * c.radius * math.Pi</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> P person</span><br><span class="line">	P.name = <span class="string">"asdf"</span></span><br><span class="line">	P.age = <span class="number">12</span></span><br><span class="line">	fmt.Println(P)</span><br><span class="line"></span><br><span class="line">	P2 := person&#123;<span class="string">"Tom"</span>, <span class="number">23</span>&#125;</span><br><span class="line">	fmt.Println(P2)</span><br><span class="line"></span><br><span class="line">	st := student&#123;</span><br><span class="line">		person: person&#123;<span class="string">"mark"</span>, <span class="number">134</span>&#125;,</span><br><span class="line">		grade:  <span class="number">0</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(st)</span><br><span class="line">	fmt.Println(st.person.age)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="method继承"><a href="#method继承" class="headerlink" title="method继承"></a>method继承</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Human <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="keyword">string</span></span><br><span class="line">	age <span class="keyword">int</span></span><br><span class="line">	phone <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Student <span class="keyword">struct</span> &#123;</span><br><span class="line">	Human</span><br><span class="line">	school <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Employee <span class="keyword">struct</span> &#123;</span><br><span class="line">	Human</span><br><span class="line">	company <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(h *Human)</span> <span class="title">SayHi</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"Hi, I am %s you can call me on %s\n"</span>, h.name, h.phone)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	Mark := Student&#123;Human&#123;<span class="string">"Mark"</span>, <span class="number">23</span>, <span class="string">"123"</span>&#125;, <span class="string">"MIT"</span>&#125;</span><br><span class="line">	Sam := Employee&#123;Human&#123;<span class="string">"Sam"</span>, <span class="number">33</span>, <span class="string">"321"</span>&#125;, <span class="string">"Google"</span>&#125;</span><br><span class="line">	Mark.SayHi()</span><br><span class="line">	Sam.SayHi()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="interface"><a href="#interface" class="headerlink" title="interface"></a>interface</h1><p>interface可以被任意的对象实现, 一个对象可以实现任意多个interface</p>
-<h2 id="嵌入interface"><a href="#嵌入interface" class="headerlink" title="嵌入interface"></a>嵌入interface</h2>
-      
+        <pre><code>setnx(set if not exist)
+分布式锁逻辑流程:
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(6) -Struct与面向对象/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java中的ThreadLocal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Java中的ThreadLocal/">Java中的ThreadLocal</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/Java中的ThreadLocal/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ThreadLocal为变量在每个线程中都创建了一个副本，那么每个线程可以访问自己内部的副本变量。</p>
-<p>首先，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，<br>键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。</p>
-<p>　　 初始时，在Thread里面，threadLocals为空，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，<br>并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。</p>
-<p>　　  然后在当前线程里面，如果要使用副本变量，就可以通过get方法在threadLocals里面查找。</p>
-<p>join的作用<br>    调用某个线程的这个方法时，这个方法会挂起调用线程，直到被调用线程结束执行，调用线程才会继续执行。</p>
-<pre><code>join逻辑
-
-    Parent 调用 child.join()，child.join() 再调用 child.join(0) （此时 Parent 会获得 child 实例作为锁，其他线程可以进入 child.join() ，但不可以进入 child.join(0)， 
-    因为无法获取锁）。child.join(0) 会不断地检查 child 线程是否是 Active。
-
-    如果 child 线程是 Active，则循环调用 child.wait(0)（为了防止 Spurious wakeup, 需要将 wait(0) 放入 for 循环体中；此时 Parent 会释放 child 实例锁，
-    其他线程可以竞争锁并进入 child.join(0)。我们可以得知，可以有多个线程等待某个线程执行完毕）。
-
-    一旦 child 线程不为 Active （状态为 TERMINATED）, child.join(0) 会直接返回到 child.join(), 
-    child.join() 会直接返回到 Parent 父线程，Parent 父线程就可以继续运行下去了。
-</code></pre><p>1）实际的通过ThreadLocal创建的副本是存储在每个线程自己的threadLocals中的；</p>
-<p>　　  为何threadLocals的类型ThreadLocalMap的键值为ThreadLocal对象，因为每个线程中可有多个threadLocal变量，就像上面代码中的longLocal和stringLocal；</p>
-<p>　　  在进行get之前，必须先set，否则会报空指针异常；</p>
-<p>　　  如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法。</p>
-<p>最常见的ThreadLocal使用场景为 用来解决 数据库连接、Session管理等</p>
-<p>实现:<br>    内部类<br>        ThreadLocalMap<br>            内部类<br>                Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt;<br>        public T get()</p>
+setnx lock:codehole true
+    do something...
+expire lock:codehole 5        
+del lock:codehole
+</code></pre><p>存在问题: setnx和expire操作之间如果进程挂掉就会造成死锁.</p>
+<p>解决办法: redis2.8后加入set指令扩展参数,使这两个指令一起执行.</p>
+<pre><code>set lock:codehole true ex 5 nx
+    do something...
+del lock:codehole
+</code></pre><p>依然存在问题: 如果加锁和释放锁之间逻辑执行时间太长超出锁超时限制,<br>    锁会过期,第二个线程重新持有锁. 第一个线程执行完逻辑后把锁释放了,<br>    第三个线程就会在第二个线程逻辑执行完之前拿到了锁.<br>解决方案: 为set指令的value设置一个随机数,释放锁时检查随机数是否一致,<br>    然后再删除key. 检查value和删除key不是原子操作,需要Lua脚本来处理.</p>
 
       
 
@@ -355,7 +356,7 @@ ch := make(chan bool, 4)
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -364,7 +365,7 @@ ch := make(chan bool, 4)
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Java中的ThreadLocal/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/22/(2)-分布式锁/">展开全文 >></a>
         </p>
       
 
@@ -394,32 +395,74 @@ ch := make(chan bool, 4)
 
 
   
-    <article id="post-css心得" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TCP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/css心得/">css心得</a>
+      <a class="article-title" href="/2020/04/22/TCP协议/">TCP协议</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/css心得/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/22/TCP协议/" class="archive-article-date">
+  	<time datetime="2020-04-22T08:13:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>怎么裁减图片<br>给图片加个div, div的宽高比img小, 并且overflow: hidden, 就能把多的盖住</p>
+        <h1 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h1><p>提供了应用进程之间的端到端连接</p>
+<ul>
+<li>作用<ul>
+<li>为网络应用程序提供接口</li>
+<li>为端到端连接提供流量控制,差错控制,服务质量等管理服务</li>
+<li>提供多路复用,多路分解机制</li>
+</ul>
 </li>
-<li><p>怎么让图片弹性布局<br>display: flex;<br>flex-wrap: wrap;</p>
+</ul>
+<ul>
+<li><p>面向连接<br>双方在通信时, 要先建立通信线路, 然后再进行通信.<br>三个阶段: 1.建立连接 2.数据传输 3.释放连接</p>
 </li>
-</ol>
+<li><p>无连接<br>通信双方不需要事先建立通信线路, 而是把每个带有目的地址的包发送到线路上,由系统选定线路进行传输,不需要目标方进行回复.</p>
+</li>
+</ul>
+<blockquote>
+<p>在数据链路层中，通过MAC地址来寻找局域网中的主机；<br>在网际层中，通过IP地址来寻找网络中互连的主机或路由器。<br>在传输层中，需要通过端口进行寻址，来识别同一计算机中同时通信的不同应用程序</p>
+</blockquote>
+<p>3.套接字  主机的IP地址加上主机上的端口号</p>
+<ul>
+<li><p>多路复用<br>从源主机的不同套接字中收集数据块,并为每个数据块封装首部信息,从而生成报文段, 然后将报文段传递到网络层中</p>
+</li>
+<li><p>多路分解<br>将传输层报文段中的数据交付到正确的套接字</p>
+</li>
+</ul>
+<h1 id="TCP协议-Transmission-Control-Protocol"><a href="#TCP协议-Transmission-Control-Protocol" class="headerlink" title="TCP协议 Transmission Control Protocol"></a>TCP协议 Transmission Control Protocol</h1><p>面向连接的, 可靠的, 基于字节流的传输层通信协议.</p>
+<h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><ul>
+<li><p>面向流的处理<br>一个字节一个字节地接受数据, 把接收到的数据组成长度不同的段, 再传递到网际层.</p>
+</li>
+<li><p>重新排序<br>如果数据以错误的顺序到达目的地, TCP模块能够对数据重新排序, 恢复原始数据</p>
+</li>
+<li><p>流量控制<br>TCP能确保数据传输不会超过目的计算机接收数据的能力</p>
+</li>
+<li><p>优先级与安全<br>为TCP连接设置可选的优先级和安全</p>
+</li>
+<li><p>适当的关闭<br>确保所有数据被发送或接收以后, 再进行关闭</p>
+</li>
+</ul>
+<h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><p>服务端和客户端模式</p>
+<h2 id="TCP数据格式"><a href="#TCP数据格式" class="headerlink" title="TCP数据格式"></a>TCP数据格式</h2><ul>
+<li>源端口         16位</li>
+<li>目的端口       16位</li>
+<li>序列号         32位<br>表示本报文段所发送数据的第一个字节的编号</li>
+<li>确认号         32位</li>
+<li>数据偏移字段    4位<br>TCP首部长度  </li>
+<li>保留字段        4位</li>
+<li>标志位           </li>
+</ul>
 
       
 
@@ -434,7 +477,7 @@ ch := make(chan bool, 4)
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/FontEnd//" class="article-tag-list-link color3">FontEnd</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -443,7 +486,95 @@ ch := make(chan bool, 4)
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/css心得/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/22/TCP协议/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-ICMP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/22/ICMP协议/">ARP协议</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/22/ICMP协议/" class="archive-article-date">
+  	<time datetime="2020-04-22T07:34:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="ICMP协议-Internet-Control-Message-Protocol-控制报文协议"><a href="#ICMP协议-Internet-Control-Message-Protocol-控制报文协议" class="headerlink" title="ICMP协议  Internet Control Message Protocol 控制报文协议"></a>ICMP协议  Internet Control Message Protocol 控制报文协议</h1><p>在IP主机和路由器之间传递控制消息, 描述网络是否通畅, 主机是否可达, 路由器是否可用等网络状态.</p>
+<ul>
+<li><p>为啥有ICMP?   因为IP协议不可靠,无连接</p>
+</li>
+<li><p>ICMP的作用    为了了解数据包在传输过程中在哪个环节出现了问题.  它可以跟踪消息, 把问题反馈给源主机.</p>
+</li>
+</ul>
+<h1 id="ICMP报文结构-8个字节"><a href="#ICMP报文结构-8个字节" class="headerlink" title="ICMP报文结构  8个字节"></a>ICMP报文结构  8个字节</h1><ul>
+<li>类型        1字节</li>
+<li>代码         1字节</li>
+<li>校验和       2字节</li>
+<li>扩展内容字段  4字节</li>
+</ul>
+<h1 id="路由跟踪"><a href="#路由跟踪" class="headerlink" title="路由跟踪"></a>路由跟踪</h1><p>检测发出数据包的主机到目标主机之间所经过的网关,并监听来自网关ICMP的应答</p>
+<p>traceroute <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a></p>
+<h1 id="ICMP时间戳请求"><a href="#ICMP时间戳请求" class="headerlink" title="ICMP时间戳请求"></a>ICMP时间戳请求</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/22/ICMP协议/">展开全文 >></a>
         </p>
       
 
@@ -475,7 +606,7 @@ ch := make(chan bool, 4)
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
     </nav>
   
 
@@ -583,11 +714,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -595,11 +730,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -612,10 +747,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

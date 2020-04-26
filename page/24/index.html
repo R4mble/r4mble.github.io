@@ -157,28 +157,342 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-深究Spring系列 (0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(10)-压缩列表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/">深究Spring系列 (0) - 写在前面的话</a>
+      <a class="article-title" href="/2019/09/19/(10)-压缩列表/">压缩列表</a>
     </h1>
   
 
         
-        <a href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
+        <a href="/2019/09/19/(10)-压缩列表/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Spring工程师的自我修养</p>
+        <p>ziplist<br>当有序集合或散列表元素比较少,且元素都是短字符串时,Redis使用压缩列表作为其底层数据存储结构.<br>列表使用快速链表数据存储, 快速链表就是双向链表和压缩列表的组合.</p>
+<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">zlbytes</th>
+<th style="text-align:center">zltail</th>
+<th style="text-align:center">zllen</th>
+<th style="text-align:center">entry</th>
+<th style="text-align:center">zlend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>zlbytes: 压缩列表的字节长度,占4个字节<br>zltail: 压缩列表尾元素相对于压缩列表起始地址的偏移量, 占4个字节<br>zllen: 压缩列表的元素个数, 占2个字节<br>extry: 压缩列表存储的元素,可以是字节数组或者整数,长度不限.<br>zlend: 压缩列表的结尾, 占1个字节, 为 0xFF</p>
+<p>char* zl指向压缩列表首地址,通过以下宏命令实现压缩列表各个字段的存取<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Return total bytes a ziplist is composed of. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_BYTES(zl)       (*((uint32_t*)(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the offset of the last item inside the ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_TAIL_OFFSET(zl) (*((uint32_t*)((zl)+sizeof(uint32_t))))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the length of a ziplist, or UINT16_MAX if the length cannot be</span></span><br><span class="line"><span class="comment"> * determined without scanning the whole ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_LENGTH(zl)      (*((uint16_t*)((zl)+sizeof(uint32_t)*2)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The size of a ziplist header: two 32 bit integers for the total</span></span><br><span class="line"><span class="comment"> * bytes count and last item offset. One 16 bit integer for the number</span></span><br><span class="line"><span class="comment"> * of items field. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_HEADER_SIZE     (sizeof(uint32_t)*2+sizeof(uint16_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Size of the "end of ziplist" entry. Just one byte. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_END_SIZE        (sizeof(uint8_t))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the first entry of a ziplist. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_HEAD(zl)  ((zl)+ZIPLIST_HEADER_SIZE)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last entry of a ziplist, using the</span></span><br><span class="line"><span class="comment"> * last entry offset inside the ziplist header. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_TAIL(zl)  ((zl)+intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Return the pointer to the last byte of a ziplist, which is, the</span></span><br><span class="line"><span class="comment"> * end of ziplist FF entry. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZIPLIST_ENTRY_END(zl)   ((zl)+intrev32ifbe(ZIPLIST_BYTES(zl))-1)</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="压缩列表元素的存储"><a href="#压缩列表元素的存储" class="headerlink" title="压缩列表元素的存储"></a>压缩列表元素的存储</h3><p>| previous_entry_length | encoding | content |<br>| :—-: | :—-: | :—-: |</p>
 
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/19/(10)-压缩列表/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-(9)-跳跃表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/19/(9)-跳跃表/">跳跃表</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/19/(9)-跳跃表/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>核心思想: 有序链表分层, 空间换时间<br>性质:</p>
+<ol>
+<li>头结点中有一个64层结构, 每层结构包含指向本层的下个节点的指针, 指向本层下个节点中间所跨越的节点个数为本层的跨度.</li>
+<li>除头结点外, 层数最多的节点的层高为跳跃表的高度,</li>
+<li>每一层都是有序链表, 数据递增</li>
+<li>除头结点外, 一个元素在上层有序链表中出现, 一定会在下层有序链表中出现.</li>
+<li>跳跃表每层最后一个节点指向Null, 表示本层有序链表的结束</li>
+<li>跳跃表有一个tail指针, 指向跳跃吧的最后一个节点.</li>
+<li>最底层的有序链表包含所有节点, 最底层的节点个数为跳跃表的长度(不包括头节点)</li>
+<li>每个节点包含一个后退指针, 头结点和第一个节点指向Null</li>
+</ol>
+<h2 id="冲向源码"><a href="#冲向源码" class="headerlink" title="冲向源码"></a>冲向源码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    sds ele;</span><br><span class="line">    <span class="comment">// 用于存储排序的分值</span></span><br><span class="line">    <span class="keyword">double</span> score;</span><br><span class="line">    <span class="comment">// 回退指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="comment">// 柔性数组,每个节点的数组长度不一样. 生成跳跃表节点时,随机生成一个1-64的值,值越大出现的概率越低</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="comment">// 本层的下一个节点, 尾节点的forward指向Null</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">// forward指向的节点与本节点之间的元素个数, span值越大,跳过的节点个数越多</span></span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">long</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> &#123;</span></span><br><span class="line">    <span class="comment">// header: 头结点,level数组元素个数为64, 头结点不存储任何member和score,ele为Null,score为0,</span></span><br><span class="line">    <span class="comment">// 不计入跳跃表的总长度.头结点在初始化时,64个元素都指向Null,span值都为0</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> length;</span><br><span class="line">    <span class="keyword">int</span> level;</span><br><span class="line">&#125; zskiplist;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每个节点的ele存储zset的member, socre存储score, 当有序集合分值相同时,节点会按member的字典序进行排序</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zset</span> &#123;</span></span><br><span class="line">    dict *dict;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line">&#125; zset;</span><br></pre></td></tr></table></figure>
+<h3 id="跳跃表的创建"><a href="#跳跃表的创建" class="headerlink" title="跳跃表的创建"></a>跳跃表的创建</h3><h4 id="节点层高"><a href="#节点层高" class="headerlink" title="节点层高"></a>节点层高</h4><p>最小值为1, 最大值为64.<br>生成算法: level初始为1, 随机值小于p时level加1<br>    level为1的概率: 1-p<br>    level为2的概率: p(1-p)<br>    level为3的概率: (1-p) * p^2</p>
+<p>节点层高为n的概率是(1-p) * p^(n-1), p=0.25<br>节点的期望层高为1/(1-p), 即: 1.33</p>
+<h4 id="创建节点"><a href="#创建节点" class="headerlink" title="创建节点"></a>创建节点</h4><p>每个节点就是有序集合的一个元素, 创建节点时, 待创建节点的层高,分值,member等都已确定.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">zskiplistNode *<span class="title">zslCreateNode</span><span class="params">(<span class="keyword">int</span> level, <span class="keyword">double</span> score, sds ele)</span> </span>&#123;</span><br><span class="line">    zskiplistNode *zn =</span><br><span class="line">        zmalloc(<span class="keyword">sizeof</span>(*zn)+level*<span class="keyword">sizeof</span>(struct zskiplistLevel));</span><br><span class="line">    zn-&gt;score = score;</span><br><span class="line">    zn-&gt;ele = ele;</span><br><span class="line">    <span class="keyword">return</span> zn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Create a new skiplist. */</span></span><br><span class="line"><span class="function">zskiplist *<span class="title">zslCreate</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j;</span><br><span class="line">    zskiplist *zsl;</span><br><span class="line"></span><br><span class="line">    zsl = zmalloc(<span class="keyword">sizeof</span>(*zsl));</span><br><span class="line">    zsl-&gt;level = <span class="number">1</span>;</span><br><span class="line">    zsl-&gt;length = <span class="number">0</span>;</span><br><span class="line">    zsl-&gt;header = zslCreateNode(ZSKIPLIST_MAXLEVEL,<span class="number">0</span>,<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; ZSKIPLIST_MAXLEVEL; j++) &#123;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].forward = <span class="literal">NULL</span>;</span><br><span class="line">        zsl-&gt;header-&gt;level[j].span = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    zsl-&gt;header-&gt;backward = <span class="literal">NULL</span>;</span><br><span class="line">    zsl-&gt;tail = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> zsl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="插入节点"><a href="#插入节点" class="headerlink" title="插入节点"></a>插入节点</h4><ol>
+<li>查找要插入的位置</li>
+<li>调整跳跃表高度</li>
+<li>插入节点</li>
+<li>调整backward</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Insert a new node in the skiplist. Assumes the element does not already</span></span><br><span class="line"><span class="comment"> * exist (up to the caller to enforce that). The skiplist takes ownership</span></span><br><span class="line"><span class="comment"> * of the passed SDS string 'ele'. */</span></span><br><span class="line"><span class="function">zskiplistNode *<span class="title">zslInsert</span><span class="params">(zskiplist *zsl, <span class="keyword">double</span> score, sds ele)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入节点时, 需要更新被插入节点每层的前一个节点. 将每层需要更新的节点记录在update[i]中</span></span><br><span class="line">    <span class="comment">// x是跳跃表的头结点</span></span><br><span class="line">    zskiplistNode *update[ZSKIPLIST_MAXLEVEL], *x;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 记录当前层从header节点到update[i]节点所经历的步长, 在更新update[i]的span和设置</span></span><br><span class="line">    <span class="comment">// 新插入节点的span时用到</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> rank[ZSKIPLIST_MAXLEVEL];</span><br><span class="line">    <span class="keyword">int</span> i, level;</span><br><span class="line"></span><br><span class="line">    serverAssert(!isnan(score));</span><br><span class="line">    x = zsl-&gt;header;</span><br><span class="line">    <span class="keyword">for</span> (i = zsl-&gt;level<span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="comment">/* store rank that is crossed to reach the insert position */</span></span><br><span class="line">        rank[i] = i == (zsl-&gt;level<span class="number">-1</span>) ? <span class="number">0</span> : rank[i+<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">while</span> (x-&gt;level[i].forward &amp;&amp;</span><br><span class="line">                (x-&gt;level[i].forward-&gt;score &lt; score ||</span><br><span class="line">                    (x-&gt;level[i].forward-&gt;score == score &amp;&amp;</span><br><span class="line">                    sdscmp(x-&gt;level[i].forward-&gt;ele,ele) &lt; <span class="number">0</span>)))</span><br><span class="line">        &#123;</span><br><span class="line">            rank[i] += x-&gt;level[i].span;</span><br><span class="line">            x = x-&gt;level[i].forward;</span><br><span class="line">        &#125;</span><br><span class="line">        update[i] = x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* we assume the element is not already inside, since we allow duplicated</span></span><br><span class="line"><span class="comment">     * scores, reinserting the same element should never happen since the</span></span><br><span class="line"><span class="comment">     * caller of zslInsert() should test in the hash table if the element is</span></span><br><span class="line"><span class="comment">     * already inside or not. */</span></span><br><span class="line">    level = zslRandomLevel();</span><br><span class="line">    <span class="keyword">if</span> (level &gt; zsl-&gt;level) &#123;</span><br><span class="line">        <span class="keyword">for</span> (i = zsl-&gt;level; i &lt; level; i++) &#123;</span><br><span class="line">            rank[i] = <span class="number">0</span>;</span><br><span class="line">            update[i] = zsl-&gt;header;</span><br><span class="line">            update[i]-&gt;level[i].span = zsl-&gt;length;</span><br><span class="line">        &#125;</span><br><span class="line">        zsl-&gt;level = level;</span><br><span class="line">    &#125;</span><br><span class="line">    x = zslCreateNode(level,score,ele);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; level; i++) &#123;</span><br><span class="line">        x-&gt;level[i].forward = update[i]-&gt;level[i].forward;</span><br><span class="line">        update[i]-&gt;level[i].forward = x;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* update span covered by update[i] as x is inserted here */</span></span><br><span class="line">        x-&gt;level[i].span = update[i]-&gt;level[i].span - (rank[<span class="number">0</span>] - rank[i]);</span><br><span class="line">        update[i]-&gt;level[i].span = (rank[<span class="number">0</span>] - rank[i]) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* increment span for untouched levels */</span></span><br><span class="line">    <span class="keyword">for</span> (i = level; i &lt; zsl-&gt;level; i++) &#123;</span><br><span class="line">        update[i]-&gt;level[i].span++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    x-&gt;backward = (update[<span class="number">0</span>] == zsl-&gt;header) ? <span class="literal">NULL</span> : update[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;level[<span class="number">0</span>].forward)</span><br><span class="line">        x-&gt;level[<span class="number">0</span>].forward-&gt;backward = x;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        zsl-&gt;tail = x;</span><br><span class="line">    zsl-&gt;length++;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SkipList 有序数据结构<br>    在每个节点维持多个指向其他节点的指针.<br>    平均O(logN),最坏O(N)复杂度的节点查找,可以通过顺序性操作来<br>        批量处理节点.<br>    当有序集合包含的元素数量较多, 或有序集合中元素的member是比较长的字符串时,<br>    Redis使用跳表来作为有序集合键的底层实现.</p>
+<p>跳表在Redis的两个应用: 有序集合键, 集群节点中做内部数据结构</p>
+<p>zskiplist<br>    header: 指向跳表的表头节点<br>    tail: 指向跳表的表尾节点<br>    level: 记录目前跳表内,层数最大的那个节点的层数(表头节点的层数不计算在内)<br>    length: 跳表目前包含节点的数量(表头节点不计算在内)</p>
+<p>zskiplistNode<br>    level: L1代表第一层, L2代表第二层.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/19/(9)-跳跃表/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-(8)-简单动态字符串" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/19/(8)-简单动态字符串/">简单动态字符串</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/19/(8)-简单动态字符串/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Simple Dynamic Strings, SDS<br>存储字符串和整型数据, 兼容C语言标准字符串处理函数, 在此基础之上保证二进制安全, 避免缓冲区溢出.</p>
+<h3 id="什么是二进制安全"><a href="#什么是二进制安全" class="headerlink" title="什么是二进制安全?"></a>什么是二进制安全?</h3><p>C语言中用”\0”表示字符串的结束, 如果字符串本身就含有”\0”字符, 字符串就会被截断, 就是非二进制安全.<br>所以C字符串不能保存图片,音频,视频,压缩文件这样的二进制数据.</p>
+<p>如果可以通过某种机制, 保证读写字符串时不损害其内容, 则称为二进制安全.<br>Redis的sds有长度统计变量len, 读写字符串不依赖”\0”终止符,保证了二进制安全.</p>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><ol>
+<li>Redis3.2之前<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sds</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// buf中已占用空间</span></span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// buf中剩余可用字节数</span></span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 数据空间, 柔性数组, 通过malloc函数动态分配内存</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>64位系统中: len与free各占4字节.</p>
+<ul>
+<li>预分配冗余空间的方式来减少内存的频繁分配.字符串<br>  长度小于1M时,加倍扩容,大于1M时每次扩1M.最大长度为512M.</li>
+<li>惰性空间释放<br>当sds要缩短保存的字符串时,不立即使用内存重分配来回收缩短后多出来的字节,而是使用free记录下来.</li>
+</ul>
+<ol start="2">
+<li>改进版sds</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></span><br><span class="line"><span class="comment"> * However is here to document the layout of type 5 SDS strings. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr5</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr64</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>一般情况下结构体会按其所有变量大小的最小公倍数做字节对齐,而使用packed修饰后,结构体变为按照1字节对齐.<br>好处: 1. 节省内存; 2. 实现简单–SDS返回给上层指向内容的指针而不是结构体首地址.</p>
+<h3 id="SDS的创建"><a href="#SDS的创建" class="headerlink" title="SDS的创建"></a>SDS的创建</h3><p>sdsnewlen函数创建SDS<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init, <span class="keyword">size_t</span> initlen)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">void</span> *sh;</span><br><span class="line">    sds s;</span><br><span class="line">    <span class="keyword">char</span> type = sdsReqType(initlen);</span><br><span class="line">    <span class="comment">/* Empty strings are usually created in order to append. Use type 8</span></span><br><span class="line"><span class="comment">     * since type 5 is not good at this. */</span></span><br><span class="line">    <span class="keyword">if</span> (type == SDS_TYPE_5 &amp;&amp; initlen == <span class="number">0</span>) type = SDS_TYPE_8;</span><br><span class="line">    <span class="keyword">int</span> hdrlen = sdsHdrSize(type);</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *fp; <span class="comment">/* flags pointer. */</span></span><br><span class="line"></span><br><span class="line">    sh = s_malloc(hdrlen+initlen+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (init==SDS_NOINIT)</span><br><span class="line">        init = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!init)</span><br><span class="line">        <span class="built_in">memset</span>(sh, <span class="number">0</span>, hdrlen+initlen+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (sh == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    s = (<span class="keyword">char</span>*)sh+hdrlen;</span><br><span class="line">    fp = ((<span class="keyword">unsigned</span> <span class="keyword">char</span>*)s)<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">switch</span>(type) &#123;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_5: &#123;</span><br><span class="line">            *fp = type | (initlen &lt;&lt; SDS_TYPE_BITS);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_8: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">8</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_16: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">16</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_32: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">32</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> SDS_TYPE_64: &#123;</span><br><span class="line">            SDS_HDR_VAR(<span class="number">64</span>,s);</span><br><span class="line">            sh-&gt;len = initlen;</span><br><span class="line">            sh-&gt;alloc = initlen;</span><br><span class="line">            *fp = type;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(s, init, initlen);</span><br><span class="line">    s[initlen] = <span class="string">'\0'</span>;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="释放字符串"><a href="#释放字符串" class="headerlink" title="释放字符串"></a>释放字符串</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsfree</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    s_free((<span class="keyword">char</span>*)s-sdsHdrSize(s[<span class="number">-1</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将len归零, 新的数据可以覆盖写</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsclear</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    sdssetlen(s, <span class="number">0</span>);</span><br><span class="line">    s[<span class="number">0</span>] = <span class="string">'\0'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/19/(8)-简单动态字符串/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-深究Spring系列 (1) - 就...Get了个Bean" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/">深究Spring系列 (1) - 就...Get了个Bean</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/" class="archive-article-date">
+  	<time datetime="2019-09-19T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>曾听一位高级工程师吐槽: 面试者回答”Spring中Bean是如何创建的,getBean的过程是什么样的?”这个问题时, 语塞说不出话来, 最后憋出一句: “就…Get了个Bean”.<br>他说完后组内笑声此起彼伏, 我却陷入深思. 严格来讲我也不是很清楚这里面到底发生了啥.</p>
+<h2 id="Spring的领域模型"><a href="#Spring的领域模型" class="headerlink" title="Spring的领域模型"></a>Spring的领域模型</h2><ol>
+<li>容器领域模型(Context模型)<br>Spring的掌控域(或者服务域),对Spring核心领域模型(Bean模型)进行生命周期管理.</li>
+<li>核心领域模型(Bean模型)<br>Bean是应用运行时可执行的最小函数式单元,可以是一个属性单元,也可以是Java中的一个函数对象,一种对象式的为某种特殊行为而生的可复用的概念,不受职责或者大小的限制.<br>每个线程的真正执行者,整个会话生命周期的管理者,Spring对外暴露的核心实体.</li>
+<li>代理领域模型(Advisor模型)<br>Spring代理的执行依赖于Bean模型,Spring代理的生成,执行及选择都依赖于Spring自身定义的Advisor模型,只有符合Advisor模型的定义,才能生成Spring代理.</li>
+</ol>
+<p>Spring注解:<br>    AnnotationConfigApplicationContext extends GenericApplicationContext<br>                                       implements AnnotationConfigRegistry </p>
+<p><img src="/images/Spring源码/AnnotationConfigApplicationContext.png" alt="AnnotationConfigApplicationContext"><br><img src="/images/Spring源码/DefaultListableBeanFactory.png" alt="AnnotationConfigApplicationContext"></p>
+<h2 id="Spring上下文和容器"><a href="#Spring上下文和容器" class="headerlink" title="Spring上下文和容器"></a>Spring上下文和容器</h2><ol>
+<li>ApplicationContext: 整个容器的基本功能定义类. 利用代理的设计方法, 内部持有BeanFactory实例, 这个实例替它执行BeanFactory接口定义的功能.</li>
+<li>AbstractApplicationContext: 整个容器的核心处理类, 真正的Spring容器执行者, 在内部使用模板方法, 实现了高复用,高扩展,实现了Spring的启动,停止,刷新,事件推送,BeanFactory方法的默认实现及虚拟机回调的注册.</li>
+<li>GenericApplicationContext: 最容易构建Spring环境的实体类,涵盖了Spring Context的核心功能, 开箱即用.</li>
+<li><p>AnnotationConfigApplicationContext: 利用GenericApplicationContext的封装性和简便性. 传入class数组创建一个可执行的上下文实例来构造一个可运行的Spring运行环境.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//根据参数类型可以知道，其实可以传入多个annotatedClasses，但是这种情况出现的比较少</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AnnotationConfigApplicationContext</span><span class="params">(Class&lt;?&gt;... annotatedClasses)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//调用无参构造函数，会先调用父类GenericApplicationContext的构造函数</span></span><br><span class="line">		<span class="comment">//父类的构造函数里面就是初始化DefaultListableBeanFactory，并且赋值给beanFactory</span></span><br><span class="line">		<span class="comment">//本类的构造函数里面，初始化了一个读取器：AnnotatedBeanDefinitionReader reader，一个扫描器ClassPathBeanDefinitionScanner scanner</span></span><br><span class="line">		<span class="comment">//scanner的用处不是很大，它仅仅是在我们外部手动调用 .scan 等方法才有用，常规方式是不会用到scanner对象的</span></span><br><span class="line">		<span class="keyword">this</span>();</span><br><span class="line">		<span class="comment">//把传入的类进行注册，这里有两个情况，</span></span><br><span class="line">		<span class="comment">//传入传统的配置类</span></span><br><span class="line">		<span class="comment">//传入bean（虽然一般没有人会这么做</span></span><br><span class="line">		<span class="comment">//看到后面会知道spring把传统的带上@Configuration的配置类称之为FULL配置类，不带@Configuration的称之为Lite配置类</span></span><br><span class="line">		<span class="comment">//但是我们这里先把带上@Configuration的配置类称之为传统配置类，不带的称之为普通bean</span></span><br><span class="line">		register(annotatedClasses);</span><br><span class="line">		<span class="comment">//刷新</span></span><br><span class="line">		refresh();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>AbstractRefreshableApplicationContext: 继承自AbstractApplicationContext, 是XmlWebApplicationContext的核心父类,如果当前上下文持有BeanFactory,则关闭当前BeanFactory,然后为上下文生命周期的下一个阶段初始化一个新的BanFactory, 并且在创建新容器时仍然保持对其父容器的引用.</p>
+</li>
+<li>EmbeddedWebApplicationContext: Spring Boot中新增的上下文实现类,是使用自嵌容器启动web应用的核心上下文基类.</li>
+</ol>
+<h2 id="BeanFactory的设计"><a href="#BeanFactory的设计" class="headerlink" title="BeanFactory的设计"></a>BeanFactory的设计</h2><ol>
+<li>BeanFactory: 职责定义接口, 定义了按照名称,参数,类型等几个维度获取,判断Bean实例的职能</li>
+<li>HierarchicalBeanFactory: 定义了父容器及判断当前Bean名称是否在当前Bean工厂中.</li>
+<li>ConfigurableBeanFactory: 提供了设置父容器接口,指定类加载器的职能, 并且为当前容器工厂设计Bean的定制型的解析处理器,类型处理器等,实现对BeanFactory的可配置型</li>
+<li>AutowireCapableBeanFactory: 提供了Bean的创建,注入职能, 提供了对Bean初始化前后的扩展性处理职能. 主要职责是处理在当前工厂中注册的Bean实例并使其达到可用状态</li>
+<li>ListableBeanFactory: 对Bean实例的枚举,对有某些共同特征的Bean的管理,按照Bean名称,Bean实例,Bean类型获取Bean实例</li>
+<li>ConfigurableListableBeanFactory: 集成ListableBeanFactory,AutowireCapableBeanFactory,ConfigurableBeanFactory接口所有职能,扩展了修改Bean定义信息和分析Bean的功能,实现了预实例化单例Bean及冻结当前工厂配置等功能.</li>
+<li>AbstractBeanFactory: 实现了对基本容器功能定义的模板式封装和实现. 同时实现了对Bean信息的注册, 对Bean的创建及Bean定义描述信息相关的处理使用了抽象画处理的方式并交由继承者实现.</li>
+<li>AbstractAutowireCapableBeanFactory: 解决Bean之间的依赖和注入问题,实现了Bean的创建方法.</li>
+<li>DefaultListableBeanFactory: 提供了对Bean容器的完全成熟的默认实现, 可以直接对外使用.许多依赖BeanFactory的场景都通过DefaultListableBeanFactory类来实现对Bean的管理,注入,依赖解决,创建,销毁等功能</li>
+<li>XmlBeanFactory: 集成DefaultListableBeanFactory并且内部持有XmlBeanDefinitionReader属性的Bean工厂容器(实现对XML文件定义的Bean描述信息的加载解析和处理)</li>
+</ol>
+<h2 id="Spring父子上下文和容器"><a href="#Spring父子上下文和容器" class="headerlink" title="Spring父子上下文和容器"></a>Spring父子上下文和容器</h2><p>ApplicationContext中持有BeanFactory实例<br>子容器可以共用父容器中的Bean, 父容器不能共用子容器的Bean, 因为当父容器已经启动时,子容器还没有实例化并启动.</p>
+<h2 id="Spring加载机制的设计和实现"><a href="#Spring加载机制的设计和实现" class="headerlink" title="Spring加载机制的设计和实现"></a>Spring加载机制的设计和实现</h2>
       
 
       
@@ -201,316 +515,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/14/深究Spring系列 (0) - 写在前面的话/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-小红书系列 (3) - 函数式数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/14/小红书系列 (3) - 函数式数据结构/">小红书系列 (3) - 函数式数据结构</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/14/小红书系列 (3) - 函数式数据结构/" class="archive-article-date">
-  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>其实我不懂搞这个函数式数据结构有什么意义. 本章就当做一些函数式编程的练习吧.</p>
-<h3 id="Demo1-定义链表"><a href="#Demo1-定义链表" class="headerlink" title="Demo1: 定义链表"></a>Demo1: 定义链表</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">List</span>[+<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">Nil</span> <span class="keyword">extends</span> <span class="title">List</span>[<span class="type">Nothing</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Cons</span>[+<span class="type">A</span>](<span class="params">head: <span class="type">A</span>, tail: <span class="type">List</span>[<span class="type">A</span>]</span>) <span class="keyword">extends</span> <span class="title">List</span>[<span class="type">A</span>]</span></span><br></pre></td></tr></table></figure>
-<p>这里定义了两种链表的构造器, 一个Nil, 一个普通的Cons<br>+A: 协变.   A是B的子类,那么List[A]是List[B]的子类</p>
-<h3 id="Demo2-链表的一点操作-sum-product-apply-tail-setHead-drop-dropWhile-init"><a href="#Demo2-链表的一点操作-sum-product-apply-tail-setHead-drop-dropWhile-init" class="headerlink" title="Demo2: 链表的一点操作: sum, product, apply, tail, setHead, drop, dropWhile, init"></a>Demo2: 链表的一点操作: sum, product, apply, tail, setHead, drop, dropWhile, init</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">List</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>(ints: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">Int</span> = ints <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="number">0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(x, xs) =&gt; x + sum(xs)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">product</span></span>(ds: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">Double</span> = ds <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="number">1.0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(<span class="number">0.0</span>, _) =&gt; <span class="number">0.0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(x, xs) =&gt; x * product(xs)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span></span>[<span class="type">A</span>](as: <span class="type">A</span>*): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">        <span class="keyword">if</span> (as.isEmpty) <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">else</span> <span class="type">Cons</span>(as.head, apply(as.tail: _*))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">tail</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; sys.error(<span class="string">"tail of empty list"</span>)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(_, t) =&gt; t</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setHead</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>], head: <span class="type">A</span>): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; sys.error(<span class="string">"setHead of empty list"</span>)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(_, t) =&gt; <span class="type">Cons</span>(head, t)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除列表中的前n个元素</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">drop</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>], n: <span class="type">Int</span>): <span class="type">List</span>[<span class="type">A</span>] = </span><br><span class="line">        <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) ls</span><br><span class="line">        <span class="keyword">else</span> ls <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="type">Nil</span></span><br><span class="line">            <span class="keyword">case</span> <span class="type">Cons</span>(_, t) =&gt; drop(t, n<span class="number">-1</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除列表中的元素, 直到不符合判定</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">dropWhile</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>], f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) <span class="keyword">if</span> f(h) =&gt; dropWhile(t, f)</span><br><span class="line">        <span class="keyword">case</span> _ =&gt; l</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">append</span></span>[<span class="type">A</span>](a1: <span class="type">List</span>[<span class="type">A</span>], a2: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">        a1 <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Nil</span> =&gt; a2</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Cons</span>(h, append(t, a2))</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除列表中的最后一个元素</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">init</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; sys.error(<span class="string">"init of empty list"</span>)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(_, <span class="type">Nil</span>) =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Cons</span>(h, init(t))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Demo3-高阶函数类型推导改进"><a href="#Demo3-高阶函数类型推导改进" class="headerlink" title="Demo3: 高阶函数类型推导改进"></a>Demo3: 高阶函数类型推导改进</h3><p>对于这个函数来说<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dropWhile</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>], f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Cons</span>(h, t) <span class="keyword">if</span> f(h) =&gt; dropWhile(t, f)</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; l</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>调用的时候必须注明第二个参数f的接收参数类型,如<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dropWhile(<span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>), (x: <span class="type">Int</span>) =&gt; x &lt; <span class="number">4</span>)</span><br></pre></td></tr></table></figure></p>
-<p>可以使用参数分组来帮助类型推导: 参数组里的类型信息从左到右传递.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dropWhile</span></span>[<span class="type">A</span>](ls: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] = ls <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Cons</span>(h, t) <span class="keyword">if</span> f(h) =&gt; dropWhile(t)(f)</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; l</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这样, 调用函数的时候就不用注明f的接收参数类型了, 甚至可以用 _ 简写<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dropWhile(<span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>))(_ &lt; <span class="number">4</span>)</span><br></pre></td></tr></table></figure></p>
-<h3 id="Demo4-泛化为高阶函数-foldRight"><a href="#Demo4-泛化为高阶函数-foldRight" class="headerlink" title="Demo4: 泛化为高阶函数 - foldRight"></a>Demo4: 泛化为高阶函数 - foldRight</h3><p>foldRight:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把f独立出来是为了让类型系统推导出f的输入类型</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foldRight</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>], z: <span class="type">B</span>)(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">B</span>): <span class="type">B</span> =</span><br><span class="line">    as <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; z</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(x, xs) =&gt; f(x, foldRight(xs, z)(f))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>(as: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">Int</span> =</span><br><span class="line">    foldRight(as, <span class="number">0</span>)(_ + _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">product</span></span>(as: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">Double</span> =</span><br><span class="line">    foldRight(as, <span class="number">1.0</span>)(_ * _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">length</span></span>(as: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Int</span> =</span><br><span class="line">    foldRight(as, <span class="number">0</span>)((_, n) =&gt; n + <span class="number">1</span>)</span><br></pre></td></tr></table></figure></p>
-<h3 id="Demo5-尾递归方式-foldLeft"><a href="#Demo5-尾递归方式-foldLeft" class="headerlink" title="Demo5: 尾递归方式: foldLeft"></a>Demo5: 尾递归方式: foldLeft</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foldLeft</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>], z: <span class="type">B</span>)(f: (<span class="type">B</span>,<span class="type">A</span>) =&gt; <span class="type">B</span>): <span class="type">B</span> =</span><br><span class="line">    as <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; z</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(x, xs) =&gt; foldLeft(xs, f(z, x))(f)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum</span></span>(as: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">Int</span> = </span><br><span class="line">    foldLeft(as, <span class="number">0</span>)(_ + _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">product</span></span>(as: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">Double</span> =</span><br><span class="line">    foldLeft(as, <span class="number">1.0</span>)(_ * _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">length</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Int</span> =</span><br><span class="line">    foldLeft(as, <span class="number">0</span>)((n, _) =&gt; n + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverse</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    foldLeft(as, <span class="type">List</span>[<span class="type">A</span>]())((acc, h) =&gt; <span class="type">Cons</span>(h, acc))</span><br></pre></td></tr></table></figure>
-<p>由length函数的实现可以充分看出foldRight和foldLeft的区别.</p>
-<h3 id="Demo6-foldRight和foldLeft的转化"><a href="#Demo6-foldRight和foldLeft的转化" class="headerlink" title="Demo6: foldRight和foldLeft的转化"></a>Demo6: foldRight和foldLeft的转化</h3><p>由foldLeft实现foldRight:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foldRight</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>], z: <span class="type">B</span>)(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">B</span>): <span class="type">B</span> =</span><br><span class="line">    foldLeft(reverse(as), z)((b, a) =&gt; f(a, b))</span><br></pre></td></tr></table></figure></p>
-<p>使用了foldLeft和reverse, 通用的避免foldRight栈溢出的技巧.</p>
-<p>还有两个有意思的互相转化, 但并不能栈安全, 不在此贴出.</p>
-<h3 id="Demo7-用foldRight实现append"><a href="#Demo7-用foldRight实现append" class="headerlink" title="Demo7: 用foldRight实现append"></a>Demo7: 用foldRight实现append</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">append</span></span>[<span class="type">A</span>](l: <span class="type">List</span>[<span class="type">A</span>], r: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    foldRight(l, r)(<span class="type">Cons</span>(_, _))</span><br></pre></td></tr></table></figure>
-<h3 id="Demo8-连接一组列表成单个列表-concat"><a href="#Demo8-连接一组列表成单个列表-concat" class="headerlink" title="Demo8: 连接一组列表成单个列表: concat"></a>Demo8: 连接一组列表成单个列表: concat</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">concat</span></span>[<span class="type">A</span>](l: <span class="type">List</span>[<span class="type">List</span>[<span class="type">A</span>]]): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    foldRight(l, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">A</span>])(append)</span><br></pre></td></tr></table></figure>
-<h3 id="Demo9-map"><a href="#Demo9-map" class="headerlink" title="Demo9: map"></a>Demo9: map</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用foldRight实现map, 为了栈安全可以使用 用foldLeft实现的 foldRight</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">List</span>[<span class="type">B</span>] =</span><br><span class="line">    foldRight(l, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">B</span>])((h, t) =&gt; <span class="type">Cons</span>(f(h), t))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 更通用的map, 使用可变List实现, 局部变量不影响纯度</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">List</span>[<span class="type">B</span>] = &#123;</span><br><span class="line">    <span class="keyword">val</span> buf = <span class="keyword">new</span> collection.mutable.<span class="type">ListBuffer</span>[<span class="type">B</span>]</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(l: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Unit</span> = l <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; ()</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; buf += f(h); go(t)</span><br><span class="line">    &#125;</span><br><span class="line">    go(l)</span><br><span class="line">    <span class="type">List</span>(buf.toList: _*)    <span class="comment">// 把标准Scala List转化为这里定义的List</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Demo10-map应用-加一和toString"><a href="#Demo10-map应用-加一和toString" class="headerlink" title="Demo10: map应用: 加一和toString"></a>Demo10: map应用: 加一和toString</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addOne</span></span>(ns: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">Int</span>] = ns <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="type">Nil</span></span><br><span class="line">    <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="type">Cons</span>(h+<span class="number">1</span>, addOne(t))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addOne</span></span>(l: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">Int</span>] =</span><br><span class="line">    foldRight(l, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">Int</span>])((h, t) =&gt; <span class="type">Cons</span>(h+<span class="number">1</span>, t))  </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addOne</span></span>(l: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">Int</span>] =</span><br><span class="line">    map(l)(_ + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">toString</span></span>(l: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">List</span>[<span class="type">String</span>] =</span><br><span class="line">    foldRight(l, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">String</span>])((h, t) =&gt; <span class="type">Cons</span>(h.toString, t))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">toString</span></span>(l: <span class="type">List</span>[<span class="type">Double</span>]): <span class="type">List</span>[<span class="type">String</span>] =</span><br><span class="line">    map(l)(_.toString)</span><br></pre></td></tr></table></figure>
-<h3 id="Demo11-filter"><a href="#Demo11-filter" class="headerlink" title="Demo11: filter"></a>Demo11: filter</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    as <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="keyword">if</span> (f(h)) <span class="type">Cons</span>(h, filter(t)(f)) <span class="keyword">else</span> filter(t)(f)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    foldRight(as, <span class="type">Nil</span>: <span class="type">List</span>[<span class="type">A</span>])((h, t) =&gt; <span class="keyword">if</span> (f(h)) <span class="type">Cons</span>(h, t) <span class="keyword">else</span> t)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>[<span class="type">A</span>](l: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] = &#123;</span><br><span class="line">    <span class="keyword">val</span> buf = <span class="keyword">new</span> collection.mutable.<span class="type">ListBuffer</span>[<span class="type">A</span>]</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(l: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Unit</span> = l <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; ()</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; <span class="keyword">if</span> (f(h)) buf += h; go(t)</span><br><span class="line">    &#125;</span><br><span class="line">    go(l)</span><br><span class="line">    <span class="type">List</span>(buf.toList: _*)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>和map相似</p>
-<h3 id="Demo12-flatMap"><a href="#Demo12-flatMap" class="headerlink" title="Demo12: flatMap"></a>Demo12: flatMap</h3><p>神秘的flatMap<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">flatMap</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">List</span>[<span class="type">B</span>]): <span class="type">List</span>[<span class="type">B</span>] =</span><br><span class="line">    as <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; append(f(h), flatMap(t)(f))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">flatMap</span></span>[<span class="type">A</span>,<span class="type">B</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">List</span>[<span class="type">B</span>]): <span class="type">List</span>[<span class="type">B</span>] =</span><br><span class="line">    concat(map(as)(f))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">filter</span></span>[<span class="type">A</span>](as: <span class="type">List</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">List</span>[<span class="type">A</span>] =</span><br><span class="line">    flatMap(as)(a =&gt; <span class="keyword">if</span> (f(a)) <span class="type">List</span>(a) <span class="keyword">else</span> <span class="type">Nil</span>)</span><br></pre></td></tr></table></figure></p>
-<h3 id="Demo13-zipWith"><a href="#Demo13-zipWith" class="headerlink" title="Demo13: zipWith"></a>Demo13: zipWith</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">zipWith</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](l: <span class="type">List</span>[<span class="type">A</span>], r: <span class="type">List</span>[<span class="type">B</span>])(f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>): <span class="type">List</span>[<span class="type">C</span>] =</span><br><span class="line">    (l, r) <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> (<span class="type">Nil</span>, _) =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> (_, <span class="type">Nil</span>) =&gt; <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> (<span class="type">Cons</span>(h1, t1), <span class="type">Cons</span>(h2, t2)) =&gt; <span class="type">Cons</span>(f(h1, h2), zipWith(t1, t2)(f))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">addList</span></span>(l: <span class="type">List</span>[<span class="type">Int</span>], r: <span class="type">List</span>[<span class="type">Int</span>]): <span class="type">List</span>[<span class="type">Int</span>] =</span><br><span class="line">    zipWith(l, r)(_ + _)</span><br></pre></td></tr></table></figure>
-<h3 id="Demo14-序列比较-startWith和hasSubsequence"><a href="#Demo14-序列比较-startWith和hasSubsequence" class="headerlink" title="Demo14: 序列比较: startWith和hasSubsequence"></a>Demo14: 序列比较: startWith和hasSubsequence</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">startWith</span></span>[<span class="type">A</span>](l: <span class="type">List</span>[<span class="type">A</span>], prefix: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Boolean</span> = </span><br><span class="line">    (l, prefix) <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> (_, <span class="type">Nil</span>) =&gt; <span class="literal">true</span></span><br><span class="line">        <span class="keyword">case</span> (<span class="type">Cons</span>(h, t), <span class="type">Cons</span>(h2, t2)) <span class="keyword">if</span> h==h2 =&gt; startWith(t, t2)</span><br><span class="line">        <span class="keyword">case</span> _ =&gt; <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hasSubSequence</span></span>[<span class="type">A</span>](sup: <span class="type">List</span>[<span class="type">A</span>], sub: <span class="type">List</span>[<span class="type">A</span>]): <span class="type">Boolean</span> = </span><br><span class="line">    sup <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Nil</span> =&gt; sub == <span class="type">Nil</span></span><br><span class="line">        <span class="keyword">case</span> _ <span class="keyword">if</span> startWith(sup, sub) =&gt; <span class="literal">true</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Cons</span>(h, t) =&gt; hasSubSequence(t, sub)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="代数数据类型ADT-algebraic-data-type"><a href="#代数数据类型ADT-algebraic-data-type" class="headerlink" title="代数数据类型ADT(algebraic data type)"></a>代数数据类型ADT(algebraic data type)</h2><p>ADT是由一个或多个数据构造器(data constructor)所定义的数据类型, 每个构造器包含零个或多个参数.<br>数据类型(data type)是其数据构造器的累加(sum)或联合(union),每个数据构造器又是它的参数的乘积(product).</p>
-<h3 id="Demo15-定义一个二叉树和它的一些操作-size-maximum-depth-map"><a href="#Demo15-定义一个二叉树和它的一些操作-size-maximum-depth-map" class="headerlink" title="Demo15: 定义一个二叉树和它的一些操作: size, maximum, depth, map"></a>Demo15: 定义一个二叉树和它的一些操作: size, maximum, depth, map</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sealed</span> <span class="class"><span class="keyword">trait</span> <span class="title">Tree</span>[+<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Leaf</span>[<span class="type">A</span>](<span class="params">value: <span class="type">A</span></span>) <span class="keyword">extends</span> <span class="title">Tree</span>[<span class="type">A</span>]</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Branch</span>[<span class="type">A</span>](<span class="params">left: <span class="type">Tree</span>[<span class="type">A</span>], right: <span class="type">Tree</span>[<span class="type">A</span>]</span>) <span class="keyword">extends</span> <span class="title">Tree</span>[<span class="type">A</span>]</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">Tree</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">size</span></span>[<span class="type">A</span>](t: <span class="type">Tree</span>[<span class="type">A</span>]): <span class="type">Int</span> = t <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Leaf</span>(_) =&gt; <span class="number">1</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Branch</span>(l, r) =&gt; <span class="number">1</span> + size(l) + size(r)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">maximum</span></span>(t: <span class="type">Tree</span>[<span class="type">Int</span>]): <span class="type">Int</span> = t <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Leaf</span>(v) =&gt; v</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Branch</span>(l, r) =&gt; maximum(l) max maximum(r)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">depth</span></span>[<span class="type">A</span>](t: <span class="type">Tree</span>[<span class="type">A</span>]): <span class="type">Int</span> = t <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Leaf</span>(_) =&gt; <span class="number">0</span></span><br><span class="line">        <span class="keyword">case</span> <span class="type">Branch</span>(l ,r) =&gt; <span class="number">1</span> + (depth(l) max depth(r))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map</span></span>[<span class="type">A</span>,<span class="type">B</span>](t: <span class="type">Tree</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">Tree</span>[<span class="type">B</span>] = </span><br><span class="line">        t <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Leaf</span>(v) =&gt; <span class="type">Leaf</span>(f(v))</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Branch</span>(l, r) =&gt; <span class="type">Branch</span>(map(l)(f), map(r)(f))</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Demo16-fold"><a href="#Demo16-fold" class="headerlink" title="Demo16: fold"></a>Demo16: fold</h3><p>又是闪闪发光的fold:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fold</span></span>[<span class="type">A</span>, <span class="type">B</span>](t: <span class="type">Tree</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>)(g: (<span class="type">B</span>,<span class="type">B</span>) =&gt; <span class="type">B</span>): <span class="type">B</span> =</span><br><span class="line">    t <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Leaf</span>(v) =&gt; f(v)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Branch</span>(l, r) =&gt; g(fold(l)(f)(g), fold(r)(f)(g))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">size</span></span>[<span class="type">A</span>](t: <span class="type">Tree</span>[<span class="type">A</span>]): <span class="type">Int</span> =</span><br><span class="line">    fold(t)(a =&gt; <span class="number">1</span>)(<span class="number">1</span> + _ + _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maximum</span></span>(t: <span class="type">Tree</span>[<span class="type">Int</span>]): <span class="type">Int</span> =</span><br><span class="line">    fold(t)(a =&gt; a)(_ max _)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">depth</span></span>[<span class="type">A</span>](t: <span class="type">Tree</span>[<span class="type">A</span>]): <span class="type">Int</span> =</span><br><span class="line">    fold(t)(a =&gt; <span class="number">0</span>)((d1, d2) =&gt; <span class="number">1</span> + (d1 max d2))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>[<span class="type">A</span>,<span class="type">B</span>](t: <span class="type">Tree</span>[<span class="type">A</span>])(f: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">Tree</span>[<span class="type">B</span>] = </span><br><span class="line">    fold(t)(a =&gt; <span class="type">Leaf</span>(f(a)))(<span class="type">Branch</span>(_, _))</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/14/小红书系列 (3) - 函数式数据结构/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-小红书系列 (2) - Scala与函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/">小红书系列 (2) - Scala与函数式编程</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/" class="archive-article-date">
-  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Scala与Haskell"><a href="#Scala与Haskell" class="headerlink" title="Scala与Haskell"></a>Scala与Haskell</h2><blockquote>
-<p>Scala is a gateway drug to Haskell.</p>
-</blockquote>
-<p>读过&lt;&lt; Learn You a Haskell for great good&gt;&gt;这本书, Haskell确实优雅, 但同时也让人感觉过于高贵冷艳, 还是Scala读起来更舒服.</p>
-<h2 id="Scala函数式编程Demo"><a href="#Scala函数式编程Demo" class="headerlink" title="Scala函数式编程Demo"></a>Scala函数式编程Demo</h2><p>我感觉有些文章反复出现在视野, 说起函数式编程就是map, 说起范畴论就是compose.甚至还有人用几个带点函数式意味的函数后就瞧不起别人, 感觉别人都看不懂, 真是naive!  =_=</p>
-<h3 id="Demo1-阶乘"><a href="#Demo1-阶乘" class="headerlink" title="Demo1: 阶乘"></a>Demo1: 阶乘</h3><p>这个样子的代码我写过太多遍了, 尤其是在SICP的练习里.<br>同时这个例子也涉及到尾递归优化的问题, 因为递归太多, 容易爆栈, 所以要递归转迭代.<br>加上这个注解@annotation.tailrec, 也可以让编译器来做尾调用.</p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">factorial</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>, acc: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) acc</span><br><span class="line">    <span class="keyword">else</span> go(n<span class="number">-1</span>, n*acc)</span><br><span class="line"></span><br><span class="line">  go(n, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Demo2-斐波那契数列"><a href="#Demo2-斐波那契数列" class="headerlink" title="Demo2: 斐波那契数列"></a>Demo2: 斐波那契数列</h3><p>写到吐的斐波那契数列, 先来一个递归的:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = </span><br><span class="line">  <span class="keyword">if</span> (n &lt; <span class="number">2</span>) n</span><br><span class="line">  <span class="keyword">else</span> fib(n<span class="number">-1</span>) + fib(n<span class="number">-2</span>)</span><br></pre></td></tr></table></figure></p>
-<p>再来个迭代的:<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>, prev: <span class="type">Int</span>, cur: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) prev</span><br><span class="line">    <span class="keyword">else</span> go(n<span class="number">-1</span>, cur, prev + cur)</span><br><span class="line"></span><br><span class="line">  go(n, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>形象地说, 递归是随着一轮轮计算越变越长, 而迭代一直不变长.</p>
-<h3 id="Demo3-在数组中找到第一个匹配的元素的索引"><a href="#Demo3-在数组中找到第一个匹配的元素的索引" class="headerlink" title="Demo3: 在数组中找到第一个匹配的元素的索引"></a>Demo3: 在数组中找到第一个匹配的元素的索引</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findFirst</span></span>[<span class="type">A</span>](as: <span class="type">Array</span>[<span class="type">A</span>], p: <span class="type">A</span> =&gt; <span class="type">Boolean</span>): <span class="type">Int</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>): <span class="type">Int</span> =</span><br><span class="line">    <span class="keyword">if</span> (n &gt;= as.length) <span class="number">-1</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (p(as(n))) n</span><br><span class="line">    <span class="keyword">else</span> go(n+<span class="number">1</span>)</span><br><span class="line">  </span><br><span class="line">  go(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Demo4-检查数组是否按照给定的比较函数排序"><a href="#Demo4-检查数组是否按照给定的比较函数排序" class="headerlink" title="Demo4: 检查数组是否按照给定的比较函数排序"></a>Demo4: 检查数组是否按照给定的比较函数排序</h3><p>上次看到群里有人问这个函数怎么写, 我一时之间还想不出来该怎么写. 这种玩具代码, 真是容易忘记啊.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isSorted</span></span>[<span class="type">A</span>](as: <span class="type">Array</span>[<span class="type">A</span>], ordered: (<span class="type">A</span>,<span class="type">A</span>) =&gt; <span class="type">Boolean</span>): <span class="type">Boolean</span> = &#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">go</span></span>(n: <span class="type">Int</span>): <span class="type">Boolean</span> =</span><br><span class="line">    <span class="keyword">if</span> (n+<span class="number">1</span> &gt;= as.length) <span class="literal">true</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!ordered(as[n], as[n+<span class="number">1</span>])) <span class="literal">false</span></span><br><span class="line">    <span class="keyword">else</span> go(n+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">  go(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="Demo5-函数式三连-柯西-反柯西和组合"><a href="#Demo5-函数式三连-柯西-反柯西和组合" class="headerlink" title="Demo5: 函数式三连: 柯西, 反柯西和组合"></a>Demo5: 函数式三连: 柯西, 反柯西和组合</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">curry</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: (<span class="type">A</span>,<span class="type">B</span>) =&gt; <span class="type">C</span>): <span class="type">A</span> =&gt; (<span class="type">B</span> =&gt; <span class="type">C</span>) =</span><br><span class="line">  a =&gt; b =&gt; f(a, b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unCurry</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: <span class="type">A</span> =&gt; <span class="type">B</span> =&gt; <span class="type">C</span>): (<span class="type">A</span>, <span class="type">B</span>) =&gt; <span class="type">C</span> =</span><br><span class="line">  (a, b) =&gt; f(a)(b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compose</span></span>[<span class="type">A</span>,<span class="type">B</span>,<span class="type">C</span>](f: <span class="type">B</span> =&gt; <span class="type">C</span>, g: <span class="type">A</span> =&gt; <span class="type">B</span>): <span class="type">A</span> =&gt; <span class="type">C</span> =</span><br><span class="line">  a =&gt; f(g(a))</span><br></pre></td></tr></table></figure>
-<p>用JavaScript来写写看:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> curry = <span class="function"><span class="params">f</span> =&gt;</span> <span class="function"><span class="params">a</span> =&gt;</span> <span class="function"><span class="params">b</span> =&gt;</span> f(a, b)</span><br><span class="line"><span class="keyword">const</span> unCurry = <span class="function"><span class="params">f</span> =&gt;</span> <span class="function">(<span class="params">a, b</span>) =&gt;</span> f(a)(b)</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> <span class="function"><span class="params">a</span> =&gt;</span> f(g(a))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 一些测试的例子</span></span><br><span class="line"><span class="keyword">const</span> print = <span class="built_in">console</span>.log</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b</span><br><span class="line">print(add(<span class="number">3</span>, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> curryAdd = curry(add)</span><br><span class="line">print(curryAdd(<span class="number">3</span>)(<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> unCurryAdd = unCurry(curryAdd)</span><br><span class="line">print(unCurryAdd(<span class="number">3</span>,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mul3 = <span class="function"><span class="params">a</span> =&gt;</span> a * <span class="number">3</span></span><br><span class="line"><span class="keyword">const</span> add2 = <span class="function"><span class="params">a</span> =&gt;</span> a + <span class="number">2</span></span><br><span class="line"><span class="keyword">const</span> composeAddMul = compose(add2, mul3)</span><br><span class="line">print(composeAddMul(<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> composeMulAdd = compose(mul3, add2)</span><br><span class="line">print(composeMulAdd(<span class="number">3</span>))</span><br></pre></td></tr></table></figure></p>
-<p>可以看出JavaScript算的上是键盘友好型FP选手了.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/14/小红书系列 (2) - Scala与函数式编程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-小红书系列 (1) - 函数式编程初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/14/小红书系列 (1) - 函数式编程初探/">小红书系列 (1) - 函数式编程初探</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/14/小红书系列 (1) - 函数式编程初探/" class="archive-article-date">
-  	<time datetime="2019-09-14T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="什么是函数式编程"><a href="#什么是函数式编程" class="headerlink" title="什么是函数式编程?"></a>什么是函数式编程?</h2><p>如果非要用一个词来描述这种思想, 我大概会用”连续运算”. </p>
-<p>底层结构决定上层逻辑, 在冯·诺依曼体系中, 运算数先放到寄存器里, 再参与CPU运算. 因此在代码中的编程习惯往往是: 使用中间变量存储一步运算的结果值, 然后继续使用中间变量参与运算.</p>
-<p>而在阿隆左·丘奇的Lambda计算模型中: 接收输入, 产生输出, 输出的结果即时下一个运算的输入, 在连续运算的过程中不需要中间变量来”寄存”.</p>
-<p>当你在Java中写了很大一串连续运算的代码时, 你有可能会被同事吐槽”代码有鲜明的个人特色”. 通常在Java这种工业合作语言中, 不被建议写连续运算的主要原因是: </p>
-<ol>
-<li>代码写成一坨不清晰易读. </li>
-<li>不方便Bug排查. </li>
-</ol>
-<p>前者还好说, 可以通过换行排版等方式让它变得清晰. 后者就是阻碍你一口气写完代码的死穴了, 因为谁也不知道这一串连续计算中哪里会出个问题, Kibana报个空指针, 然后翻代码到这一行看到一万个操作不知道哪里出的问题, 排查问题的同事估计想给你一刀.</p>
-<p>有意思的是Java8引入的函数式编程, 在对集合的操作中是鼓励链式操作的, 也就是连续运算. 同时它也提供了Option来做错误处理. 所以为了让连续运算能连续下去, 不突然崩掉而且找不到崩掉的位置, 保证每一个操作都是安全可靠的就很有必要了.那么怎么才能这么安全可靠不出问题呢? 答案就是: 无副作用.</p>
-<p>对于相同的输入总有相同的输出, 并且没有其它的副作用产生, 这便是函数式编程所追求的.</p>
-<p>典型的容易出问题的操作就是IO操作, 各种乱七八糟的因素导致IO容易崩, </p>
-<p>函数式编程就是一种范式, 一种思想. 既然如此, 什么语言都可以多多少少和它扯上关系, 来个”函数式xxx”. 不过不同的语言有不同的特性, 也就对这种范式的支持有多有少. 其中最为重要的就是一等函数这种特性吧.</p>
-<h2 id="函数式编程Demo"><a href="#函数式编程Demo" class="headerlink" title="函数式编程Demo"></a>函数式编程Demo</h2><p>更具体一点, 什么是函数式编程? 这就是函数式编程: </p>
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cafe</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buyCoffee</span></span>(cc: <span class="type">CreditCard</span>): (<span class="type">Coffee</span>, <span class="type">Charge</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> cup = <span class="type">Coffee</span>(<span class="number">5</span>)</span><br><span class="line">    (cup, <span class="type">Charge</span>(cc, cup.price))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">buyCoffee</span></span>(cc: <span class="type">CreditCard</span>, num: <span class="type">Int</span>): (<span class="type">List</span>[<span class="type">Coffee</span>], <span class="type">Charge</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> purchases: <span class="type">List</span>[(<span class="type">Coffee</span>, <span class="type">Charge</span>)] = <span class="type">List</span>.fill(num) (buyCoffee(cc))</span><br><span class="line">    <span class="comment">// 把Coffee和Charge作为元素的列表拆分为Coffee列表和Charge列表</span></span><br><span class="line">    <span class="keyword">val</span> (coffees, charges) = purchases.unzip</span><br><span class="line">    (coffees, charges.reduce((c1, c2) =&gt; c1.combine(c2)))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 合并</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">coalesce</span></span>(charges: <span class="type">List</span>[<span class="type">Charge</span>]): <span class="type">List</span>[<span class="type">Charge</span>] = &#123;</span><br><span class="line">    charges.groupBy(_.cc).values.map(_.reduce(_ combine _)).toList</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Coffee</span>(<span class="params">price: <span class="type">Double</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">CreditCard</span>(<span class="params">name: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Charge</span>(<span class="params">cc: <span class="type">CreditCard</span>, amount: <span class="type">Double</span></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">combine</span></span>(other: <span class="type">Charge</span>): <span class="type">Charge</span> = &#123;</span><br><span class="line">    <span class="keyword">if</span> (cc == other.cc) &#123;</span><br><span class="line">      <span class="type">Charge</span>(cc, amount + other.amount)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Exception</span>(<span class="string">"can't combine charges to different cards"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Cafe</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> c = <span class="keyword">new</span> <span class="type">Cafe</span>()</span><br><span class="line">    <span class="keyword">val</span> coffee1 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"wyl"</span>))</span><br><span class="line">    <span class="keyword">val</span> coffee2 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"wyl"</span>), <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">val</span> coffee3 = c.buyCoffee(<span class="type">CreditCard</span>(<span class="string">"ramble"</span>), <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> charges = c.coalesce(<span class="type">List</span>[<span class="type">Charge</span>](coffee1._2, coffee2._2, coffee3._2))</span><br><span class="line"></span><br><span class="line">    println(coffee1)</span><br><span class="line">    println(coffee2)</span><br><span class="line">    println(coffee3)</span><br><span class="line">    println(charges)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>既然只是思想, 那语言不是问题. 所以上面这个例子我试着用Java实现了一遍, 没问题, 只是不太优雅. 感兴趣的可以到我的Github看看.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/14/小红书系列 (1) - 函数式编程初探/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/19/深究Spring系列 (1) - 就...Get了个Bean/">展开全文 >></a>
         </p>
       
 
@@ -542,7 +547,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/23/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/25/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/23/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/25/">Next &raquo;</a>
     </nav>
   
 
@@ -650,11 +655,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -662,11 +671,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -679,10 +688,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

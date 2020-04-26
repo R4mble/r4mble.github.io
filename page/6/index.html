@@ -157,40 +157,160 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Java线程池ThreadPoolExecutor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(5)-事务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Java线程池ThreadPoolExecutor/">Java线程池ThreadPoolExecutor</a>
+      <a class="article-title" href="/2020/04/22/(5)-事务/">(5)-事务</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Java线程池ThreadPoolExecutor/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/22/(5)-事务/" class="archive-article-date">
+  	<time datetime="2020-04-22T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>目的<br>    线程是稀缺资源，不能频繁的创建。<br>    解耦作用；线程的创建与执行完全分开，方便维护。<br>    应当将其放入一个池子中，可以给其他任务进行复用。<br>    提高线程的可管理性：线程池可以统一管理、分配、调优和监控<br>    降低资源消耗：通过重用已经创建的线程来降低线程创建和销毁的消耗<br>    提高响应速度：任务到达时不需要等待线程创建就可以立即执行    </p>
-<p>四个构造函数,其中的一些参数:<br>int corePoolSize,       核心线程数，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。<br>                        除非将allowCoreThreadTimeOut设置为true。</p>
-<p>int maximumPoolSize,    线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。<br>                        当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。</p>
-<p>long keepAliveTime,     非核心线程的闲置超时时间，超过这个时间就会被回收。</p>
-<p>TimeUnit unit,          指定keepAliveTime的单位，如TimeUnit.SECONDS。<br>                        当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。</p>
-<p>BlockingQueue<runnable> workQueue,  线程池中的任务队列.<br>                                    常用的有三种队列，SynchronousQueue,LinkedBlockingDeque,ArrayBlockingQueue。</runnable></p>
-<p>ThreadFactory threadFactory,        线程工厂，提供创建新线程的功能</p>
-<p>RejectedExecutionHandler handler    当线程池中的资源已经全部使用，添加新线程被拒绝时，<br>                                    会调用RejectedExecutionHandler的rejectedExecution方法。</p>
-<p>线程池规则</p>
-<p>下面都假设任务队列没有大小限制：</p>
-<p>如果线程数量&lt;=核心线程数量，那么直接启动一个核心线程来执行任务，不会放入队列中。<br>如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是LinkedBlockingDeque的时候，超过核心线程数量的任务会放在任务队列中排队。<br>如果线程数量&gt;核心线程数，但&lt;=最大线程数，并且任务队列是SynchronousQueue的时候，线程池会创建新线程执行任务，这些任务也不会被放在任务队列中。这些线程属于非核心线程，在任务完成后，闲置时间达到了超时时间就会被清除。</p>
-<p>如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是LinkedBlockingDeque，会将超过核心线程的任务放在任务队列中排队。也就是当任务队列是LinkedBlockingDeque并且没有大小限制时，线程池的最大线程数设置是无效的，他的线程数最多不会超过核心线程数。<br>如果线程数量&gt;核心线程数，并且&gt;最大线程数，当任务队列是SynchronousQueue的时候，会因为线程池拒绝添加任务而抛出异常。</p>
-<p>任务队列大小有限时</p>
-<p>当LinkedBlockingDeque塞满时，新增的任务会直接创建新线程来执行，当创建的线程数量超过最大线程数量时会抛异常。<br>SynchronousQueue没有数量限制。因为他根本不保持这些任务，而是直接交给线程池去执行。当任务数量超过最大线程数时会直接抛异常。</p>
+        <h3 id="事务-transaction"><a href="#事务-transaction" class="headerlink" title="事务(transaction)"></a>事务(transaction)</h3><pre><code>MULTI
+INCR likes
+INCR visitors
+EXEC
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/22/(5)-事务/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-ARP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/22/ARP协议/">ARP协议</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/22/ARP协议/" class="archive-article-date">
+  	<time datetime="2020-04-22T02:19:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="ARP-Address-Resolution-Protocol"><a href="#ARP-Address-Resolution-Protocol" class="headerlink" title="ARP  Address Resolution Protocol"></a>ARP  Address Resolution Protocol</h1><p>根据IP地址获取物理地址的一个TCP/IP协议, 解决网际层和网络访问层的衔接问题.</p>
+<ul>
+<li><p>ARP请求<br>主机A以广播形式向网络中所有主机发送ARP请求，请求包中包含了目标IP地址</p>
+</li>
+<li><p>ARP响应<br>主机B接收到请求，发现自己就是主机A要找的主机，返回响应。响应包中包含自己的MAC地址</p>
+</li>
+<li><p>ARP缓存<br>查看arp缓存</p>
+<blockquote>
+<p>arp -a </p>
+</blockquote>
+</li>
+</ul>
+<h1 id="ARP协议包结构"><a href="#ARP协议包结构" class="headerlink" title="ARP协议包结构"></a>ARP协议包结构</h1><ul>
+<li><p>硬件类型<br>指明了发送方想知道的硬件接口类型，以太网的值为1</p>
+</li>
+<li><p>协议类型<br>表示要映射的协议地址类型。它的值为0x0800，表示IP地址</p>
+</li>
+<li><p>硬件地址长度和协议长度<br>分别指出硬件地址和协议的长度，以字节为单位。对于以太网上IP地址的ARP请求或应答来说，它们的值分别为6和4</p>
+</li>
+<li><p>操作类型<br>用来表示这个报文的类型，ARP请求为1, ARP响应为2, RARP请求为3, RARP响应为4</p>
+</li>
+<li><p>发送方MAC地址：发送方设备的硬件地址。</p>
+</li>
+<li>发送方IP地址：发送方设备的IP地址。</li>
+<li>目标MAC地址：接收方设备的硬件地址。</li>
+<li>目标IP地址：接收方设备的IP地址。</li>
+</ul>
+<p>ARP数据包分为请求包和响应包，对应报文中的某些字段值也有所不同。</p>
+<ol>
+<li>ARP请求包报文的操作类型（op）字段的值为request ，目标MAC地址字段的值为Target 00:00:00_00:00:00 (00:00:00:00:00:00)（广播地址）。</li>
+<li>ARP响应包报文中操作类型（op）字段的值为reply ，目标MAC地址字段的值为目标主机的硬件地址。</li>
+</ol>
+<ul>
+<li>构造ARP包<blockquote>
+<p>./netwox 33</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="免费ARP包-Gratuitous-ARP"><a href="#免费ARP包-Gratuitous-ARP" class="headerlink" title="免费ARP包  Gratuitous ARP"></a>免费ARP包  Gratuitous ARP</h1><p>当主机启动的时候，发送一个Gratuitous ARP请求，即请求自己的IP地址的MAC地址,目标IP地址是自己的IP地址</p>
+<h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><ol>
+<li>宣告. 告诉其他计算机自己的IP地址和MAC地址</li>
+<li>检测IP地址冲突. 当一台主机发送了免费ARP请求报文后，如果收到了ARP响应报文，则说明网络内已经存在使用该IP地址的主机</li>
+<li>更新其他主机的ARP缓存表</li>
+</ol>
+<h1 id="基于ARP协议扫描"><a href="#基于ARP协议扫描" class="headerlink" title="基于ARP协议扫描"></a>基于ARP协议扫描</h1><p>如果目标主机存在,将会返回MAC地址, 可以用来判断目标主机是否启用.</p>
+<ol>
+<li><p>扫描主机是否启用</p>
+<blockquote>
+<p>./netwox 55 -i 192.168.59.135</p>
+</blockquote>
+</li>
+<li><p>扫描多个主机</p>
+<blockquote>
+<p>./netwox 71 -i 192.168.59.133,192.168.59.134,192.168.59.135</p>
+</blockquote>
+</li>
+</ol>
 
       
 
@@ -205,7 +325,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -214,7 +334,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Java线程池ThreadPoolExecutor/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/22/ARP协议/">展开全文 >></a>
         </p>
       
 
@@ -244,187 +364,253 @@
 
 
   
-    <article id="post-WebRTC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-IP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/WebRTC/">WebRTC</a>
+      <a class="article-title" href="/2020/04/20/IP协议/">IP协议</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/WebRTC/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/20/IP协议/" class="archive-article-date">
+  	<time datetime="2020-04-20T06:19:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-20</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="getUserMedia-浏览器获取用户的摄像头-麦克风"><a href="#getUserMedia-浏览器获取用户的摄像头-麦克风" class="headerlink" title="getUserMedia() 浏览器获取用户的摄像头,麦克风"></a>getUserMedia() 浏览器获取用户的摄像头,麦克风</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> constraints = &#123;<span class="attr">audio</span>: <span class="literal">false</span>, <span class="attr">video</span>: <span class="literal">true</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> video = <span class="built_in">document</span>.querySelector(<span class="string">"video"</span>);</span><br><span class="line"></span><br><span class="line">navigator.mediaDevices.getUserMedia(constraints)</span><br><span class="line">    .then(<span class="function"><span class="keyword">function</span> (<span class="params">stream</span>) </span>&#123;</span><br><span class="line">        video.srcObject = stream</span><br><span class="line">        video.onloadedmetadata = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            video.play()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).catch(<span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"getUserMedia error: "</span>, err);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/WebRTC/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-邓小平传" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/邓小平传/">邓小平传</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/邓小平传/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/邓小平传/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-区块链初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/区块链初探/">区块链初探</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/区块链初探/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>不务正业就是我的正业</p>
+        <p>提供一种分层的, 与硬件无关的寻址系统.<br>将多个交换网络连接起来, 在源地址和目的地址之间传送数据包, 提供数据重新组装功能</p>
+<h1 id="IP协议工作方式"><a href="#IP协议工作方式" class="headerlink" title="IP协议工作方式"></a>IP协议工作方式</h1><ul>
+<li><p>同网段<br>  如果源地址主机和目标地址主机在同一网段, 目标IP地址被ARP解析为MAC地址, 然后根据MAC地址, 直接发送</p>
+</li>
+<li><p>不同网段<br>  (1) 网关(即路由器) 的IP地址被ARP协议解析为MAC地址, 根据该地址, 源主机将数据包发送到网关<br>  (2) 网关根据数据中的网段ID寻找目标网络, 如果找到,将数据包发送到目标网段, 如果没找到,重复(1)将数据包发送到上一级网关<br>  (3) 数据包经过网关被发送到正确的网段中, 目标IP地址被ARP协议解析为MAC地址, 根据该MAC地址, 数据包被发送到目标地址的主机</p>
+</li>
+</ul>
+<h1 id="IP报文"><a href="#IP报文" class="headerlink" title="IP报文"></a>IP报文</h1><p>由首部和数据两部分组成, 首部的前一部分是固定长度: 20字节, 后一部分是可选字段, 长度可变</p>
+<h2 id="IP报头字段"><a href="#IP报头字段" class="headerlink" title="IP报头字段"></a>IP报头字段</h2><ul>
+<li><p>版本 version   4位, 表示IP协议版本号, 如IPv4</p>
+</li>
+<li><p>首部长度(IHL)   4位, 二进制的数转换为十进制后乘以4, 最大值是60字节, 始终是4的倍数, 不够的话要填充</p>
+<pre><code>最常用的首部长度就是20字节, 0101, 不用任何选项.  
+</code></pre></li>
+<li><p>区分服务(tos)   8位, 也叫服务类型, 没用</p>
+</li>
+<li><p>总长度(totlen)  16位, 首部和数据之和, 因此数据报的最大长度是 2^16-1 = 65535字节</p>
+</li>
+<li><p>标识(identification) 16位, 标识数据报, IP协议在存储器里有一个计数器, 每产生一个数据报, 计数器就加1,</p>
+<pre><code>并赋值给标识字段. 当数据报的长度超过网络的MTU而必须分片时, 这个标识字段的值
+就会被复制到所有的数据报的标识字段中, 具有相同的标识字段值的分片报文会被重组成原来的数据报
+</code></pre></li>
+<li><p>标志(flag)         3位, 第一位不用,为0.  第二位为DF, 表示是否允许分片: 0-允许分片, 1-不允许分片</p>
+<pre><code>第三位为MF, 表示是否还有分片正在传输, 0-没有更多分片需要发送或数据报没有分片 
+</code></pre></li>
+<li><p>片偏移(offsetfrag)  13位, 当报文被分片后, 标记该分片在原报文中的相对位置, 片偏移以8个字节为偏移单位, 除了最后一个</p>
+<pre><code>分片,其他分片的偏移值都是8字节的整数倍
+</code></pre></li>
+<li><p>生存时间(TTL)        8位, 表示数据报在网络中的寿命。该字段由发出数据报的源主机设置。其目的是防止无法交付的数据报无限制地在网络中传输，从而消耗网络资源。</p>
+<pre><code>路由器在转发数据报之前，先把TTL值减1。若TTL值减少到0，则丢弃这个数据报，不再转发。因此，TTL指明数据报在网络中最多可经过多少个路由器。
+TTL的最大数值为255。若把TTL的初始值设为1，则表示这个数据报只能在本局域网中传送。
+</code></pre></li>
+<li><p>协议          8位, 表示该数据报文所携带的数据所使用的协议类型。该字段可以方便目的主机的IP层知道按照什么协议来处理数据部分。</p>
+<pre><code>不同的协议有专门不同的协议号。例如，TCP的协议号为6, UDP的协议号为17, ICMP的协议号为1。
+</code></pre></li>
+<li><p>首部校验和(checksum) 16位,用于校验数据报的首部。数据报每经过一个路由器，首部的字段都可能发生变化（如TTL），</p>
+<pre><code>所以需要重新校验。而数据部分不发生变化，所以不用重新生成校验值。                
+</code></pre></li>
+<li><p>源地址        32位, 表示数据报的源IP地址                        </p>
+</li>
+<li><p>目的地址       32位, 表示数据报的目的IP地址, 该字段用于校验发送是否正确</p>
+</li>
+<li><p>可选字段       用于测试,调试,安全目的. 包括严格源路由（数据报必须经过指定的路由）、网际时间戳（经过每个路由器时的时间戳记录）和安全限制。</p>
+</li>
+<li><p>填充          由于可选字段中的长度不是固定的，使用若干个0填充该字段，可以保证整个报头的长度是32位的整数倍。</p>
+</li>
+</ul>
+<h2 id="数据部分"><a href="#数据部分" class="headerlink" title="数据部分"></a>数据部分</h2><p>表示传输层的数据，如保存TCP、UDP、ICMP或IGMP的数据。数据部分的长度不固定</p>
+<h1 id="构造IP数据包"><a href="#构造IP数据包" class="headerlink" title="构造IP数据包"></a>构造IP数据包</h1><blockquote>
+<p>./netwox 38<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xDBB8=56248__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0xC57A_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure></p>
 </blockquote>
-<h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><ol>
-<li>DApp (Decentralized Application)</li>
+<h2 id="指定源地址和目标地址"><a href="#指定源地址和目标地址" class="headerlink" title="指定源地址和目标地址"></a>指定源地址和目标地址</h2><blockquote>
+<p>./netwox 38 -l 192.168.59.132 -m 192.168.12.101<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xE5D3=58835__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0x0BDD_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|________________________192.168.59.132_________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|________________________192.168.12.101_________________________|</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="指定IP数据报的以太层字段"><a href="#指定IP数据报的以太层字段" class="headerlink" title="指定IP数据报的以太层字段"></a>指定IP数据报的以太层字段</h2><blockquote>
+<p>./netwox 34<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Ethernet________________________________________________________.</span><br><span class="line">| 00:FF:AA:BB:CC:DD-&gt;00:08:09:0A:0B:0C type:0x0800              |</span><br><span class="line">|_______________________________________________________________|</span><br><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0x6333=25395__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0x3E00_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>./netwox 34 -a 00:0C:29:C4:8A:DE -b 00:0C:29:D0:21:23</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Ethernet________________________________________________________.</span><br><span class="line">| 00:0C:29:C4:8A:DE-&gt;00:0C:29:D0:21:23 type:0x0800              |</span><br><span class="line">|_______________________________________________________________|</span><br><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xEF24=61220__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0xB20E_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure>
+<p>没有在wireshark中捕获到</p>
+<h1 id="分片洪水攻击"><a href="#分片洪水攻击" class="headerlink" title="分片洪水攻击"></a>分片洪水攻击</h1><blockquote>
+<p>./netwox 74 -i 192.168.59.135</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/20/IP协议/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-从实践中学习TCP-IP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/16/从实践中学习TCP-IP协议/">从实践中学习TCP-IP协议</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/16/从实践中学习TCP-IP协议/" class="archive-article-date">
+  	<time datetime="2020-04-16T04:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="OSI协议层次"><a href="#OSI协议层次" class="headerlink" title="OSI协议层次"></a>OSI协议层次</h1><ul>
+<li>物理层<br>利用传输介质为数据链路层提供物理连接, 实现比特流的透明传输<blockquote>
+<p>netwox 169</p>
+</blockquote>
+</li>
+</ul>
+<p>计算机中的两类网络适配器: Lo 和 Eth<br>Lo是 回环接口, 是虚拟网络适配器<br>Eth是 以太网网络适配器 </p>
+<ul>
+<li><p>数据链路层<br>物理地址寻址, 数据的成帧, 流量控制, 数据检错重发</p>
+</li>
+<li><p>网络层<br>寻找地址和路由选择, 拥塞控制, 网际互联</p>
+</li>
+<li><p>传输层</p>
+</li>
+<li><p>会话层<br>建立和断开通信连接</p>
+</li>
+<li><p>表示层</p>
+</li>
+</ul>
+<ul>
+<li>应用层<br>为应用程序提供服务并规定应用程序中相关的通信细节<br>包括: 超文本传输协议(HTTP), 简单邮件传送协议(SMTP), 远程登录协议(Telnet)</li>
+</ul>
+<h1 id="TCP-IP协议层次"><a href="#TCP-IP协议层次" class="headerlink" title="TCP/IP协议层次"></a>TCP/IP协议层次</h1><ul>
+<li>网络访问层</li>
+<li>网际层</li>
+<li>传输层</li>
+<li>应用层</li>
+</ul>
+<h1 id="网络工具-netwox-和-wireshark"><a href="#网络工具-netwox-和-wireshark" class="headerlink" title="网络工具 - netwox 和 wireshark"></a>网络工具 - netwox 和 wireshark</h1><h2 id="netwox"><a href="#netwox" class="headerlink" title="netwox"></a>netwox</h2><p>(git bash属实给劲, windows用户的救星)</p>
+<h2 id="wireshark"><a href="#wireshark" class="headerlink" title="wireshark"></a>wireshark</h2><p>Frame: 数据包物理层的数据帧概况<br>Ethernet : 数据链路层以太网帧头部信息<br>Internet Protocol Version 4: 网际层IP包头部信息<br>Transmission Control Protocol: 传输层的数据段头部信息<br>Hypertext Transfer Protocol: 应用层信息</p>
+<h1 id="网络体系的四大类型"><a href="#网络体系的四大类型" class="headerlink" title="网络体系的四大类型"></a>网络体系的四大类型</h1><ul>
+<li>IEEE 802.3 (以太网) 在大多数办公室使用的基于线缆的网络, 常见的有线局域网</li>
+<li>IEEE 802.11 (无线网络) 无线网络技术, 如wifi</li>
+<li>IEEE 802.16 (WiMAX) 用于移动通信长距离无线连接的技术</li>
+<li>点到点协议(PPP) 使用Modem通过电话线进行连接的技术, 拨号方式建立的网络连接</li>
+</ul>
+<h1 id="物理地址"><a href="#物理地址" class="headerlink" title="物理地址"></a>物理地址</h1><p>物理地址只在当前局域网有效</p>
+<ol>
+<li>显示网络主机MAC地址信息<blockquote>
+<p>./netwox 5 -i 172.16.0.119</p>
+</blockquote>
+</li>
+<li>显示局域网中所有的主机的MAC地址<blockquote>
+<p>./netwox 5 -i 172.16.0.0/24</p>
+</blockquote>
+</li>
+<li>根据MAC地址获取主机其他信息<blockquote>
+<p>./netwox 4 -e 80:FA:5B:64:5B:0D </p>
+</blockquote>
+</li>
 </ol>
-<p>去中心化应用, 开启了区块链3.0时代</p>
-<ol start="2">
-<li>底层区块链开发平台</li>
-</ol>
-<p>以太坊: 有智能合约功能的公共区块链平台，它允许任何人在上面中建立和使用通过区块链技术运行的分布式应用，编程语言为solidity</p>
-<p>eos: 允许开发者在其协议顶端创建区块链应用的新平台，与 ETH 相比，运行速度更快更稳定，主要解决了高交易频率的问题，每秒交易可达百亿次，且可同时运行上千个 APP ，编程语言为 c++。</p>
-<p>fibos: 由 fibjs+eos 设计的一个全新的区块链 js 开发平台，相比以上两者做到兼顾速度、稳定之外，对开发者更友好。</p>
-<h2 id="区块链"><a href="#区块链" class="headerlink" title="区块链"></a>区块链</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Block <span class="keyword">struct</span> &#123;</span><br><span class="line">    Number <span class="keyword">string</span></span><br><span class="line">    PreHash <span class="keyword">string</span></span><br><span class="line">    Hash <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">    Create <span class="keyword">int64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="共识算法"><a href="#共识算法" class="headerlink" title="共识算法"></a>共识算法</h2><ol>
-<li>PoW 比特币(BTC),区块链1.0<br>Proof of Word, 工作量证明, 多劳多得<blockquote>
-<p>比特币挖矿: 通过计算符合某一个比特币区块头的哈希散列值争夺记账权. 该矿工挖出的区块被串接入主链.</p>
+<h1 id="以太帧-以太网链路中传输的数据包"><a href="#以太帧-以太网链路中传输的数据包" class="headerlink" title="以太帧  以太网链路中传输的数据包"></a>以太帧  以太网链路中传输的数据包</h1><ul>
+<li>前同步码: 使接收端的适配器在接收MAC帧时能够迅速调整时钟频率,使它和发送端的频率相同.</li>
+<li>帧开始定界符</li>
+<li>目的地址: 网卡收到一个数据帧,会先检查目的地址是否与当前适配器的物理地址相同,相同的话进一步处理,否则丢弃</li>
+<li>源地址</li>
+<li>类型: 上层协议的类型, 标识数据交付给哪个协议处理, 如 0x0800 表示数据交付给IP协议</li>
+<li>数据: 最小为46字节, 不足的话,会填充到最小长度. 最大值1500字节, 也叫MTU, 最大传输单元.</li>
+<li>帧检验序列FCS: 检测该帧是否出错, 发送方计算帧的循环冗余码校验(CRC), 接收方重新计算并比较, 如果不同,则重传 </li>
+</ul>
+<h2 id="构建-以太帧"><a href="#构建-以太帧" class="headerlink" title="构建 以太帧"></a>构建 以太帧</h2><p> WinPCAP &gt;= 3.0 is not found<br> 下载WinPCAP, 以兼容模式安装</p>
+<ol>
+<li><p>查看以太网数据帧</p>
+<blockquote>
+<p>./netwox 32<br>00:FF:AA:BB:CC:DD-&gt;00:08:09:0A:0B:0C type:0x0000</p>
+</blockquote>
+<p>00:FF:AA:BB:CC:DD 是源MAC地址,即当前主机的MAC地址<br>00:08:09:0A:0B:0C 是目标MAC地址<br>0x0000 是以太网类型</p>
+</li>
+<li><p>构建以太帧</p>
+<blockquote>
+<p> ./netwox 32 -a 00:FF:AA:BB:CC:DE -b 00:08:09:0A:0B:0E</p>
 </blockquote>
 </li>
 </ol>
 <ul>
-<li>优点: 1)机制独特: 挖矿难度系数自动调整,区块奖励逐步减半.<pre><code>2)早参与早获利
-3) 公平
-</code></pre></li>
-<li>缺点: 1) 算力浪费资源<pre><code>2) 算力集中,不符合去中心化
-3) 难度变大
-4) 安全性
-5) 51%算力攻击        
-</code></pre></li>
-</ul>
-<p>PoS 以太坊(ETH),区块链2.0<br>Proof of Stake 股权证明</p>
-<blockquote>
-<p>点点币(PPCoin) 没有挖矿,通过转账交易方式,用”利息”方式新增货币,</p>
+<li>显示网络配置信息<blockquote>
+<p>./netwox 1</p>
 </blockquote>
-<p>DPoS 柚子(EOS), 区块链3.0<br>Delegated Proof of Stake 股份授权证明机制. 见证者节点<br>PBEF 拜占庭容错, 联盟链常用</p>
-<h2 id="链的分叉"><a href="#链的分叉" class="headerlink" title="链的分叉"></a>链的分叉</h2>
+</li>
+</ul>
+<ul>
+<li>显示某域名的所有主机的IP地址,主机名,MAC地址信息</li>
+</ul>
+<pre><code>$ ./netwox 3 -a www.google.com
+IP address:  31.13.72.34
+Hostname:    edge-mqtt-mini-shv-01-arn2.facebook.com
+Hostnames:   edge-mqtt-mini-shv-01-arn2.facebook.com
+Eth address: 00:00:0C:07:AC:01
+</code></pre>
       
 
       
@@ -433,10 +619,21 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/区块链初探/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/16/从实践中学习TCP-IP协议/">展开全文 >></a>
         </p>
       
 
@@ -468,7 +665,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -576,11 +773,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -588,11 +789,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -605,10 +806,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

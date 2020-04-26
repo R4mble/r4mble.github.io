@@ -157,312 +157,206 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Golang东一榔头西一棒槌系列(1) -来点代码" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-CTM系列(1) - 介绍编程概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/03/Golang东一榔头西一棒槌系列(1) -来点代码/">Golang东一榔头西一棒槌系列(1) -来点代码</a>
+      <a class="article-title" href="/2019/12/22/CTM系列(1) - 介绍编程概念/">CTM系列(1) - 介绍编程概念</a>
     </h1>
   
 
         
-        <a href="/2019/12/03/Golang东一榔头西一棒槌系列(1) -来点代码/" class="archive-article-date">
-  	<time datetime="2019-12-02T16:35:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
+        <a href="/2019/12/22/CTM系列(1) - 介绍编程概念/" class="archive-article-date">
+  	<time datetime="2019-12-22T12:44:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li>Go的招牌: goroutine<blockquote>
-<p>使用消息传递来共享内存,而不是使用共享内存来通信<br>在函数调用前使用关键字go, 即可以让函数以goroutine方式执行</p>
+        <blockquote>
+<p>这是我编程思想的第二次飞跃, 特别是对最小表达力原则的理解.         – 阿莱克西斯</p>
 </blockquote>
-</li>
-</ol>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sum</span><span class="params">(values []<span class="keyword">int</span>, resultChan <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	sum := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> _, value := <span class="keyword">range</span> values &#123;</span><br><span class="line">		sum += value</span><br><span class="line">	&#125;</span><br><span class="line">	resultChan &lt;- sum</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line">    values  := [] <span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>&#125;</span><br><span class="line">	resultChan := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">2</span>)</span><br><span class="line">	<span class="keyword">go</span> sum(values[:<span class="built_in">len</span>(values)/<span class="number">2</span>], resultChan)</span><br><span class="line">	<span class="keyword">go</span> sum(values[<span class="built_in">len</span>(values)/<span class="number">2</span>:], resultChan)</span><br><span class="line">	sum1, sum2 := &lt;-resultChan, &lt;-resultChan</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">"Result:"</span>, sum1, sum2, sum1 + sum2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>反射<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Bird <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name          <span class="keyword">string</span></span><br><span class="line">	LifeExpectant <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Bird)</span> <span class="title">Fly</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Print(<span class="string">"I am flying..."</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line">	sparrow := &amp;Bird&#123;<span class="string">"Sparrow"</span>, <span class="number">3</span>&#125;</span><br><span class="line">	s := reflect.ValueOf(sparrow).Elem()</span><br><span class="line">	typeOfT := s.Type()</span><br><span class="line">	<span class="keyword">for</span> i:= <span class="number">0</span>; i &lt; s.NumField(); i++ &#123;</span><br><span class="line">		f := s.Field(i)</span><br><span class="line">		fmt.Printf(<span class="string">"%d: %s %s = %v\n"</span>, i, typeOfT.Field(i).Name, f.Type(), f.Interface())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Go//" class="article-tag-list-link color3">Go</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/03/Golang东一榔头西一棒槌系列(1) -来点代码/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Golang东一榔头西一棒槌系列(0) - 写在前面的话" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/03/Golang东一榔头西一棒槌系列(0) - 写在前面的话/">Golang东一榔头西一棒槌系列(0) - 写在前面的话</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/03/Golang东一榔头西一棒槌系列(0) - 写在前面的话/" class="archive-article-date">
-  	<time datetime="2019-12-02T16:34:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>写代码嘛, 开心就好~</p>
-<hr>
-<p>go语言, 真的乱七八糟的, 对于我这种三心二意的人极不友好, 每次回来都会把上一次学到的东西, 踩过的坑全都忘掉.</p>
-<h1 id="怎么把它跑起来"><a href="#怎么把它跑起来" class="headerlink" title="怎么把它跑起来?"></a>怎么把它跑起来?</h1><ol>
-<li>Go的代码都要放在$GOPATH的src下面…</li>
-<li>go install 安装, 在$GOPATH/pkg/#{GOOS}_${GOARCH}下有xxx.a</li>
-<li>含有main方法的go文件 package也必须是main, 执行go build, 生成可执行文件</li>
-</ol>
+<h1 id="Concepts-Techniques-and-Models-of-Computer-Programming"><a href="#Concepts-Techniques-and-Models-of-Computer-Programming" class="headerlink" title="Concepts, Techniques, and Models of Computer Programming"></a>Concepts, Techniques, and Models of Computer Programming</h1><p>(我常常读英文书, 读完前言就算完事了)</p>
 <blockquote>
-<p>go get github.com/xxxxxx<br>就是git clone 然后执行go install</p>
+<p>前言: (大概是盲人摸象)<br>六盲人摸象<br>第一位: 大象就像绳子(rope), 细长(slender), 柔韧(flexible)<br>第二位: 并不, 大象像树, 坚壮地(sturdily)种在地上.<br>第三位: 大象像墙<br>第四位: 大象是装满水的管子<br>第五位: 真是奇怪零碎(piecemeal)的野兽啊<br>第六位: 确实奇怪, 不过肯定有潜在的协调, 一起来深入调查下</p>
 </blockquote>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Hello World"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>go run 01_HelloWorld.go</p>
-</blockquote>
-<h2 id="go-build-用于测试编译"><a href="#go-build-用于测试编译" class="headerlink" title="go build 用于测试编译"></a>go build 用于测试编译</h2><ul>
-<li>如果是普通包: 没用</li>
-<li>如果是main包: 在当前目录生成可执行文件. 如果想在$GOPATH/bin下生成相应的文件, 需要执行go install 或者<br>go build -o 路径/a.exe</li>
-</ul>
-<p>默认编译当前目录下的所有go文件, 可以使用go build a.go只编译某个文件</p>
-<p>忽略以 _ 和 . 开头的go文件</p>
-<h2 id="go-clean-移除当前源码包中编译生成的文件"><a href="#go-clean-移除当前源码包中编译生成的文件" class="headerlink" title="go clean 移除当前源码包中编译生成的文件"></a>go clean 移除当前源码包中编译生成的文件</h2><p>xxx.out<br>xxx.exe</p>
-<h2 id="go-test"><a href="#go-test" class="headerlink" title="go test"></a>go test</h2><p>读取源码目录下*_test.go文件, 生成运行测试用的可执行文件</p>
-<h2 id="go-proxy"><a href="#go-proxy" class="headerlink" title="go proxy"></a>go proxy</h2><p>go env -w GO111MODULE=on<br>go env -w GOPROXY=<a href="https://goproxy.cn,direct" target="_blank" rel="noopener">https://goproxy.cn,direct</a></p>
-<h2 id="go-env"><a href="#go-env" class="headerlink" title="go env"></a>go env</h2><p>查看自己的各个环境设置</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Go//" class="article-tag-list-link color3">Go</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/03/Golang东一榔头西一棒槌系列(0) - 写在前面的话/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Linux系统编程手册tlpi系列(3) - 文件IO" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/02/Linux系统编程手册tlpi系列(3) - 文件IO/">Linux系统编程手册tlpi系列(3) - 文件IO</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/02/Linux系统编程手册tlpi系列(3) - 文件IO/" class="archive-article-date">
-  	<time datetime="2019-12-02T07:45:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>文件描述符: 非负小整数, 表示所有类型的已打开文件: 管道(pipe),FIFO,socket,终端,设备和普通文件<br>每个进程,文件描述符都自成一套</p>
-<p>标准文件描述符: 0-输入-stdin, 1-输出-stdout, 2-错误-stderr</p>
-<h2 id="文件IO的四个主要系统调用"><a href="#文件IO的四个主要系统调用" class="headerlink" title="文件IO的四个主要系统调用:"></a>文件IO的四个主要系统调用:</h2><ul>
-<li><p>fd = open(pathname, flags, mode)<br> 打开文件,返回文件描述符,用以后续函数调用指代打开的文件.<br> 如果pathname是符号链接,会对其进行解引用.<br> flags指定文件的打开方式: 只读,只写,读写<br> mode指定open调用创建文件的访问权限, 若未创建,可忽略</p>
+<p>– 传统印第安故事</p>
+<p>metaphor 隐喻<br>tackle this immensity 解决这种巨大问题<br>criterium 准则<br>advocate 拥护<br>judicious 审慎而明智的<br>merits 优点<br>pioneer 先锋<br>inherently 天性地<br>Omission 省略</p>
+<p>学一些具有代表性的编程语言是学会计算机编程的一种方法, 本书介绍计算模型.</p>
+<p>connotation 含义<br>unbiased 公正的<br>complement 补充</p>
+<p>本书目标: 以一种统一的原则学习编程.</p>
+<h2 id="介绍编程概念-p3-p24"><a href="#介绍编程概念-p3-p24" class="headerlink" title="介绍编程概念(p3 ~ p24)"></a>介绍编程概念(p3 ~ p24)</h2><ol>
+<li>一个计算器<br> 下载了个Mozart system, 用的emacs, 有点像Racket的那个工具.</li>
+<li><p>变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">V=9999*9999</span><br><span class="line">&#123;Browse V*V&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>numread = read(fd, buffer, count)<br> 从fd读取至多count字节的数据, 存储到buffer中, read()返回实际读到的字节数</p>
+<li><p>函数<br>阶乘</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">fun &#123;Fact N&#125;</span><br><span class="line">   if N==0 then 1 else N*&#123;Fact N-1&#125; end</span><br><span class="line">end</span><br><span class="line">&#123;Browse &#123;Fact 5&#125;&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>numwritten = write(fd, buffer, count)<br> 从buffer读取至多count字节的数写入由fd指代的的已打开文件中, 返回实际写入的字节数</p>
-</li>
-<li><p>status = close(fd)<br> 释放文件描述符fd以及相关的内核资源</p>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/02/Linux系统编程手册tlpi系列(3) - 文件IO/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Linux系统编程手册tlpi系列(2) - 系统编程概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/02/Linux系统编程手册tlpi系列(2) - 系统编程概念/">Linux系统编程手册tlpi系列(2) - 系统编程概念</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/02/Linux系统编程手册tlpi系列(2) - 系统编程概念/" class="archive-article-date">
-  	<time datetime="2019-12-02T06:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h1><ul>
-<li>系统调用将处理器从用户态切换到核心态, 以便CPU访问受到保护的内核内存</li>
-<li><p>每个系统调用都由唯一的数字来标识</p>
-<p>过程:</p>
-<ol>
-<li>应用程序通过C语言函数库的外壳(wrapper)函数,发起系统调用</li>
-<li>外壳函数把系统调用的参数复制到寄存器</li>
-<li>外壳函数会将系统调用编号复制到一个特殊的CPU寄存器(%eax)中</li>
-<li>外壳函数执行中断机器指令(int 0x80),引发处理器从用户态切换到核心态,执行<br>系统中断0x80(十进制128)的中断矢量所指向的代码<br>(2.6内核以后支持sysenter指令, 进入内核更快)</li>
-<li>内核调用system_call()例程处理这次中断:<br>a) 在内核栈中保存寄存器值<br>b) 审核系统调用编号的有效性<br>c) 在sys_call_table中索引发现并调用系统调用服务例程,<br>  检查系统调用参数的有效性(检查地址指向用户空间的内存位置是否有效),<br>  该服务例程执行必要的任务(对特定参数中指定地址处的值进行修改, 在用户内存和内核内存间传递数据),<br>  该服务例程将结果状态返回给system_call()例程<br>d) 从内核栈恢复各寄存器值,并将系统调用返回值置于栈中<br>e) 返回至外壳函数,将处理器切换回用户态</li>
 </ol>
+<p>c-M-x 同时按下ctrl alt x</p>
+<p>算组合: C 10 7<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">fun &#123;Comb N R&#125;</span><br><span class="line">   &#123;Fact N&#125; div (&#123;Fact R&#125; * &#123;Fact N-R&#125;)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;Comb 10 7&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<ol start="4">
+<li><p>列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">H = 5</span><br><span class="line">T = [6 7 8]</span><br><span class="line">&#123;Browse H|T&#125;</span><br><span class="line">&#123;Browse T.1&#125;</span><br><span class="line">&#123;Browse T.2&#125;</span><br><span class="line"></span><br><span class="line">declare</span><br><span class="line">L = [5 6 7 8]</span><br><span class="line">case L of H|T then &#123;Browse H&#125; &#123;Browse T&#125; end</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
+<li><p>列表的函数<br>Pascal三角:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">            1</span><br><span class="line">         1     1</span><br><span class="line">      1     2     1</span><br><span class="line">   1     3     3     1   </span><br><span class="line">1     4     6     4     1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">1210 + 0121 -&gt; 1331</span><br><span class="line">13310 + 01331 -&gt; 14641</span><br><span class="line"></span><br><span class="line">declare Pascal AddList ShiftLeft ShiftRight</span><br><span class="line"></span><br><span class="line">fun &#123;Pascal N&#125;</span><br><span class="line">   if N==1 then [1]</span><br><span class="line">   else </span><br><span class="line">      &#123;AddList &#123;ShiftLeft &#123;Pascal N-1&#125;&#125;</span><br><span class="line">               &#123;ShiftRight &#123;Pascal N-1&#125;&#125;&#125;</span><br><span class="line">   end</span><br><span class="line">end         </span><br><span class="line"></span><br><span class="line">fun &#123;ShiftLeft L&#125;</span><br><span class="line">   case L of H|T then</span><br><span class="line">   	H|&#123;ShiftLeft T&#125;</span><br><span class="line">   else [0] end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun &#123;ShiftRight L&#125; 0|L end</span><br><span class="line"></span><br><span class="line">fun &#123;AddList L1 L2&#125;</span><br><span class="line">   case L1 of H1|T1 then</span><br><span class="line">      case L2 of H2|T2 then</span><br><span class="line">	 H1+H2|&#123;AddList T1 T2&#125;</span><br><span class="line">      end</span><br><span class="line">   else nil end</span><br><span class="line">end </span><br><span class="line"></span><br><span class="line">fun &#123;FastPascal N&#125;</span><br><span class="line">   if N==1 then [1]</span><br><span class="line">   else L in</span><br><span class="line">      L=&#123;FastPascal N-1&#125;</span><br><span class="line">      &#123;AddList &#123;ShiftLeft L&#125; &#123;ShiftRight L&#125;</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;ShiftLeft [1 2 34]&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;ShiftRight [1 2 34]&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;Pascal 20&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 <ol start="6">
-<li>外壳函数返回调用程序, 返回一个整型值, 表明该系统调用是否成功</li>
+<li>正确性<br>数学归纳法</li>
+<li>复杂度<br>上面那个Pascal函数很慢, 计算Pascal 30要很久, 因为算Pascal 30就要算两次Pascal 29, 依次类推要算2^29次.<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fun &#123;FastPascal N&#125;</span><br><span class="line">   if N==1 then [1]</span><br><span class="line">   else L in</span><br><span class="line">      L=&#123;FastPascal N-1&#125;</span><br><span class="line">      &#123;AddList &#123;ShiftLeft L&#125; &#123;ShiftRight L&#125;</span><br><span class="line">   end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<p>lib/tlpi_hdr.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> TLPI_HDR_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TLPI_HDR_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"get_num.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"error_functions.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;FALSE, TRUE&#125; Boolean;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> min(m,n) ((m) &lt; (n) ? (m) : (n))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> max(m,n) ((m) m (n) ? (m) : (n))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
-<p>lib/error_function.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> ERROR_FUNCTION_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ERROR_FUNCTION_H</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errMsg</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __GNUC__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NORETURN __attribute__ ((__noreturn__))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NORETURN</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errExit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">err_exit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errExitEN</span><span class="params">(<span class="keyword">int</span> errnum, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fatal</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">usageErr</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cmdLineErr</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> NORETURN</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
+<p>Pascal时间复杂度是2^n, FastPascal时间复杂度是n^2<br>proportional 成比例的</p>
+<ol start="8">
+<li><p>延迟计算</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">declare Ints</span><br><span class="line"></span><br><span class="line">fun lazy &#123;Ints N&#125;</span><br><span class="line">   N | &#123;Ints N+1&#125;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun lazy &#123;PascalList Row&#125;</span><br><span class="line">   Row | &#123;PascalList</span><br><span class="line">	  &#123;AddList &#123;ShiftLeft Row&#125; </span><br><span class="line">              &#123;ShiftRight Row&#125;&#125;&#125;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">declare L = &#123;PascalList [1]&#125;</span><br><span class="line">&#123;Browse L.1&#125;</span><br><span class="line">&#123;Browse L.2.1&#125;</span><br><span class="line">&#123;Browse L.2.2.1&#125;</span><br><span class="line">&#123;Browse L.2.2.2.1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fun &#123;PascalList2 N Row&#125;</span><br><span class="line">   if N==1 then [Row]</span><br><span class="line">   else</span><br><span class="line">      Row | &#123;PascalList2 N-1</span><br><span class="line">	     &#123;AddList &#123;ShiftLeft Row&#125;</span><br><span class="line">	              &#123;ShiftRight Row&#125;&#125;&#125;</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">&#123;Browse &#123;PascalList2 10 [1]&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>高阶函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">declare FastPacal Add ShiftRight ShiftLeft</span><br><span class="line"></span><br><span class="line">fun &#123;ShiftLeft L&#125;</span><br><span class="line">   case L of H|T then</span><br><span class="line">   	H|&#123;ShiftLeft T&#125;</span><br><span class="line">   else [0] end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun &#123;ShiftRight L&#125; 0|L end</span><br><span class="line"></span><br><span class="line">fun &#123;GenericPascal Op N&#125;</span><br><span class="line">   if N==1 then [1]</span><br><span class="line">   else L in L=&#123;GenericPascal Op N-1&#125;</span><br><span class="line">      &#123;OpList Op &#123;ShiftLeft L&#125; &#123;ShiftRight L&#125;&#125;</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun &#123;OpList Op L1 L2&#125;</span><br><span class="line">   case L1 of H1|T1 then</span><br><span class="line">      case L2 of H2|T2 then</span><br><span class="line">	 &#123;Op H1 H2&#125;|&#123;OpList Op T1 T2&#125;</span><br><span class="line">      end</span><br><span class="line">   else nil end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">fun &#123;Add X Y&#125; X+Y end</span><br><span class="line"></span><br><span class="line">fun &#123;FastPacal N&#125; &#123;GenericPascal Add N&#125; end</span><br><span class="line"></span><br><span class="line">fun &#123;Xor X Y&#125; if X==Y then 0 else 1 end end</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;FastPacal 30&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;GenericPascal Xor 7&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>并发</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">thread P in</span><br><span class="line">   P=&#123;Pascal 30&#125;</span><br><span class="line">   &#123;Browse P&#125;</span><br><span class="line">end</span><br><span class="line">&#123;Browse 99*99&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据流</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">declare X in</span><br><span class="line">thread &#123;Delay 10000&#125; X=99 end</span><br><span class="line">&#123;Browse start&#125;</span><br><span class="line">&#123;Browse X*X&#125;</span><br><span class="line"></span><br><span class="line">declare X in</span><br><span class="line">thread &#123;Browse start&#125; &#123;Browse X*X&#125;  end</span><br><span class="line">&#123;Delay 5000&#125; X=99</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>数据流的两个优秀特性: 1.计算的正确性独立于它们被分配给不同线程的方式, 2.计算不发出错误, 只是等待</p>
+<p>aesthetic 审美的<br>civilized 举止得体的<br>radically 彻底地</p>
+<ol start="12">
+<li><p>状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">C = &#123;NewCell 0&#125;</span><br><span class="line">C := @C + 1</span><br><span class="line">&#123;Browse @C&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">local C in</span><br><span class="line">   C = &#123;NewCell 0&#125;</span><br><span class="line">   fun &#123;Bump&#125;</span><br><span class="line">      C := @C + 1</span><br><span class="line">      @C</span><br><span class="line">   end</span><br><span class="line"></span><br><span class="line">   fun &#123;Read&#125;</span><br><span class="line">      @C</span><br><span class="line">   end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>encapsulation 封装</p>
+<ol start="14">
+<li><p>类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">fun &#123;NewCounter&#125;</span><br><span class="line">C Bump Read in</span><br><span class="line">   C = &#123;NewCell 0&#125;</span><br><span class="line">   fun &#123;Bump&#125;</span><br><span class="line">      C := @C + 1</span><br><span class="line">      @C</span><br><span class="line">   end</span><br><span class="line"></span><br><span class="line">   fun &#123;Read&#125;</span><br><span class="line">      @C</span><br><span class="line">   end</span><br><span class="line">   counter(bump:Bump read:Read)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">declare</span><br><span class="line">Ctr1 = &#123;NewCounter&#125;</span><br><span class="line">Ctr2 = &#123;NewCounter&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;Ctr1.bump&#125;&#125;</span><br><span class="line">&#123;Browse &#123;Ctr1.bump&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse &#123;Ctr2.bump&#125;&#125;</span><br><span class="line">&#123;Browse &#123;Ctr2.bump&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不确定性和时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">C = &#123;NewCell 0&#125;</span><br><span class="line">thread I in</span><br><span class="line">   I = @C</span><br><span class="line">   C := I + 1</span><br><span class="line">end</span><br><span class="line">thread J in</span><br><span class="line">   J = @C</span><br><span class="line">   C := J + 1</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">&#123;Delay 3000&#125;</span><br><span class="line"></span><br><span class="line">&#123;Browse @C&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>不要同时使用状态和并发. 如果非要用, 就设计使它们的交互被限制在程序的一小部分.<br>(书上那两个例子, 我跑起来都没有遇到问题..)</p>
+<ol start="16">
+<li><p>原子性<br>如果没有中间状态被观察到, 那么这个操作就是原子的.<br>使用锁:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">declare</span><br><span class="line">C = &#123;NewCell 0&#125;</span><br><span class="line">L = &#123;NewLock&#125;</span><br><span class="line">thread</span><br><span class="line">   lock L then I in</span><br><span class="line">      I = @C</span><br><span class="line">      C := I + 1</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">thread</span><br><span class="line">   lock L then J in</span><br><span class="line">      J = @C</span><br><span class="line">      C := J + 1</span><br><span class="line">   end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">&#123;Delay 3000&#125;</span><br><span class="line">&#123;Browse @C&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接下来…</p>
+</li>
+<li>练习 P.24(67)<ol>
+<li>算下2^100, 不用函数<br>(这个sb语言, 变量不能用小写字母, V1不能是v1)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">declare V1 V2 V4 V8 V16 V32 V64</span><br><span class="line">V1 = 2</span><br><span class="line">V2 = V1*V1</span><br><span class="line">V4 = V2*V2</span><br><span class="line">V8 = V4*V4</span><br><span class="line">V16 = V8*V8</span><br><span class="line">V32 = V16*V16</span><br><span class="line">V64 = V32*V32</span><br><span class="line">V100 = V64*V32*V4 </span><br><span class="line"></span><br><span class="line">&#123;Browse V100&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ol>
 
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/22/CTM系列(1) - 介绍编程概念/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SICP in Python系列(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/19/SICP in Python系列(1)/">SICP in Python系列(1)</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/19/SICP in Python系列(1)/" class="archive-article-date">
+  	<time datetime="2019-12-18T16:41:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我以前有个室友, 打lol喜欢一遍遍地开个新号从0级打到30级.</p>
+<p>哎, 我也再来打一遍吧, 新手村恶霸上线~</p>
+<h1 id="使用函数构建抽象"><a href="#使用函数构建抽象" class="headerlink" title="使用函数构建抽象"></a>使用函数构建抽象</h1><ol>
+<li>网络IO, 数据处理<br>跑的很慢, 因为下载这个txt大约要花个半分钟<br>最后输出莎士比亚全集中, 长度大于5且有相反序列的字符串.<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> urllib.request <span class="keyword">import</span> urlopen</span><br><span class="line"></span><br><span class="line">shakespeare = urlopen(<span class="string">'http://inst.eecs.berkeley.edu/~cs61a/fa11/shakespeare.txt'</span>)</span><br><span class="line">words = set(shakespeare.read().decode().split())</span><br><span class="line">print(&#123;w <span class="keyword">for</span> w <span class="keyword">in</span> words <span class="keyword">if</span> len(w) &gt;= <span class="number">5</span> <span class="keyword">and</span> w[::<span class="number">-1</span>] <span class="keyword">in</span> words&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解释: </span></span><br><span class="line">a=<span class="string">'python'</span></span><br><span class="line">b=a[::<span class="number">-1</span>]</span><br><span class="line">print(b) <span class="comment">#nohtyp</span></span><br><span class="line">c=a[::<span class="number">-2</span>]</span><br><span class="line">print(c) <span class="comment">#nhy</span></span><br><span class="line"><span class="comment">#从后往前数的话，最后一个位置为-1</span></span><br><span class="line">d=a[:<span class="number">-1</span>]  <span class="comment">#从位置0到位置-1之前的数</span></span><br><span class="line">print(d)  <span class="comment">#pytho</span></span><br><span class="line">e=a[:<span class="number">-2</span>]  <span class="comment">#从位置0到位置-2之前的数</span></span><br><span class="line">print(e)  <span class="comment">#pyth</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>SICP的熟悉味道: 斐波那契, 加法乘法的抽象, 黄金比例, 牛顿法</p>
+<ol start="2">
+<li>fib<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></span><br><span class="line">    pre, cur = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    k = <span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> k &lt; n:</span><br><span class="line">        pre, cur = cur, pre + cur</span><br><span class="line">        k = k + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> cur</span><br><span class="line"></span><br><span class="line">print(fib(<span class="number">50</span>))</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum_naturals</span><span class="params">(n)</span>:</span></span><br><span class="line">    total, k = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> k &lt;= n:</span><br><span class="line">        total, k = total + k, k + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> total</span><br><span class="line"></span><br><span class="line">print(sum_naturals(<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum_cubes</span><span class="params">(n)</span>:</span></span><br><span class="line">    total, k = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> k &lt;= n:</span><br><span class="line">        total, k = total + pow(k, <span class="number">3</span>), k + <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> total</span><br><span class="line"></span><br><span class="line">print(sum_cubes(<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pi_sum</span><span class="params">(n)</span>:</span></span><br><span class="line">    total, k = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> k &lt;= n:</span><br><span class="line">        total, k = total + <span class="number">8</span> / (k * (k + <span class="number">2</span>)), k + <span class="number">4</span></span><br><span class="line">    <span class="keyword">return</span> total</span><br><span class="line"></span><br><span class="line">print(pi_sum(<span class="number">100000</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">summation</span><span class="params">(n, term, next)</span>:</span></span><br><span class="line">    total, k = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> k &lt;= n:</span><br><span class="line">        total, k = total + term(k), next(k)</span><br><span class="line">    <span class="keyword">return</span> total</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum_cubes</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> summation(n, <span class="keyword">lambda</span> k: pow(k, <span class="number">3</span>), <span class="keyword">lambda</span> k: k+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 迭代改进的一般方法, 可用于计算黄金比例</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">iter_improve</span><span class="params">(update, test, guess=<span class="number">1</span>)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> test(guess):</span><br><span class="line">        guess = update(guess)</span><br><span class="line">    <span class="keyword">return</span> guess</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">square</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> n * n</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">approx_eq</span><span class="params">(x, y, tolerance=<span class="number">1e-5</span>)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> abs(x - y) &lt; tolerance</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">near</span><span class="params">(x, f, g)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> approx_eq(f(x), g(x))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">golden_update</span><span class="params">(guess)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>/guess + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">golden_test</span><span class="params">(guess)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> near(guess, square, <span class="keyword">lambda</span> k: k+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">print(iter_improve(golden_update, golden_test))</span><br></pre></td></tr></table></figure>
+<h1 id="使用对象构建抽象"><a href="#使用对象构建抽象" class="headerlink" title="使用对象构建抽象"></a>使用对象构建抽象</h1><h1 id="计算机程序的构造和解释"><a href="#计算机程序的构造和解释" class="headerlink" title="计算机程序的构造和解释"></a>计算机程序的构造和解释</h1><h1 id="分布式和并行计算"><a href="#分布式和并行计算" class="headerlink" title="分布式和并行计算"></a>分布式和并行计算</h1><h1 id="序列和协程"><a href="#序列和协程" class="headerlink" title="序列和协程"></a>序列和协程</h1>
       
 
       
@@ -476,7 +370,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
         		</li>
       		
 		</ul>
@@ -485,7 +379,168 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/02/Linux系统编程手册tlpi系列(2) - 系统编程概念/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/12/19/SICP in Python系列(1)/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Python-流畅的Python系列(1) - Python数据模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/">Python-流畅的Python系列(1) - Python数据模型</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/" class="archive-article-date">
+  	<time datetime="2019-12-12T08:58:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&lt;&lt;流畅的Python&gt;&gt;</p>
+<h1 id="Python数据模型"><a href="#Python数据模型" class="headerlink" title="Python数据模型"></a>Python数据模型</h1><ol>
+<li>Python风格:<br>一副牌:<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> namedtuple</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> choice</span><br><span class="line"></span><br><span class="line">man = (<span class="string">'Ali'</span>, <span class="number">30</span>)</span><br><span class="line">print(man[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">Animal = namedtuple(<span class="string">'Animal'</span>, <span class="string">'name age type'</span>)</span><br><span class="line">perry = Animal(name=<span class="string">'perry'</span>, age=<span class="number">31</span>, type=<span class="string">'cat'</span>)</span><br><span class="line">print(perry)</span><br><span class="line">print(perry.age)</span><br><span class="line">print(perry._asdict()[<span class="string">'name'</span>])</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Card = namedtuple(<span class="string">'Card'</span>, [<span class="string">'rank'</span>, <span class="string">'suit'</span>])</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FrenchDeck</span>:</span></span><br><span class="line">    ranks = [str(n) <span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">2</span>, <span class="number">11</span>)] + list(<span class="string">'JQKA'</span>)</span><br><span class="line">    suits = <span class="string">'spades diamonds clubs hearts'</span>.split()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self._cards = [Card(rank, suit) <span class="keyword">for</span> suit <span class="keyword">in</span> self.suits</span><br><span class="line">                                        <span class="keyword">for</span> rank <span class="keyword">in</span> self.ranks]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self._cards)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, position)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self._cards[position]</span><br><span class="line"></span><br><span class="line">beer_card = Card(<span class="string">'7'</span>, <span class="string">'diamonds'</span>)</span><br><span class="line">print(beer_card)</span><br><span class="line">deck = FrenchDeck()</span><br><span class="line">print(len(deck))</span><br><span class="line">print(deck[<span class="number">0</span>])</span><br><span class="line">print(deck[<span class="number">15</span>])</span><br><span class="line">print(deck[<span class="number">-1</span>])</span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(choice(deck))</span><br><span class="line">print(deck[:<span class="number">3</span>])</span><br><span class="line"><span class="comment"># 每隔13张牌拿一张</span></span><br><span class="line">print(deck[<span class="number">12</span>::<span class="number">13</span>])</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实现了__getitem__方法, FrenchDeck是可迭代的</span></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> deck:</span><br><span class="line">    print(card)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> reversed(deck):</span><br><span class="line">    print(card)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 集合类没有实现__contain__方法, in运算符会按顺序做迭代搜索</span></span><br><span class="line">print(Card(<span class="string">'5'</span>, <span class="string">'beats'</span>) <span class="keyword">in</span> deck)</span><br><span class="line">print(Card(<span class="string">'5'</span>, <span class="string">'hearts'</span>) <span class="keyword">in</span> deck)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'=========='</span>)</span><br><span class="line"></span><br><span class="line">suit_values = dict(spades=<span class="number">3</span>, hearts=<span class="number">2</span>, diamonds=<span class="number">1</span>, clubs=<span class="number">0</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spades_high</span><span class="params">(card)</span>:</span></span><br><span class="line">    rank_value = FrenchDeck.ranks.index(card.rank)</span><br><span class="line">    <span class="keyword">return</span> rank_value * len(suit_values) + suit_values[card.suit]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> card <span class="keyword">in</span> sorted(deck, key=spades_high):</span><br><span class="line">    print(card)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>可以, 这很Python~</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> hypot</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Vector</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x=<span class="number">0</span>, y=<span class="number">0</span>)</span>:</span></span><br><span class="line">        self.x = x</span><br><span class="line">        self.y = y</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'Vector(%r, %r)'</span> % (self.x, self.y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__abs__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> hypot(self.x, self.y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__bool__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> bool(abs(self))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__add__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">        x = self.x + other.x</span><br><span class="line">        y = self.y + other.y</span><br><span class="line">        <span class="keyword">return</span> Vector(x, y)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__mul__</span><span class="params">(self, other: int)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Vector(self.x * other, self.y * other)</span><br><span class="line"></span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>) + Vector(<span class="number">3</span>, <span class="number">5</span>))</span><br><span class="line">print(Vector(<span class="number">1</span>, <span class="number">2</span>) * <span class="number">3</span>)</span><br><span class="line">print(abs(Vector(<span class="number">1</span>, <span class="number">2</span>)))</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Python//" class="article-tag-list-link color2">Python</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/12/Python-流畅的Python系列(1) - Python数据模型/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Python-流畅的Python系列(2) - 数据结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/">Python-流畅的Python系列(2) - 数据结构</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/" class="archive-article-date">
+  	<time datetime="2019-12-12T08:58:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><ul>
+<li>容器序列: list, tuple, collections.deque 可以存放不同类型的数据, 存放的是包含的任意类型的对象的引用</li>
+<li><p>扁平序列: str, bytes, bytearray, memoryview 和 array.array 只能容纳一种类型, 存放的是值而不是引用,只能存放字符,字节,数值</p>
+</li>
+<li><p>可变序列: list, bytearray, array.array, collections.deque, memoryview</p>
+</li>
+<li>不可变序列: tuple, str, bytes</li>
+</ul>
+<h1 id="列表推导和生成器表达式"><a href="#列表推导和生成器表达式" class="headerlink" title="列表推导和生成器表达式"></a>列表推导和生成器表达式</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="string">'ABC'</span></span><br><span class="line">dummy = [x <span class="keyword">for</span> x <span class="keyword">in</span> x]</span><br><span class="line">dummy2 = [ord(x) <span class="keyword">for</span> x <span class="keyword">in</span> x]</span><br><span class="line">print(x)</span><br><span class="line">print(dummy)</span><br><span class="line">print(dummy2)</span><br><span class="line"></span><br><span class="line">beyond = [s <span class="keyword">for</span> s <span class="keyword">in</span> x <span class="keyword">if</span> ord(s) &gt; <span class="number">65</span>]</span><br><span class="line">beyond2 = list(filter(<span class="keyword">lambda</span> c: c &gt; <span class="number">65</span>, map(ord, x)))</span><br><span class="line">print(beyond)</span><br><span class="line">print(beyond2)</span><br></pre></td></tr></table></figure>
+<h2 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h2>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Python//" class="article-tag-list-link color2">Python</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/12/Python-流畅的Python系列(2) - 数据结构/">展开全文 >></a>
         </p>
       
 
@@ -517,7 +572,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/14/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/16/">Next &raquo;</a>
     </nav>
   
 
@@ -625,11 +680,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -637,11 +696,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -654,10 +713,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

@@ -157,130 +157,30 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-es index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-加密算法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/es index/">es index</a>
+      <a class="article-title" href="/2019/04/30/加密算法/">计算的本质</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/es index/" class="archive-article-date">
-  	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+        <a href="/2019/04/30/加密算法/" class="archive-article-date">
+  	<time datetime="2019-04-30T05:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ul>
-<li>创建索引</li>
-</ul>
-<pre><code>PUT /secisland
-{
-    &quot;settings&quot; : {
-        &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
-    }
-}
-三个主分片,两个副本分片
-</code></pre><ul>
-<li>修改副本分片的数量</li>
-</ul>
-<pre><code>PUT /secisland/_settings
-{
-    &quot;number_of_replicas&quot;: 1
-}
-</code></pre><ul>
-<li>创建自定义字段类型</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">PUT /secisland</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span> : &#123;</span><br><span class="line">       <span class="string">"number_of_shards"</span>: <span class="number">3</span>, <span class="string">"number_of_replicas"</span>: <span class="number">2</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"mappings"</span>: &#123;</span><br><span class="line">        <span class="string">"secilog"</span>: &#123;</span><br><span class="line">            <span class="string">"properties"</span>: &#123;</span><br><span class="line">                <span class="string">"logType"</span>: &#123;</span><br><span class="line">                    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">                    <span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /secisland/_mapping/secilog</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"properties"</span>: &#123;</span><br><span class="line">        <span class="string">"logType"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"string"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>创建了一个名为secilog的类型，类型中有一个字段，字段的名称是logType，
-字段的数据类型是string，而且这个字段是不进行分析的。
-// 创建失败,
-</code></pre><ul>
-<li>增加映射</li>
-</ul>
-<pre><code>PUT /secisland
-{
-    &quot;mappings&quot;: {
-        &quot;log&quot;: {
-            &quot;properties&quot;: {
-                &quot;message&quot;: {
-                    &quot;type&quot;: &quot;string&quot;
-                }
-            }
-        }
-    }
-}
-// 失败.
-</code></pre><p>_source属性内是原始json文档.</p>
-<p>type已过时.一个index中最好只有一种type</p>
-<ul>
-<li>搜索</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-</code></pre><ul>
-<li>轻量搜索</li>
-</ul>
-<pre><code>GET /megacorp/_search?q=last_name:Smith
-</code></pre><ul>
-<li>查询表达式</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-{
-    &quot;query&quot; : {
-        &quot;match&quot; : {
-            &quot;last_name&quot; : &quot;Smith&quot;
-        }
-    }
-}
-</code></pre><ul>
-<li>range过滤器</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-{
-    &quot;query&quot; : {
-        &quot;bool&quot;: {
-            &quot;must&quot;: {
-                &quot;match&quot; : {
-                    &quot;last_name&quot; : &quot;smith&quot; 
-                }
-            },
-            &quot;filter&quot;: {
-                &quot;range&quot; : {
-                    &quot;age&quot; : { &quot;lt&quot; : 30 } 
-                }
-            }
-        }
-    }
-}
-</code></pre><ul>
-<li>全文搜索</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-{
-    &quot;query&quot; : {
-        &quot;match&quot; : {
-            &quot;about&quot; : &quot;rock climbing&quot;
-        }
-    }
-}    
-</code></pre><ul>
-<li>短语搜索, 精确匹配</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
-{
-    &quot;query&quot; : {
-        &quot;match_phrase&quot; : {
-            &quot;about&quot; : &quot;rock climbing&quot;
-        }
-    }
-}    
-</code></pre>
+        <p>对称加密算法: DES AES<br>非对称加密算法: RSA(数字签名,身份认证)</p>
+<p>分组密码: 加密时将明文分成固定长度的组(网络加密)<br>流密码: 又称序列密码, 每次加密一位或者一个字节的明文. RC4</p>
+<p>Base64算法: 解决电子邮件只能传输ASCII码字符问题</p>
+
       
 
       
@@ -305,7 +205,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
         		</li>
       		
 		</ul>
@@ -314,7 +214,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/es index/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/30/加密算法/">展开全文 >></a>
         </p>
       
 
@@ -344,46 +244,212 @@
 
 
   
-    <article id="post-Category-Theory-for-Programmers" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-计算的本质" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/Category-Theory-for-Programmers/">Category Theory for Programmers</a>
+      <a class="article-title" href="/2019/04/30/计算的本质/">计算的本质</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/Category-Theory-for-Programmers/" class="archive-article-date">
-  	<time datetime="2019-04-27T10:02:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
+        <a href="/2019/04/30/计算的本质/" class="archive-article-date">
+  	<time datetime="2019-04-30T05:20:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Category-The-Essence-of-Composition"><a href="#Category-The-Essence-of-Composition" class="headerlink" title="Category: The Essence of Composition"></a>Category: The Essence of Composition</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介:"></a>简介:</h2><blockquote>
-<p>A category consists of objects and arrows  that go between them.<br>    范畴与组合互为本质:<br>        The essence of a category is composition.</p>
+        <h1 id="Ruby基础"><a href="#Ruby基础" class="headerlink" title="Ruby基础"></a>Ruby基础</h1><h2 id="值"><a href="#值" class="headerlink" title="值"></a>值</h2><blockquote>
+<p>面向表达式的语言,每一段有效代码执行后都要产生一个值</p>
 </blockquote>
-<pre><code>The essence of composition is a category.
-</code></pre><hr>
-<h2 id="组合的性质"><a href="#组合的性质" class="headerlink" title="组合的性质:"></a>组合的性质:</h2><pre><code>    1. Associativity
-        (伏笔:  Associativity is pretty obvious when dealing with functions, 
-                but it may be not as obvious in other categories.)
-    2. Identity
+<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><ul>
+<li>布尔Boolean, 数值number,字符串string</li>
+<li>符号: 表示一个名字,一个轻量级,不可变的值,作为字符串的简单化,非内存密集化的替身. :symbol</li>
+<li>特殊值nil<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2></li>
+<li>数组字面量: 逗号分隔外加方括号 例: numbers = [‘zero’, ‘two’]</li>
+<li>范围range: 例: ages = 18..30</li>
+<li>散列hash: 例: fruit = {‘a’ =&gt; ‘apple’, ‘b’ =&gt; ‘banana’}</li>
+<li>proc: 未经求值的Ruby代码,匿名函数或lambda函数.例:multiply = -&gt; x, y {x * y}<h2 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h2></li>
+<li>if,case,while 都有end<h2 id="对象和方法"><a href="#对象和方法" class="headerlink" title="对象和方法"></a>对象和方法</h2></li>
+<li>每个值都是一个对象</li>
+<li>o = Object.new</li>
+<li>方法结束要有end<h2 id="类和模块"><a href="#类和模块" class="headerlink" title="类和模块"></a>类和模块</h2></li>
+<li>类结束要有end</li>
+<li>继承: class MultiplyingCalculator &lt; Calculator</li>
+<li>子类中的方法可以通过 super 关键字调用超类的同名方法</li>
+<li>共享方法定义的方式是在模块（module）中声明它们，这样它们就能被任意类包括进去<h2 id="其它特性"><a href="#其它特性" class="headerlink" title="其它特性"></a>其它特性</h2></li>
+<li>赋值声明局部变量</li>
+<li>数组给多个变量同时赋值 width, height, depth = [1000, 2250, 250]</li>
+<li>字符串插值 &gt;&gt; “hello #{‘dlrow’.reverse}” =&gt; “hello world”</li>
+<li>检查对象 inspect方法</li>
+<li>打印字符串 puts</li>
+<li>可变参数方法 * <ul>
+<li>在发送消息的时候， * 运算符还可以把每一个数组元素当作单个参数处理</li>
+<li>并行赋值</li>
+</ul>
+</li>
+<li>代码块 <ul>
+<li>方法可以带一个隐式代码块参数 </li>
+<li>yield关键字表示对代码块中那段代码的调用</li>
+<li>代码块可以带参数 { |n| puts “#{n}: hello” }</li>
+</ul>
+</li>
+<li>枚举类型<ul>
+<li>(1..10).select(&amp;:even?) =&gt; [2, 4, 6, 8, 10]</li>
+<li>flat_map, inject </li>
+</ul>
+</li>
+<li>结构体<ul>
+<li>class Point &lt; Struct.new(:x, :y)  自动生成x,y属性和getter setter</li>
+<li>比较两个结构体的属性是否相等</li>
+</ul>
+</li>
+<li>给内置对象扩展方法    </li>
+<li>定义常量 <ul>
+<li>任何以大写字母开头的变量都是常量</li>
+</ul>
+</li>
+<li>删除常量<br>  一个顶层常量可以通过给 Object 发送消息 remove_const<br>  来删除，同时还要把常量名作为符号（symbol）对象传进去<br>  Object.send(:remove_const, :NUMBERS)</li>
+</ul>
+<hr>
+<h1 id="程序和机器"><a href="#程序和机器" class="headerlink" title="程序和机器"></a>程序和机器</h1><p>detect：（find的别名函数） 返回列表中第一个符合条件的元素</p>
 
-组合是编程的本质
-</code></pre><hr>
-<pre><code>Challenges 
-  实现identity和compose
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Function</span>&lt;<span class="title">T</span>, <span class="title">R</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">R <span class="title">apply</span><span class="params">(T t)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> &lt;V&gt; <span class="function">Function&lt;V, R&gt; <span class="title">compose</span><span class="params">(Function&lt;? <span class="keyword">super</span> V, ? extends T&gt; before)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(before);</span><br><span class="line">        <span class="keyword">return</span> (V v) -&gt; apply(before.apply(v));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &lt;T&gt; <span class="function">Function&lt;T, T&gt; <span class="title">identity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> t -&gt; t;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>测试
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IdentityTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(id).compose(f2).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compute2</span><span class="params">(<span class="keyword">int</span> a, Function&lt;Integer, Integer&gt; f1, Function&lt;Integer, Integer&gt; f2, Function&lt;Integer, Integer&gt; id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> f1.compose(f2).compose(id).apply(a);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = <span class="keyword">new</span> IdentityTest().compute(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        <span class="keyword">int</span> res2 = <span class="keyword">new</span> IdentityTest().compute2(<span class="number">1</span>, x -&gt; x * <span class="number">2</span>, x -&gt; x + <span class="number">2</span>, Function.identity());</span><br><span class="line">        System.out.println(res);</span><br><span class="line">        System.out.println(res2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>用JavaScript来实现<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> identity = <span class="function"><span class="params">x</span> =&gt;</span> x</span><br><span class="line"><span class="keyword">const</span> compose = <span class="function">(<span class="params">f, g</span>) =&gt;</span> <span class="function"><span class="params">x</span> =&gt;</span> f(g(x))</span><br></pre></td></tr></table></figure></p>
-<p>测试<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> add5 = <span class="function"><span class="params">x</span> =&gt;</span> x + <span class="number">5</span></span><br><span class="line"><span class="keyword">const</span> multi2 = <span class="function"><span class="params">x</span> =&gt;</span> x * <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(compose(identity, compose(add5, multi2))(<span class="number">5</span>))</span><br><span class="line"><span class="built_in">console</span>.log(compose(add5, compose(identity, multi2))(<span class="number">5</span>))</span><br></pre></td></tr></table></figure></p>
-<h1 id="Types-and-Functions"><a href="#Types-and-Functions" class="headerlink" title="Types and Functions"></a>Types and Functions</h1><h1 id="Categories-Great-and-Small"><a href="#Categories-Great-and-Small" class="headerlink" title="Categories Great and Small"></a>Categories Great and Small</h1><h1 id="Kleisli-Categories"><a href="#Kleisli-Categories" class="headerlink" title="Kleisli Categories"></a>Kleisli Categories</h1><h1 id="Products-and-Coproducts"><a href="#Products-and-Coproducts" class="headerlink" title="Products and Coproducts"></a>Products and Coproducts</h1><h1 id="Simple-Algebraic-Data-Types"><a href="#Simple-Algebraic-Data-Types" class="headerlink" title="Simple Algebraic Data Types"></a>Simple Algebraic Data Types</h1><h1 id="Functors"><a href="#Functors" class="headerlink" title="Functors"></a>Functors</h1><h1 id="Functoriality"><a href="#Functoriality" class="headerlink" title="Functoriality"></a>Functoriality</h1><h1 id="Function-Types"><a href="#Function-Types" class="headerlink" title="Function Types"></a>Function Types</h1><h1 id="Natural-Transformations"><a href="#Natural-Transformations" class="headerlink" title="Natural Transformations"></a>Natural Transformations</h1><h1 id="Declarative-Programming"><a href="#Declarative-Programming" class="headerlink" title="Declarative Programming"></a>Declarative Programming</h1><h1 id="Limits-and-colimits"><a href="#Limits-and-colimits" class="headerlink" title="Limits and colimits"></a>Limits and colimits</h1><h1 id="Free-Monoids"><a href="#Free-Monoids" class="headerlink" title="Free Monoids"></a>Free Monoids</h1><h1 id="Representable-Functors"><a href="#Representable-Functors" class="headerlink" title="Representable Functors"></a>Representable Functors</h1><h1 id="The-Yoneda-Lemma"><a href="#The-Yoneda-Lemma" class="headerlink" title="The Yoneda Lemma"></a>The Yoneda Lemma</h1><h1 id="Yoneda-Embedding"><a href="#Yoneda-Embedding" class="headerlink" title="Yoneda Embedding"></a>Yoneda Embedding</h1><h1 id="Morphisms"><a href="#Morphisms" class="headerlink" title="Morphisms"></a>Morphisms</h1><h1 id="Adjunctions"><a href="#Adjunctions" class="headerlink" title="Adjunctions"></a>Adjunctions</h1><h1 id="Free-Forgetful-Adjunctions"><a href="#Free-Forgetful-Adjunctions" class="headerlink" title="Free/Forgetful Adjunctions"></a>Free/Forgetful Adjunctions</h1><h1 id="Monads-Programmer’s-Definition"><a href="#Monads-Programmer’s-Definition" class="headerlink" title="Monads: Programmer’s Definition"></a>Monads: Programmer’s Definition</h1><h1 id="Monads-and-Effects"><a href="#Monads-and-Effects" class="headerlink" title="Monads and Effects"></a>Monads and Effects</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/PL//" class="article-tag-list-link color3">PL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/30/计算的本质/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-编程的数学原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/28/编程的数学原理/">编程的数学原理</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/28/编程的数学原理/" class="archive-article-date">
+  	<time datetime="2019-04-28T04:32:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="群-group"><a href="#群-group" class="headerlink" title="群(group)"></a>群(group)</h1><p>群是一个集合G与其上定义的某种二元关系运算.</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
+<li>消去公理: 对任何a ∈ G, 都存在一个逆元a<sup>-1</sup>使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e</li>
+</ol>
+<p>例子: 整数加法群, 整数模5加法群</p>
+<h1 id="幺半群-monoid"><a href="#幺半群-monoid" class="headerlink" title="幺半群(monoid)"></a>幺半群(monoid)</h1><p>幺半群是一个集合S和其上定义的二元运算</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+<li>单位元公理: G中存在一个元素e, 使得任何 a · e = e · a = a</li>
+</ol>
+<p>例子: 字符串的拼接, 列表的连接</p>
+<h1 id="半群-semigroup"><a href="#半群-semigroup" class="headerlink" title="半群(semigroup)"></a>半群(semigroup)</h1><p>半群是一个集合S和其上定义的二元运算</p>
+<ol>
+<li>封闭性公理: 对任何a, b ∈ G, 运算结果a · b ∈ G</li>
+<li>结合性公理: 对任何a, b, c, 有 (a · b) · c = a · (b · c)</li>
+</ol>
+<p>例子: 全体正整数构成的加法半群, 乘法半群; 全体偶数构成的加法半群, 乘法半群</p>
+<h2 id="群的性质"><a href="#群的性质" class="headerlink" title="群的性质"></a>群的性质</h2><blockquote>
+<p>群的单位元是惟一的<br>群中的任意元素a,都存在且仅存在一个逆元使得a · a<sup>-1</sup> = a<sup>-1</sup> · a = e<br>有限群的每个元素都有有限的阶<br>    对群的一个元a,能够满足a<sup>m</sup> = e的最小整数m叫做a的阶<br>    如果m不存在,则称a的阶是无限的.</p>
+</blockquote>
+<p>存在从某个集合A到另一个集合B的映射f<br>a和b是A中的两个元, f(a)和f(b)是它们在B中的像<br>考虑在A上的二元封闭运算产生的元a · b,在映射下在B中的像f(a · b)<br>如果对B上的二元封闭运算总有<br>    f(a) · f(b) = f(a · b)</p>
+<p>则称f是从A到B的同态映射<br>如果f是满射(即B中所有元素都在A中有原像),则称为同态满射<br>例:奇偶判定函数odd: Z -&gt; Bool,接受一个整数,如果是奇数返回True,否则返回False<br>    布尔集合{True,False  }在逻辑或运算下构成一个群</p>
+<p> 如果f不仅是满射,还是单射,那么它就是一一映射.称f是从A到B的同构映射,简称同构,记做A ≌ B<br>    例: a=2,f(a)=4<br>        b=3,f(b)=9<br>        ab=6,f(ab)=f(a)f(b)=36</p>
+<h2 id="范畴Category"><a href="#范畴Category" class="headerlink" title="范畴Category"></a>范畴Category</h2><p>一个范畴C包括一组对象（Object），记为A,B,C,…，和一组箭头<br>（Arrow），记为f,g,h,…。它们之上定义了以下四种操作：</p>
+<ul>
+<li>成为源和目标</li>
+<li>id</li>
+<li>组合<br>两条公理:</li>
+<li>结合</li>
+<li>单位元<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">instance</span> <span class="type">Monoid</span> <span class="type">String</span> <span class="keyword">where</span></span></span><br><span class="line">    e = <span class="string">""</span></span><br><span class="line">    (*) = (++)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>字符串幺半群(S, ++, “”)<br>    r ++ (s ++ t) = (r ++ s) ++ t<br>    “” ++ s = s = s ++ “”<br>字符集幺半群(C, ∪, {})<br>自然数幺半群(N, +, 0)</p>
+<p>S到C的态射: 把串中用到的字符组成一个字符集 S -&gt; C  φ: s -&gt; {c | c ∈ s}<br>    φ(s ++ r) = φ(s) ∪ φ(r)<br>    φ(“”) = {}<br>C到N的态射: 集合的大小映射为自然数,空集的大小映射为0 C −→ N  ψ : c → |c|<br>    ψ(s) ∪ ψ(r) = ψ(s + r)<br>    {} = ψ(0)</p>
+<p>S -&gt; C -&gt; N<br>幺半群范畴Mon,对象是幺半群,箭头是态射,恒等箭头是从一个幺半群到它自己的态射</p>
+<p>只有一个对象的幺半群范畴:<br>    对象是字符串幺半群(S, ++, “”), 箭头是前缀映射,单位元是空串””</p>
+<p>预序 preset</p>
+<ul>
+<li>自反性 任何集合中的元素a都有a ≤ a；</li>
+<li>传递性 若a ≤ b且b ≤ c，则a ≤ c；<br>在预序基础上满足 </li>
+<li>反对称性 若a ≤ b且b ≤ a，则a = b；<br>称为偏序 poset</li>
+</ul>
+<p>偏序集例子: 族谱, {x,y,z}的所有子集在包含关系下</p>
+
       
 
       
@@ -417,7 +483,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/Category-Theory-for-Programmers/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/28/编程的数学原理/">展开全文 >></a>
         </p>
       
 
@@ -447,27 +513,48 @@
 
 
   
-    <article id="post-算法4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-范畴论-贺伟" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/算法4/">算法4</a>
+      <a class="article-title" href="/2019/04/28/范畴论-贺伟/">范畴论 贺伟</a>
     </h1>
   
 
         
-        <a href="/2019/04/24/算法4/" class="archive-article-date">
-  	<time datetime="2019-04-24T07:49:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+        <a href="/2019/04/28/范畴论-贺伟/" class="archive-article-date">
+  	<time datetime="2019-04-27T18:23:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h2 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h2><h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2>
+        <h2 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h2><ul>
+<li>obC 范畴C的全体对象</li>
+<li>C(A,B) 对象A到B的态射集</li>
+<li>MorC 范畴C的全体态射</li>
+<li>dom(f) 态射f的定义域</li>
+<li>cod(f) 态射f的值域</li>
+<li>$1_A$ 对象A到自身的单位态射</li>
+<li>$1_C$ 范畴C到自身的单位函子</li>
+</ul>
+<h1 id="范畴与函子"><a href="#范畴与函子" class="headerlink" title="范畴与函子"></a>范畴与函子</h1><h2 id="范畴的定义"><a href="#范畴的定义" class="headerlink" title="范畴的定义"></a>范畴的定义</h2><ol>
+<li>一族对象obC</li>
+<li></li>
+</ol>
+<ul>
+<li>(a) 复合运算律</li>
+<li>(b) 结合律</li>
+<li>(c) 单位态射：每一个对象A,存在一个态射$1_A ∈ C(A,A)$使得对任意的f ∈ C(A,B)及g ∈ C(C,A),有<br>$f1_A = f,   1_Ag = g$</li>
+</ul>
+<hr>
+<h3 id="对偶原理-duality-principle"><a href="#对偶原理-duality-principle" class="headerlink" title="对偶原理(duality principle)"></a>对偶原理(duality principle)</h3><pre><code>态射反向，称为对偶。
+</code></pre><h3 id="B上的切片范畴-slice-category-over-B-C-B"><a href="#B上的切片范畴-slice-category-over-B-C-B" class="headerlink" title="B上的切片范畴(slice category over B) C/B"></a>B上的切片范畴(slice category over B) C/B</h3><pre><code>任意两个以B为值域的态射,
+</code></pre><h2 id="函子"><a href="#函子" class="headerlink" title="函子"></a>函子</h2><h2 id="自然变换"><a href="#自然变换" class="headerlink" title="自然变换"></a>自然变换</h2><h2 id="单态射与满态射"><a href="#单态射与满态射" class="headerlink" title="单态射与满态射"></a>单态射与满态射</h2><h2 id="子对象与商对象"><a href="#子对象与商对象" class="headerlink" title="子对象与商对象"></a>子对象与商对象</h2><h2 id="Yoneda引理与可表达函子"><a href="#Yoneda引理与可表达函子" class="headerlink" title="Yoneda引理与可表达函子"></a>Yoneda引理与可表达函子</h2><h2 id="射影对象与单射对象"><a href="#射影对象与单射对象" class="headerlink" title="射影对象与单射对象"></a>射影对象与单射对象</h2>
       
 
       
@@ -492,7 +579,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        			<a href="/categories/范畴论//" class="article-tag-list-link color4">范畴论</a>
         		</li>
       		
 		</ul>
@@ -501,205 +588,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/算法4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Kubernetes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/Kubernetes/">Kubernetes</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/Kubernetes/" class="archive-article-date">
-  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>一切以服务为中心, 一切围绕服务运转.<br>自动化.<br>一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发<br>调度流程,最终在选定的目标节点上启动相应数量的服务实例副本.</p>
-<p>核心组件:</p>
-<ul>
-<li>etcd: 保存整个集群的状态, 所有资源对象的数据</li>
-<li>apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制</li>
-<li>controller manager: 维护集群的状态, 如故障检测,自动扩展,滚动更新等.</li>
-<li>scheduler: 负责资源调度,按照预定的调度策略将Pod调度到相应的机器上.</li>
-<li>kubelet: 负责维护容器的生命周期,也负责Volume(CVI)和网格(CNI)的管理.</li>
-<li>Container runtime: 负责镜像管理以及Pod和容器的真正运行(CRI)</li>
-<li>kube-proxy: 负责为Service提供cluster内部的服务发现和负载均衡.</li>
-</ul>
-<p>Add-ons:<br>    kube-dns: 负责为整个集群提供DNS服务<br>    Ingress Controller: 为服务提供外网入口.<br>    Heapster: 资源监控</p>
-<p>API对象: Kubernetes集群中的管理操作单元.<br>    三大类属性: 元数据metadata<br>                 标识API对象,至少包含:namespace,name和uid. 使用标签来标识和匹配不同的对象.<br>                                如env=dev来标识开发服务.<br>              规范spec<br>                 描述了用户期望的Kubernetes集群中的分布式系统达到的理想状态.如通过Replication Controller设置<br>                    期望的Pod副本数为3.<br>              状态status<br>                 描述了系统实际当前达到的状态,如当前实际Pod副本数为2</p>
-<p>Pod: Kubernetes集群中运行部署应用或服务的最小单元.一个Pod代表集群中运行的一个进程.<br>        支持多个容器在一个Pod中共享网络地址和文件系统,可以通过进程间通信和文件共享的方式完成服务.</p>
-<p>获取可用的节点:</p>
-<blockquote>
-<p>kubectl get nodes</p>
-</blockquote>
-<h2 id="启动Mysql应用"><a href="#启动Mysql应用" class="headerlink" title="启动Mysql应用"></a>启动Mysql应用</h2><p>mysql-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">1</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">mysql</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mysql</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">mysql</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">3306</span> <span class="comment"># 容器应用监听的端口号</span></span><br><span class="line">            <span class="attr">env:</span>                   <span class="comment"># 注入容器内的环境变量</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">            <span class="attr">value:</span> <span class="string">"123456"</span></span><br></pre></td></tr></table></figure></p>
-<p>将RC文件发布到Kubenetes集群:</p>
-<blockquote>
-<p>kubectl create -f mysql-rc.yaml</p>
-</blockquote>
-<p>查看创建的RC:</p>
-<blockquote>
-<p>kubectl get rc</p>
-</blockquote>
-<p>查看pod的创建情况:</p>
-<blockquote>
-<p>kubectl get pods</p>
-</blockquote>
-<p>查看正在运行的容器:</p>
-<blockquote>
-<p>docker ps | grep mysql</p>
-</blockquote>
-<p>创建Kubernetes Service:<br>mysql-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">3306</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span></span><br></pre></td></tr></table></figure></p>
-<p>创建Service:</p>
-<blockquote>
-<p>kubectl create -f mysql-svc.yaml</p>
-</blockquote>
-<p>查看创建的Service:</p>
-<blockquote>
-<p>kubectl get svc</p>
-</blockquote>
-<h2 id="启动Tomcat应用"><a href="#启动Tomcat应用" class="headerlink" title="启动Tomcat应用"></a>启动Tomcat应用</h2><p>创建myweb-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">2</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">myweb</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">myweb</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">kubeguide/tomcat-app:v1</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span> <span class="comment"># 容器应用监听的端口号</span></span><br></pre></td></tr></table></figure></p>
-<p>RC的创建和验证:</p>
-<blockquote>
-<p>kubectl create -f myweb-rc.yaml<br>创建myweb-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">NodePort</span>      <span class="comment"># 此Service开启了NodePort方式的外网访问模式</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">          <span class="attr">nodePort:</span> <span class="number">30001</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span></span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>kubectl create -f myweb-svc.yaml</p>
-</blockquote>
-<p>查看Services:<br>kubectl get services</p>
-<h2 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h2><p>负责整个集群的管理和控制,通常在一个独立的服务器, 基本所有的控制命令都发送给它.</p>
-<ul>
-<li>Kubernetes API Server: 提供HTTP Rest接口的关键服务进程,所有资源增删改查的唯一入口,集群控制的入口进程.</li>
-<li>Kubernetes Controller Manager: 所有资源对象的自动化控制中心</li>
-<li>Kubernetes Scheduler: 资源调度</li>
-<li>etcd服务: 保存所有资源对象的数据</li>
-</ul>
-<h2 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h2><p>可以是物理主机,也可以是虚拟机.<br>工作负载节点.<br>每个Node都运行着:</p>
-<ul>
-<li>kubelet: 负责Pod对应的容器的创建,启停等任务.与Master密切协作,实现集群管理</li>
-<li>kube-proxy: 实现Kubernetes Service的通信与负载均衡机制的重要组件</li>
-<li>Docker Engine: Docker引擎,负责本机的容器创建和管理工作</li>
-</ul>
-<p>查看某个Node的详细信息:</p>
-<blockquote>
-<p>kubectl describe node &lt;node_name&gt;</p>
-</blockquote>
-<h2 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h2><p>根容器: Pause容器<br>业务容器共享Pause容器的IP,挂接的Volume<br>Kubernetes为每个Pod都分配了唯一的IP地址, 即Pod IP.<br>一个Pod里的多个容器共享Pod IP地址.<br>一个Pod里的容器可以与另外主机上的Pod容器能够直接通信</p>
-<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><ul>
-<li>普通Pod<br>放入etcd中存储,被Kubernetes Master调度到某个具体的Node上并进行绑定,随后该Pod被对应的Node上的kubelet进程实例化成<br>一组相关的Docker容器并启动.</li>
-<li>静态Pod<br>不存在etcd存储中,存放在某个具体的Node上的具体文件中,只在此Node上启动,运行</li>
-</ul>
-<h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><p>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP.</p>
-<h2 id="Annotation"><a href="#Annotation" class="headerlink" title="Annotation"></a>Annotation</h2><p>与Label类似,使用key/value键值对的形式进行定义.<br>Annotation是用户任意定义的附加信息,以便外部工具查找.</p>
-<h2 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h2><p>Kubernetes将存储在etcd中的ConfigMap通过Volume映射的方式变成目标Pod内的配置文件,不管目标Pod被调度到哪台服务器,都会<br>完成自动映射.<br>如果ConfigMap中的key-value数据被修改,则映射到Pod中的”配置文件”也会随之更新.</p>
-<h2 id="Kubernetes安装"><a href="#Kubernetes安装" class="headerlink" title="Kubernetes安装"></a>Kubernetes安装</h2><ol start="0">
-<li>关闭防火墙<blockquote>
-<p>systemctl disable firewalld<br>systemctl stop firewalld<br>禁用SELinux, 让容器可以读取主机文件系统:<br>setenforce 0</p>
-</blockquote>
-</li>
-</ol>
-<ol>
-<li><p>修改源:<br>[kuebrnetes]<br>name=Kubernetes Repository<br>baseurl=<a href="http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/" target="_blank" rel="noopener">http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</a><br>enabled=1<br>gpgcheck=0</p>
-</li>
-<li><p>安装kubeadm</p>
-<!-- > yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes -->
-<blockquote>
-<p>yum install -y kubelet-1.14.2 kubeadm-1.14.2 kubectl-1.14.2 –disableexcludes=kubernetes<br>我离气死就差这么点儿距离了..<br>安装了1.6版本的上述kubelet, 后面的死活装不上</p>
-</blockquote>
-</li>
-<li><p>启动docker和kubelet<br>systemctl enable docker &amp;&amp; systemctl start docker<br>systemctl enable kubelet &amp;&amp; systemctl start kubelet</p>
-</li>
-</ol>
-<p>得到默认的初始化参数文件:<br>kubeadm config print init-defaults &gt; init.defaults.yaml</p>
-<ol start="4">
-<li>修改docker的镜像托管站, 重启docker服务<blockquote>
-<p>echo ‘{“registry-mirrors”:[“<a href="https://registry.docker-cn.com&quot;]}&#39;" target="_blank" rel="noopener">https://registry.docker-cn.com&quot;]}&#39;</a> &gt; /etc/docker/daemon.json</p>
-</blockquote>
-</li>
-</ol>
-<p>启动        systemctl start docker<br>守护进程重启   sudo systemctl daemon-reload<br>重启docker服务   systemctl restart docker<br>重启docker服务  sudo service docker restart<br>关闭docker   service docker stop<br>关闭docker  systemctl stop docker</p>
-<ol start="5">
-<li>使用config images pull子命令下载所需镜像:<blockquote>
-<p>kubeadm config images pull –config=init-config.yaml</p>
-</blockquote>
-</li>
-</ol>
-<blockquote>
-<p>kubeadm init –config=init-config.yaml</p>
-</blockquote>
-<p>关掉swap</p>
-<blockquote>
-<p>swapoff -a</p>
-</blockquote>
-<p>不知道这啥错,也不知道这啥办法.<br>$ echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables<br>$ echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-ip6tables</p>
-<blockquote>
-<p>安装成功了, 我离去世就差这么一点点距离了.</p>
-</blockquote>
-<p>kubectl命令需要使用kubernetes-admin来运行，<br>解决方法如下，将主节点中的【/etc/kubernetes/admin.conf】文件拷贝到从节点相同目录下，然后配置环境变量</p>
-<blockquote>
-<p>echo “export KUBECONFIG=/etc/kubernetes/admin.conf” &gt;&gt; ~/.bash_profile</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/Kubernetes/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/28/范畴论-贺伟/">展开全文 >></a>
         </p>
       
 
@@ -731,7 +620,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/32/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="page-number current">33</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/34/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/32/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/31/">31</a><a class="page-number" href="/page/32/">32</a><span class="page-number current">33</span><a class="page-number" href="/page/34/">34</a><a class="page-number" href="/page/35/">35</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/34/">Next &raquo;</a>
     </nav>
   
 
@@ -839,11 +728,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -851,11 +744,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -868,10 +761,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

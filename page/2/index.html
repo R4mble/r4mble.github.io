@@ -157,139 +157,35 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-死锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Scheme and the Art of Programming" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/23/死锁/">死锁</a>
+      <a class="article-title" href="/2020/04/24/Scheme and the Art of Programming/">Scheme and the Art of Programming</a>
     </h1>
   
 
         
-        <a href="/2020/04/23/死锁/" class="archive-article-date">
-  	<time datetime="2020-04-23T03:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-23</time>
+        <a href="/2020/04/24/Scheme and the Art of Programming/" class="archive-article-date">
+  	<time datetime="2020-04-24T11:20:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>线程A持有锁a等待获取锁b, 线程B持有锁b等待获取锁a</p>
-<ul>
-<li>竞争资源: 1.可剥夺资源:某进程获得这类资源后,该资源可以被其他进程或系统剥夺, 如CPU和主存<pre><code>2. 不可剥夺资源: 当系统把这类资源分配给某进程后, 再不能强行收回, 只能在进程用完后自行释放, 如磁带机,打印机等
-3. 临时资源: 硬件中断,信号,消息,缓存区内的消息等
-</code></pre>  产生死锁的竞争资源: 不可剥夺资源, 临时资源</li>
-</ul>
-<p>死锁产生的4个必要条件:<br>    1.互斥条件: 进程要求对所分配的资源进行排它性控制，即在一段时间内某资源仅为一进程所占用。<br>    2.请求和保持条件: 当进程因请求资源而阻塞时，对已获得的资源保持不放。<br>    3.不剥夺条件: 进程已获得的资源在未使用完之前，不能剥夺，只能在使用完时由自己释放。<br>    4.环路等待条件: 在发生死锁时，必然存在一个进程–资源的环形链。</p>
-<p>解决死锁的方法:<br>    1.资源一次性分配: 一次性分配所有资源，这样就不会再有请求了：（破坏请求条件）<br>    2.只要有一个资源得不到分配, 也不给这个进程分配其他的资源（破坏请保持条件）<br>    3.可剥夺资源: 当某进程获得了部分资源,但得不到其他资源,则释放已占有的资源（破坏不可剥夺条件）<br>    4.资源有序分配法: 系统给每类资源赋予一个编号,每一个进程按编号递增的顺序请求进程,释放则相反(破坏环路等待条件)</p>
-<p>死锁检测: Jstack命令 JConsole工具</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/并发编程//" class="article-tag-list-link color5">并发编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/23/死锁/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java中的逆变与协变" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/22/Java中的逆变与协变/">Java中的逆变与协变</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/22/Java中的逆变与协变/" class="archive-article-date">
-  	<time datetime="2020-04-22T15:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>看到王垠博客的一篇文章<br><a href="http://www.yinwang.org/blog-cn/2020/02/13/java-type-system" target="_blank" rel="noopener">一道Java面试题</a></p>
-<p>里面说的是这样一段代码:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String[] a = <span class="keyword">new</span> String[<span class="number">2</span>];</span><br><span class="line">    Object[] b = a;</span><br><span class="line">    a[<span class="number">0</span>] = <span class="string">"hi"</span>;</span><br><span class="line">    b[<span class="number">1</span>] = Integer.valueOf(<span class="number">42</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>看到后首先想的是逆变与协变.</p>
-<h1 id="里氏替换原则-LSP"><a href="#里氏替换原则-LSP" class="headerlink" title="里氏替换原则  LSP"></a>里氏替换原则  LSP</h1><blockquote>
-<p>所有引用基类的地方必须能透明地使用其子类的对象。</p>
-</blockquote>
-<h2 id="四个含义"><a href="#四个含义" class="headerlink" title="四个含义"></a>四个含义</h2><ul>
-<li>子类完全拥有父类的方法，且具体子类必须实现父类的抽象方法。</li>
-<li>子类中可以增加自己的方法。</li>
-<li>当子类覆盖或实现父类的方法时，方法的形参要比父类方法的更为宽松。</li>
-<li>当子类覆盖或实现父类的方法时，方法的返回值要比父类更严格。</li>
-</ul>
-<h2 id="逆变与协变的定义"><a href="#逆变与协变的定义" class="headerlink" title="逆变与协变的定义"></a>逆变与协变的定义</h2><p>如果A是B的子类, A的派生类也是B的派生类的子类, 那么我们称这种关系为协变;<br>如果A是B的子类, B的派生类是A的派生类的子类, 那么我们称这种关系为逆变;<br>如果A是B的子类, A的派生类与B的派生类没有继承关系, 那么我们称这种关系为不变;</p>
-<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>Number是Integer的父类</p>
-<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><pre><code>ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Number&gt;();
-ArrayList&lt;Number&gt; numbers = new ArrayList&lt;Integer&gt;();
-</code></pre><p>以上两个都跑不通, 看出ArrayList<number> 与 ArrayList<integer>没有继承关系,<br>因此Java的泛型是不变的</integer></number></p>
-<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><pre><code>Number[] numbers = new Integer[2];
-Integer[] integers = new Number[2];
-</code></pre><p>第一个可以, 第二个不行, 看出Number[] 是Integer[] 的父类,<br>因此Java的数组是协变的.</p>
-<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><pre><code>static Number method(Number num) {
-    return 1;
-}
-
-Object result = method(new Integer(2)); //correct
-Number result = method(new Object()); //error
-Integer result = method(new Integer(2)); //error
-</code></pre><p>传入形参的类型应为method形参的子类型<br>返回值应为method返回值的基类型</p>
+        <p>看到了Chez Scheme和 r6rs-monads, 顺利跑起来了却看不懂代码.<br>于是随手找了个Scheme书, 封面还挺好看.作者还是Daniel P. Firedman.<br>那这就很有必要瞄一眼了.</p>
 <hr>
-<p>至此, 我们来尝试回答一下王垠的问题: 哪一行错了？为什么？<br>分析: Java的数组时协变的, 因此 String是Object子类, String[] 也是 Object[] 的子类,<br>    也就有了我们喜闻乐见的父类引用指向子类对象:  Object[] b = a;<br>    从JVM的实现来看, b和a都是栈上指向堆上一块String[] 数组空间的引用.可以佐证的是对a[0]和b[1]的<br>    赋值会同时影响a和b.</p>
-<p>最酷的回答: Java错了. 原因: Java没有遵守里氏替换原则,所有引用基类的地方必须能透明地使用其子类的对象,<br>    名义上是Object, 实际上是String空间, 里面存的是char[] 数组, 往里面塞Integer, 当然是塞不进去.</p>
+<ol>
+<li>Data and Operators</li>
+<li>Procedures and Recursion</li>
+<li>Data Abstraction and Numbers</li>
+<li>Data Driven Recursion</li>
+</ol>
+<p>manuscript 手稿; 原稿; </p>
 
       
 
@@ -304,7 +200,7 @@ Integer result = method(new Integer(2)); //error
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        			<a href="/categories/Scheme//" class="article-tag-list-link color2">Scheme</a>
         		</li>
       		
 		</ul>
@@ -313,7 +209,7 @@ Integer result = method(new Integer(2)); //error
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/22/Java中的逆变与协变/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/24/Scheme and the Art of Programming/">展开全文 >></a>
         </p>
       
 
@@ -343,106 +239,33 @@ Integer result = method(new Integer(2)); //error
 
 
   
-    <article id="post-(1)-数据类型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Chez Scheme初体验" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/22/(1)-数据类型/">(1)-数据类型</a>
+      <a class="article-title" href="/2020/04/24/Chez Scheme初体验/">Chez Scheme初体验</a>
     </h1>
   
 
         
-        <a href="/2020/04/22/(1)-数据类型/" class="archive-article-date">
-  	<time datetime="2020-04-22T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
+        <a href="/2020/04/24/Chez Scheme初体验/" class="archive-article-date">
+  	<time datetime="2020-04-24T09:57:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="字符串-string"><a href="#字符串-string" class="headerlink" title="字符串(string)"></a>字符串(string)</h3><pre><code>set name &quot;Tom&quot;
-get name
-append name &quot;Jack&quot;
-exists name
-del name
-</code></pre><p>批量操作:</p>
-<pre><code>mget name1 name2 name3
-mset name1 tom name2 jerry name3 jack
-</code></pre><p>设置过期:</p>
-<pre><code>expire name 5        #5s后过期
-setex name 5 &quot;tom&quot;  #5s后过期
-</code></pre><p>计数:</p>
-<pre><code>set counter 1000
-incr counter 
-decr counter
-incrby counter 5
+        <p>山寺计划来到了奇怪的地方…</p>
+<p>在看 r6rs-monads 这个项目的时候无意看到 Chez Scheme, 这个被王垠吹上天的编译器.<br>我的Racket突然不香了, 本来以为Chez Scheme自己编译会很麻烦, 没想到直接就有Windows的安装包.<br>下载下来, 配置下环境变量, OK~</p>
+<h1 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h1><p>scheme –libdirs lib –script examples/parser.scm</p>
+<p>退出Scheme的shell:   (exit)</p>
+<h1 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h1><p>(display 123)<br>(newline)</p>
+<p>(define (double x) (<em> x 2))<br>(define double (lambda (x) (</em> x 2)))<br>(display (double 33))</p>
 
-setnx name &quot;jerry&quot;        #如果name不存在,则创建.
-</code></pre><h3 id="列表-list"><a href="#列表-list" class="headerlink" title="列表(list)"></a>列表(list)</h3><pre><code>lpush lists redis mongodb golang
-rpush lists mysql postgre
-lpop lists
-rpop lists
-lrange lists 0 10
-</code></pre><h4 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h4><p>LPUSH mylist 4 3 2 6 9<br>SORT mylist<br>LPUSH mylistalpha a d i e p<br>SORT mylistalpha ALPHA</p>
-<blockquote>
-<p>lindex对链表进行遍历, 性能随index变大而变差. index为-1表示倒数第一个元素.<br>  ltrim 保留start_index和end_index之间的区间, 其他的去掉.</p>
-</blockquote>
-<blockquote>
-<p>数据量较少时会使用一块连续的内存存储,压缩列表ziplist将元素连续存储.<br>  数据量较多时使用quicklist.<br>  Redis将链表和ziplist结合组成quicklist,多个ziplist使用双向<br>  指针串起来使用.这样既可以快速插入删除,也不会出现太大的空间冗余.</p>
-</blockquote>
-<h3 id="散列-hash"><a href="#散列-hash" class="headerlink" title="散列(hash)"></a>散列(hash)</h3><pre><code>hmset car name &quot;volvo&quot; color &quot;black&quot; price 20
-hmget car name
-hexists car name
-hdel car price
-</code></pre><blockquote>
-<p>数组 + 链表的二维结构, 第一维数组位置碰撞后,使用链表将元素串接起来.<br>    与Java的HashMap的不同点:<br>        Redis字典只能是字符串;<br>        Redis采用渐进式rehash策略,HashMap采用一次性全部rehash.<br>            Redis不堵塞服务,实现了高性能.</p>
-</blockquote>
-<pre><code>渐进式rehash: 在rehash的同时保留新旧两个hash结构,查询时会同时查询两个
-hash结构,然后在后续的定时任务中以及hash的子指令中,逐渐将旧hash内容迁移到
-新hash结构中.当hash移除了最后一个元素后,该数据结构自动被删除,内存被回收.
-
-HashMap的rehash: 
-</code></pre><h3 id="集合-set"><a href="#集合-set" class="headerlink" title="集合(set)"></a>集合(set)</h3><pre><code>sadd letters a
-sadd letters a b c
-srem letters c d
-smembers letters
-sadd setA 1 2 3
-sdiff setA setB
-</code></pre><p>相当于value为NULL的字典.</p>
-<h3 id="有序集合-zset"><a href="#有序集合-zset" class="headerlink" title="有序集合(zset)"></a>有序集合(zset)</h3><pre><code>zadd tutorials 1 redis 2 mongodb 3 mysql
-zrange tutorials 0 10 WITHSOCRES
-zrange bookstore 0 -1       默认按score从低到高排
-zrevrange bookstore 0 -1    按score从高到低排
-zcard bookstore                集合中元素的数量,key不存在时返回0
-zscore bookstore &quot;Java Concurrency&quot; 查看score(使用double存储,有精度问题)
-zrank bookstore &quot;Java Concurrency&quot; 排名,按照score从低往高排.
-zrangebysocre bookstore 0 8.9 根据score区间遍历zset
-zrem bookstore &quot;Java Concurrency&quot;
-</code></pre><h3 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h3><p>比特位组成的数组.<br>用途举例: 存用户一年的签到记录.</p>
-<pre><code>bitcount
-    统计指定位置范围内1的个数,start和end是字节索引,必须是8的倍数.
-    要查找用户某个月签到多少天,需要将这个月覆盖的字节全部取出然后统计.
-bitpos 来查找指定范围内出现的第一个0或1
-bitfield 一次操作多个位
-</code></pre><h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>提供不精确的去重计数方案, 标准误差0.81%</p>
-<pre><code>pfadd uv user1
-pfcount uv
-pfadd uv user2 user3 user1 user4
-pfcount uv  
-</code></pre><p>pfmerge 将多个pf计数值累加形成新的pf值</p>
-<p>布隆过滤器:<br>    场景举例: 推荐内容去重.</p>
-<pre><code>bf.add         bf.madd
-bf.exists         bf.mexists
-</code></pre><p>向布隆过滤器添加key时,使用多个hash函数对key进行hash算得一个整数索引,</p>
-<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><pre><code>SET session uuid11
-EXPIRE session 20 
-TTL session
-</code></pre><h3 id="发布-订阅"><a href="#发布-订阅" class="headerlink" title="发布/订阅"></a>发布/订阅</h3><pre><code>SUBSCRIBE redisChat
-PUBLISH redisChat &quot;Learn redis&quot;
-</code></pre>
       
 
       
@@ -456,7 +279,7 @@ PUBLISH redisChat &quot;Learn redis&quot;
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="/categories/Scheme//" class="article-tag-list-link color2">Scheme</a>
         		</li>
       		
 		</ul>
@@ -465,7 +288,7 @@ PUBLISH redisChat &quot;Learn redis&quot;
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/22/(1)-数据类型/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/24/Chez Scheme初体验/">展开全文 >></a>
         </p>
       
 
@@ -495,39 +318,84 @@ PUBLISH redisChat &quot;Learn redis&quot;
 
 
   
-    <article id="post-(2)-分布式锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(1)-起步" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/22/(2)-分布式锁/">(2)-分布式锁</a>
+      <a class="article-title" href="/2020/04/24/(1)-起步/">The Scheme Programming Language(1)-起步</a>
     </h1>
   
 
         
-        <a href="/2020/04/22/(2)-分布式锁/" class="archive-article-date">
-  	<time datetime="2020-04-22T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
+        <a href="/2020/04/24/(1)-起步/" class="archive-article-date">
+  	<time datetime="2020-04-24T09:57:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code>setnx(set if not exist)
-分布式锁逻辑流程:
-
-setnx lock:codehole true
-    do something...
-expire lock:codehole 5        
-del lock:codehole
-</code></pre><p>存在问题: setnx和expire操作之间如果进程挂掉就会造成死锁.</p>
-<p>解决办法: redis2.8后加入set指令扩展参数,使这两个指令一起执行.</p>
-<pre><code>set lock:codehole true ex 5 nx
-    do something...
-del lock:codehole
-</code></pre><p>依然存在问题: 如果加锁和释放锁之间逻辑执行时间太长超出锁超时限制,<br>    锁会过期,第二个线程重新持有锁. 第一个线程执行完逻辑后把锁释放了,<br>    第三个线程就会在第二个线程逻辑执行完之前拿到了锁.<br>解决方案: 为set指令的value设置一个随机数,释放锁时检查随机数是否一致,<br>    然后再删除key. 检查value和删除key不是原子操作,需要Lua脚本来处理.</p>
+        <p>cons接收两个参数, 第二个是个list, 返回一个list<br>(cons ‘(a b) ‘(c d))  =&gt;  ((a b) c d)</p>
+<p>当cons的第二个参数不是list时, 它被称作 improper list<br>(cons ‘a ‘b)   =&gt;  (a . b)<br>(cdr ‘(a . b)) =&gt; b    cdr不是list的pair被称作 dotted paire<br>(cons ‘a ‘(b . c))  =&gt;  (a b . c)<br>((car (cdr (list + - * /))) 17 5)</p>
+<p>list接收任意数量参数, 并总返回一个proper list</p>
+<p>12</p>
+<p>(let ((x 2))<br>  (+ x 3))</p>
+<p>让x为2, 必须用两个括号包着,<br>因为let区是 a list of variable-expression pairs<br>5</p>
+<p>(let ((x 2) (y 3))<br>  (+ x y))</p>
+<p>使用中括号代替小括号 分隔let中的赋值<br>(let ([list1 ‘(a b c)] [list2 ‘(d e f)])<br>  (cons (cons (car list1)<br>          (car list2))<br>    (cons (car (cdr list1))<br>      (car (cdr list2)))))</p>
+<p>对scheme来说, 小括号和中括号是一样的.<br>(let ([f +] [x 2] [y 3])<br>(f x y))</p>
+<p>(let ([+ *])<br>(+ 2 3))</p>
+<p>=&gt; 6</p>
+<ul>
+<li>let嵌套<br>(let ([a 4] [b -3])<br>(let ([a-squared (* a a)]<pre><code>[b-squared (* b b)])
+</code></pre>  (+ a-squared b-squared)))</li>
+</ul>
+<p>=&gt; 25</p>
+<p>(let ([x 1])<br>  (let ([x (+ x 1)])<br>    (+ x x)))</p>
+<p>=&gt; 4   </p>
+<p>(let [(x 9)]<br>  (* x<br>    (let ([x (/ x 3)])<br>      (+ x x))))</p>
+<h1 id="2-5-lambda-expressions"><a href="#2-5-lambda-expressions" class="headerlink" title="2.5 lambda expressions"></a>2.5 lambda expressions</h1><p>(let ([double-any (lambda (f x) (f x x))])<br>  (list (double-any + 13)<br>    (double-any cons ‘a)))</p>
+<p>=&gt; (26 (a . a))    </p>
+<p>(let ([x ‘a])<br>  (let ([f (lambda (y) (list x y))])<br>    (f ‘b)))    </p>
+<p>=&gt; (a b)    </p>
+<p>(let ([f (let ([x ‘sam])<br>           (lambda (y z) (list x y z)))])<br>  (f ‘i ‘am))</p>
+<p>=&gt; (sam i am)  </p>
+<ul>
+<li>procedure已经创建, x就没用了, 后面再赋值也影响不到了</li>
+</ul>
+<p>(let ([f (let ([x ‘sam])<br>           (lambda (y z) (list x y z)))])<br>  (let ([x ‘not-sam])<br>    (f ‘i ‘am)))</p>
+<p>=&gt; (sam i am)</p>
+<blockquote>
+<p>let表达式就是lambda表达式应用到参数上<br>(let ([x ‘a]) (cons x x)) ≡ ((lambda (x) (cons x x)) ‘a)</p>
+</blockquote>
+<ul>
+<li>接收单个参数的lambda表达式,任意数量的参数都会被放进一个list传进去.</li>
+</ul>
+<p>((lambda x x) 1)<br>=&gt; (1)</p>
+<p>(let ([f (lambda x x)])<br>  (f 1 2 3 4))</p>
+<p>=&gt; (1 2 3 4)  </p>
+<p>没参数, 就是空list<br>(let ([f (lambda x x)])<br>(f))<br>=&gt; ()</p>
+<ul>
+<li>接收improper list作为参数的lambda表达式,点之前的一一对应,<br>最后一个参数将多余的输入作为一个list.</li>
+</ul>
+<p>(let ([g (lambda (x . y) (list x y))])<br>  (g 1 2 3 4))<br>=&gt;  (1 (2 3 4))</p>
+<p>(let ([h (lambda (x y . z) (list x y z))])<br>  (h ‘a ‘b ‘c ‘d))<br>=&gt;   (a b (c d))</p>
+<p>(let ([f (lambda (x . y) y)])<br>(f ‘a))<br>=&gt; ()</p>
+<h1 id="2-6-定义"><a href="#2-6-定义" class="headerlink" title="2.6 定义"></a>2.6 定义</h1><p>(define list (lambda x x))</p>
+<p>(define doubler<br>  (lambda (f)<br>    (lambda (x) (f x x))))</p>
+<p>(define double (doubler +))<br>(define square (doubler *))</p>
+<p>(display (double 4))<br>(display (square 4))</p>
+<h1 id="2-7-cond"><a href="#2-7-cond" class="headerlink" title="2.7 cond"></a>2.7 cond</h1><p>(define abs<br>  (lambda (n)<br>    (if (&lt; n 0)<br>      (- 0 n)<br>      n)))</p>
+<p>(define sign<br>  (lambda (n)<br>    (cond<br>      [(&lt; n 0) -1]<br>      [(&gt; n 0) +1]<br>      [else 0])))      </p>
+<h1 id="2-8-recursive"><a href="#2-8-recursive" class="headerlink" title="2.8 recursive"></a>2.8 recursive</h1><p>(define length<br>  (lambda (ls)<br>    (if (null? ls)<br>      0<br>      (+ (length (cdr ls)) 1))))</p>
+<p>使用 (trace length) 来展开</p>
+<p>(define list-copy<br>  (lambda (ls)<br>    (if (null? ls)<br>        ‘()<br>      (cons (car ls)<br>        (list-copy (cdr ls))))))</p>
+<p>(define memv<br>  (lambda (x ls)<br>    (cond<br>      [(null? ls) #f]<br>      [(eqv? (car ls) x) ls]<br>      [else (memv x (cdr ls))])))      </p>
+<p>(define remv<br>  (lambda (x ls)<br>    (cond<br>      [(null? ls) ‘()]<br>      [(eqv? (car ls) x) (remv x (cdr ls))]<br>      [else (cons (car ls) (remv x (cdr ls)))])))</p>
+<p>(map cons ‘(a b c) ‘(1 2 3)) =&gt; ((a . 1) (b . 2) (c . 3))</p>
 
       
 
@@ -542,7 +410,7 @@ del lock:codehole
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="/categories/Scheme//" class="article-tag-list-link color2">Scheme</a>
         		</li>
       		
 		</ul>
@@ -551,7 +419,93 @@ del lock:codehole
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/22/(2)-分布式锁/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/24/(1)-起步/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Erlang(2)-变量与函数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/24/Erlang(2)-变量与函数/">Erlang(2)-变量与函数</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/24/Erlang(2)-变量与函数/" class="archive-article-date">
+  	<time datetime="2020-04-24T08:02:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><p>变量以大写字母开头, 只能被赋值一次. 按值调用(call by value), 在函数被求值以前, 所有的函数调用参数都已经被求值.</p>
+<p>动态类型系统, 变量不需要事先声明.</p>
+<p>在终端中可以使用函数f()来对变量解绑, 程序中不行</p>
+<h1 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h1><blockquote>
+<p>[Head | Tail] = [1,2,3,4].</p>
+</blockquote>
+<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><p>文件名称必须与模块名称相同, export指令以 Function/Arity, 函数名/参数个数 的格式<br>注释以 % 开始</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">-module</span><span class="params">(area)</span>.</span><br><span class="line"><span class="keyword">-export</span><span class="params">([area/<span class="number">1</span>])</span>.</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">area</span><span class="params">(&#123;square, Side&#125;)</span> -&gt;</span> Side * Side;</span><br><span class="line"><span class="function"><span class="title">area</span><span class="params">(&#123;circle, Radius&#125;)</span> -&gt;</span> math:pi() * Radius * Radius;</span><br><span class="line"><span class="function"><span class="title">area</span><span class="params">(&#123;triangle, A, B, C&#125;)</span> -&gt;</span> </span><br><span class="line">    S = (A + B + C) / <span class="number">2</span>,</span><br><span class="line">    math:sqrt(S * (S - A) * (S - B) * (S - C));</span><br><span class="line"><span class="function"><span class="title">area</span><span class="params">(Other)</span> -&gt;</span> &#123;error, invalid_object&#125;.</span><br></pre></td></tr></table></figure>
+<p>使用 c(area). 编译文件<br>使用 area:area({triangle, 3,4,5}). 调用函数</p>
+<p>导入: </p>
+<blockquote>
+<p>-import(math, [sqrt/1])<br>尽量少用导入语句在Erlang社区是个约定习俗</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Erlang//" class="article-tag-list-link color2">Erlang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/24/Erlang(2)-变量与函数/">展开全文 >></a>
         </p>
       
 
@@ -583,7 +537,7 @@ del lock:codehole
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -691,11 +645,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -703,11 +661,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -720,10 +678,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

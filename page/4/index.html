@@ -157,91 +157,37 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-IP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据库的事务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/20/IP协议/">IP协议</a>
+      <a class="article-title" href="/2020/04/23/数据库的事务/">数据库的事务</a>
     </h1>
   
 
         
-        <a href="/2020/04/20/IP协议/" class="archive-article-date">
-  	<time datetime="2020-04-20T06:19:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-20</time>
+        <a href="/2020/04/23/数据库的事务/" class="archive-article-date">
+  	<time datetime="2020-04-23T04:00:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-23</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>提供一种分层的, 与硬件无关的寻址系统.<br>将多个交换网络连接起来, 在源地址和目的地址之间传送数据包, 提供数据重新组装功能</p>
-<h1 id="IP协议工作方式"><a href="#IP协议工作方式" class="headerlink" title="IP协议工作方式"></a>IP协议工作方式</h1><ul>
-<li><p>同网段<br>  如果源地址主机和目标地址主机在同一网段, 目标IP地址被ARP解析为MAC地址, 然后根据MAC地址, 直接发送</p>
-</li>
-<li><p>不同网段<br>  (1) 网关(即路由器) 的IP地址被ARP协议解析为MAC地址, 根据该地址, 源主机将数据包发送到网关<br>  (2) 网关根据数据中的网段ID寻找目标网络, 如果找到,将数据包发送到目标网段, 如果没找到,重复(1)将数据包发送到上一级网关<br>  (3) 数据包经过网关被发送到正确的网段中, 目标IP地址被ARP协议解析为MAC地址, 根据该MAC地址, 数据包被发送到目标地址的主机</p>
-</li>
-</ul>
-<h1 id="IP报文"><a href="#IP报文" class="headerlink" title="IP报文"></a>IP报文</h1><p>由首部和数据两部分组成, 首部的前一部分是固定长度: 20字节, 后一部分是可选字段, 长度可变</p>
-<h2 id="IP报头字段"><a href="#IP报头字段" class="headerlink" title="IP报头字段"></a>IP报头字段</h2><ul>
-<li><p>版本 version   4位, 表示IP协议版本号, 如IPv4</p>
-</li>
-<li><p>首部长度(IHL)   4位, 二进制的数转换为十进制后乘以4, 最大值是60字节, 始终是4的倍数, 不够的话要填充</p>
-<pre><code>最常用的首部长度就是20字节, 0101, 不用任何选项.  
-</code></pre></li>
-<li><p>区分服务(tos)   8位, 也叫服务类型, 没用</p>
-</li>
-<li><p>总长度(totlen)  16位, 首部和数据之和, 因此数据报的最大长度是 2^16-1 = 65535字节</p>
-</li>
-<li><p>标识(identification) 16位, 标识数据报, IP协议在存储器里有一个计数器, 每产生一个数据报, 计数器就加1,</p>
-<pre><code>并赋值给标识字段. 当数据报的长度超过网络的MTU而必须分片时, 这个标识字段的值
-就会被复制到所有的数据报的标识字段中, 具有相同的标识字段值的分片报文会被重组成原来的数据报
-</code></pre></li>
-<li><p>标志(flag)         3位, 第一位不用,为0.  第二位为DF, 表示是否允许分片: 0-允许分片, 1-不允许分片</p>
-<pre><code>第三位为MF, 表示是否还有分片正在传输, 0-没有更多分片需要发送或数据报没有分片 
-</code></pre></li>
-<li><p>片偏移(offsetfrag)  13位, 当报文被分片后, 标记该分片在原报文中的相对位置, 片偏移以8个字节为偏移单位, 除了最后一个</p>
-<pre><code>分片,其他分片的偏移值都是8字节的整数倍
-</code></pre></li>
-<li><p>生存时间(TTL)        8位, 表示数据报在网络中的寿命。该字段由发出数据报的源主机设置。其目的是防止无法交付的数据报无限制地在网络中传输，从而消耗网络资源。</p>
-<pre><code>路由器在转发数据报之前，先把TTL值减1。若TTL值减少到0，则丢弃这个数据报，不再转发。因此，TTL指明数据报在网络中最多可经过多少个路由器。
-TTL的最大数值为255。若把TTL的初始值设为1，则表示这个数据报只能在本局域网中传送。
-</code></pre></li>
-<li><p>协议          8位, 表示该数据报文所携带的数据所使用的协议类型。该字段可以方便目的主机的IP层知道按照什么协议来处理数据部分。</p>
-<pre><code>不同的协议有专门不同的协议号。例如，TCP的协议号为6, UDP的协议号为17, ICMP的协议号为1。
-</code></pre></li>
-<li><p>首部校验和(checksum) 16位,用于校验数据报的首部。数据报每经过一个路由器，首部的字段都可能发生变化（如TTL），</p>
-<pre><code>所以需要重新校验。而数据部分不发生变化，所以不用重新生成校验值。                
-</code></pre></li>
-<li><p>源地址        32位, 表示数据报的源IP地址                        </p>
-</li>
-<li><p>目的地址       32位, 表示数据报的目的IP地址, 该字段用于校验发送是否正确</p>
-</li>
-<li><p>可选字段       用于测试,调试,安全目的. 包括严格源路由（数据报必须经过指定的路由）、网际时间戳（经过每个路由器时的时间戳记录）和安全限制。</p>
-</li>
-<li><p>填充          由于可选字段中的长度不是固定的，使用若干个0填充该字段，可以保证整个报头的长度是32位的整数倍。</p>
-</li>
-</ul>
-<h2 id="数据部分"><a href="#数据部分" class="headerlink" title="数据部分"></a>数据部分</h2><p>表示传输层的数据，如保存TCP、UDP、ICMP或IGMP的数据。数据部分的长度不固定</p>
-<h1 id="构造IP数据包"><a href="#构造IP数据包" class="headerlink" title="构造IP数据包"></a>构造IP数据包</h1><blockquote>
-<p>./netwox 38<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xDBB8=56248__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0xC57A_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h2 id="指定源地址和目标地址"><a href="#指定源地址和目标地址" class="headerlink" title="指定源地址和目标地址"></a>指定源地址和目标地址</h2><blockquote>
-<p>./netwox 38 -l 192.168.59.132 -m 192.168.12.101<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xE5D3=58835__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0x0BDD_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|________________________192.168.59.132_________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|________________________192.168.12.101_________________________|</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h2 id="指定IP数据报的以太层字段"><a href="#指定IP数据报的以太层字段" class="headerlink" title="指定IP数据报的以太层字段"></a>指定IP数据报的以太层字段</h2><blockquote>
-<p>./netwox 34<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Ethernet________________________________________________________.</span><br><span class="line">| 00:FF:AA:BB:CC:DD-&gt;00:08:09:0A:0B:0C type:0x0800              |</span><br><span class="line">|_______________________________________________________________|</span><br><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0x6333=25395__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0x3E00_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>./netwox 34 -a 00:0C:29:C4:8A:DE -b 00:0C:29:D0:21:23</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Ethernet________________________________________________________.</span><br><span class="line">| 00:0C:29:C4:8A:DE-&gt;00:0C:29:D0:21:23 type:0x0800              |</span><br><span class="line">|_______________________________________________________________|</span><br><span class="line">IP______________________________________________________________.</span><br><span class="line">|version|  ihl  |      tos      |            totlen             |</span><br><span class="line">|___4___|___5___|____0x00=0_____|___________0x0014=20___________|</span><br><span class="line">|              id               |r|D|M|       offsetfrag        |</span><br><span class="line">|_________0xEF24=61220__________|0|0|0|________0x0000=0_________|</span><br><span class="line">|      ttl      |   protocol    |           checksum            |</span><br><span class="line">|____0x00=0_____|____0x00=0_____|____________0xB20E_____________|</span><br><span class="line">|                            source                             |</span><br><span class="line">|_________________________192.168.77.1__________________________|</span><br><span class="line">|                          destination                          |</span><br><span class="line">|____________________________5.6.7.8____________________________|</span><br></pre></td></tr></table></figure>
-<p>没有在wireshark中捕获到</p>
-<h1 id="分片洪水攻击"><a href="#分片洪水攻击" class="headerlink" title="分片洪水攻击"></a>分片洪水攻击</h1><blockquote>
-<p>./netwox 74 -i 192.168.59.135</p>
-</blockquote>
+        <p>事务的四个特性: 原子性,一致性,隔离性,持久性 ACID<br>              一致性由主键,外键约束保证, 持久性由预写日志和数据库管理系统的恢复子系统保证, 原子性和隔离性由事务管理器和MVCC来控制</p>
+<p>非预期现象: 脏读,不可重复读,幻读,序列化异常<br>脏读: 第一个事务读到了第二个事务已经修改但还未提交的数据, 当第二个事务不提交并执行ROLLBACK后, 第一个事务读到的数据是不正确的, 即脏读<br>不可重复读: 一个事务第一次读取数据后,被读取的数据被另一个已经提交的事务进行了修改,事务再次读取这些数据时发现数据已经被另一个事务修改,<br>            两次查询结果不一致, 即不可重复读<br>幻读: 一个事务两次查询的结果集记录数不一致. 幻读可以认为是受INSERT DELETE影响的不可重复读的一种特殊场景</p>
+<p>四种隔离级别: 读未提交,读已提交,可重复读,可序列化<br>读未提交: 所有事务都可以看到其他未提交事务的执行结果, 性能不比其他隔离级别好, 很少用<br>读已提交: PG的默认隔离级别,一个事务只能看见已提交事务<br>可重复读: 确保同一个事务的多个实例在并发读取数据时, 会看到同样的数据行.<br>可序列化: 强制事务排序, 在每个读的数据行上加上共享锁, 可能导致大量的超时现象和锁竞争</p>
+<p>并发控制模型: 基于锁的并发控制, 基于多版本的并发控制<br>基于锁的并发控制: 排他锁: 被加锁的对象只能被持有锁的事务读取和修改, 其他事务无法在该对象上加其他锁,也不能读取和修改该对象<br>               共享锁: 被加锁的对象可以被持锁事务读取, 但不能被修改, 其他事务也可以在上面再加共享锁.</p>
+<p>封锁对象的大小被称为封锁粒度: 可以是逻辑单元: 属性值,属性值的集合,元组,关系,索引项,整个索引项甚至整个数据库<br>                         也可以是物理单元: 页(数据页或索引页), 物理记录等</p>
+<p>基于多版本的并发控制: MVCC, 乐观锁:<br>    每一个写操作创建一个新的版本, 当事务发出一个读操作时,并发控制管理器选择一个版本进行读取.<br>    即: 为数据增加一个版本标识, 读取时连同版本号一起读出, 更新时对版本号加一.</p>
+<pre><code>一个事务无论运行多长时间, 在同一个事务里都能看到一致的数据.
+根据事务开始的时间不同,同一个时刻不同事务看到的相同表里的数据可能不同.
+</code></pre><p>PG为每一个事务分配一个递增的,int32的整型数作为唯一事务id, 称为xid.<br>每一行记录有4个与事务可见性相关的隐藏列: xmin,xmax,cmin,cmax<br>cmin,cmax分别是插入和删除该元组的命令在事务中的命令序列标识<br>xmin,xmax与事务对其他事务的可见性相关,用于同一个事务中的可见性判断</p>
+<p>插入一行数据时, PG会将插入这行数据的事务的xid存储在xmin中.<br>a.由回滚的事务或未提交的事务创建的行对于其他事物都是不可见的<br>b.无论提交成功或回滚的事务,xid都会递增</p>
+<p>一个事务元组的xmin小于另一个事务的xmin,那么另一个事务对这个事务是不可见的</p>
 
       
 
@@ -256,7 +202,7 @@ TTL的最大数值为255。若把TTL的初始值设为1，则表示这个数据�
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        			<a href="/categories/SQL//" class="article-tag-list-link color4">SQL</a>
         		</li>
       		
 		</ul>
@@ -265,7 +211,7 @@ TTL的最大数值为255。若把TTL的初始值设为1，则表示这个数据�
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/20/IP协议/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/23/数据库的事务/">展开全文 >></a>
         </p>
       
 
@@ -295,115 +241,35 @@ TTL的最大数值为255。若把TTL的初始值设为1，则表示这个数据�
 
 
   
-    <article id="post-从实践中学习TCP-IP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java反射" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/16/从实践中学习TCP-IP协议/">从实践中学习TCP-IP协议</a>
+      <a class="article-title" href="/2020/04/23/Java反射/">Java反射</a>
     </h1>
   
 
         
-        <a href="/2020/04/16/从实践中学习TCP-IP协议/" class="archive-article-date">
-  	<time datetime="2020-04-16T04:51:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-16</time>
+        <a href="/2020/04/23/Java反射/" class="archive-article-date">
+  	<time datetime="2020-04-23T03:59:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-23</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="OSI协议层次"><a href="#OSI协议层次" class="headerlink" title="OSI协议层次"></a>OSI协议层次</h1><ul>
-<li>物理层<br>利用传输介质为数据链路层提供物理连接, 实现比特流的透明传输<blockquote>
-<p>netwox 169</p>
-</blockquote>
-</li>
-</ul>
-<p>计算机中的两类网络适配器: Lo 和 Eth<br>Lo是 回环接口, 是虚拟网络适配器<br>Eth是 以太网网络适配器 </p>
+        <p>4.java反射获取私有属性，改变值</p>
+<p>Class类: 代表类的实体<br>Field类: 代表类的成员变量<br>Method类: 代表类的方法<br>Constructor类: 代表类的构造方法<br>        Class&lt;?&gt; classBook = Class.forName(“reflect.Book”);<br>        Object objectBook = classBook.newInstance();<br>        Field fieldTag = classBook.getDeclaredField(“tag”);<br>        fieldTag.setAccessible(true);<br>        fieldTag.set(objectBook, “interesting”);</p>
+<pre><code>System.out.println(objectBook);
+</code></pre><p>5.反射用途</p>
 <ul>
-<li><p>数据链路层<br>物理地址寻址, 数据的成帧, 流量控制, 数据检错重发</p>
-</li>
-<li><p>网络层<br>寻找地址和路由选择, 拥塞控制, 网际互联</p>
-</li>
-<li><p>传输层</p>
-</li>
-<li><p>会话层<br>建立和断开通信连接</p>
-</li>
-<li><p>表示层</p>
-</li>
+<li>根据类名创建实例(类名可以从配置文件读取)</li>
+<li>用Method.invoke执行方法</li>
 </ul>
-<ul>
-<li>应用层<br>为应用程序提供服务并规定应用程序中相关的通信细节<br>包括: 超文本传输协议(HTTP), 简单邮件传送协议(SMTP), 远程登录协议(Telnet)</li>
-</ul>
-<h1 id="TCP-IP协议层次"><a href="#TCP-IP协议层次" class="headerlink" title="TCP/IP协议层次"></a>TCP/IP协议层次</h1><ul>
-<li>网络访问层</li>
-<li>网际层</li>
-<li>传输层</li>
-<li>应用层</li>
-</ul>
-<h1 id="网络工具-netwox-和-wireshark"><a href="#网络工具-netwox-和-wireshark" class="headerlink" title="网络工具 - netwox 和 wireshark"></a>网络工具 - netwox 和 wireshark</h1><h2 id="netwox"><a href="#netwox" class="headerlink" title="netwox"></a>netwox</h2><p>(git bash属实给劲, windows用户的救星)</p>
-<h2 id="wireshark"><a href="#wireshark" class="headerlink" title="wireshark"></a>wireshark</h2><p>Frame: 数据包物理层的数据帧概况<br>Ethernet : 数据链路层以太网帧头部信息<br>Internet Protocol Version 4: 网际层IP包头部信息<br>Transmission Control Protocol: 传输层的数据段头部信息<br>Hypertext Transfer Protocol: 应用层信息</p>
-<h1 id="网络体系的四大类型"><a href="#网络体系的四大类型" class="headerlink" title="网络体系的四大类型"></a>网络体系的四大类型</h1><ul>
-<li>IEEE 802.3 (以太网) 在大多数办公室使用的基于线缆的网络, 常见的有线局域网</li>
-<li>IEEE 802.11 (无线网络) 无线网络技术, 如wifi</li>
-<li>IEEE 802.16 (WiMAX) 用于移动通信长距离无线连接的技术</li>
-<li>点到点协议(PPP) 使用Modem通过电话线进行连接的技术, 拨号方式建立的网络连接</li>
-</ul>
-<h1 id="物理地址"><a href="#物理地址" class="headerlink" title="物理地址"></a>物理地址</h1><p>物理地址只在当前局域网有效</p>
-<ol>
-<li>显示网络主机MAC地址信息<blockquote>
-<p>./netwox 5 -i 172.16.0.119</p>
-</blockquote>
-</li>
-<li>显示局域网中所有的主机的MAC地址<blockquote>
-<p>./netwox 5 -i 172.16.0.0/24</p>
-</blockquote>
-</li>
-<li>根据MAC地址获取主机其他信息<blockquote>
-<p>./netwox 4 -e 80:FA:5B:64:5B:0D </p>
-</blockquote>
-</li>
-</ol>
-<h1 id="以太帧-以太网链路中传输的数据包"><a href="#以太帧-以太网链路中传输的数据包" class="headerlink" title="以太帧  以太网链路中传输的数据包"></a>以太帧  以太网链路中传输的数据包</h1><ul>
-<li>前同步码: 使接收端的适配器在接收MAC帧时能够迅速调整时钟频率,使它和发送端的频率相同.</li>
-<li>帧开始定界符</li>
-<li>目的地址: 网卡收到一个数据帧,会先检查目的地址是否与当前适配器的物理地址相同,相同的话进一步处理,否则丢弃</li>
-<li>源地址</li>
-<li>类型: 上层协议的类型, 标识数据交付给哪个协议处理, 如 0x0800 表示数据交付给IP协议</li>
-<li>数据: 最小为46字节, 不足的话,会填充到最小长度. 最大值1500字节, 也叫MTU, 最大传输单元.</li>
-<li>帧检验序列FCS: 检测该帧是否出错, 发送方计算帧的循环冗余码校验(CRC), 接收方重新计算并比较, 如果不同,则重传 </li>
-</ul>
-<h2 id="构建-以太帧"><a href="#构建-以太帧" class="headerlink" title="构建 以太帧"></a>构建 以太帧</h2><p> WinPCAP &gt;= 3.0 is not found<br> 下载WinPCAP, 以兼容模式安装</p>
-<ol>
-<li><p>查看以太网数据帧</p>
-<blockquote>
-<p>./netwox 32<br>00:FF:AA:BB:CC:DD-&gt;00:08:09:0A:0B:0C type:0x0000</p>
-</blockquote>
-<p>00:FF:AA:BB:CC:DD 是源MAC地址,即当前主机的MAC地址<br>00:08:09:0A:0B:0C 是目标MAC地址<br>0x0000 是以太网类型</p>
-</li>
-<li><p>构建以太帧</p>
-<blockquote>
-<p> ./netwox 32 -a 00:FF:AA:BB:CC:DE -b 00:08:09:0A:0B:0E</p>
-</blockquote>
-</li>
-</ol>
-<ul>
-<li>显示网络配置信息<blockquote>
-<p>./netwox 1</p>
-</blockquote>
-</li>
-</ul>
-<ul>
-<li>显示某域名的所有主机的IP地址,主机名,MAC地址信息</li>
-</ul>
-<pre><code>$ ./netwox 3 -a www.google.com
-IP address:  31.13.72.34
-Hostname:    edge-mqtt-mini-shv-01-arn2.facebook.com
-Hostnames:   edge-mqtt-mini-shv-01-arn2.facebook.com
-Eth address: 00:00:0C:07:AC:01
-</code></pre>
+
       
 
       
@@ -417,7 +283,7 @@ Eth address: 00:00:0C:07:AC:01
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -426,7 +292,7 @@ Eth address: 00:00:0C:07:AC:01
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/16/从实践中学习TCP-IP协议/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/23/Java反射/">展开全文 >></a>
         </p>
       
 
@@ -456,52 +322,35 @@ Eth address: 00:00:0C:07:AC:01
 
 
   
-    <article id="post-Golang东一榔头西一棒槌系列(9) -Gin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-死锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(9) -Gin/">Golang东一榔头西一棒槌系列(9) -Gin</a>
+      <a class="article-title" href="/2020/04/23/死锁/">死锁</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(9) -Gin/" class="archive-article-date">
-  	<time datetime="2020-04-14T15:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/23/死锁/" class="archive-article-date">
+  	<time datetime="2020-04-23T03:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-23</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>老web框架质检员了</p>
-</blockquote>
-<h1 id="开启服务-监听端口"><a href="#开启服务-监听端口" class="headerlink" title="开启服务,监听端口"></a>开启服务,监听端口</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">r := gin.Default()</span><br><span class="line">r.Run(<span class="string">":5221"</span>)</span><br></pre></td></tr></table></figure>
-<p>gin.Default()返回一个Engine的实例, 自带Logger和Recovery中间件</p>
-<h1 id="路径匹配-url映射"><a href="#路径匹配-url映射" class="headerlink" title="路径匹配, url映射"></a>路径匹配, url映射</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r.GET(<span class="string">"/ping"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    c.JSON(<span class="number">200</span>, gin.H&#123;<span class="string">"message"</span>: <span class="string">"pong"</span>&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>H就是:  type H map[string]interface{}</p>
-<h1 id="路径变量-查询参数"><a href="#路径变量-查询参数" class="headerlink" title="路径变量, 查询参数"></a>路径变量, 查询参数</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">router.GET(<span class="string">"/user/:name"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    name := c.Param(<span class="string">"name"</span>)</span><br><span class="line">    c.String(http.StatusOK, <span class="string">"Hello %s"</span>, name)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>匹配/user/john,  不匹配/user/ 和 /user</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">router.GET(<span class="string">"/user/:name/*action"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    name := c.Param(<span class="string">"name"</span>)</span><br><span class="line">    action := c.Param(<span class="string">"action"</span>)</span><br><span class="line">    message := name + <span class="string">" is "</span> + action</span><br><span class="line">    c.String(http.StatusOK, message)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>匹配/user/john/ 和 /user/john/send (注意这里的action是 /send)</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">router.POST(<span class="string">"/user/:name/*action"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    c.FullPath() == <span class="string">"/user/:name/*action"</span> <span class="comment">// true</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>对于每个请求, context都有它的路由定义 c.FullPath()</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">router.GET(<span class="string">"/welcome"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    firstname := c.DefaultQuery(<span class="string">"firstname"</span>, <span class="string">"Guest"</span>)</span><br><span class="line">    lastname := c.Query(<span class="string">"lastname"</span>) <span class="comment">// shortcut for c.Request.URL.Query().Get("lastname")</span></span><br><span class="line"></span><br><span class="line">    c.String(http.StatusOK, <span class="string">"Hello %s %s"</span>, firstname, lastname)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>获取请求参数, c.DefaultQuery()自带默认参数</p>
-<h1 id="Form参数"><a href="#Form参数" class="headerlink" title="Form参数"></a>Form参数</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">router.POST(<span class="string">"/form_post"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    message := c.PostForm(<span class="string">"message"</span>)</span><br><span class="line">    nick := c.DefaultPostForm(<span class="string">"nick"</span>, <span class="string">"anonymous"</span>)</span><br><span class="line"></span><br><span class="line">    c.JSON(<span class="number">200</span>, gin.H&#123;</span><br><span class="line">        <span class="string">"status"</span>:  <span class="string">"posted"</span>,</span><br><span class="line">        <span class="string">"message"</span>: message,</span><br><span class="line">        <span class="string">"nick"</span>:    nick,</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>By the way, curl发 带form参数的请求是<br>curl -s –location –request POST ‘localhost:8080/form_post’ –form ‘message=hello’<br>注解: -L/–location 如果请求的页面已被移动, 3xx, curl使用新的地址重新访问<br>     -X/–request 指定http method<br>      -F/–form  模拟用户在浏览器上提交表单</p>
-<h2 id="QueryMap-和-PostFromMap"><a href="#QueryMap-和-PostFromMap" class="headerlink" title="QueryMap 和 PostFromMap"></a>QueryMap 和 PostFromMap</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">router.POST(<span class="string">"/post"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    ids := c.QueryMap(<span class="string">"ids"</span>)</span><br><span class="line">    names := c.PostFormMap(<span class="string">"names"</span>)</span><br><span class="line"></span><br><span class="line">    fmt.Printf(<span class="string">"ids: %v; names: %v"</span>, ids, names)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>curl -X POST ‘localhost:8080/post?ids[a]=1234&amp;ids[b]=hello’ –form ‘names[first]=thinkerou’ –form ‘names[second]=tianou’</p>
-<blockquote>
-<p>有点奇怪这个</p>
-</blockquote>
-<h1 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Set a lower memory limit for multipart forms (default is 32 MiB)</span></span><br><span class="line"><span class="comment">// router.MaxMultipartMemory = 8 &lt;&lt; 20  // 8 MiB</span></span><br><span class="line">router.POST(<span class="string">"/upload"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    <span class="comment">// single file</span></span><br><span class="line">    file, _ := c.FormFile(<span class="string">"file"</span>)</span><br><span class="line">    log.Println(file.Filename)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Upload the file to specific dst.</span></span><br><span class="line">    <span class="comment">// c.SaveUploadedFile(file, dst)</span></span><br><span class="line"></span><br><span class="line">    c.String(http.StatusOK, fmt.Sprintf(<span class="string">"'%s' uploaded!"</span>, file.Filename))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="多文件上传"><a href="#多文件上传" class="headerlink" title="多文件上传"></a>多文件上传</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">router.POST(<span class="string">"/upload"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    <span class="comment">// Multipart form</span></span><br><span class="line">    form, _ := c.MultipartForm()</span><br><span class="line">    files := form.File[<span class="string">"pics"</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _, file := <span class="keyword">range</span> files &#123;</span><br><span class="line">        log.Println(file.Filename)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Upload the file to specific dst.</span></span><br><span class="line">        <span class="comment">// c.SaveUploadedFile(file, dst)</span></span><br><span class="line">    &#125;</span><br><span class="line">    c.String(http.StatusOK, fmt.Sprintf(<span class="string">"%d files uploaded!"</span>, <span class="built_in">len</span>(files)))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h1 id="路由组"><a href="#路由组" class="headerlink" title="路由组"></a>路由组</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">v1 := router.Group(<span class="string">"/v1"</span>)</span><br><span class="line">&#123;</span><br><span class="line">    v1.POST(<span class="string">"/login"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span>  &#123;</span><br><span class="line">        c.String(<span class="number">200</span>, <span class="string">"%s"</span>, <span class="string">"v1 -- login"</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">v2 := router.Group(<span class="string">"/v2"</span>)</span><br><span class="line">&#123;</span><br><span class="line">    v2.POST(<span class="string">"/login"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span>  &#123;</span><br><span class="line">        c.String(<span class="number">200</span>, <span class="string">"%s"</span>, <span class="string">"v2 -- login"</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="使用中间件"><a href="#使用中间件" class="headerlink" title="使用中间件"></a>使用中间件</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Creates a router without any middleware by default</span></span><br><span class="line">r := gin.New()</span><br><span class="line"></span><br><span class="line"><span class="comment">// Global middleware</span></span><br><span class="line"><span class="comment">// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.</span></span><br><span class="line"><span class="comment">// By default gin.DefaultWriter = os.Stdout</span></span><br><span class="line">r.Use(gin.Logger())</span><br><span class="line"></span><br><span class="line"><span class="comment">// Recovery middleware recovers from any panics and writes a 500 if there was one.</span></span><br><span class="line">r.Use(gin.Recovery())</span><br></pre></td></tr></table></figure>
+        <p>线程A持有锁a等待获取锁b, 线程B持有锁b等待获取锁a</p>
+<ul>
+<li>竞争资源: 1.可剥夺资源:某进程获得这类资源后,该资源可以被其他进程或系统剥夺, 如CPU和主存<pre><code>2. 不可剥夺资源: 当系统把这类资源分配给某进程后, 再不能强行收回, 只能在进程用完后自行释放, 如磁带机,打印机等
+3. 临时资源: 硬件中断,信号,消息,缓存区内的消息等
+</code></pre>  产生死锁的竞争资源: 不可剥夺资源, 临时资源</li>
+</ul>
+<p>死锁产生的4个必要条件:<br>    1.互斥条件: 进程要求对所分配的资源进行排它性控制，即在一段时间内某资源仅为一进程所占用。<br>    2.请求和保持条件: 当进程因请求资源而阻塞时，对已获得的资源保持不放。<br>    3.不剥夺条件: 进程已获得的资源在未使用完之前，不能剥夺，只能在使用完时由自己释放。<br>    4.环路等待条件: 在发生死锁时，必然存在一个进程–资源的环形链。</p>
+<p>解决死锁的方法:<br>    1.资源一次性分配: 一次性分配所有资源，这样就不会再有请求了：（破坏请求条件）<br>    2.只要有一个资源得不到分配, 也不给这个进程分配其他的资源（破坏请保持条件）<br>    3.可剥夺资源: 当某进程获得了部分资源,但得不到其他资源,则释放已占有的资源（破坏不可剥夺条件）<br>    4.资源有序分配法: 系统给每类资源赋予一个编号,每一个进程按编号递增的顺序请求进程,释放则相反(破坏环路等待条件)</p>
+<p>死锁检测: Jstack命令 JConsole工具</p>
 
       
 
@@ -511,10 +360,21 @@ Eth address: 00:00:0C:07:AC:01
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/并发编程//" class="article-tag-list-link color5">并发编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(9) -Gin/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/23/死锁/">展开全文 >></a>
         </p>
       
 
@@ -544,28 +404,57 @@ Eth address: 00:00:0C:07:AC:01
 
 
   
-    <article id="post-Golang东一榔头西一棒槌系列(8) -Web" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java中的逆变与协变" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(8) -Web/">Golang东一榔头西一棒槌系列(8) -Web</a>
+      <a class="article-title" href="/2020/04/22/Java中的逆变与协变/">Java中的逆变与协变</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(8) -Web/" class="archive-article-date">
-  	<time datetime="2020-04-14T15:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+        <a href="/2020/04/22/Java中的逆变与协变/" class="archive-article-date">
+  	<time datetime="2020-04-22T15:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>用户的每一次请求都是在一个新的goroutine去服务<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"strings"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sayHelloName</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span>  &#123;</span><br><span class="line">	r.ParseForm()</span><br><span class="line">	fmt.Println(r.Form)</span><br><span class="line">	fmt.Println(<span class="string">"path"</span>, r.URL.Path)</span><br><span class="line">	fmt.Println(<span class="string">"scheme"</span>, r.URL.Scheme)</span><br><span class="line">	fmt.Println(r.Form[<span class="string">"a"</span>])</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> k, v := <span class="keyword">range</span> r.Form &#123;</span><br><span class="line">		fmt.Println(<span class="string">"key"</span>, k)</span><br><span class="line">		fmt.Println(<span class="string">"val"</span>, strings.Join(v, <span class="string">""</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Fprintf(w, <span class="string">"Hello~"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/"</span>, sayHelloName)</span><br><span class="line">	err := http.ListenAndServe(<span class="string">":9090"</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(<span class="string">"ListenAndServe: "</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>Go http的两个核心功能: Conn, ServeMux<br>客户端的每次请求都会创建一个Conn, 保存了此次请求的信息, 传到对应的handler</p>
+        <p>看到王垠博客的一篇文章<br><a href="http://www.yinwang.org/blog-cn/2020/02/13/java-type-system" target="_blank" rel="noopener">一道Java面试题</a></p>
+<p>里面说的是这样一段代码:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String[] a = <span class="keyword">new</span> String[<span class="number">2</span>];</span><br><span class="line">    Object[] b = a;</span><br><span class="line">    a[<span class="number">0</span>] = <span class="string">"hi"</span>;</span><br><span class="line">    b[<span class="number">1</span>] = Integer.valueOf(<span class="number">42</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看到后首先想的是逆变与协变.</p>
+<h1 id="里氏替换原则-LSP"><a href="#里氏替换原则-LSP" class="headerlink" title="里氏替换原则  LSP"></a>里氏替换原则  LSP</h1><blockquote>
+<p>所有引用基类的地方必须能透明地使用其子类的对象。</p>
+</blockquote>
+<h2 id="四个含义"><a href="#四个含义" class="headerlink" title="四个含义"></a>四个含义</h2><ul>
+<li>子类完全拥有父类的方法，且具体子类必须实现父类的抽象方法。</li>
+<li>子类中可以增加自己的方法。</li>
+<li>当子类覆盖或实现父类的方法时，方法的形参要比父类方法的更为宽松。</li>
+<li>当子类覆盖或实现父类的方法时，方法的返回值要比父类更严格。</li>
+</ul>
+<h2 id="逆变与协变的定义"><a href="#逆变与协变的定义" class="headerlink" title="逆变与协变的定义"></a>逆变与协变的定义</h2><p>如果A是B的子类, A的派生类也是B的派生类的子类, 那么我们称这种关系为协变;<br>如果A是B的子类, B的派生类是A的派生类的子类, 那么我们称这种关系为逆变;<br>如果A是B的子类, A的派生类与B的派生类没有继承关系, 那么我们称这种关系为不变;</p>
+<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>Number是Integer的父类</p>
+<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><pre><code>ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Number&gt;();
+ArrayList&lt;Number&gt; numbers = new ArrayList&lt;Integer&gt;();
+</code></pre><p>以上两个都跑不通, 看出ArrayList<number> 与 ArrayList<integer>没有继承关系,<br>因此Java的泛型是不变的</integer></number></p>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><pre><code>Number[] numbers = new Integer[2];
+Integer[] integers = new Number[2];
+</code></pre><p>第一个可以, 第二个不行, 看出Number[] 是Integer[] 的父类,<br>因此Java的数组是协变的.</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><pre><code>static Number method(Number num) {
+    return 1;
+}
+
+Object result = method(new Integer(2)); //correct
+Number result = method(new Object()); //error
+Integer result = method(new Integer(2)); //error
+</code></pre><p>传入形参的类型应为method形参的子类型<br>返回值应为method返回值的基类型</p>
+<hr>
+<p>至此, 我们来尝试回答一下王垠的问题: 哪一行错了？为什么？<br>分析: Java的数组时协变的, 因此 String是Object子类, String[] 也是 Object[] 的子类,<br>    也就有了我们喜闻乐见的父类引用指向子类对象:  Object[] b = a;<br>    从JVM的实现来看, b和a都是栈上指向堆上一块String[] 数组空间的引用.可以佐证的是对a[0]和b[1]的<br>    赋值会同时影响a和b.</p>
+<p>最酷的回答: Java错了. 原因: Java没有遵守里氏替换原则,所有引用基类的地方必须能透明地使用其子类的对象,<br>    名义上是Object, 实际上是String空间, 里面存的是char[] 数组, 往里面塞Integer, 当然是塞不进去.</p>
 
       
 
@@ -575,10 +464,21 @@ Eth address: 00:00:0C:07:AC:01
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(8) -Web/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/22/Java中的逆变与协变/">展开全文 >></a>
         </p>
       
 
@@ -610,7 +510,7 @@ Eth address: 00:00:0C:07:AC:01
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -718,11 +618,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -730,11 +634,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -747,10 +651,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

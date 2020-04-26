@@ -157,350 +157,82 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Golang东一榔头西一棒槌系列(2) -变量与类型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JVM内存模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/16/Golang东一榔头西一棒槌系列(2) -变量与类型/">Golang东一榔头西一棒槌系列(2) -变量与类型</a>
+      <a class="article-title" href="/2020/04/14/JVM内存模型/">JVM内存模型</a>
     </h1>
   
 
         
-        <a href="/2020/03/16/Golang东一榔头西一棒槌系列(2) -变量与类型/" class="archive-article-date">
-  	<time datetime="2020-03-16T01:35:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-16</time>
+        <a href="/2020/04/14/JVM内存模型/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>变量声明<br>全局变量<br> var a int = 10<br>类型可以由编译器推断<br> var a = 10<br>函数体内变量<br> a := 10    </p>
+        <ul>
+<li>JVM内存模型<ul>
+<li>JVM虚拟机数据区<ul>
+<li>程序计数器</li>
+<li>本地方法栈</li>
+<li>虚拟机栈</li>
+<li>堆</li>
+</ul>
 </li>
-<li><p>多重赋值</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b, a = a, b</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>匿名变量</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetData</span><span class="params">()</span> <span class="params">(<span class="keyword">int</span>, <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">10</span>, <span class="number">20</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a, _ = GetData()</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>数据类型<br>整型: 有符号整型(int8, int16, int64, int), 无符号整型(uint8, uint16, uint32, uint64, uint)<br>浮点型: float32, float64<br>复数型<br>布尔型: var flag bool<br>字符串: string, 不可变<br>字符(byte, rune): 使用单引号, byte(1个字节, utf-8字符单个字节的值,uint8的别名类型)</p>
-<pre><code>rune(4个字节, 单个unicode字符, int32的别名类型)
-</code></pre><p>复合数据类型:<br>数组(array), 切片(slice), 映射(map), 函数(function), 结构体(struct),<br>通道(channel), 接口(interface), 指针(pointer)</p>
-</li>
-<li><p>类型转换</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a := <span class="number">97</span></span><br><span class="line">c := <span class="keyword">float64</span>(a)</span><br><span class="line">d := <span class="keyword">string</span>(a)</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>整型转字符串: 整型的值是ascii码编号或者unicode字符集编号<br>不允许字符串转整型</p>
-<ol start="6">
-<li><p>常量<br>const C = “Steven”</p>
-</li>
-<li><p>枚举</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Unknown = <span class="number">0</span></span><br><span class="line">    Female = <span class="number">1</span></span><br><span class="line">    Male = <span class="number">2</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fmt.Println(Unknown, Female, Male)</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>如果不指定类型和初始值, 则与上一行非空常量的值相同</p>
-<ol start="8">
-<li>iota<br>只能用在常量的赋值中, 每个const关键字出现时被重置为0, 每出现一个常量, iota自动加1<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Unknown = <span class="literal">iota</span></span><br><span class="line">    Female = <span class="literal">iota</span></span><br><span class="line">    Male = <span class="literal">iota</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fmt.Println(Unknown, Female, Male)</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>后面的iota可以省略<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Unknown = <span class="literal">iota</span></span><br><span class="line">    Female</span><br><span class="line">    Male</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fmt.Println(Unknown, Female, Male)</span><br></pre></td></tr></table></figure></p>
-<ol start="9">
-<li>类型别名与类型定义</li>
-</ol>
-<ul>
-<li><p>type 类型别名 = 类型<br>type stringAlias = string<br>使用stringAlias和string等效, 编译完成后不会有别名类型</p>
-</li>
-<li><p>type 新的类型名 类型<br>type NewString string<br>NewString是一种新的类型, 依然具备string的特性</p>
+<li>本地内存<ul>
+<li>元数据区</li>
+<li>直接内存      </li>
+</ul>
 </li>
 </ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Go//" class="article-tag-list-link color3">Go</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/16/Golang东一榔头西一棒槌系列(2) -变量与类型/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-vim" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/20/vim/">Vim</a>
-    </h1>
-  
-
-        
-        <a href="/2020/02/20/vim/" class="archive-article-date">
-  	<time datetime="2020-02-19T18:15:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近在Github刷题, 在线编辑器可以选择Emacs或者Vim.<br>但是有些快捷键浏览器占着, Emacs没法用. 就尝试下Vim吧~</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Vim//" class="article-tag-list-link color4">Vim</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/02/20/vim/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-flutter入门100关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/18/flutter入门100关/">flutter入门100关</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/18/flutter入门100关/" class="archive-article-date">
-  	<time datetime="2020-01-18T05:42:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="1-持久化Key-Value-SharedPreferences"><a href="#1-持久化Key-Value-SharedPreferences" class="headerlink" title="1.持久化Key-Value(SharedPreferences)"></a>1.持久化Key-Value(SharedPreferences)</h1><p><a href="../images/flutter/SharedPreferences.PNG">SharedPreferences</a><br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// shared_preferences: ^0.5.3+4</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'package:flutter/material.dart'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'package:shared_preferences/shared_preferences.dart'</span>;</span><br><span class="line"></span><br><span class="line">main() =&gt; runApp(MyApp());</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) =&gt; MaterialApp(</span><br><span class="line">    title: <span class="string">'SharedPreference实例'</span>,</span><br><span class="line">    theme: ThemeData(primarySwatch: Colors.amber),</span><br><span class="line">    home: PersistentDemo(),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PersistentDemo</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  State&lt;StatefulWidget&gt; createState() =&gt; PersistentState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PersistentState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">PersistentDemo</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">  Future&lt;SharedPreferences&gt; _prefs = SharedPreferences.getInstance();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> controller = TextEditingController();</span><br><span class="line">  <span class="built_in">bool</span> value_dart = <span class="keyword">false</span>;</span><br><span class="line">  <span class="built_in">bool</span> value_js = <span class="keyword">false</span>;</span><br><span class="line">  <span class="built_in">bool</span> value_java = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> initState() &#123;</span><br><span class="line">    <span class="keyword">super</span>.initState();</span><br><span class="line">    initFormCache();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> dispose() &#123;</span><br><span class="line">    <span class="keyword">super</span>.dispose();</span><br><span class="line">    controller = <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> initFormCache() <span class="keyword">async</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> SharedPreferences prefs = <span class="keyword">await</span> _prefs;</span><br><span class="line">    <span class="keyword">final</span> value_nickname = prefs.getString(<span class="string">'key_nickname'</span>);</span><br><span class="line">    <span class="keyword">final</span> value_dart = prefs.getBool(<span class="string">'key_dart'</span>);</span><br><span class="line">    <span class="keyword">final</span> value_js = prefs.getBool(<span class="string">'key_js'</span>);</span><br><span class="line">    <span class="keyword">final</span> value_java = prefs.getBool(<span class="string">'key_java'</span>);</span><br><span class="line"></span><br><span class="line">    setState(() &#123;</span><br><span class="line">      controller.text = (value_nickname == <span class="keyword">null</span> ? <span class="string">''</span> : value_nickname);</span><br><span class="line">      <span class="keyword">this</span>.value_dart = (value_dart == <span class="keyword">null</span> ? <span class="string">''</span> : value_dart);</span><br><span class="line">      <span class="keyword">this</span>.value_java = (value_java == <span class="keyword">null</span> ? <span class="string">''</span> : value_java);</span><br><span class="line">      <span class="keyword">this</span>.value_js = (value_js == <span class="keyword">null</span> ? <span class="string">''</span> : value_js);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> saveInfo(<span class="built_in">String</span> value_nickname) <span class="keyword">async</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> SharedPreferences prefs = <span class="keyword">await</span> _prefs;</span><br><span class="line">    prefs.setString(<span class="string">'key_nickname'</span>, value_nickname);</span><br><span class="line">    prefs.setBool(<span class="string">'key_dart'</span>, value_dart);</span><br><span class="line">    prefs.setBool(<span class="string">'key_java'</span>, value_java);</span><br><span class="line">    prefs.setBool(<span class="string">'key_js'</span>, value_js);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) =&gt; Scaffold(</span><br><span class="line">    appBar: AppBar(title: Text(<span class="string">'SharedPreferences示例'</span>),),</span><br><span class="line">    body: Container(</span><br><span class="line">      padding: EdgeInsets.all(<span class="number">15</span>),</span><br><span class="line">      child: Column(</span><br><span class="line">        crossAxisAlignment: CrossAxisAlignment.center,</span><br><span class="line">        children: &lt;Widget&gt;[</span><br><span class="line">          TextField(</span><br><span class="line">            controller: controller,</span><br><span class="line">            decoration: InputDecoration(</span><br><span class="line">              labelText: <span class="string">'昵称'</span>,</span><br><span class="line">              hintText: <span class="string">'请输入名称'</span></span><br><span class="line">            ),</span><br><span class="line">          ),</span><br><span class="line">          Text(<span class="string">'你喜欢的编程语言'</span>),</span><br><span class="line">          Row(</span><br><span class="line">            mainAxisAlignment: MainAxisAlignment.spaceBetween,</span><br><span class="line">            children: &lt;Widget&gt;[</span><br><span class="line">              Text(<span class="string">'Dart'</span>),</span><br><span class="line">              Switch(</span><br><span class="line">                value: value_dart,</span><br><span class="line">                onChanged: (isChanged) =&gt; setState(() =&gt; <span class="keyword">this</span>.value_dart = isChanged),</span><br><span class="line">              )</span><br><span class="line">            ],</span><br><span class="line">          ),</span><br><span class="line">          Row(</span><br><span class="line">            mainAxisAlignment: MainAxisAlignment.spaceBetween,</span><br><span class="line">            children: &lt;Widget&gt;[</span><br><span class="line">              Text(<span class="string">'JavaScript'</span>),</span><br><span class="line">              Switch(</span><br><span class="line">                value: value_js,</span><br><span class="line">                onChanged: (isChanged) =&gt; setState(() =&gt; <span class="keyword">this</span>.value_js = isChanged),</span><br><span class="line">              )</span><br><span class="line">            ],</span><br><span class="line">          ),</span><br><span class="line">          Row(</span><br><span class="line">            mainAxisAlignment: MainAxisAlignment.spaceBetween,</span><br><span class="line">            children: &lt;Widget&gt;[</span><br><span class="line">              Text(<span class="string">'Java'</span>),</span><br><span class="line">              Switch(</span><br><span class="line">                value: value_java,</span><br><span class="line">                onChanged: (isChanged) =&gt; setState(() =&gt; <span class="keyword">this</span>.value_java = isChanged),</span><br><span class="line">              )</span><br><span class="line">            ],</span><br><span class="line">          ),</span><br><span class="line">          MaterialButton(</span><br><span class="line">            child: Text(<span class="string">'保存'</span>),</span><br><span class="line">            onPressed: () =&gt; saveInfo(controller.text),</span><br><span class="line">          )</span><br><span class="line">        ],</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="2-Sqflite"><a href="#2-Sqflite" class="headerlink" title="2.Sqflite"></a>2.Sqflite</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">flutter</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/flutter//" class="article-tag-list-link color3">flutter</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/18/flutter入门100关/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-flutter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/15/flutter/">flutter</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/15/flutter/" class="archive-article-date">
-  	<time datetime="2020-01-15T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="android-x-适配问题"><a href="#android-x-适配问题" class="headerlink" title="android x 适配问题"></a>android x 适配问题</h1><h1 id="cached-network-image有问题"><a href="#cached-network-image有问题" class="headerlink" title="cached_network_image有问题"></a>cached_network_image有问题</h1><p>Compiler message:<br>../../../.pub-cache/hosted/pub.flutter-io.cn/cached_network_image-1.1.3/lib/src/cached_network_image_provider.dart:42:24: Error: The method ‘CachedNetworkImageProvider.load’ has fewer positional arguments than those of overridden method ‘ImageProvider.load’.<br>  ImageStreamCompleter load(CachedNetworkImageProvider key) {<br>                       ^<br>../../software/flutter/packages/flutter/lib/src/painting/image_provider.dart:403:24: Context: This is the overridden method (‘load’).<br>  ImageStreamCompleter load(T key, DecoderCallback decode);<br>                       ^<br>Exception: Errors during snapshot creation: null</p>
-<p>将cached_network_image的版本号升级到2.0.0-rc<br>  flutter_cache_manager: ^1.1.2</p>
-<h1 id="过滤掉提示重复的文件"><a href="#过滤掉提示重复的文件" class="headerlink" title="过滤掉提示重复的文件"></a>过滤掉提示重复的文件</h1><p>Execution failed for task ‘:app:transformResourcesWithMergeJavaResForDebug’.</p>
-<p>More than one file was found with OS independent path ‘META-INF/proguard/androidx-annotations.pro’</p>
-<p>在build.gradle文件的android节点下增加packagingOptions，过滤掉提示重复的文件。</p>
-<p>packagingOptions {<br>       exclude ‘META-INF/proguard/androidx-annotations.pro’<br>}</p>
-<h1 id="申请网络权限"><a href="#申请网络权限" class="headerlink" title="申请网络权限"></a>申请网络权限</h1><p>  <uses-permission android:name="android.permission.READ_PHONE_STATE"><br>  <uses-permission android:name="android.permission.INTERNET"><br>  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"><br>  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission></uses-permission></uses-permission></uses-permission></p>
-<h1 id="kotlin依赖在阿里云拉不下来"><a href="#kotlin依赖在阿里云拉不下来" class="headerlink" title="kotlin依赖在阿里云拉不下来"></a>kotlin依赖在阿里云拉不下来</h1><p>使.gradle下的init.gradle文件失效, 到google去拉 </p>
-<h1 id="Aapt2Exception"><a href="#Aapt2Exception" class="headerlink" title="Aapt2Exception"></a>Aapt2Exception</h1><p>Error: java.util.concurrent.ExecutionException: com.android.builder.internal.aapt.v2.Aapt2Exception: AAPT2 error: check logs for details</p>
-<p>在项目的gradle.properties中添加: android.enableAapt2=false</p>
-<h1 id="依赖不好使"><a href="#依赖不好使" class="headerlink" title="依赖不好使"></a>依赖不好使</h1><ol>
-<li><p>指定分支<br>zefyr:<br>   git:</p>
-<pre><code>url: git://github.com/memspace/zefyr.git
-ref: fix-text-input-connection-closed
-path: packages/zefyr
+</li>
+</ul>
+<h2 id="线程共享"><a href="#线程共享" class="headerlink" title="线程共享"></a>线程共享</h2><ul>
+<li><p>方法区 Method Area<br>  又称Non-Heap（非堆），主要用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据，<br>  根据Java 虚拟机规范的规定，当方法区无法满足内存分配需求时，将抛出OutOfMemoryError 异常。<br>  在方法区中存在一个叫运行时常量池(Runtime Constant Pool)的区域，它主要用于存放编译器生成的各种字面量和符号引用，<br>  这些内容将在类加载后存放到运行时常量池中，以便后续使用。</p>
+<p>  Java8之前, HotSpot在内存中划分出一块区域来存储类的元信息,类变量,内部字符串(interned string), 称作永久代(PermGen),<br>  把它当做方法区.  Java8之后移除永久代, 替换为元空间(MetaSpace), 元空间不在虚拟机内, 在本地内存.</p>
+<p>  Java8把类元数据放到本地内存, 将常量池,静态变量放到Java堆里.</p>
+<p>  替换的原因: 1.永久代大小是启动时固定的,太小容易永久代溢出, 太大容易老年代溢出. 使用直接内存不存在OOM</p>
+<pre><code>2. 简化Full GC: 每个回收器有专门的元数据迭代器, Full GC不再关心方法区
 </code></pre></li>
-<li><p>自己手动改<br>../../.pub-cache/hosted/pub.dartlang.org/zefyr-0.8.0/lib/src/widgets/input.dart</p>
+</ul>
+<ul>
+<li><p>堆 Heap<br>  在虚拟机启动时创建，是Java 虚拟机所管理的内存中最大的一块，主要用于存放对象实例，几乎所有的对象实例都在这里分配内存，<br>  Java 堆是垃圾收集器管理的主要区域，因此很多时候也被称做GC 堆，如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，<br>  将会抛出OutOfMemoryError 异常。<br>  堆就是Java代码可及的内存, 非堆是JVM留给自己用的   Non-heap = MetaSpace + CodeCache</p>
 </li>
-</ol>
-<h1 id="Flutter导航"><a href="#Flutter导航" class="headerlink" title="Flutter导航"></a>Flutter导航</h1><h2 id="Dart语言"><a href="#Dart语言" class="headerlink" title="Dart语言"></a>Dart语言</h2><p>Isolate</p>
-<h2 id="基础组件"><a href="#基础组件" class="headerlink" title="基础组件:"></a>基础组件:</h2><p>Widget<br>图片和Icon<br>按钮<br>进度指示器<br>输入框和表单<br>单选框和复选框</p>
-<h2 id="布局类组件"><a href="#布局类组件" class="headerlink" title="布局类组件"></a>布局类组件</h2><h3 id="线性布局-Row-Column"><a href="#线性布局-Row-Column" class="headerlink" title="线性布局(Row,Column)"></a>线性布局(Row,Column)</h3><p>布局沿水平方向,主轴就是水平方向,纵轴即垂直方向<br>布局沿垂直方向,主轴就是垂直方向,纵轴即水平方向<br>主轴对齐: MainAxisAligment<br>纵轴对齐: CrossAxisAligment</p>
-<h3 id="弹性布局-Flex"><a href="#弹性布局-Flex" class="headerlink" title="弹性布局(Flex)"></a>弹性布局(Flex)</h3><p>允许子组件按照一定比例来分配父容器空间.</p>
-<h3 id="流式布局-Wrap-Flow"><a href="#流式布局-Wrap-Flow" class="headerlink" title="流式布局(Wrap,Flow)"></a>流式布局(Wrap,Flow)</h3><p>超出屏幕显示范围会自动折行的布局成为流式布局.</p>
-<h3 id="层叠布局-Stack-Positioned"><a href="#层叠布局-Stack-Positioned" class="headerlink" title="层叠布局(Stack,Positioned)"></a>层叠布局(Stack,Positioned)</h3><p>对齐与相对定位(Align)</p>
-<h2 id="容器类组件"><a href="#容器类组件" class="headerlink" title="容器类组件"></a>容器类组件</h2><p>填充(Padding)<br>尺寸限制类容器(ConstrainedBox)<br>装饰容器(DecoratedBox)<br>变换(Transform)<br>Container容器<br>Scaffold<br>TabBar<br>底部导航<br>剪裁(Clip)</p>
-<h2 id="可滚动组件"><a href="#可滚动组件" class="headerlink" title="可滚动组件"></a>可滚动组件</h2><p>SingleChildScrollView<br>ListView<br>GridView<br>CustomScrollView<br>滚动监听及控制</p>
-<h2 id="功能性组件"><a href="#功能性组件" class="headerlink" title="功能性组件"></a>功能性组件</h2><p>导航返回拦截(WillPopScope)<br>数据共享(InheritedWidget)<br>跨组件状态共享(Provider)<br>颜色和主题(Theme)<br>异步UI更新(FutureBuilder,StreamBuilder)<br>对话框(AlertDialog)</p>
-<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>插值器: 设置属性值从初始值到结束值的变化规律<br>估值器: 设置属性值从初始值到结束值的变化具体数值<br>动画类型: </p>
-<ol>
-<li>补间(Tween)动画: 定义开始点,结束点,时间和速度等参数,框架自动计算</li>
-<li>基于物理的动画: 模拟真实世界的行为</li>
-</ol>
-<p>相关类: </p>
-<ol>
-<li>Animation: 动画核心类<br>abstract, 知道动画的当前状态(开始,停止或向前或是后移动),但不知道显示内容<br>本身和UI渲染没有任何关系, 可以通过访问其value属性获取动画的当前值.</li>
-<li>AnimationController: 动画管理类<br>在给定的持续时间内线性生成0.0到1.0的值,不使用的时候要做dispose处理<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// duration: 动画执行的时间, vsync: 防止动画离屏之后继续消耗资源</span></span><br><span class="line">AnimationController(duration: <span class="built_in">Duration</span>(milliseconds: <span class="number">2000</span>), vsync: <span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<li><p>直接内存 Direct Memory<br>  受操作系统管控而不是JVM管控.<br>  好处: 1.减少垃圾回收. 2.提升复制速度</p>
+<p>  JDK1.4中新加入的 NIO(New Input/Output) 类，引入了一种基于通道（Channel） 与缓存区（Buffer） 的 I/O 方式，<br>  它可以直接使用Native函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。<br>  这样就能在一些场景中显著提高性能，因为避免了在 Java 堆和 Native 堆之间来回复制数据。</p>
+<p>  Memcached等缓存框架使用堆外内存, 提高效率, 反复读写, 去除GC影响.</p>
+<p>  默认直接内存大小和最大堆内存相同</p>
 </li>
-</ol>
-<p>TickerProvider: 获取每一帧刷新的通知,作用是给动画添加了一个动起来的引擎</p>
-<ol start="3">
-<li><p>CurvedAnimation: 定义非线性曲线动画</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CurvedAnimation(parent: controller, curve: Curves.easeIn)</span><br></pre></td></tr></table></figure>
+</ul>
+<h2 id="线程私有"><a href="#线程私有" class="headerlink" title="线程私有"></a>线程私有</h2><ul>
+<li><p>虚拟机栈 JVM Stack<br>  与线程同时创建，总数与线程关联，代表Java方法执行的内存模型。每个方法执行时都会创建一个栈桢来存储方法的的局部变量表、<br>  操作数栈、动态链接方法、返回值、返回地址等信息。每个方法从调用直结束就对于一个栈桢在虚拟机栈中的入栈和出栈过程</p>
+<p>  Java8中每个线程对应的栈默认大小为1M</p>
 </li>
-<li><p>Tween: 补间对象,用于计算动画使用的数据范围之间的插值</p>
+<li><p>本地方法栈 Native Method Stack<br>  与虚拟机用到的 Native 方法相关<br>  HotSpot中本地方法栈和Java栈合二为一</p>
 </li>
-<li><p>Listeners和StatusListeners: 监听动画状态改变</p>
+<li><p>程序计数器 Program Counter Register<br>  一小块内存空间，主要代表当前线程所执行的字节码行号指示器。字节码解释器工作时，<br>  通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。<br>  每个线程都有一个独立的程序计数器</p>
 </li>
-</ol>
-<p>Hero动画<br>交织动画<br>动画过渡组件</p>
-<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><h2 id="网络IO"><a href="#网络IO" class="headerlink" title="网络IO"></a>网络IO</h2><p>Dio</p>
-<h2 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h2><p>Element和BuildContext<br>RenderObject和RenderBox</p>
+</ul>
+<h2 id="OOM-java-lang-OutOfMemoryError"><a href="#OOM-java-lang-OutOfMemoryError" class="headerlink" title="OOM  java.lang.OutOfMemoryError:"></a>OOM  java.lang.OutOfMemoryError:</h2><ul>
+<li><p>Java heap space<br>Java堆空间不够, 当应用程序申请更多的内存时,而Java堆内存已经无法满足需要时</p>
+</li>
+<li><p>unable to create new native thread<br>创建了太多线程, 线程栈空间超过了内存的限制, 或线程数超过了操作系统的限制</p>
+</li>
+<li><p>GC overhead limit exceeded<br>并行或并发回收器在GC回收时间过长, 超过98%的时间用来做GC并且回收不到2%的堆内存, 会抛出这种异常提前预警,<br>避免内存过小造成应用不能正常工作</p>
+</li>
+<li><p>at java.nio.DirectByteBuffer<br>堆外内存分配过小</p>
+</li>
+<li><p>PermGen Space<br>永久代空间不够, 类加载的过多 </p>
+</li>
+</ul>
+<p>java.lang.StackOverflowError: Java线程由于递归或者方法调用层次太多, 占满了线程栈<br>java.net.SocketException: Too many open files  某个应用程序使用的文件句柄超过了系统限制</p>
 
       
 
@@ -509,22 +241,323 @@ path: packages/zefyr
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">flutter</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
 	</div>
 
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/JVM内存模型/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Kubernetes权威指南-从Docker到Kubernetes实践全接触" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">Kubernetes</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><ul>
+<li>拥有唯一指定的名称 (如mysql-server)</li>
+<li>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP, Service IP 或 VIP.</li>
+<li>能够提供某种远程服务能力</li>
+<li>被映射到提供这种服务能力的一组容器应用上</li>
+</ul>
+<p>Service与Pod之间通过Label关联, 给运行MySQL的Pod贴上name=mysql的标签, 给Service定义Label Selector,<br>MySQL Service的标签选择器的选择条件为name=mysql</p>
+<p>一个Node上运行着几百个Pod</p>
+<p>一个Pod里有一个Pause容器和多个业务容器</p>
+<h2 id="例子-运行在Tomcat里的WebApp"><a href="#例子-运行在Tomcat里的WebApp" class="headerlink" title="例子: 运行在Tomcat里的WebApp"></a>例子: 运行在Tomcat里的WebApp</h2><p>两个容器: WebApp容器和MySQL容器<br>webapp需要访问mysql容器</p>
+<ul>
+<li>docker时代: 把mysql容器的ip地址通过环境变量注入到webapp中, 把webapp的8080端口映射到宿主机的8080端口</li>
+<li>kubernetes时代: </li>
+</ul>
+<ol>
+<li>为mysql服务创建RC(Replication Controller)定义文件 mysql-rc.yaml</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/Kubernetes权威指南-从Docker到Kubernetes实践全接触/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Golang东一榔头西一棒槌系列(3) -集合" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/">Golang东一榔头西一棒槌系列(3) -集合</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="array-数组"><a href="#array-数组" class="headerlink" title="array 数组"></a>array 数组</h1><pre><code>// 声明一个int类型数组
+var arr [10]int
+
+// 省略长度, go会自动根据元素算长度
+a := [...]int{3,4,4}
+
+// 二位数组
+doubleArray := [2][4]int{{1, 2, 3, 4}, {5, 6, 7, 8}}
+</code></pre><p>长度也是数组类型的一部分, [3]int和[4]int是不同的类型<br>数组作为参数时, 传入的是该数组的副本, 而不是指针.</p>
+<h1 id="slice-“动态数组”-引用类型-指向一个底层array"><a href="#slice-“动态数组”-引用类型-指向一个底层array" class="headerlink" title="slice “动态数组”,引用类型,指向一个底层array"></a>slice “动态数组”,引用类型,指向一个底层array</h1><pre><code>// 声明一个slice, (少了长度)
+var fslice []int
+
+// 声明两个含有byte的slice
+var a, b [] byte
+
+var ar = [10]byte{0,1,2,3,4,5,6,7,8,9}
+
+// a指向数组的第三个元素开始, 到第5个元素结束, a就是[2 3 4]
+a = ar[2:5]
+</code></pre><p>slice通过arr[i:j]来获取, i是数组的开始位置,j是结束位置,不包含arr[j],长度是j-i</p>
+<p>slice默认开始位置是0, 结束位置是数组长度<br>即: arr[:n]等价于arr[0:n]<br>    arr[n:]等价于arr[n:len(arr)]<br>从一个数组直接获取slice, 可以用arr[:]</p>
+<p>slice的最大长度cap: slice开始位置到数组最后位置的长度, len(arr) - i<br>对slice的slice可以在cap范围内扩展<br>slice的元素变了, 对它切片的slice元素也会相应改变</p>
+<p>append: 向slice里追加一个或多个元素, 返回一个slice(不改变原slice)<br>乱七八糟警告: append函数会改变slice所引用的数组的内容! 同时会影响到引用同一个数组的其他slice<br>            当slice没有剩余空间的时候, 将动态分配新的数组空间, 返回的slice数组将指向这个空间,<br>             原数组内容保持不变, 其他引用此数组的slice不受影响</p>
+<h1 id="map"><a href="#map" class="headerlink" title="map"></a>map</h1><pre><code>// 声明一个key是字符串,值是int的map, 这种声明需要在使用之前使用make初始化
+var numbers map[string] int
+
+// 声明map
+numbers := make(map[string]int)
+
+// 赋值
+numbers[&quot;one&quot;] = 1
+</code></pre><ul>
+<li>map是无序的</li>
+<li>map长度不固定, 是引用类型, 两个map指向一个底层, 一个改变另一个也改变</li>
+<li>内置len函数返回map拥有key的数量</li>
+</ul>
+<pre><code>// 初始化一个map
+rating := map[string]float32 {&quot;c&quot;: 4, &quot;go&quot;: 3.4, &quot;c++&quot;: 1.3} 
+
+// 如果不存在则ok为false, 存在ok为true
+cSharp, ok := rating[&quot;c#&quot;]
+if ok {
+    fmt.Println(&quot;c# is in the map and its rating is &quot;, cSharp)
+} else {
+    fmt.Println(&quot;C# is not found&quot;)
+}
+
+// 删除map中key为c的元素
+delete(rating, &quot;c&quot;)
+</code></pre><h1 id="内建函数make和new"><a href="#内建函数make和new" class="headerlink" title="内建函数make和new"></a>内建函数make和new</h1><p>make用于内建类型(map,slice,channel)的内存分配<br>new用于各种类型的内存分配, 返回一个指针, 指向新分配的类型T的零值</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/15/flutter/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Golang东一榔头西一棒槌系列(3) -集合/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-express" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/express/">express</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/express/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>其实nodejs写起来挺爽的~</p>
+<h1 id="mvc"><a href="#mvc" class="headerlink" title="mvc"></a>mvc</h1><ol>
+<li><p>__dirname<br>常量: 当前目录</p>
+</li>
+<li><p>path.join(<strong>dirname, ‘public’)<br>路径拼接<br>path.join(</strong>dirname, ‘..’, ‘controllers’);<br>两个点表示返回上一层</p>
+</li>
+<li><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">app.response.message = <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sess = <span class="keyword">this</span>.req.session;</span><br><span class="line">  sess.messages = sess.messages || [];</span><br><span class="line">  sess.messages.push(msg);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>给response定义一个message函数, 把msg存到session里</p>
+<ol start="4">
+<li><p>!module.parent<br>用于在没有require语句的情况下直接运行某段代码，如果有require语句，则不执行</p>
+</li>
+<li><p>app.use([path,] callback [, callback…])<br>这个callback既可以是router对象又可以是函数</p>
+</li>
+</ol>
+<p>app.use(‘/home’,router)<br>router路由对象中的路由都会匹配到”/home”路由后面</p>
+<p>app.use(express.static(‘public’));<br>传递一个包含静态资源的目录给express.static中间件用于立即开始提供文件</p>
+<p>app.use(methodOverride(‘_method’));<br>把表单的post请求改写成put, 通过在url里加参数: ?_method=put</p>
+<p>app.use(express.urlencoded({ extended: true }))<br>解析请求体</p>
+<ol start="6">
+<li>!null=true<br>!undefined=true<br>!’’=true<br>!!a 的意思就是 a不为null 且 a不为undefined 且 a不为空字符串</li>
+</ol>
+<ol start="7">
+<li><h1 id="模板引擎-template-engine"><a href="#模板引擎-template-engine" class="headerlink" title="模板引擎 template engine"></a>模板引擎 template engine</h1>我之前是用的jade, 那种缩进式风格深得我意.<br>express官方Example里用的是ejs.<br>设置模板引擎: <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.set(<span class="string">'view engine'</span>, <span class="string">'ejs'</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/FontEnd//" class="article-tag-list-link color3">FontEnd</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/express/">展开全文 >></a>
         </p>
       
 
@@ -556,7 +589,7 @@ path: packages/zefyr
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
     </nav>
   
 
@@ -664,11 +697,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
+                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">读书笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -676,11 +713,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PL</a>
+                <a href="javascript:void(0)" class="js-tag color1">函数式编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">LeetCode</a>
+                <a href="javascript:void(0)" class="js-tag color3">PL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -693,10 +730,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">排序算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
             
             <div class="clearfix"></div>

@@ -157,6 +157,377 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Kubernetes CheetSheet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/Kubernetes CheetSheet/">Kubernetes CheetSheet</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/Kubernetes CheetSheet/" class="archive-article-date">
+  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p>获取指定namespace下的pod列表<br>kubectl -n clink-plus get po<br>kubectl -n clink-plus get pod<br>kubectl -n clink-plus get pods<br>最精缩版:<br>kubectl -n clink-plus get po</p>
+</li>
+<li><p>获取指定pod的信息<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl</p>
+</li>
+</ol>
+<p>加了IP和Node的:<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl -o wide</p>
+<p>以yaml格式展示(巨详细,可以看到镜像的版本):<br>kubectl -n clink-plus get po clink2-app-56568b6ff4-dtvwl -o yaml</p>
+<p>使用describe<br>kubectl -n clink-plus describe pod clink2-app-56568b6ff4-dtvwl</p>
+<ol start="3">
+<li><p>显示node的详细信息<br>kubectl describe node cn-beijing.i-2ze938t1plplf6q7hdvg</p>
+</li>
+<li><p>登录pod<br>kubectl -n clink-plus exec clink2-agent-647c888dfb-s6qv6 -it bash<br>退出bash: exit</p>
+</li>
+<li><p>看日志<br>kubectl -n clink-plus log -f clink2-chat-record-7fcbc899cc-r7v27</p>
+</li>
+</ol>
+<ol start="6">
+<li><p>查看configmap(里面有redis用的几号库)<br>kubectl -n clink-plus get cm<br>kubectl -n clink-plus edit cm clink2-chat-weixin-env</p>
+</li>
+<li><p>部署节点数<br>kubectl -n clink-plus edit deploy clink2-chat-weixin</p>
+</li>
+<li><p>获取节点ip<br>kubectl -n clink2-test5 get ing</p>
+</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/Kubernetes CheetSheet/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Kubernetes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/Kubernetes/">Kubernetes</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/Kubernetes/" class="archive-article-date">
+  	<time datetime="2019-04-24T04:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一切以服务为中心, 一切围绕服务运转.<br>自动化.<br>一个服务可以自我扩展,自我诊断,容易升级,在收到服务扩容的请求后,Kubernetes会触发<br>调度流程,最终在选定的目标节点上启动相应数量的服务实例副本.</p>
+<p>核心组件:</p>
+<ul>
+<li>etcd: 保存整个集群的状态, 所有资源对象的数据</li>
+<li>apiserver: 提供资源操作的唯一入口,提供认证,授权,访问控制,API注册和发现等机制</li>
+<li>controller manager: 维护集群的状态, 如故障检测,自动扩展,滚动更新等.</li>
+<li>scheduler: 负责资源调度,按照预定的调度策略将Pod调度到相应的机器上.</li>
+<li>kubelet: 负责维护容器的生命周期,也负责Volume(CVI)和网格(CNI)的管理.</li>
+<li>Container runtime: 负责镜像管理以及Pod和容器的真正运行(CRI)</li>
+<li>kube-proxy: 负责为Service提供cluster内部的服务发现和负载均衡.</li>
+</ul>
+<p>Add-ons:<br>    kube-dns: 负责为整个集群提供DNS服务<br>    Ingress Controller: 为服务提供外网入口.<br>    Heapster: 资源监控</p>
+<p>API对象: Kubernetes集群中的管理操作单元.<br>    三大类属性: 元数据metadata<br>                 标识API对象,至少包含:namespace,name和uid. 使用标签来标识和匹配不同的对象.<br>                                如env=dev来标识开发服务.<br>              规范spec<br>                 描述了用户期望的Kubernetes集群中的分布式系统达到的理想状态.如通过Replication Controller设置<br>                    期望的Pod副本数为3.<br>              状态status<br>                 描述了系统实际当前达到的状态,如当前实际Pod副本数为2</p>
+<p>Pod: Kubernetes集群中运行部署应用或服务的最小单元.一个Pod代表集群中运行的一个进程.<br>        支持多个容器在一个Pod中共享网络地址和文件系统,可以通过进程间通信和文件共享的方式完成服务.</p>
+<p>获取可用的节点:</p>
+<blockquote>
+<p>kubectl get nodes</p>
+</blockquote>
+<h2 id="启动Mysql应用"><a href="#启动Mysql应用" class="headerlink" title="启动Mysql应用"></a>启动Mysql应用</h2><p>mysql-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">1</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">mysql</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mysql</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">mysql</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">3306</span> <span class="comment"># 容器应用监听的端口号</span></span><br><span class="line">            <span class="attr">env:</span>                   <span class="comment"># 注入容器内的环境变量</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">            <span class="attr">value:</span> <span class="string">"123456"</span></span><br></pre></td></tr></table></figure></p>
+<p>将RC文件发布到Kubenetes集群:</p>
+<blockquote>
+<p>kubectl create -f mysql-rc.yaml</p>
+</blockquote>
+<p>查看创建的RC:</p>
+<blockquote>
+<p>kubectl get rc</p>
+</blockquote>
+<p>查看pod的创建情况:</p>
+<blockquote>
+<p>kubectl get pods</p>
+</blockquote>
+<p>查看正在运行的容器:</p>
+<blockquote>
+<p>docker ps | grep mysql</p>
+</blockquote>
+<p>创建Kubernetes Service:<br>mysql-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">mysql</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">3306</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">mysql</span></span><br></pre></td></tr></table></figure></p>
+<p>创建Service:</p>
+<blockquote>
+<p>kubectl create -f mysql-svc.yaml</p>
+</blockquote>
+<p>查看创建的Service:</p>
+<blockquote>
+<p>kubectl get svc</p>
+</blockquote>
+<h2 id="启动Tomcat应用"><a href="#启动Tomcat应用" class="headerlink" title="启动Tomcat应用"></a>启动Tomcat应用</h2><p>创建myweb-rc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>      </span><br><span class="line"><span class="attr">kind:</span> <span class="string">ReplicationController</span> <span class="comment"># 副本控制器RC</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>             <span class="comment"># RC的名称,全局唯一</span></span><br><span class="line"><span class="attr">spec:</span> </span><br><span class="line">    <span class="attr">replicas:</span> <span class="number">2</span>             <span class="comment"># Pod副本的期待数量</span></span><br><span class="line">    <span class="attr">selector:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span>          <span class="comment"># 符合目标的Pod拥有此标签</span></span><br><span class="line">    <span class="attr">template:</span>               <span class="comment"># 根据此模板创建Pod的副本</span></span><br><span class="line">        <span class="attr">metadata:</span></span><br><span class="line">            <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">app:</span> <span class="string">myweb</span>      <span class="comment"># Pod副本拥有的标签,对应RC的Selector</span></span><br><span class="line">        <span class="attr">spec:</span></span><br><span class="line">            <span class="attr">containers:</span>     <span class="comment"># Pod内容器的定义部分</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">myweb</span>   <span class="comment"># 容器名称</span></span><br><span class="line">            <span class="attr">image:</span> <span class="string">kubeguide/tomcat-app:v1</span>     <span class="comment"># 容器对应的Docker Image</span></span><br><span class="line">            <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">8080</span> <span class="comment"># 容器应用监听的端口号</span></span><br></pre></td></tr></table></figure></p>
+<p>RC的创建和验证:</p>
+<blockquote>
+<p>kubectl create -f myweb-rc.yaml<br>创建myweb-svc.yaml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span>           <span class="comment"># 表明是Kubernetes Service</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">    <span class="attr">name:</span> <span class="string">myweb</span>         <span class="comment"># Service的全局唯一名称</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">NodePort</span>      <span class="comment"># 此Service开启了NodePort方式的外网访问模式</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8080</span>    <span class="comment"># Service提供服务的端口号</span></span><br><span class="line">          <span class="attr">nodePort:</span> <span class="number">30001</span></span><br><span class="line">    <span class="attr">selector:</span>           <span class="comment"># Service对应的Pod拥有这里定义的标签</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">myweb</span></span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>kubectl create -f myweb-svc.yaml</p>
+</blockquote>
+<p>查看Services:<br>kubectl get services</p>
+<h2 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h2><p>负责整个集群的管理和控制,通常在一个独立的服务器, 基本所有的控制命令都发送给它.</p>
+<ul>
+<li>Kubernetes API Server: 提供HTTP Rest接口的关键服务进程,所有资源增删改查的唯一入口,集群控制的入口进程.</li>
+<li>Kubernetes Controller Manager: 所有资源对象的自动化控制中心</li>
+<li>Kubernetes Scheduler: 资源调度</li>
+<li>etcd服务: 保存所有资源对象的数据</li>
+</ul>
+<h2 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h2><p>可以是物理主机,也可以是虚拟机.<br>工作负载节点.<br>每个Node都运行着:</p>
+<ul>
+<li>kubelet: 负责Pod对应的容器的创建,启停等任务.与Master密切协作,实现集群管理</li>
+<li>kube-proxy: 实现Kubernetes Service的通信与负载均衡机制的重要组件</li>
+<li>Docker Engine: Docker引擎,负责本机的容器创建和管理工作</li>
+</ul>
+<p>查看某个Node的详细信息:</p>
+<blockquote>
+<p>kubectl describe node &lt;node_name&gt;</p>
+</blockquote>
+<h2 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h2><p>根容器: Pause容器<br>业务容器共享Pause容器的IP,挂接的Volume<br>Kubernetes为每个Pod都分配了唯一的IP地址, 即Pod IP.<br>一个Pod里的多个容器共享Pod IP地址.<br>一个Pod里的容器可以与另外主机上的Pod容器能够直接通信</p>
+<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><ul>
+<li>普通Pod<br>放入etcd中存储,被Kubernetes Master调度到某个具体的Node上并进行绑定,随后该Pod被对应的Node上的kubelet进程实例化成<br>一组相关的Docker容器并启动.</li>
+<li>静态Pod<br>不存在etcd存储中,存放在某个具体的Node上的具体文件中,只在此Node上启动,运行</li>
+</ul>
+<h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><p>每个Service都被分配了一个全局唯一的虚拟IP地址, 被称作Cluster IP.</p>
+<h2 id="Annotation"><a href="#Annotation" class="headerlink" title="Annotation"></a>Annotation</h2><p>与Label类似,使用key/value键值对的形式进行定义.<br>Annotation是用户任意定义的附加信息,以便外部工具查找.</p>
+<h2 id="ConfigMap"><a href="#ConfigMap" class="headerlink" title="ConfigMap"></a>ConfigMap</h2><p>Kubernetes将存储在etcd中的ConfigMap通过Volume映射的方式变成目标Pod内的配置文件,不管目标Pod被调度到哪台服务器,都会<br>完成自动映射.<br>如果ConfigMap中的key-value数据被修改,则映射到Pod中的”配置文件”也会随之更新.</p>
+<h2 id="Kubernetes安装"><a href="#Kubernetes安装" class="headerlink" title="Kubernetes安装"></a>Kubernetes安装</h2><ol start="0">
+<li>关闭防火墙<blockquote>
+<p>systemctl disable firewalld<br>systemctl stop firewalld<br>禁用SELinux, 让容器可以读取主机文件系统:<br>setenforce 0</p>
+</blockquote>
+</li>
+</ol>
+<ol>
+<li><p>修改源:<br>[kuebrnetes]<br>name=Kubernetes Repository<br>baseurl=<a href="http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/" target="_blank" rel="noopener">http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</a><br>enabled=1<br>gpgcheck=0</p>
+</li>
+<li><p>安装kubeadm</p>
+<!-- > yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes -->
+<blockquote>
+<p>yum install -y kubelet-1.14.2 kubeadm-1.14.2 kubectl-1.14.2 –disableexcludes=kubernetes<br>我离气死就差这么点儿距离了..<br>安装了1.6版本的上述kubelet, 后面的死活装不上</p>
+</blockquote>
+</li>
+<li><p>启动docker和kubelet<br>systemctl enable docker &amp;&amp; systemctl start docker<br>systemctl enable kubelet &amp;&amp; systemctl start kubelet</p>
+</li>
+</ol>
+<p>得到默认的初始化参数文件:<br>kubeadm config print init-defaults &gt; init.defaults.yaml</p>
+<ol start="4">
+<li>修改docker的镜像托管站, 重启docker服务<blockquote>
+<p>echo ‘{“registry-mirrors”:[“<a href="https://registry.docker-cn.com&quot;]}&#39;" target="_blank" rel="noopener">https://registry.docker-cn.com&quot;]}&#39;</a> &gt; /etc/docker/daemon.json</p>
+</blockquote>
+</li>
+</ol>
+<p>启动        systemctl start docker<br>守护进程重启   sudo systemctl daemon-reload<br>重启docker服务   systemctl restart docker<br>重启docker服务  sudo service docker restart<br>关闭docker   service docker stop<br>关闭docker  systemctl stop docker</p>
+<ol start="5">
+<li>使用config images pull子命令下载所需镜像:<blockquote>
+<p>kubeadm config images pull –config=init-config.yaml</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>kubeadm init –config=init-config.yaml</p>
+</blockquote>
+<p>关掉swap</p>
+<blockquote>
+<p>swapoff -a</p>
+</blockquote>
+<p>不知道这啥错,也不知道这啥办法.<br>$ echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables<br>$ echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-ip6tables</p>
+<blockquote>
+<p>安装成功了, 我离去世就差这么一点点距离了.</p>
+</blockquote>
+<p>kubectl命令需要使用kubernetes-admin来运行，<br>解决方法如下，将主节点中的【/etc/kubernetes/admin.conf】文件拷贝到从节点相同目录下，然后配置环境变量</p>
+<blockquote>
+<p>echo “export KUBECONFIG=/etc/kubernetes/admin.conf” &gt;&gt; ~/.bash_profile</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kubernetes//" class="article-tag-list-link color1">Kubernetes</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/Kubernetes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JVM故障排查" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/JVM故障排查/">JVM故障排查</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/JVM故障排查/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="jps-JVM-Process-Status-Tool"><a href="#jps-JVM-Process-Status-Tool" class="headerlink" title="jps (JVM Process Status Tool)"></a>jps (JVM Process Status Tool)</h2><p>列出正在运行的虚拟机进程<br>-v 输出虚拟机进程启动时JVM参数</p>
+<h2 id="jstat-JVM-Statistics-Monitoring-Tool"><a href="#jstat-JVM-Statistics-Monitoring-Tool" class="headerlink" title="jstat (JVM Statistics Monitoring Tool)"></a>jstat (JVM Statistics Monitoring Tool)</h2><p>监视虚拟机各种运行状态信息</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/JVM故障排查/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -271,268 +642,9 @@
 
 
   
-    <article id="post-Kotlin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/Kotlin/">Kotlin</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/Kotlin/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>is运算符<br>    检测一个表达式是否某类型的实例.如果是,在检测后可以直接当做该类型使用.<br>for循环<br>    普通的和索引遍历.<br>        for((k, v) in map) print(“$k -&gt; $v”)<br>when表达式<br>    模式匹配, 可以匹配具体的值, 也可以匹配类型.<br>in运算符<br>    检测某个数字是否在指定区间内.<br>        for (x in 9 downTo 0 step 3) print(x)<br>lambda表达式<br>    filter, sortedBy, map, forEach使用大括号<br>    list.filter{it &gt; 0}<br>类的创建<br>    不同指定实例类型, 不用new<br>DTO<br>    data class Customer(val name: String, val email: String)<br>    提供: getters, 对var还有setters<br>         equals(), hashCode(), toString(), copy()<br>默认参数<br>    fun foo(a: Int = 0, b: String = “”) {…}<br>访问map<br>    map[“key”]<br>延迟属性<br>    val p: String by lazy {}<br>扩展函数<br>    fun String.spaceToCamelCase() {…}<br>创建单例<br>    object Resource {<br>        val name = “Name”<br>    }</p>
-<p>if not null缩写<br>    val files = File(“Test”).listFiles()<br>    print(files?.size)</p>
-<p>if not null and else<br>    print(files?.size ?: “empty”)</p>
-<p>if null执行语句<br>    val email = values[“email”] ?: throw IllegalStateException(“Email is missing”)</p>
-<p>在可能会空的集合取第一个元素<br>    val mainEmail = emails.firstOrNull() ?: “”</p>
-<p>if not null执行代码<br>    value?.let {}</p>
-<p>可空布尔<br>    val b: Boolean? = …</p>
-<p>交换变量<br>    a = b.also {b = a}</p>
-<p>三个等号与两个等号<br>    数字装箱的 同一性 相等性</p>
-<p>基本类型<br>    在运行时表示为原生类型值,使用时像普通的类.<br>    较小类型不能隐式转换为较大的类型.</p>
-<p>密封类<br>    表示受限的类继承结构, 当一个值为有限集中的类型,不能有任何其他类型时.</p>
-<p>协程</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Kotlin//" class="article-tag-list-link color2">Kotlin</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/Kotlin/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JVM故障排查" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/24/JVM故障排查/">JVM故障排查</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/24/JVM故障排查/" class="archive-article-date">
-  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="jps-JVM-Process-Status-Tool"><a href="#jps-JVM-Process-Status-Tool" class="headerlink" title="jps (JVM Process Status Tool)"></a>jps (JVM Process Status Tool)</h2><p>列出正在运行的虚拟机进程<br>-v 输出虚拟机进程启动时JVM参数</p>
-<h2 id="jstat-JVM-Statistics-Monitoring-Tool"><a href="#jstat-JVM-Statistics-Monitoring-Tool" class="headerlink" title="jstat (JVM Statistics Monitoring Tool)"></a>jstat (JVM Statistics Monitoring Tool)</h2><p>监视虚拟机各种运行状态信息</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/24/JVM故障排查/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-沪江网校新标日语(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/14/沪江网校新标日语(1)/">沪江网校新标日语(1)</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/14/沪江网校新标日语(1)/" class="archive-article-date">
-  	<time datetime="2019-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>私<br>wa ta shi<br>わたし<br>我</p>
-<p>あなた　<br>a na ta<br>你</p>
-<p>あの人<br>a no hi to<br>あのひと<br>那个人</p>
-<p>~さん<br>sa nn<br>姓氏之后</p>
-<p>~らやん<br>ra ya nn<br>小孩子或亲近的女孩子</p>
-<p>~君<br>ku nn<br>くん<br>年龄相当或年轻的男性</p>
-<p>日本<br>ni ho nn<br>にほん</p>
-<p>日本人<br>ni ho nn ji nn<br>にほんじん</p>
-<p>中国<br>chu u go ku<br>ちゅうごく</p>
-<p>中国人<br>chu u go ku ji nn<br>ちゅごくじん</p>
-<p>韓国<br>ka nn ko ku<br>かんこく</p>
-<p>韓国人<br>ka nn ko ku ji nn</p>
-<p>先生<br>se nn se i<br>せんせい<br>老师,律师,艺术家,领导人,专家</p>
-<p>学生<br>ga ku se i<br>がくせい<br>大学生</p>
-<p>大学<br>da i ga ku<br>だいがく</p>
-<p>学 ga ku<br>生 se i</p>
-<p>会社<br>ka i sha<br>かいしゃ<br>公司</p>
-<p>会社員<br>ka i sha i nn<br>かいしゃいん<br>公司职员</p>
-<p>社員<br>sha i nn<br>しゃいん<br>职员</p>
-<p>企業<br>ki gyou<br>きぎょう</p>
-<p>企画<br>ki ka ku<br>策划</p>
-<p>はい<br>ha i<br>是</p>
-<p>いいえ<br>i i e<br>不是</p>
-<p>そうです<br>so u de su<br>是的</p>
-<p>違います<br>chi ga i ma su<br>ちがいます<br>不是</p>
-<p>分かりません<br>wa ka ri ma se nn<br>わかりません<br>不知道</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/14/沪江网校新标日语(1)/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/36/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/38/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/36/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/35/">35</a><a class="page-number" href="/page/36/">36</a><span class="page-number current">37</span><a class="page-number" href="/page/38/">38</a><a class="page-number" href="/page/39/">39</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/38/">Next &raquo;</a>
     </nav>
   
 

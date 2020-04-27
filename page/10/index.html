@@ -157,19 +157,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-flutter痛苦翻来覆去系列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-快排" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/flutter痛苦翻来覆去系列/">flutter痛苦翻来覆去系列</a>
+      <a class="article-title" href="/2020/04/14/快排/">快排</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/flutter痛苦翻来覆去系列/" class="archive-article-date">
+        <a href="/2020/04/14/快排/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -177,13 +177,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <ol>
-<li><p>hello, Simple Material App</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'package:flutter/material.dart'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(MaterialApp(</span><br><span class="line">    title: <span class="string">'Simple Material App'</span>,</span><br><span class="line">    home: Scaffold(</span><br><span class="line">      appBar: AppBar(</span><br><span class="line">        title: Text(<span class="string">'Complex Material App'</span>),</span><br><span class="line">      ),</span><br><span class="line">      body: Container(</span><br><span class="line">        child: Center(</span><br><span class="line">          child: Text(<span class="string">"Hello Fultter~"</span>),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    ),</span><br><span class="line">  ));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li></li>
-</ol>
-
+        <p>快排的思路就是: 找到一个轴, 它左边的都比它小, 它右边的都比它大, 然后递归下去</p>
+<p>快速排序最优的情况:  每一次取到的元素都刚好平分整个数组<br>时间复杂度为：O(nlogn)<br>空间复杂度为：O(logn)</p>
+<p>快速排序最差的情况:  每一次取到的元素就是数组中最小/最大的，这种情况其实就是冒泡排序了(每一次都排好一个元素的顺序)<br>时间复杂度为： O(n^2)<br>空间复杂度为：O(n)</p>
+<p>平均时间复杂度<br>       快速排序的平均时间复杂度也是：O(nlogn)</p>
+<p>第二种用时: 1534ms<br>第一种用时: 27ms</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">quickSort</span><span class="params">(List&lt;Integer&gt; list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (list.size() &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> pivot = list.get(<span class="number">0</span>);</span><br><span class="line">        List&lt;Integer&gt; less = list.stream()</span><br><span class="line">                                .skip(<span class="number">1</span>)</span><br><span class="line">                                .filter(ele -&gt; ele &lt;= pivot)</span><br><span class="line">                                .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">        List&lt;Integer&gt; greater = list.stream()                                </span><br><span class="line">                                    .skip(<span class="number">1</span>)</span><br><span class="line">                                    .filter(ele -&gt; ele &gt; pivot)</span><br><span class="line">                                    .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Stream.of(quickSort(less).stream(),</span><br><span class="line">                        Stream.of(pivot), </span><br><span class="line">                        quickSort(greater).stream())</span><br><span class="line">                .flatMap(Function.identity())</span><br><span class="line">                .collect(Collectors.toList());                                 ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    quickSort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">        <span class="keyword">int</span> pivot = partition(arr, low, high);</span><br><span class="line">        quickSort(arr, low, pivot - <span class="number">1</span>);</span><br><span class="line">        quickSort(arr, pivot + <span class="number">1</span>, high);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pivot = arr[low];</span><br><span class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">        <span class="comment">// 右边的比它大, 就ok</span></span><br><span class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; pivot &lt;= arr[high]) &#123;</span><br><span class="line">            high--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 不比它大, 移到左边来</span></span><br><span class="line">        arr[low] = arr[high];</span><br><span class="line">        <span class="comment">// 左边的比它小, 就ok</span></span><br><span class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; arr[low] &lt;= pivot) &#123;</span><br><span class="line">            low++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 不比它小, 移到右边来</span></span><br><span class="line">        arr[high] = arr[low];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 放回去</span></span><br><span class="line">    arr[low] = pivot;</span><br><span class="line">    <span class="keyword">return</span> low;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
 
       
@@ -191,13 +191,24 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">排序算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Flutter//" class="article-tag-list-link color3">Flutter</a>
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
         		</li>
       		
 		</ul>
@@ -206,69 +217,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/flutter痛苦翻来覆去系列/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-邓小平传" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/邓小平传/">邓小平传</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/14/邓小平传/" class="archive-article-date">
-  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/邓小平传/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/快排/">展开全文 >></a>
         </p>
       
 
@@ -361,19 +310,19 @@
 
 
   
-    <article id="post-沪江网校新标日语(4)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Emacs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/14/沪江网校新标日语(4)/">沪江网校新标日语(4)</a>
+      <a class="article-title" href="/2020/04/14/Emacs/">Emacs</a>
     </h1>
   
 
         
-        <a href="/2020/04/14/沪江网校新标日语(4)/" class="archive-article-date">
+        <a href="/2020/04/14/Emacs/" class="archive-article-date">
   	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
 </a>
         
@@ -381,17 +330,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>李さん、それは何（なん）ですか。<br>小李, 那是什么?</p>
-<p>これですか。家族（かぞく）の写真（しゃしん）です。<br>这个吗? 是家人的照片.</p>
-<p>この方（かた）は どなた ですか。<br>这位是哪位?<br>どなた　是 だれ 的敬称</p>
-<p>私（わたし）の母（はは）です。<br>我妈.</p>
-<p>お母(かあ)さんは おいくつ ですか。<br>你妈多大了?</p>
-<p>52歳（さい）です。</p>
-<h2 id="52岁"><a href="#52岁" class="headerlink" title="52岁."></a>52岁.</h2><p>小野さん、これ、どうぞ。<br>小野, 这个, 请收下.</p>
-<p>え、何ですか。</p>
-<p>お土産（おみやげ）です。</p>
-<p>わあ、</p>
-<p>どうも　ありがとう　ございます。</p>
+        <p>M-&lt;：整个文章的首部<br>M-&gt;：整个文章的尾部</p>
+<p>C-v 向下翻一页<br>M-v 向上翻一页</p>
+<p>C-u：是输入数字的命令，比如C-u 8 C-f 相当于向右移动8行，C-u 8 i 输入8个i<br>C-d: 删除当前行</p>
+<p>M-d：删除下一个单词<br>M-del: 删除上一个单词</p>
+<p>C-k：从当前位置，删除到整个行末尾</p>
+<p>M-u 使从光标位置到单词结尾处的字母变成大写<br>M-c 使从光标位置开始的单词的首字母变为大写</p>
+<p>C-@    设置开始标记<br>M-w    复制标记区内容<br>C-y    帖粘</p>
 
       
 
@@ -401,21 +346,107 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/14/沪江网校新标日语(4)/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/14/Emacs/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-区块链初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/区块链初探/">区块链初探</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/14/区块链初探/" class="archive-article-date">
+  	<time datetime="2020-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>不务正业就是我的正业</p>
+</blockquote>
+<h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><ol>
+<li>DApp (Decentralized Application)</li>
+</ol>
+<p>去中心化应用, 开启了区块链3.0时代</p>
+<ol start="2">
+<li>底层区块链开发平台</li>
+</ol>
+<p>以太坊: 有智能合约功能的公共区块链平台，它允许任何人在上面中建立和使用通过区块链技术运行的分布式应用，编程语言为solidity</p>
+<p>eos: 允许开发者在其协议顶端创建区块链应用的新平台，与 ETH 相比，运行速度更快更稳定，主要解决了高交易频率的问题，每秒交易可达百亿次，且可同时运行上千个 APP ，编程语言为 c++。</p>
+<p>fibos: 由 fibjs+eos 设计的一个全新的区块链 js 开发平台，相比以上两者做到兼顾速度、稳定之外，对开发者更友好。</p>
+<h2 id="区块链"><a href="#区块链" class="headerlink" title="区块链"></a>区块链</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Block <span class="keyword">struct</span> &#123;</span><br><span class="line">    Number <span class="keyword">string</span></span><br><span class="line">    PreHash <span class="keyword">string</span></span><br><span class="line">    Hash <span class="keyword">string</span></span><br><span class="line">    Value <span class="keyword">string</span></span><br><span class="line">    Create <span class="keyword">int64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="共识算法"><a href="#共识算法" class="headerlink" title="共识算法"></a>共识算法</h2><ol>
+<li>PoW 比特币(BTC),区块链1.0<br>Proof of Word, 工作量证明, 多劳多得<blockquote>
+<p>比特币挖矿: 通过计算符合某一个比特币区块头的哈希散列值争夺记账权. 该矿工挖出的区块被串接入主链.</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>优点: 1)机制独特: 挖矿难度系数自动调整,区块奖励逐步减半.<pre><code>2)早参与早获利
+3) 公平
+</code></pre></li>
+<li>缺点: 1) 算力浪费资源<pre><code>2) 算力集中,不符合去中心化
+3) 难度变大
+4) 安全性
+5) 51%算力攻击        
+</code></pre></li>
+</ul>
+<p>PoS 以太坊(ETH),区块链2.0<br>Proof of Stake 股权证明</p>
+<blockquote>
+<p>点点币(PPCoin) 没有挖矿,通过转账交易方式,用”利息”方式新增货币,</p>
+</blockquote>
+<p>DPoS 柚子(EOS), 区块链3.0<br>Delegated Proof of Stake 股份授权证明机制. 见证者节点<br>PBEF 拜占庭容错, 联盟链常用</p>
+<h2 id="链的分叉"><a href="#链的分叉" class="headerlink" title="链的分叉"></a>链的分叉</h2>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/14/区块链初探/">展开全文 >></a>
         </p>
       
 
@@ -447,7 +478,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
     </nav>
   
 

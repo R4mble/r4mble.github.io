@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="笔记本">
 <meta property="og:description" content="Syntactic Extensionsyntax-rules表达式构成transformersyntax-rules后面跟着辅助关键词列表, 几乎总是()在辅助关键词列表后面的是rules序列或者pattern/template pairspattern指定要接收什么input, template指定input会被转换成什么. pattern的第一个元素总是 _如果有多个rule, 按顺序对in">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-26T12:53:51.988Z">
+<meta property="og:updated_time" content="2020-04-27T02:10:17.094Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="The Scheme Programming Language(2)-深入">
 <meta name="twitter:description" content="Syntactic Extensionsyntax-rules表达式构成transformersyntax-rules后面跟着辅助关键词列表, 几乎总是()在辅助关键词列表后面的是rules序列或者pattern/template pairspattern指定要接收什么input, template指定input会被转换成什么. pattern的第一个元素总是 _如果有多个rule, 按顺序对in">
@@ -197,7 +197,21 @@
 <p>letrec的限制: 每一个expr必须可以在不对variables求值的情况下求值.<br>当expr是lambda表达式的时候总是满足这个限制, 即使variables出现在<br>lambda表达式中.</p>
 <p>这个可以<br>(letrec ([f (lambda () (+ x 2))]<br>          [x 1])<br>  (f))</p>
 <p>这个不行:<br>(letrec ([y (+ x 2)]<br>          [x 1])<br>  y)</p>
-<h1 id="3-3-Continuations"><a href="#3-3-Continuations" class="headerlink" title="3.3 Continuations"></a>3.3 Continuations</h1>
+<h1 id="3-3-Continuations"><a href="#3-3-Continuations" class="headerlink" title="3.3 Continuations"></a>3.3 Continuations</h1><p>把要对value做什么 称作 Continuations<br>任意expression的continuation都可以被call/cc捕获<br>k代表continuation, 每次k被赋值, 就会返回给call/cc</p>
+<p>例1:<br>(call/cc<br>    (lambda (k)<br>        (* 5 4)))</p>
+<p>k没被用过, 所以返回给call/cc的值就是20</p>
+<p>例2:<br>(call/cc<br>    (lambda (k)<br>        (* 5 (k 4))))</p>
+<p>k被赋值为4, 所以call/cc就是4</p>
+<p>例3:<br>(+ 2<br>    (call/cc<br>        (lambda (k)<br>            (* 5 (k 4)))))</p>
+<p>k被赋值为4, 所以call/cc就是4, 外层再加个2, 最后是6</p>
+<p>(define product<br>    (lambda (ls)<br>        (call/cc<br>            (lambda (break)<br>                (let f ([ls ls])<br>                    (cond<br>                        [(null? ls) 1]<br>                        [(= (car ls) 0) (break 0)]<br>                        [else (* (car ls) (f (cdr ls)))]))))))</p>
+<p>call/cc在递归中提供一个非局部退出.<br>非局部退出可以让product在遇到0的时候马上退出.</p>
+<p>(define (product2 ls)<br>    (cond<br>        [(null? ls) 1]<br>        [(= (car ls) 0) 0]<br>        [else (* (car ls) (product (cdr ls)))]<br>    )<br>)<br>像这种实现, 遇到0时还需要再一个个乘回去.</p>
+<p>(let ([x (call/cc (lambda (k) k))])<br>    (x (lambda (ignore) “hi”)))</p>
+<p>=&gt; “hi”</p>
+<p>(((call/cc (lambda (k) k)) (lambda (x) x)) “HEY!”)</p>
+<p>=&gt; “HEY!”</p>
+
       
 
       
@@ -280,11 +294,11 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/04/26/The Scheme Programming Language/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2020/04/26/(3)-过程和变量绑定/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          (no title)
+          The Scheme Programming Language(3)-过程和变量绑定
         
       </div>
     </a>

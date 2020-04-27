@@ -157,31 +157,251 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-SpringCloud - 重新定义SpringCloud实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Tree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/SpringCloud - 重新定义SpringCloud实战/">SpringCloud - 重新定义SpringCloud实战</a>
+      <a class="article-title" href="/2019/04/02/Tree/">Tree</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/SpringCloud - 重新定义SpringCloud实战/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+        <a href="/2019/04/02/Tree/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>单体应用架构 -&gt; 分布式架构 -&gt; SOA -&gt; 微服务</p>
-<p>分布式架构: 按照业务垂直切分, 每个应用都是单体架构, 通过API互相调用<br>SOA: 服务提供者(Provider)和服务消费者(Consumer), Dubbo<br>微服务: Martin’s SOA</p>
-<p>中间件: 向下屏蔽异构的硬件,软件,网络等计算资源, 向上提供应用开发,运行,维护等全生命周期的统一计算环境与管理.<br>常见的中间件: 服务治理中间件,配置中心,全链路监控,分布式事务,分布式定时任务,消息中间件,API网关,分布式缓存,数据库中间件.</p>
-<p>Spring Cloud是一个中间件.<br>包括: 服务注册与发现,配置中心,全链路监控,API网关,熔断器</p>
-<p>Feign: 一个声明式的Web</p>
+        <p>说起树,首先想到的就是递归,递归,还有递归…<br>树的算法里确实有很多漂亮的递归,感觉比Scheme里面的递归还要迷人(主要是指迷惑的迷)</p>
+<h2 id="1-树的高度"><a href="#1-树的高度" class="headerlink" title="1. 树的高度"></a>1. 树的高度</h2><p><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">104. Maximum Depth of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(maxDepth(root.left), maxDepth(root.right)) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>算法很优雅,但是并不能一眼看穿,来人肉单步执行一下吧<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">3</span></span><br><span class="line">   / \</span><br><span class="line">  <span class="number">9</span>  <span class="number">20</span></span><br><span class="line">    /  \</span><br><span class="line">   <span class="number">15</span>   <span class="number">7</span></span><br><span class="line"></span><br><span class="line">Math.max(maxDepth(<span class="number">9</span>), maxDepth(<span class="number">20</span>)) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="number">15</span>), maxDepth(<span class="number">7</span>)) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(<span class="number">0</span>, <span class="number">0</span>) + <span class="number">1</span>, Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, Math.max(<span class="number">1</span>, <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, <span class="number">2</span>) + <span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="2-平衡树"><a href="#2-平衡树" class="headerlink" title="2. 平衡树"></a>2. 平衡树</h2><p><a href="https://leetcode.com/problems/balanced-binary-tree" target="_blank" rel="noopener">110. Balanced Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> result = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBalanced</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    maxDepth(root);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = maxDepth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = maxDepth(root.right);</span><br><span class="line">    <span class="keyword">if</span> (Math.abs(l - r) &gt; <span class="number">1</span>)</span><br><span class="line">        result = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>利用最大高度,每次递归求的时候看下左子树和右子树的高度差有没有超过1</p>
+<h2 id="3-两节点的最长路径"><a href="#3-两节点的最长路径" class="headerlink" title="3. 两节点的最长路径"></a>3. 两节点的最长路径</h2><p><a href="https://leetcode.com/problems/diameter-of-binary-tree" target="_blank" rel="noopener">543. Diameter of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">diameterOfBinaryTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    depth(root);</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">depth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = depth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = depth(root.right);</span><br><span class="line">    max = Math.max(max, l + r);</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也是利用求最大高度的, 每次算一下左边和右边的距离, 存一个最大值.</p>
+<h2 id="4-翻转树"><a href="#4-翻转树" class="headerlink" title="4. 翻转树"></a>4. 翻转树</h2><p><a href="https://leetcode.com/problems/invert-binary-tree" target="_blank" rel="noopener">226. Invert Binary Tree</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">invertTree</span><span class="params">(TreeNode)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    TreeNode left = root.left;</span><br><span class="line">    root.left = invertTree(root.right);</span><br><span class="line">    root.right = invertTree(left);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>人肉单步执行:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">     <span class="number">4</span></span><br><span class="line">   /   \</span><br><span class="line">  <span class="number">2</span>     <span class="number">7</span></span><br><span class="line"> / \   / \</span><br><span class="line"><span class="number">1</span>   <span class="number">3</span> <span class="number">6</span>   <span class="number">9</span></span><br><span class="line"></span><br><span class="line">invertTree(<span class="number">4</span>)</span><br><span class="line">    root = <span class="number">4</span>,</span><br><span class="line">    left = <span class="number">2</span>,</span><br><span class="line">    root.left = invertTree(<span class="number">7</span>)</span><br><span class="line">                    left = <span class="number">6</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">9</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">6</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">    root.right = invertTree(<span class="number">2</span>)</span><br><span class="line">                    left = <span class="number">1</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">3</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">1</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure></p>
+<p>交换值,本来是一个比较常见的操作:<br>int temp = a;<br>a = b;<br>b = temp;<br>但是要让这个操作应用到树的每一个左右节点时,就让人犯了难.<br>看上面的演算就知道要临场想出来难度有多大.<br>让我想到了以前背的四阶魔方最后一个L公式之后可能出现的中间两个错位现象,当时我们把它叫做牙齿公式.<br>15步的超长公式,很酷炫同时也很难记住.<br>我当时把这个公式用订书机钉在了数学笔记本上,每次翻笔记的时候都会顺带复习一遍.<br>但是难度大+用得少,不可避免的会遗忘.</p>
+<h2 id="5-合并树"><a href="#5-合并树" class="headerlink" title="5.合并树"></a>5.合并树</h2><p><a href="https://leetcode.com/problems/merge-two-binary-trees" target="_blank" rel="noopener">617. Merge Two Binary Trees</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">mergeTrees</span><span class="params">(TreeNode t1, TreeNode t2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span> &amp;&amp; t2 == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span>) <span class="keyword">return</span> t2;</span><br><span class="line">    <span class="keyword">if</span> (t2 == <span class="keyword">null</span>) <span class="keyword">return</span> t1;</span><br><span class="line">    TreeNode root = <span class="keyword">new</span> TreeNode(t1.val + t2.val);</span><br><span class="line">    root.left = mergeTrees(t1.left, t2.left);</span><br><span class="line">    root.right = mergeTrees(t1.right, t2.right);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>精准而优雅,嗯…<br>新建了一个二叉树,而不是一个合并到另一个上.</p>
+<h2 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h2>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/Tree/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-缓存进化史" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/缓存进化史/">缓存进化史</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/缓存进化史/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>数据同步加Redis<br> 通过消息队列进行数据同步到Redis,用Java去取缓存.<br> 优点: 分布式缓存,数据更新快.<br> 缺点: 依赖Redis稳定性.</li>
+</ol>
+<p>2-3. Java Map到Guava cache<br>    进程内缓存作为一级缓存,Redis作为二级缓存.<br>    优点: 不受外部系统影响.<br>    缺点: 进程内缓存无法像分布式缓存那样做到实时更新.</p>
+<ol start="4">
+<li><p>Guava Cache刷新<br> 设置写后刷新时间,进行刷新.</p>
+</li>
+<li><p>外部缓存异步刷新.</p>
+</li>
+</ol>
+<p>HashMap<br>    无法数据淘汰,内存会无限制增长.<br>    不需要淘汰机制时,使用HashMap做缓存.<br>LRUHashMap<br>    FIFO: 队列, 命中率不行.<br>    LRU: 最近最少使用算法, 每次访问数据放在队尾, 淘汰数据时直接淘汰队首. 不能保证热点数据存留.<br>    LFU: 最近最少频率使用, 利用额外的空间记录每个数据的使用频率,对频率最低的进行淘汰.</p>
+<pre><code>实现LRUMap: 继承LinkedHashMap,重写removeEldestEntry方法.
+缺点: 锁竞争严重,不支持过期时间,不支持自动刷新.
+</code></pre><p>Guava Cache<br>    分段锁: 锁太少竞争依然激烈, 锁太多会出现随机淘汰.根据一定的算法进行分段<br>    过期时间: expireAfterWrite 写后多久过期<br>             expireAfterAccess 读后多久过期<br>    虚引用: 两个引用队列, 记录被回收的引用，其中每个队列记录了每个被回收的Entry的hash，这样回收了之后通过这个队列中的hash值就能把以前的             Entry进行删除。<br>    删除监听器: 获取数据被淘汰的原因: 被用户删除, 被用户替代, 过期, 驱逐收集, 由于大小被淘汰.</p>
+<p>Caffeine<br>    W-TinyLfu(LFU+LRU算法变种)<br>    LFU只要数据访问模式中的概率分布随时间保持不变,命中率就非常高. 但难以淘汰某些过去访问量高,但现在访问量低的数据.<br>    基于时间周期进行衰减,使用额外空间记录数据访问频率.</p>
+<pre><code>频率记录
+    Count-Min Sketch记录访问频率, 布隆过滤器的变种.
+
+异步读写
+    使用RingBuffer
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/缓存进化史/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Springboot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/Springboot/">SpringBoot</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/Springboot/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>@Autowired<br>    先根据类型找bean，如果对应类型的bean不唯一，则根据属性名称和bean的名称进行匹配。<br>    如果不确定其标注属性一定存在且允许为null，则可设置required属性为false<br>        @Autowired(required = false)<br>    可以用到方法或者方法参数上。</p>
+<pre><code>@Primary
+    多个同类型bean同时存在时，设置注入的优先级。
+
+@Qualifier
+    与@Autowired配合，通过类型和名称一起找到Bean。
+
+也可以放在构造器参数前面，注入参数。
+</code></pre><p>Bean的生命周期<br>    Bean定义</p>
+<pre><code>    1. 在@ComponentScan定义的扫描路径找带有@Component的类，资源定位。
+    2. 解析资源，保存Bean定义的信息到BeanDefinition的实例中。
+    3. 把Bean定义发布到Spring IoC容器中
+    4. 默认情况下，Spring继续完成Bean的实例化和依赖注入。
+Bean生命周期
+    @ComponentScan配置项lazyInit，默认为false，不进行延迟初始化。
+
+    接口BeanNameAware setBeanName方法
+    接口BeanFactoryAware setBeanFactory方法
+    接口ApplicationContextAware(需要容器实现ApplicationContext接口) setApplicationContext方法
+    BeanPostProcessor预初始化方法(针对全部Bean生效) postPorcessBeforeInitialization方法
+    @PostConstruct标注方法 自定义初始化方法
+    接口InitializingBean afterPropertiesSet方法
+    BeanPostProcessor后初始化方法(针对全部Bean生效) postPorcessAfterInitialization方法
+    生存期
+    @PreDestroy标注方法 自定义销毁方法
+    接口DisPosableBean destroy方法: 释放资源
+</code></pre><p>文件上传</p>
+<p>SessionCallback和RedisCallback接口<br>作用: 让RedisTemplate进行回调, 通过它们可以在同一条连接下执行<br>     多个Redis命令.避免RedisTemplate多次获取不同的连接</p>
+<pre><code> SessionCallback封装良好,应当优先使用.
+ RedisCallback比较底层,要处理的内容多,可读性差.
+
+SessionCallback&lt;T&gt;: 
+    &lt;K, V&gt; T execute(RedisOperations&lt;K, V&gt; operations) throws DataAccessException;
+        执行同一个session中的所有操作.
+</code></pre><p>ThreadPoolTaskExecutor类:</p>
 
       
 
@@ -191,10 +411,21 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/SpringCloud - 重新定义SpringCloud实战/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/Springboot/">展开全文 >></a>
         </p>
       
 
@@ -379,192 +610,9 @@
 
 
   
-    <article id="post-堆" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/堆/">堆</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/堆/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>堆是完全二叉树, 使用数组表示. 从数组下标1开始放置.<br>节点i的子节点在 2i 和 2i+1 处. 父节点在 i/2 处, 根除外.</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/堆/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-分布式消息队列实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/分布式消息队列实践/">分布式消息队列实践</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/分布式消息队列实践/" class="archive-article-date">
-  	<time datetime="2019-04-01T23:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>消息中间件<br>    作用: 应用解耦,异步消息,流量削峰.<br>系统间通信方式<br>    RPC调用: Dubbo, Thrift, gRpc.<br>    消息队列: 负责消息的传递.</p>
-<p>ArrayBlockingQueue</p>
-<p>消息协议<br>    AMQP<br>        基本概念<br>            Message: 包括一个内容头,一组属性和一个内容体.<br>                    消息可以被保存到磁盘上,可以有优先级.<br>            Publisher<br>            Exchanger: 接受消息生产者所发送的消息并将<br>                    消息路由给服务器中的队列.<br>            Binding: 基于路由键将交换器和消息队列连接起来<br>                    的路由规则.<br>            Virtual Host: 消息队列以及相关对象的集合,是<br>                    共享同一个身份验证和加密环境的独立服务器域.<br>                    拥有自己的队列,交换器,绑定和权限机制.<br>            Broker: 消息队列服务器实体.<br>            Routing Key: 路由规则<br>            Queue: 保存消息直到发送给消费者.<br>            Connection: 客户端和消息队列服务器之间的一个TCP连接.<br>            Channel: 独立的双向数据流通道.建立在真实的TCP连接<br>                    内的虚拟连接. TCP的建立和连接十分昂贵,所以使用<br>                    信道发布消息,订阅队列,接收消息.<br>            Consumer</p>
-<pre><code>    功能命令
-
-    传输层协议
-
-MQTT
-
-STOMP
-
-XMPP
-
-JMS
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">消息队列</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/分布式//" class="article-tag-list-link color4">分布式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/分布式消息队列实践/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/48/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="page-number" href="/page/48/">48</a><span class="page-number current">49</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/50/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/48/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/47/">47</a><a class="page-number" href="/page/48/">48</a><span class="page-number current">49</span><a class="page-number" href="/page/50/">50</a><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/50/">Next &raquo;</a>
     </nav>
   
 

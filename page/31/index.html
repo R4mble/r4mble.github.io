@@ -157,19 +157,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Linux epoll&amp;select&amp;poll" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux性能优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/Linux epoll&select&poll/">Linux epoll&amp;select&amp;poll</a>
+      <a class="article-title" href="/2019/06/29/Linux性能优化/">Linux性能优化</a>
     </h1>
   
 
         
-        <a href="/2019/06/29/Linux epoll&select&poll/" class="archive-article-date">
+        <a href="/2019/06/29/Linux性能优化/" class="archive-article-date">
   	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
@@ -177,243 +177,11 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>阻塞blocking IO<br>非阻塞nonblocking IO<br>io多路复用技术 IO multiplexing<br>        select 和 poll<br>事件驱动 epoll</p>
-<p>epoll 多路复用IO接口select/poll的增强版本<br>        显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率.<br>        原因: 1.复用文件描述符集合来传递结果,而不用迫使开发者每次等待事件之前都必须重新准备要被侦听的文件描述符集合.<br>              2.获取事件时,无须遍历整个被侦听的描述符集合,只要遍历那些被内核IO事件异步唤醒而加入Ready队列的描述符集合.<br>              3.epoll除了提供select/poll那种IO事件的电平触发(Level Triggered),还提供了边沿触发(Edge Triggered),使得用户空间<br>                程序有可能缓存IO状态,减少epoll_wait/epoll_pwait的调用,提高应用程序效率.<br>              4.epoll没有文件描述符的上限,select/poll有限定数量.<br>              5.select/poll会轮询所有fd,有数据就处理,没数据就跳过.epoll只处理就绪的fd,它有一个就绪设备的队列,<br>                每次只轮询该队列的数据,然后进行处理.<br>              6.epoll使用mmap(文件/对象的内存映射,被映射到多个内存页上),同一块内存避免fd在操作过程中的拷贝问题.</p>
-<pre><code>epoll的两种工作方式
-        LT(电平触发 Level Triggered, 只要有数据可以读,不管怎样都会通知): 默认工作方式,同时支持block和no_block_socket. 
-                这种工作方式下,内核会通知你一个fd是否就绪,然后才可以对这个就绪的fd进行IO操作. 
-                即使没有任何操作,系统还是会继续提示fd已就绪,select/poll也是使用这种工作方式.
-
-        ET(边沿触发 Edge Triggered, 只有状态发生变化时才会通知): 高速工作方式,仅支持no_block_socket,当fd从未就绪变为就绪时,
-                内核会通知fd已就绪,并且不会再次通知,除非因为某些操作导致fd就绪状态发生变化. only once.
-                当一直不对这个fd进行IO操作,导致fd变为未就绪时,内核同样不会发送更多的通知. 这种方式出错率较高,需要检测程序.
-
-函数
-        int epoll_create(int size);
-                创建一个epoll实例,通知内核监听size个fd. 创建成功后会占用一个fd,使用完之后要close(),否则fd可能会被耗尽
-        int epoll_ctl(int epfd, int op, int fd, struct epoll_events* event);
-                注册每一个文件描述符,一旦某个文件描述符就绪,内核采用回调机制,迅速激活文件描述符
-        int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
-                返回一个代表就绪描述符数量的值. mmap内存映射技术,省掉文件描述符在系统调用时复制的开销
-
-Nginx使用了边缘触发:
-        ee.events = EPOLLIN|EPOLLOUT|EPOLLET
-</code></pre><p>select<br>        文件描述符集合1 文件描述符集合2 文件描述符集合3<br>        可读事件        可写事件        异常事件</p>
-<pre><code>创建三个关注事件的文件描述符,死循环,依次遍历所有的文件描述符集合,判断是否由可读,可写,异常事件,
-遍历完,如果有事件或超时,返回事件个数,否则阻塞一定时间.
-每次调用select,都需要把三个fd集合从用户态拷贝到内核态.
-
-文件描述符个数有限制: 1024, 数据结构: 位图.
-</code></pre><p>poll<br>        共用一个文件描述符集合,数据结构:链表,<br>        没有最大文件描述符数量的限制</p>
-<pre><code>select和poll一般不会丢失就绪的消息,使用水平触发. 将就绪的文件告诉进程后,如果进程没有对其进行IO操作,下次调用select()或poll()时
-将再次报告这些文件描述符.
-</code></pre><p>epoll<br>        epoll_ctl: 1.增加监听的fd到红黑树中<br>                   2.从红黑树中删除fd<br>                   3.修改已经注册的fd的监听事件</p>
-<pre><code>epoll_wait:如果就绪队列不为空或超时,结束循环,否则阻塞一段时间继续下一次循环,
-          如果就绪队列不为空,拷贝就绪文件描述符到用户空间,返回就绪个数.
-
-当设备就绪后,会通过注册的回调函数自动将就绪文件描述符加入就绪队列.
-
-    数据结构:红黑树
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/Linux epoll&select&poll/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-MongoDB" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/29/MongoDB/">MongoDB</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/29/MongoDB/" class="archive-article-date">
-  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>查看数据库<br>    show dbs<br>查看数据表<br>    show tables</p>
-<p>集合<br>    创建集合<br>        db.createColleaction(name, options)<br>            name: 集合名称<br>            options:<br>                capped: 是否创建固定大小集合,当达到最大值时,自动覆盖最早的文档<br>                size: 固定集合字节大小<br>                antoIndexId: 是否自动在_id字段创建索引.默认为false<br>                max: 固定集合中包含文档的最大数量<br>            插入文档时,先检查size再检查max<br>    删除集合<br>        db.col.drop()</p>
-<pre><code>插入文档
-    db.col.insert(document)
-    例:
-        db.col.insert({
-            title: &apos;MongoDB 教程&apos;, 
-            tags: [&apos;mongodb&apos;, &apos;database&apos;, &apos;NoSQL&apos;],
-            likes: 100
-        })
-
-查看文档
-    db.col.find()
-
-更新文档
-    db.col.update(
-        &lt;query&gt;,
-        &lt;update&gt;,
-        {
-            upsert: &lt;boolean&gt;,
-            multi: &lt;boolean&gt;,
-            writeConcern: &lt;document&gt;
-        }
-    )
-
-    query : update的查询条件
-    update : update的对象和一些更新的操作符（如$,$inc...）
-    upsert : 可选，这个参数的意思是，如果不存在update的记录，是否插入,默认是false不插入
-    multi : 可选，mongodb 默认是false,只更新找到的第一条记录，如果这个参数为true,就把按条件查出来多条记录全部更新。
-    writeConcern :可选，抛出异常的级别。
-
-    例: 
-        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}})
-        要修改多条参数:
-        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}}, multi: true)
-
-查询文档:
-        db.col.find({likes: 100})
-    小于,大于: 
-        db.col.find({likes: {$lt:50}}) 
-        db.col.find({likes: {$gt:50}})
-    AND:
-        db.col.find({key1:value1, key2:value2})
-    OR:
-        db.col.find({$or: [{key1: value1}, {key2:value2}]})
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/MongoDB//" class="article-tag-list-link color3">MongoDB</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/29/MongoDB/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/30/linux/">linux</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/30/linux/" class="archive-article-date">
-  	<time datetime="2019-05-30T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h1><p>平均负载是指单位时间内,系统处于可运行状态和不可中断状态的平均进程数.即平均活跃进程数.</p>
-<p>内核架构<br>    Linux内核上下层通信方式</p>
-<p>常用命令:<br>nc -l port &gt; test.txt<br>nc -q 0 MachineIP Port &lt; test.txt</p>
-<p>nohup npm start &amp;</p>
-<p>1、tar包的创建<br>tar -cvf  file.tar file1  file2<br>tar -zcvf  file.tar.gz  file1  file2<br>tar -jcvf   file.tar.bz2  file1  file2</p>
-<p>2、tar包的查看<br>tar -tvf  file.tar<br>tar -ztvf  file.tar.gz<br>tar -jtvf  file.tar.bz2</p>
-<p>3、释放tar包<br>tar -xvf  file.tar<br>tar -zxvf  file.tar.gz<br>tar -jxvf  file.tar.bz2</p>
-<p>主选项：<br>-x    从档案文件中释放文件。<br>-c    创建新的档案文件。如果用户想备份一个目录或是一些文件，就要选择这个选项。<br>-r     把要存档的文件追加到档案文件的末尾。例如用户已经做好备份文件，又发现还有一个目录或<br>         是一些文件忘 记备份了，这时可以使用该选项，将忘记的目录或文件追加到备份文件中。<br>-t       列出档案文件的内容，查看已经备份了哪些文件。<br>-u      更新文件。就是说，用新增的文件取代原备份文件，如果在备份文件中找不到要更新的文件，<br>          则把它追加到备份文件的最后。</p>
-<p>辅助选项：<br>-j         代表使用‘bzip2’程序进行文件的压缩    tar.bz2<br>-z       用gzip来压缩/解压缩文件，加上该选项后可以将档案文件进行压缩，但还原时也一定要使用该<br>            选项进行解压缩。   tar.gz<br>-v       详细报告tar处理的文件信息。如无此选项，tar不报告文件信息。<br>-b     该选项是为磁带机设定的，其后跟一数字，用来说明区块的大小，系统预设值为20（20×512 bytes）。<br>-f       使用档案文件或设备，这个选项通常是必选的。<br>-k       保存已经存在的文件。例如把某个文件还原，在还原的过程中遇到相同的文件，不会进行覆盖。<br>-m       在还原文件时，把所有文件的修改时间设定为。<br>-M      创建多卷的档案文件，以便在几个磁盘中存放。<br>-w           每一步都要求确认。</p>
+        <p>计算CPU每秒定时中断的次数:<br>cat /proc/interrupts | grep timer; sleep 10; cat /proc/interrupts | grep timer<br>    结果:<br>          CPU0        CPU1<br>    LOC: 2142174276 2150800894<br>    LOC: 2142179825 2150806783<br>CPU0: (2142179825 - 2142174276) / 10 = 555次中断 / 秒<br>CPU1: (2150806783 - 2150800894) / 10 = 589次中断 / 秒</p>
+<p>(我的腾讯云: 357次中断 / 秒)</p>
+<p>虚拟内存统计: vmstat [-n] [-s] [delay [count]]<br>    参数说明:<br>            delay: vmstat采样的间隔时间<br>            count: 采样次数<br>            -s: 更详细的信息<br>    功能: 正在运行的进程个数, CPU的使用情况, CPU接收的中断个数, 调度器执行的上下文切换次数<br>    模式: 采样模式和平均模式. 不指定参数则运行于平均模式,显示从系统启动以来所有统计数据的均值.<br>          指定延迟后, 第一个采样仍是系统启动以来的均值,之后按延迟秒数采样系统并显示.<br>    直接运行vmstat的结果:<br>procs ———–memory———- —swap– —–io—- -system– ——cpu—–<br> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st<br> 1  0      0 198800  68680 488468    0    0     2     7    0    0  0  0 99  0  0<br>    结果说明<br>        r: 当前可运行的进程数, 已经准备好. 理想的话, 可运行进程数应与可用CPU的数量相等<br>        b: 等待IO完成的被阻塞进程数<br>        forks: 创建新进程的次数<br>        in: 系统发生中断的次数<br>        cs: 系统发生上下文切换的次数<br>        us: 用户进程消耗总CPU时间的百分比<br>        sy: 系统代码消耗的总CPU时间百分比<br>        wa: 等待IO消耗的CPU时间百分比<br>        id: 系统空闲的消耗总CPU时间百分比</p>
+<pre><code>把结果输出到文件: vmstat 1 | tee /tmp/output
+</code></pre><p>把占用CPU最多的进程按降序排列: top [d delay] [C] [H] [i] [n iter] [b]<br>        (默认每3秒更新一次)<br>    两种模式选项: 命令行模式, 运行时模式<br>    参数说明: i 不显示未使用任何cpu的进程<br>             H 显示应用程序所有的单个线程</p>
 
       
 
@@ -437,7 +205,7 @@ Nginx使用了边缘触发:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/30/linux/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Linux性能优化/">展开全文 >></a>
         </p>
       
 
@@ -467,27 +235,123 @@ Nginx使用了边缘触发:
 
 
   
-    <article id="post-撸个ioc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Markdown语法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/30/撸个ioc/">撸个ioc</a>
+      <a class="article-title" href="/2019/06/29/Markdown语法/">Markdown语法</a>
     </h1>
   
 
         
-        <a href="/2019/05/30/撸个ioc/" class="archive-article-date">
-  	<time datetime="2019-05-30T03:43:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+        <a href="/2019/06/29/Markdown语法/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="用Markdown写Markdown语法教程"><a href="#用Markdown写Markdown语法教程" class="headerlink" title="用Markdown写Markdown语法教程"></a>用Markdown写Markdown语法教程</h1><h2 id="使用-号可以标记1-6级标题"><a href="#使用-号可以标记1-6级标题" class="headerlink" title="使用#号可以标记1-6级标题"></a>使用#号可以标记1-6级标题</h2><h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><h2 id="换行"><a href="#换行" class="headerlink" title="换行"></a>换行</h2><p>换行了吗?<br>没有<br>段落的换行<br>是使用两个以上空格加上回车  </p>
+<h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><p>// IDEA不支持<br><em>斜体文本</em><br><em>斜体文本</em><br><strong>粗体文本</strong><br><strong>粗体文本</strong><br><strong><em>粗斜体文本</em></strong><br><strong><em>粗斜体文本</em></strong>  </p>
+<h2 id="分隔线"><a href="#分隔线" class="headerlink" title="分隔线"></a>分隔线</h2><p>内容A</p>
+<hr>
+<p>内容B</p>
+<h2 id="删除线"><a href="#删除线" class="headerlink" title="删除线"></a>删除线</h2><p><del>sb</del></p>
+<h2 id="下划线"><a href="#下划线" class="headerlink" title="下划线"></a>下划线</h2><p><u>下划线</u></p>
+<h2 id="脚注"><a href="#脚注" class="headerlink" title="脚注"></a>脚注</h2><p>// IDEA不支持  </p>
+<p>有些人活着, 他已经死了[^鲁迅]<br>[^鲁迅]: 1923</p>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ul>
+<li>无序</li>
+<li>的</li>
+<li>列表  </li>
+</ul>
+<ol>
+<li>第一个</li>
+<li>第二个</li>
+</ol>
+<h3 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h3><p>在子列表中的选项添加四个空格</p>
+<ol>
+<li>第一个<ul>
+<li>嵌套1</li>
+<li>嵌套2</li>
+</ul>
+</li>
+<li>第二个<ul>
+<li>嵌套1</li>
+<li>嵌套2</li>
+</ul>
+</li>
+</ol>
+<h2 id="区块"><a href="#区块" class="headerlink" title="区块"></a>区块</h2><blockquote>
+<p>区块链<br>AI<br>人工智能</p>
+</blockquote>
+<h3 id="区块嵌套"><a href="#区块嵌套" class="headerlink" title="区块嵌套"></a>区块嵌套</h3><blockquote>
+<p>最外层</p>
+<blockquote>
+<p>第一层嵌套</p>
+<blockquote>
+<p>第二次嵌套</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="区块中使用列表"><a href="#区块中使用列表" class="headerlink" title="区块中使用列表"></a>区块中使用列表</h3><blockquote>
+<p>列表</p>
+<ol>
+<li>第一个</li>
+<li>第二个<ul>
+<li>嵌套之嵌套</li>
+<li>嵌套之嵌套</li>
+</ul>
+</li>
+<li>第三个</li>
+</ol>
+</blockquote>
+<h3 id="列表中使用区块"><a href="#列表中使用区块" class="headerlink" title="列表中使用区块"></a>列表中使用区块</h3><p>在 &gt; 前添加四个空格的缩进</p>
+<ul>
+<li>第一个<blockquote>
+<p>Ai<br>小爱</p>
+</blockquote>
+</li>
+<li>第二个   </li>
+</ul>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>段落上的一个函数或片段的代码可以用反引号把它包起来<br>如: <code>epoll</code>函数</p>
+<h3 id="代码区块"><a href="#代码区块" class="headerlink" title="代码区块"></a>代码区块</h3><p>代码区块使用 4 个空格或者一个制表符（Tab 键）  </p>
+<pre><code>def map(fa: F[A])(f: a -&gt; b): F[B] =
+    flatMap(fa)(a -&gt; unit(f(a)))
+</code></pre><p>以上是map的flatMap实现<br>当然也可以使用三个反引号包裹.<br><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">map</span></span>(fa: <span class="type">F</span>[<span class="type">A</span>])(f: a -&gt; b): <span class="type">F</span>[<span class="type">B</span>] =</span><br><span class="line">        flatMap(fa)(a -&gt; unit(f(a)))</span><br></pre></td></tr></table></figure></p>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>这是一个链接<a href="www.baidu.com">百度</a></p>
+<h3 id="高级链接"><a href="#高级链接" class="headerlink" title="高级链接"></a>高级链接</h3><p>使用变量代替链接,文档末尾附带变量地址<a href="www.google.com">Google</a>  </p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>方框里的是替代文字,引号里加上加上选择性的 ‘title’ 属性的文字<br><img src="https://r4mble.github.io/images/lanmao.jpg" alt="我的头像" title="mio"></p>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><p>用|来分隔单元格, 用-来分隔表头和其他行  </p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">name</th>
+<th style="text-align:right">age</th>
+<th style="text-align:center">gender</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">小王</td>
+<td style="text-align:right">5岁</td>
+<td style="text-align:center">男</td>
+</tr>
+<tr>
+<td style="text-align:left">小李</td>
+<td style="text-align:right">6岁</td>
+<td style="text-align:center">女</td>
+</tr>
+</tbody>
+</table>
+<p>注意: 表格开始时要有空行</p>
+<h3 id="对齐方式"><a href="#对齐方式" class="headerlink" title="对齐方式"></a>对齐方式</h3><p>-:设置为右对齐, :-设置为左对齐, :-:设置为居中</p>
+<h2 id="支持的HTML元素"><a href="#支持的HTML元素" class="headerlink" title="支持的HTML元素"></a>支持的HTML元素</h2><p>// 按键这个只是IDEA不支持<br><kbd>Ctrl</kbd>+<kbd>f</kbd> </p>
+
       
 
       
@@ -501,7 +365,7 @@ Nginx使用了边缘触发:
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        			<a href="/categories/Markdown语法//" class="article-tag-list-link color1">Markdown语法</a>
         		</li>
       		
 		</ul>
@@ -510,7 +374,212 @@ Nginx使用了边缘触发:
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/30/撸个ioc/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/29/Markdown语法/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-每周总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/每周总结/">每周总结</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/每周总结/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>感觉每个周做一次总结还是挺不错的, 频率不会太频繁导致难以维护, 一个周的时间<br>  也足够做一些东西出来, 系统地学一些知识.</p>
+</blockquote>
+<h2 id="todos"><a href="#todos" class="headerlink" title="todos"></a>todos</h2><ul>
+<li><p>[] 英语: 单词, 听力</p>
+</li>
+<li><p>[] 算法: 数组, 字符串, 链表, 树, 动态规划</p>
+</li>
+<li><p>[] Web框架: Spring</p>
+</li>
+<li><p>[] 数据存储: Redis, Elasticsearch, Postgresql, MyBatis</p>
+</li>
+<li><p>[] 开发工具: Maven, Git, Linux, Kubernete</p>
+</li>
+<li><p>[] 编程语言: Java, Go, JavaScript</p>
+</li>
+<li><p>[] 网络协议: Http, TCP, WebScoket, Netty, gRPC</p>
+</li>
+<li><p>[] 消息队列: RabbitMQ</p>
+<h2 id="2019"><a href="#2019" class="headerlink" title="2019"></a>2019</h2><h3 id="6-24-6-29"><a href="#6-24-6-29" class="headerlink" title="6.24-6.29"></a>6.24-6.29</h3></li>
+<li><p>[x] 学习了Elasticsearch的相关知识</p>
+</li>
+<li><p>[x] 了解下angular</p>
+</li>
+<li><p>[] Leetcode Weekly contest</p>
+</li>
+<li><p>[] </p>
+<h4 id="6-29"><a href="#6-29" class="headerlink" title="6.29"></a>6.29</h4></li>
+<li>[] MyBatis缓存<h3 id="7-1-7-6"><a href="#7-1-7-6" class="headerlink" title="7.1-7.6"></a>7.1-7.6</h3></li>
+<li>[] Leetcode Weekly contest</li>
+<li>[] 20道算法题</li>
+<li>[] 200个单词</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/每周总结/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Micrometer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/Micrometer/">Meter</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/Micrometer/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>记录 Java 应用性能指标</p>
+<p>计量器注册表 MeterRegistry<br>    创建和维护计量器.</p>
+<pre><code>基于内存的计量器注册表实现: 
+    SimpleMeterRegistry 不支持导出数据到监控系统
+
+可以组合多个计量器注册表的实现类
+    CompositeMeterRegistry 运行同时发布数据到多个监控系统
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompositeMeterRegistryExample</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CompositeMeterRegistry registry = <span class="keyword">new</span> CompositeMeterRegistry();</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry());</span><br><span class="line">    registry.add(<span class="keyword">new</span> SimpleMeterRegistry(<span class="keyword">new</span> MyConfig(), Clock.SYSTEM));</span><br><span class="line"> </span><br><span class="line">    Counter counter = registry.counter(<span class="string">"simple"</span>);</span><br><span class="line">    counter.increment();</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> <span class="keyword">implements</span> <span class="title">SimpleConfig</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">get</span><span class="params">(<span class="keyword">final</span> String key)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">prefix</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">"my"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>静态的全局计量器注册表对象 
+    Metrics.globalRegistry 组合注册表
+</code></pre><pre><code class="java"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalRegistryExample</span> </span>{
+
+  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
+    Metrics.addRegistry(<span class="keyword">new</span> SimpleMeterRegistry());
+    Counter counter = Metrics.counter(<span class="string">"simple"</span>);
+    counter.increment();
+  }
+}
+</code></pre>
+<p>计量器 Meter<br>    需要收集的性能指标数据.</p>
+<pre><code>计量器名称和标签
+    每个计量器在创建时都可以指定一系列标签。标签以名值对的形式出现。监控系统使用标签对数据进行过滤。除了每个计量器独有的标签之外，每个计量器注册表还可以添加通用标签。所有该注册表导出的数据都会带上这些通用标签。
+</code></pre><p>计数器 Counter<br>    单个只允许增加的值.    </p>
+<p>计量仪 Gauge<br>    单个变化的值. Gauge对象既可以从计量器注册表中创建,也可以使用<br>    Gauge.builder()构建.</p>
+<p>计时器 Timer<br>    记录事件的持续时间.</p>
+<p>集成SpringBoot</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Meter//" class="article-tag-list-link color1">Meter</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/Micrometer/">展开全文 >></a>
         </p>
       
 
@@ -542,7 +611,7 @@ Nginx使用了边缘触发:
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/30/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/32/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/30/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="page-number" href="/page/30/">30</a><span class="page-number current">31</span><a class="page-number" href="/page/32/">32</a><a class="page-number" href="/page/33/">33</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/32/">Next &raquo;</a>
     </nav>
   
 

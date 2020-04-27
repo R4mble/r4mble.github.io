@@ -157,6 +157,279 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-MongoDB" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/29/MongoDB/">MongoDB</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/29/MongoDB/" class="archive-article-date">
+  	<time datetime="2019-06-29T09:55:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>查看数据库<br>    show dbs<br>查看数据表<br>    show tables</p>
+<p>集合<br>    创建集合<br>        db.createColleaction(name, options)<br>            name: 集合名称<br>            options:<br>                capped: 是否创建固定大小集合,当达到最大值时,自动覆盖最早的文档<br>                size: 固定集合字节大小<br>                antoIndexId: 是否自动在_id字段创建索引.默认为false<br>                max: 固定集合中包含文档的最大数量<br>            插入文档时,先检查size再检查max<br>    删除集合<br>        db.col.drop()</p>
+<pre><code>插入文档
+    db.col.insert(document)
+    例:
+        db.col.insert({
+            title: &apos;MongoDB 教程&apos;, 
+            tags: [&apos;mongodb&apos;, &apos;database&apos;, &apos;NoSQL&apos;],
+            likes: 100
+        })
+
+查看文档
+    db.col.find()
+
+更新文档
+    db.col.update(
+        &lt;query&gt;,
+        &lt;update&gt;,
+        {
+            upsert: &lt;boolean&gt;,
+            multi: &lt;boolean&gt;,
+            writeConcern: &lt;document&gt;
+        }
+    )
+
+    query : update的查询条件
+    update : update的对象和一些更新的操作符（如$,$inc...）
+    upsert : 可选，这个参数的意思是，如果不存在update的记录，是否插入,默认是false不插入
+    multi : 可选，mongodb 默认是false,只更新找到的第一条记录，如果这个参数为true,就把按条件查出来多条记录全部更新。
+    writeConcern :可选，抛出异常的级别。
+
+    例: 
+        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}})
+        要修改多条参数:
+        db.col.update({title: &apos;MongoDB教程&apos;}, {$set: {title: &apos;MongoDB&apos;}}, multi: true)
+
+查询文档:
+        db.col.find({likes: 100})
+    小于,大于: 
+        db.col.find({likes: {$lt:50}}) 
+        db.col.find({likes: {$gt:50}})
+    AND:
+        db.col.find({key1:value1, key2:value2})
+    OR:
+        db.col.find({$or: [{key1: value1}, {key2:value2}]})
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MongoDB//" class="article-tag-list-link color3">MongoDB</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/29/MongoDB/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/30/linux/">linux</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/30/linux/" class="archive-article-date">
+  	<time datetime="2019-05-30T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="uptime"><a href="#uptime" class="headerlink" title="uptime"></a>uptime</h1><p>平均负载是指单位时间内,系统处于可运行状态和不可中断状态的平均进程数.即平均活跃进程数.</p>
+<p>内核架构<br>    Linux内核上下层通信方式</p>
+<p>常用命令:<br>nc -l port &gt; test.txt<br>nc -q 0 MachineIP Port &lt; test.txt</p>
+<p>nohup npm start &amp;</p>
+<p>1、tar包的创建<br>tar -cvf  file.tar file1  file2<br>tar -zcvf  file.tar.gz  file1  file2<br>tar -jcvf   file.tar.bz2  file1  file2</p>
+<p>2、tar包的查看<br>tar -tvf  file.tar<br>tar -ztvf  file.tar.gz<br>tar -jtvf  file.tar.bz2</p>
+<p>3、释放tar包<br>tar -xvf  file.tar<br>tar -zxvf  file.tar.gz<br>tar -jxvf  file.tar.bz2</p>
+<p>主选项：<br>-x    从档案文件中释放文件。<br>-c    创建新的档案文件。如果用户想备份一个目录或是一些文件，就要选择这个选项。<br>-r     把要存档的文件追加到档案文件的末尾。例如用户已经做好备份文件，又发现还有一个目录或<br>         是一些文件忘 记备份了，这时可以使用该选项，将忘记的目录或文件追加到备份文件中。<br>-t       列出档案文件的内容，查看已经备份了哪些文件。<br>-u      更新文件。就是说，用新增的文件取代原备份文件，如果在备份文件中找不到要更新的文件，<br>          则把它追加到备份文件的最后。</p>
+<p>辅助选项：<br>-j         代表使用‘bzip2’程序进行文件的压缩    tar.bz2<br>-z       用gzip来压缩/解压缩文件，加上该选项后可以将档案文件进行压缩，但还原时也一定要使用该<br>            选项进行解压缩。   tar.gz<br>-v       详细报告tar处理的文件信息。如无此选项，tar不报告文件信息。<br>-b     该选项是为磁带机设定的，其后跟一数字，用来说明区块的大小，系统预设值为20（20×512 bytes）。<br>-f       使用档案文件或设备，这个选项通常是必选的。<br>-k       保存已经存在的文件。例如把某个文件还原，在还原的过程中遇到相同的文件，不会进行覆盖。<br>-m       在还原文件时，把所有文件的修改时间设定为。<br>-M      创建多卷的档案文件，以便在几个磁盘中存放。<br>-w           每一步都要求确认。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Linux//" class="article-tag-list-link color1">Linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/30/linux/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-撸个ioc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/30/撸个ioc/">撸个ioc</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/30/撸个ioc/" class="archive-article-date">
+  	<time datetime="2019-05-30T03:43:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Spring//" class="article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/30/撸个ioc/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java语法糖" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -243,259 +516,9 @@
 
 
   
-    <article id="post-Feign" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/07/Feign/">Feign</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/07/Feign/" class="archive-article-date">
-  	<time datetime="2019-05-07T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/07/Feign/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-golang初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/07/golang初探/">Golang初探</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/07/golang初探/" class="archive-article-date">
-  	<time datetime="2019-05-07T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="如何掌握一门编程语言"><a href="#如何掌握一门编程语言" class="headerlink" title="如何掌握一门编程语言?"></a>如何掌握一门编程语言?</h1><ul>
-<li>它的值是怎么定义的？<ul>
-<li>值有哪些类型？</li>
-<li>值的类型转换怎么做？</li>
-</ul>
-</li>
-<li>它的函数是怎么定义的？<ul>
-<li>函数能否作为值？</li>
-<li>支持默认参数吗？</li>
-<li>支持命名参数吗？</li>
-<li>函数的返回值可以有多个吗？</li>
-<li>匿名函数怎么表达？</li>
-</ul>
-</li>
-<li>它的流程控制是什么样的？<ul>
-<li>有没有for,while,switch？</li>
-</ul>
-</li>
-<li>它的list和map怎么使用？    </li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Go//" class="article-tag-list-link color3">Go</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/07/golang初探/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Essentials-of-Programming-Languages" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/04/Essentials-of-Programming-Languages/">Essentials of Programming Languages</a>
-    </h1>
-  
-
-        
-        <a href="/2019/05/04/Essentials-of-Programming-Languages/" class="archive-article-date">
-  	<time datetime="2019-05-03T19:42:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Inductive-Sets-of-Data"><a href="#Inductive-Sets-of-Data" class="headerlink" title="Inductive Sets of Data"></a>Inductive Sets of Data</h1><h1 id="Data-Abstraction"><a href="#Data-Abstraction" class="headerlink" title="Data Abstraction"></a>Data Abstraction</h1><h1 id="Expressions"><a href="#Expressions" class="headerlink" title="Expressions"></a>Expressions</h1><h1 id="State"><a href="#State" class="headerlink" title="State"></a>State</h1><h1 id="Continuation-Passing-Interpreters"><a href="#Continuation-Passing-Interpreters" class="headerlink" title="Continuation-Passing Interpreters"></a>Continuation-Passing Interpreters</h1><h1 id="Continuation-Passing-Style"><a href="#Continuation-Passing-Style" class="headerlink" title="Continuation-Passing Style"></a>Continuation-Passing Style</h1><h1 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h1><h1 id="Modules"><a href="#Modules" class="headerlink" title="Modules"></a>Modules</h1><h1 id="Objects-and-Classes"><a href="#Objects-and-Classes" class="headerlink" title="Objects and Classes"></a>Objects and Classes</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/PL//" class="article-tag-list-link color3">PL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/04/Essentials-of-Programming-Languages/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/31/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/30/">30</a><a class="page-number" href="/page/31/">31</a><span class="page-number current">32</span><a class="page-number" href="/page/33/">33</a><a class="page-number" href="/page/34/">34</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/33/">Next &raquo;</a>
     </nav>
   
 

@@ -157,6 +157,261 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-(2)-深入" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/25/(2)-深入/">The Scheme Programming Language(2)-深入</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/25/(2)-深入/" class="archive-article-date">
+  	<time datetime="2020-04-25T04:30:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Syntactic-Extension"><a href="#Syntactic-Extension" class="headerlink" title="Syntactic Extension"></a>Syntactic Extension</h1><p>syntax-rules表达式构成transformer<br>syntax-rules后面跟着辅助关键词列表, 几乎总是()<br>在辅助关键词列表后面的是rules序列或者pattern/template pairs<br>pattern指定要接收什么input, template指定input会被转换成什么.</p>
+<p>pattern的第一个元素总是 _<br>如果有多个rule, 按顺序对input匹配pattern</p>
+<p>pattern variables</p>
+<p>对于let的定义: </p>
+<p>(define-syntax let<br>  (syntax-rules ()<br>    [(_ ((x e) …) b1 b2 …)<br>      ((lambda (x …) b1 b2 …) e …)]))</p>
+<p>…表示0次或多次<br>let的body至少有一个form, 所以指定b1, b2两个<br>let不要求至少有一个variable/value pair, 所以使用(x e)…<br>pattern variable有省略号, 在template里也要有</p>
+<p>举例:<br>(let ([x 3]) x)<br>会被解析成:<br>((lambda (x) x) 3)</p>
+<p>我悟了~</p>
+<p>let<em><br>(let</em> ([a 5] [b (+ a a)] [c (+ a b)])<br>  (list a b c))</p>
+<ul>
+<li><p>letrec let的变量不仅可以在body中看到, 在let表达式中也可见</p>
+<p>(letrec ([sum (lambda (ls)</p>
+<pre><code>(if (null? ls)
+  0
+  (+ (car ls) (sum (cdr ls)))))])
+</code></pre><p>(sum ‘(1 2 3 4 5)))  </p>
+</li>
+</ul>
+<p>letrec的限制: 每一个expr必须可以在不对variables求值的情况下求值.<br>当expr是lambda表达式的时候总是满足这个限制, 即使variables出现在<br>lambda表达式中.</p>
+<p>这个可以<br>(letrec ([f (lambda () (+ x 2))]<br>          [x 1])<br>  (f))</p>
+<p>这个不行:<br>(letrec ([y (+ x 2)]<br>          [x 1])<br>  y)</p>
+<h1 id="3-3-Continuations"><a href="#3-3-Continuations" class="headerlink" title="3.3 Continuations"></a>3.3 Continuations</h1><p>把要对value做什么 称作 Continuations<br>任意expression的continuation都可以被call/cc捕获<br>k代表continuation, 每次k被赋值, 就会返回给call/cc</p>
+<p>例1:<br>(call/cc<br>    (lambda (k)<br>        (* 5 4)))</p>
+<p>k没被用过, 所以返回给call/cc的值就是20</p>
+<p>例2:<br>(call/cc<br>    (lambda (k)<br>        (* 5 (k 4))))</p>
+<p>k被赋值为4, 所以call/cc就是4</p>
+<p>例3:<br>(+ 2<br>    (call/cc<br>        (lambda (k)<br>            (* 5 (k 4)))))</p>
+<p>k被赋值为4, 所以call/cc就是4, 外层再加个2, 最后是6</p>
+<p>(define product<br>    (lambda (ls)<br>        (call/cc<br>            (lambda (break)<br>                (let f ([ls ls])<br>                    (cond<br>                        [(null? ls) 1]<br>                        [(= (car ls) 0) (break 0)]<br>                        [else (* (car ls) (f (cdr ls)))]))))))</p>
+<p>call/cc在递归中提供一个非局部退出.<br>非局部退出可以让product在遇到0的时候马上退出.</p>
+<p>(define (product2 ls)<br>    (cond<br>        [(null? ls) 1]<br>        [(= (car ls) 0) 0]<br>        [else (* (car ls) (product (cdr ls)))]<br>    )<br>)<br>像这种实现, 遇到0时还需要再一个个乘回去.</p>
+<p>(let ([x (call/cc (lambda (k) k))])<br>    (x (lambda (ignore) “hi”)))</p>
+<p>=&gt; “hi”</p>
+<p>(((call/cc (lambda (k) k)) (lambda (x) x)) “HEY!”)</p>
+<p>=&gt; “HEY!”</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Scheme//" class="article-tag-list-link color2">Scheme</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/25/(2)-深入/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-OCaml(0)-OCaml简介" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/24/OCaml(0)-OCaml简介/">OCaml(0)-OCaml简介</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/24/OCaml(0)-OCaml简介/" class="archive-article-date">
+  	<time datetime="2020-04-24T13:46:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>OCaml 是 ML语言的重要发展分支, 静态类型系统, 包含函数式特性, 命令式特征, 面向对象编程.<br>F# 是OCaml语言变体.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/OCaml//" class="article-tag-list-link color1">OCaml</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/24/OCaml(0)-OCaml简介/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Erlang(3)-顺序结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/24/Erlang(3)-顺序结构/">Erlang(3)-顺序结构</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/24/Erlang(3)-顺序结构/" class="archive-article-date">
+  	<time datetime="2020-04-24T13:02:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Erlang//" class="article-tag-list-link color2">Erlang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/24/Erlang(3)-顺序结构/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Scheme and the Art of Programming" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -239,305 +494,9 @@
 
 
   
-    <article id="post-Chez Scheme初体验" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/24/Chez Scheme初体验/">Chez Scheme初体验</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/24/Chez Scheme初体验/" class="archive-article-date">
-  	<time datetime="2020-04-24T09:57:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>山寺计划来到了奇怪的地方…</p>
-<p>在看 r6rs-monads 这个项目的时候无意看到 Chez Scheme, 这个被王垠吹上天的编译器.<br>我的Racket突然不香了, 本来以为Chez Scheme自己编译会很麻烦, 没想到直接就有Windows的安装包.<br>下载下来, 配置下环境变量, OK~</p>
-<h1 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h1><p>scheme –libdirs lib –script examples/parser.scm</p>
-<p>退出Scheme的shell:   (exit)</p>
-<h1 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h1><p>(display 123)<br>(newline)</p>
-<p>(define (double x) (<em> x 2))<br>(define double (lambda (x) (</em> x 2)))<br>(display (double 33))</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scheme//" class="article-tag-list-link color2">Scheme</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/24/Chez Scheme初体验/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-(1)-起步" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/24/(1)-起步/">The Scheme Programming Language(1)-起步</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/24/(1)-起步/" class="archive-article-date">
-  	<time datetime="2020-04-24T09:57:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>cons接收两个参数, 第二个是个list, 返回一个list<br>(cons ‘(a b) ‘(c d))  =&gt;  ((a b) c d)</p>
-<p>当cons的第二个参数不是list时, 它被称作 improper list<br>(cons ‘a ‘b)   =&gt;  (a . b)<br>(cdr ‘(a . b)) =&gt; b    cdr不是list的pair被称作 dotted paire<br>(cons ‘a ‘(b . c))  =&gt;  (a b . c)<br>((car (cdr (list + - * /))) 17 5)</p>
-<p>list接收任意数量参数, 并总返回一个proper list</p>
-<p>12</p>
-<p>(let ((x 2))<br>  (+ x 3))</p>
-<p>让x为2, 必须用两个括号包着,<br>因为let区是 a list of variable-expression pairs<br>5</p>
-<p>(let ((x 2) (y 3))<br>  (+ x y))</p>
-<p>使用中括号代替小括号 分隔let中的赋值<br>(let ([list1 ‘(a b c)] [list2 ‘(d e f)])<br>  (cons (cons (car list1)<br>          (car list2))<br>    (cons (car (cdr list1))<br>      (car (cdr list2)))))</p>
-<p>对scheme来说, 小括号和中括号是一样的.<br>(let ([f +] [x 2] [y 3])<br>(f x y))</p>
-<p>(let ([+ *])<br>(+ 2 3))</p>
-<p>=&gt; 6</p>
-<ul>
-<li>let嵌套<br>(let ([a 4] [b -3])<br>(let ([a-squared (* a a)]<pre><code>[b-squared (* b b)])
-</code></pre>  (+ a-squared b-squared)))</li>
-</ul>
-<p>=&gt; 25</p>
-<p>(let ([x 1])<br>  (let ([x (+ x 1)])<br>    (+ x x)))</p>
-<p>=&gt; 4   </p>
-<p>(let [(x 9)]<br>  (* x<br>    (let ([x (/ x 3)])<br>      (+ x x))))</p>
-<h1 id="2-5-lambda-expressions"><a href="#2-5-lambda-expressions" class="headerlink" title="2.5 lambda expressions"></a>2.5 lambda expressions</h1><p>(let ([double-any (lambda (f x) (f x x))])<br>  (list (double-any + 13)<br>    (double-any cons ‘a)))</p>
-<p>=&gt; (26 (a . a))    </p>
-<p>(let ([x ‘a])<br>  (let ([f (lambda (y) (list x y))])<br>    (f ‘b)))    </p>
-<p>=&gt; (a b)    </p>
-<p>(let ([f (let ([x ‘sam])<br>           (lambda (y z) (list x y z)))])<br>  (f ‘i ‘am))</p>
-<p>=&gt; (sam i am)  </p>
-<ul>
-<li>procedure已经创建, x就没用了, 后面再赋值也影响不到了</li>
-</ul>
-<p>(let ([f (let ([x ‘sam])<br>           (lambda (y z) (list x y z)))])<br>  (let ([x ‘not-sam])<br>    (f ‘i ‘am)))</p>
-<p>=&gt; (sam i am)</p>
-<blockquote>
-<p>let表达式就是lambda表达式应用到参数上<br>(let ([x ‘a]) (cons x x)) ≡ ((lambda (x) (cons x x)) ‘a)</p>
-</blockquote>
-<ul>
-<li>接收单个参数的lambda表达式,任意数量的参数都会被放进一个list传进去.</li>
-</ul>
-<p>((lambda x x) 1)<br>=&gt; (1)</p>
-<p>(let ([f (lambda x x)])<br>  (f 1 2 3 4))</p>
-<p>=&gt; (1 2 3 4)  </p>
-<p>没参数, 就是空list<br>(let ([f (lambda x x)])<br>(f))<br>=&gt; ()</p>
-<ul>
-<li>接收improper list作为参数的lambda表达式,点之前的一一对应,<br>最后一个参数将多余的输入作为一个list.</li>
-</ul>
-<p>(let ([g (lambda (x . y) (list x y))])<br>  (g 1 2 3 4))<br>=&gt;  (1 (2 3 4))</p>
-<p>(let ([h (lambda (x y . z) (list x y z))])<br>  (h ‘a ‘b ‘c ‘d))<br>=&gt;   (a b (c d))</p>
-<p>(let ([f (lambda (x . y) y)])<br>(f ‘a))<br>=&gt; ()</p>
-<h1 id="2-6-定义"><a href="#2-6-定义" class="headerlink" title="2.6 定义"></a>2.6 定义</h1><p>(define list (lambda x x))</p>
-<p>(define doubler<br>  (lambda (f)<br>    (lambda (x) (f x x))))</p>
-<p>(define double (doubler +))<br>(define square (doubler *))</p>
-<p>(display (double 4))<br>(display (square 4))</p>
-<h1 id="2-7-cond"><a href="#2-7-cond" class="headerlink" title="2.7 cond"></a>2.7 cond</h1><p>(define abs<br>  (lambda (n)<br>    (if (&lt; n 0)<br>      (- 0 n)<br>      n)))</p>
-<p>(define sign<br>  (lambda (n)<br>    (cond<br>      [(&lt; n 0) -1]<br>      [(&gt; n 0) +1]<br>      [else 0])))      </p>
-<h1 id="2-8-recursive"><a href="#2-8-recursive" class="headerlink" title="2.8 recursive"></a>2.8 recursive</h1><p>(define length<br>  (lambda (ls)<br>    (if (null? ls)<br>      0<br>      (+ (length (cdr ls)) 1))))</p>
-<p>使用 (trace length) 来展开</p>
-<p>(define list-copy<br>  (lambda (ls)<br>    (if (null? ls)<br>        ‘()<br>      (cons (car ls)<br>        (list-copy (cdr ls))))))</p>
-<p>(define memv<br>  (lambda (x ls)<br>    (cond<br>      [(null? ls) #f]<br>      [(eqv? (car ls) x) ls]<br>      [else (memv x (cdr ls))])))      </p>
-<p>(define remv<br>  (lambda (x ls)<br>    (cond<br>      [(null? ls) ‘()]<br>      [(eqv? (car ls) x) (remv x (cdr ls))]<br>      [else (cons (car ls) (remv x (cdr ls)))])))</p>
-<p>(map cons ‘(a b c) ‘(1 2 3)) =&gt; ((a . 1) (b . 2) (c . 3))</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scheme//" class="article-tag-list-link color2">Scheme</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/24/(1)-起步/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Erlang(2)-变量与函数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/24/Erlang(2)-变量与函数/">Erlang(2)-变量与函数</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/24/Erlang(2)-变量与函数/" class="archive-article-date">
-  	<time datetime="2020-04-24T08:02:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><p>变量以大写字母开头, 只能被赋值一次. 按值调用(call by value), 在函数被求值以前, 所有的函数调用参数都已经被求值.</p>
-<p>动态类型系统, 变量不需要事先声明.</p>
-<p>在终端中可以使用函数f()来对变量解绑, 程序中不行</p>
-<h1 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h1><blockquote>
-<p>[Head | Tail] = [1,2,3,4].</p>
-</blockquote>
-<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><p>文件名称必须与模块名称相同, export指令以 Function/Arity, 函数名/参数个数 的格式<br>注释以 % 开始</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">-module</span><span class="params">(area)</span>.</span><br><span class="line"><span class="keyword">-export</span><span class="params">([area/<span class="number">1</span>])</span>.</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">area</span><span class="params">(&#123;square, Side&#125;)</span> -&gt;</span> Side * Side;</span><br><span class="line"><span class="function"><span class="title">area</span><span class="params">(&#123;circle, Radius&#125;)</span> -&gt;</span> math:pi() * Radius * Radius;</span><br><span class="line"><span class="function"><span class="title">area</span><span class="params">(&#123;triangle, A, B, C&#125;)</span> -&gt;</span> </span><br><span class="line">    S = (A + B + C) / <span class="number">2</span>,</span><br><span class="line">    math:sqrt(S * (S - A) * (S - B) * (S - C));</span><br><span class="line"><span class="function"><span class="title">area</span><span class="params">(Other)</span> -&gt;</span> &#123;error, invalid_object&#125;.</span><br></pre></td></tr></table></figure>
-<p>使用 c(area). 编译文件<br>使用 area:area({triangle, 3,4,5}). 调用函数</p>
-<p>导入: </p>
-<blockquote>
-<p>-import(math, [sqrt/1])<br>尽量少用导入语句在Erlang社区是个约定习俗</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Erlang//" class="article-tag-list-link color2">Erlang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/24/Erlang(2)-变量与函数/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 

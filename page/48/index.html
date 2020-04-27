@@ -157,19 +157,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-TCP粘包和拆包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-红黑树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/TCP粘包和拆包/">TCP粘包和拆包</a>
+      <a class="article-title" href="/2019/04/02/红黑树/">红黑树</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/TCP粘包和拆包/" class="archive-article-date">
+        <a href="/2019/04/02/红黑树/" class="archive-article-date">
   	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
@@ -177,21 +177,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>TCP是没有界限的一串数据，它会根据TCP缓冲区的实际情况进行包的划分。<br>一个完整的包会被TCP拆分为多个包进行发送，多个小包也可能会被封装为一个<br>大的数据包发送， 这就是TCP粘包和拆包问题。</p>
-<p>发生的原因：<br>    1.应用程序write写入的字节大小大于套接口发送缓冲区大小。<br>    2.进行MSS大小的TCP分段<br>    3.以太网帧的payload大于MTU进行IP分片</p>
-<p>底层无法保证数据包不被拆分，只能通过上层应用协议栈设计来解决。<br>    解决方案：<br>        1.消息定长，如每个报文固定大小为200字节，不够的话空位补空格<br>        2.在包尾增加回车换行符进行分割，如FTP协议<br>        3.将消息分为消息头和消息体，消息头中包含表示消息总长度的字段。<br>            通常为消息头的第一个字段使用int32来表示消息的总长度。</p>
-<p>Netty解决TCP粘包问题<br>    LineBasedFrameDecoder:<br>        依次遍历ByteBuf中的可读字节，判断是否有\n或\r\n，如果有，就以此为结束标志，<br>        从可读索引到结束位置区间的字节就组成了一行。<br>        它是以换行符为结束标志的解码器，支持携带结束符或者不携带结束符两种解码方式，<br>        同时支持配置单行的最大长度。如果连续读到最大长度后仍然没有发现换行符，就会抛出<br>        异常，同时忽略之前读到的异常码流。</p>
-<pre><code>StringDecoder:
-    将接收到的对象转换成字符串，然后继续调用后面的Handler。
-
-
-LineBasedFrameDecoder + StringDecoder组合就是按行切换的文本解码器。
-
-指定分隔符：
-DelimiterBasedFrameDecoder + StringDecoder
-定长：
-FixedLengthFrameDecoder + StringDecoder
-</code></pre>
+        <p>自平衡二叉查找树, 应用: TreeSet, TreeMap, HashMap</p>
+<p>每个节点比左子节点大, 比右子节点小.</p>
+<p>规则:<br>    根节点是黑色, 每个叶子节点都是黑色的空节点(NIL节点),<br>    每个红字节点的两个子节点都是黑色.<br>    从任一节点到其每个叶子所有路径都包含相同数目的黑色节点.</p>
+<p>保证了: 红黑树从根节点到叶子节点的最长路径不会超过最短路径的2倍.</p>
+<p>插入或删除节点时要做调整: 变色和旋转</p>
+<p>条件: 节点P的两个左右孩子N,S. N为黑(N可能为Nil), 由于N子树某节点被删除,黑高减少了1.</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">blacken</span> <span class="type">Nil</span> = <span class="type">Nil</span></span><br></pre></td></tr></table></figure>
       
 
       
@@ -205,7 +197,7 @@ FixedLengthFrameDecoder + StringDecoder
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
+        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
         		</li>
       		
 		</ul>
@@ -214,7 +206,89 @@ FixedLengthFrameDecoder + StringDecoder
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/TCP粘包和拆包/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/红黑树/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-简历" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/02/简历/">简历</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/02/简历/" class="archive-article-date">
+  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>熟练掌握Java, JavaScript, Python等编程语言</li>
+<li>熟练掌握MySQL, PostgreSQL, Redis, Elasticsearch, MongoDB等数据仓库工具.</li>
+<li>熟练掌握Git, Maven, Linux, Docker, Kubernete等开发工具</li>
+<li>熟练掌握Spring, MyBatis, Netty等框架</li>
+<li>熟练掌握虚拟机结构, 多线程编程.</li>
+<li>熟练掌握常见数据结构和算法, 设计模式</li>
+</ul>
+<p>&lt;&lt;流畅的Python&gt;&gt;</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/02/简历/">展开全文 >></a>
         </p>
       
 
@@ -374,19 +448,19 @@ volatile的原理和实现机制
 
 
   
-    <article id="post-Tree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-TCP粘包和拆包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/Tree/">Tree</a>
+      <a class="article-title" href="/2019/04/02/TCP粘包和拆包/">TCP粘包和拆包</a>
     </h1>
   
 
         
-        <a href="/2019/04/02/Tree/" class="archive-article-date">
+        <a href="/2019/04/02/TCP粘包和拆包/" class="archive-article-date">
   	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
 </a>
         
@@ -394,106 +468,21 @@ volatile的原理和实现机制
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>说起树,首先想到的就是递归,递归,还有递归…<br>树的算法里确实有很多漂亮的递归,感觉比Scheme里面的递归还要迷人(主要是指迷惑的迷)</p>
-<h2 id="1-树的高度"><a href="#1-树的高度" class="headerlink" title="1. 树的高度"></a>1. 树的高度</h2><p><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener">104. Maximum Depth of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(maxDepth(root.left), maxDepth(root.right)) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>算法很优雅,但是并不能一眼看穿,来人肉单步执行一下吧<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">3</span></span><br><span class="line">   / \</span><br><span class="line">  <span class="number">9</span>  <span class="number">20</span></span><br><span class="line">    /  \</span><br><span class="line">   <span class="number">15</span>   <span class="number">7</span></span><br><span class="line"></span><br><span class="line">Math.max(maxDepth(<span class="number">9</span>), maxDepth(<span class="number">20</span>)) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="number">15</span>), maxDepth(<span class="number">7</span>)) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(Math.max(<span class="number">0</span>, <span class="number">0</span>) + <span class="number">1</span>, Math.max(Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>, Math.max(maxDepth(<span class="keyword">null</span>), maxDepth(<span class="keyword">null</span>)) + <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, Math.max(<span class="number">1</span>, <span class="number">1</span>) + <span class="number">1</span>) + <span class="number">1</span></span><br><span class="line">Math.max(<span class="number">1</span>, <span class="number">2</span>) + <span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="2-平衡树"><a href="#2-平衡树" class="headerlink" title="2. 平衡树"></a>2. 平衡树</h2><p><a href="https://leetcode.com/problems/balanced-binary-tree" target="_blank" rel="noopener">110. Balanced Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> result = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBalanced</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    maxDepth(root);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">maxDepth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = maxDepth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = maxDepth(root.right);</span><br><span class="line">    <span class="keyword">if</span> (Math.abs(l - r) &gt; <span class="number">1</span>)</span><br><span class="line">        result = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>利用最大高度,每次递归求的时候看下左子树和右子树的高度差有没有超过1</p>
-<h2 id="3-两节点的最长路径"><a href="#3-两节点的最长路径" class="headerlink" title="3. 两节点的最长路径"></a>3. 两节点的最长路径</h2><p><a href="https://leetcode.com/problems/diameter-of-binary-tree" target="_blank" rel="noopener">543. Diameter of Binary Tree</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> max = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">diameterOfBinaryTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    depth(root);</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">depth</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> l = depth(root.left);</span><br><span class="line">    <span class="keyword">int</span> r = depth(root.right);</span><br><span class="line">    max = Math.max(max, l + r);</span><br><span class="line">    <span class="keyword">return</span> Math.max(l, r) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>也是利用求最大高度的, 每次算一下左边和右边的距离, 存一个最大值.</p>
-<h2 id="4-翻转树"><a href="#4-翻转树" class="headerlink" title="4. 翻转树"></a>4. 翻转树</h2><p><a href="https://leetcode.com/problems/invert-binary-tree" target="_blank" rel="noopener">226. Invert Binary Tree</a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">invertTree</span><span class="params">(TreeNode)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    TreeNode left = root.left;</span><br><span class="line">    root.left = invertTree(root.right);</span><br><span class="line">    root.right = invertTree(left);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>人肉单步执行:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">     <span class="number">4</span></span><br><span class="line">   /   \</span><br><span class="line">  <span class="number">2</span>     <span class="number">7</span></span><br><span class="line"> / \   / \</span><br><span class="line"><span class="number">1</span>   <span class="number">3</span> <span class="number">6</span>   <span class="number">9</span></span><br><span class="line"></span><br><span class="line">invertTree(<span class="number">4</span>)</span><br><span class="line">    root = <span class="number">4</span>,</span><br><span class="line">    left = <span class="number">2</span>,</span><br><span class="line">    root.left = invertTree(<span class="number">7</span>)</span><br><span class="line">                    left = <span class="number">6</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">9</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">6</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">    root.right = invertTree(<span class="number">2</span>)</span><br><span class="line">                    left = <span class="number">1</span>,</span><br><span class="line">                    root.left = invertTree(<span class="number">3</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    root.right = invertTree(<span class="number">1</span>)</span><br><span class="line">                                    left = <span class="keyword">null</span></span><br><span class="line">                                    root.left = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    root.right = invertTree(<span class="keyword">null</span>)</span><br><span class="line">                                                    <span class="keyword">null</span></span><br><span class="line">                                    <span class="keyword">return</span> root</span><br><span class="line">                    <span class="keyword">return</span> root</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">return</span> root</span><br></pre></td></tr></table></figure></p>
-<p>交换值,本来是一个比较常见的操作:<br>int temp = a;<br>a = b;<br>b = temp;<br>但是要让这个操作应用到树的每一个左右节点时,就让人犯了难.<br>看上面的演算就知道要临场想出来难度有多大.<br>让我想到了以前背的四阶魔方最后一个L公式之后可能出现的中间两个错位现象,当时我们把它叫做牙齿公式.<br>15步的超长公式,很酷炫同时也很难记住.<br>我当时把这个公式用订书机钉在了数学笔记本上,每次翻笔记的时候都会顺带复习一遍.<br>但是难度大+用得少,不可避免的会遗忘.</p>
-<h2 id="5-合并树"><a href="#5-合并树" class="headerlink" title="5.合并树"></a>5.合并树</h2><p><a href="https://leetcode.com/problems/merge-two-binary-trees" target="_blank" rel="noopener">617. Merge Two Binary Trees</a><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TreeNode <span class="title">mergeTrees</span><span class="params">(TreeNode t1, TreeNode t2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span> &amp;&amp; t2 == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (t1 == <span class="keyword">null</span>) <span class="keyword">return</span> t2;</span><br><span class="line">    <span class="keyword">if</span> (t2 == <span class="keyword">null</span>) <span class="keyword">return</span> t1;</span><br><span class="line">    TreeNode root = <span class="keyword">new</span> TreeNode(t1.val + t2.val);</span><br><span class="line">    root.left = mergeTrees(t1.left, t2.left);</span><br><span class="line">    root.right = mergeTrees(t1.right, t2.right);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>精准而优雅,嗯…<br>新建了一个二叉树,而不是一个合并到另一个上.</p>
-<h2 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h2>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">LeetCode</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        <p>TCP是没有界限的一串数据，它会根据TCP缓冲区的实际情况进行包的划分。<br>一个完整的包会被TCP拆分为多个包进行发送，多个小包也可能会被封装为一个<br>大的数据包发送， 这就是TCP粘包和拆包问题。</p>
+<p>发生的原因：<br>    1.应用程序write写入的字节大小大于套接口发送缓冲区大小。<br>    2.进行MSS大小的TCP分段<br>    3.以太网帧的payload大于MTU进行IP分片</p>
+<p>底层无法保证数据包不被拆分，只能通过上层应用协议栈设计来解决。<br>    解决方案：<br>        1.消息定长，如每个报文固定大小为200字节，不够的话空位补空格<br>        2.在包尾增加回车换行符进行分割，如FTP协议<br>        3.将消息分为消息头和消息体，消息头中包含表示消息总长度的字段。<br>            通常为消息头的第一个字段使用int32来表示消息的总长度。</p>
+<p>Netty解决TCP粘包问题<br>    LineBasedFrameDecoder:<br>        依次遍历ByteBuf中的可读字节，判断是否有\n或\r\n，如果有，就以此为结束标志，<br>        从可读索引到结束位置区间的字节就组成了一行。<br>        它是以换行符为结束标志的解码器，支持携带结束符或者不携带结束符两种解码方式，<br>        同时支持配置单行的最大长度。如果连续读到最大长度后仍然没有发现换行符，就会抛出<br>        异常，同时忽略之前读到的异常码流。</p>
+<pre><code>StringDecoder:
+    将接收到的对象转换成字符串，然后继续调用后面的Handler。
 
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/Tree/">展开全文 >></a>
-        </p>
-      
+LineBasedFrameDecoder + StringDecoder组合就是按行切换的文本解码器。
 
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-汉诺塔问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/02/汉诺塔问题/">汉诺塔问题</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/02/汉诺塔问题/" class="archive-article-date">
-  	<time datetime="2019-04-02T00:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>看&lt;&lt;七周七Web框架&gt;&gt;的时候里面提到了这个问题,突然想看看怎么解决它.<br>当A有两个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C<br>当A有三个盘子,则:<br>    1 -&gt; C, 2 -&gt; B, 1 -&gt; B, 3 -&gt; C, 1 -&gt; A, 2 -&gt; C, 1 -&gt; C<br>当A有四个盘子,则:<br>    1 -&gt; B, 2 -&gt; C, 1 -&gt; C, 3 -&gt; B, 1 -&gt; A, 2 -&gt; B, 1 -&gt; B, 4 -&gt; C 然后就是三个盘子的问题</p>
-<p>Java实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hanoi</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Hanoi().hanoi(<span class="number">5</span>, <span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b, <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            hanoi(n - <span class="number">1</span>, a, c, b);</span><br><span class="line">            move(<span class="number">1</span>, a, c);</span><br><span class="line">            hanoi(n - <span class="number">1</span>, b, a, c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> a, <span class="keyword">char</span> b)</span> </span>&#123;</span><br><span class="line">        count++;</span><br><span class="line">        System.out.println(<span class="string">"第"</span> + count + <span class="string">"次: "</span> + n + <span class="string">"号盘子从"</span> + a + <span class="string">"移动到"</span> + b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
+指定分隔符：
+DelimiterBasedFrameDecoder + StringDecoder
+定长：
+FixedLengthFrameDecoder + StringDecoder
+</code></pre>
       
 
       
@@ -507,7 +496,7 @@ volatile的原理和实现机制
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据结构与算法//" class="article-tag-list-link color3">数据结构与算法</a>
+        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
         		</li>
       		
 		</ul>
@@ -516,7 +505,7 @@ volatile的原理和实现机制
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/02/汉诺塔问题/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/02/TCP粘包和拆包/">展开全文 >></a>
         </p>
       
 
@@ -548,7 +537,7 @@ volatile的原理和实现机制
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/47/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="page-number" href="/page/47/">47</a><span class="page-number current">48</span><a class="page-number" href="/page/49/">49</a><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/49/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/47/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/46/">46</a><a class="page-number" href="/page/47/">47</a><span class="page-number current">48</span><a class="page-number" href="/page/49/">49</a><a class="page-number" href="/page/50/">50</a><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/49/">Next &raquo;</a>
     </nav>
   
 

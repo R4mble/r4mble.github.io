@@ -157,6 +157,286 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JVM垃圾回收" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/13/JVM垃圾回收/">Java中的垃圾回收算法</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/13/JVM垃圾回收/" class="archive-article-date">
+  	<time datetime="2020-04-13T05:07:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="可达性分析"><a href="#可达性分析" class="headerlink" title="可达性分析"></a>可达性分析</h1><p>通过一系列的根节点”GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，<br>当一个对象到GC Roots没有引用链相连时，则说明这个对象是不可达的。就会被判断为可被回收的对象。</p>
+<p>GC Roots</p>
+<ul>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象</li>
+<li>方法区中的类静态属性引用的对象。</li>
+<li>方法区中的常量引用的对象</li>
+<li>本地方法栈中JNI（通常说的Native方法）引用的对象</li>
+</ul>
+<h1 id="GC算法"><a href="#GC算法" class="headerlink" title="GC算法"></a>GC算法</h1><ul>
+<li><p>标记清除法<br>标记阶段和清除阶段<br>可能产生的最大的问题就是空间碎片</p>
+</li>
+<li><p>复制算法<br>将原有的内存空间分为两块相同的存储空间，每次只使用一块，在垃圾回收时，<br>将正在使用的内存块中存活对象复制到未使用的那一块内存空间中，之后清除正在使用的内存块中的所有对象，完成垃圾回收。</p>
+</li>
+<li><p>标记压缩算法<br>在标记清除算法的基础上做了优化,将所有的存活对象压缩到内存空间的一端，之后，清理边界外所有的空间。</p>
+</li>
+</ul>
+<p>通常新生代回收的频率很高，但是每次回收的时间都很短，而老年代回收的频率比较低，但是被消耗很多的时间</p>
+<p>为了支持高频率的新生代回收，虚拟机可能使用一种叫做卡表的数据结构，卡表为一个比特位集合，<br>每一个比特位可以用来表示老年代的某一区域中的所有对象是否持有新生代对象的引用，<br>新生代GC时，可以不用花大量时间扫描所有老年代对象，来确定每一个对象的引用关系，而可以先扫描卡表，只有当卡表的标记为1时，<br>才需要扫描给定区域的老年代对象，而卡表为0的所在区域的老年代对象，一定不含有新生代对象的引用。</p>
+<h1 id="分区算法"><a href="#分区算法" class="headerlink" title="分区算法"></a>分区算法</h1><p>将整个堆空间划分为连续的不同小区间</p>
+<p>相同的条件下，堆空间越大，一次GC所需的时间就越长，从而产生的停顿时间就越长。为了更好的控制GC产生的停顿时间，<br>将一块大的内存区域分割成多个小块，<br>根据目标的停顿时间，每次合理的回收若干个小区间，而不是整个堆空间，从而减少一个GC的停顿时间。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/13/JVM垃圾回收/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Golang东一榔头西一棒槌系列(2) -变量与类型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/16/Golang东一榔头西一棒槌系列(2) -变量与类型/">Golang东一榔头西一棒槌系列(2) -变量与类型</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/16/Golang东一榔头西一棒槌系列(2) -变量与类型/" class="archive-article-date">
+  	<time datetime="2020-03-16T01:35:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p>变量声明<br>全局变量<br> var a int = 10<br>类型可以由编译器推断<br> var a = 10<br>函数体内变量<br> a := 10    </p>
+</li>
+<li><p>多重赋值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b, a = a, b</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>匿名变量</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetData</span><span class="params">()</span> <span class="params">(<span class="keyword">int</span>, <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">10</span>, <span class="number">20</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a, _ = GetData()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据类型<br>整型: 有符号整型(int8, int16, int64, int), 无符号整型(uint8, uint16, uint32, uint64, uint)<br>浮点型: float32, float64<br>复数型<br>布尔型: var flag bool<br>字符串: string, 不可变<br>字符(byte, rune): 使用单引号, byte(1个字节, utf-8字符单个字节的值,uint8的别名类型)</p>
+<pre><code>rune(4个字节, 单个unicode字符, int32的别名类型)
+</code></pre><p>复合数据类型:<br>数组(array), 切片(slice), 映射(map), 函数(function), 结构体(struct),<br>通道(channel), 接口(interface), 指针(pointer)</p>
+</li>
+<li><p>类型转换</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a := <span class="number">97</span></span><br><span class="line">c := <span class="keyword">float64</span>(a)</span><br><span class="line">d := <span class="keyword">string</span>(a)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>整型转字符串: 整型的值是ascii码编号或者unicode字符集编号<br>不允许字符串转整型</p>
+<ol start="6">
+<li><p>常量<br>const C = “Steven”</p>
+</li>
+<li><p>枚举</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Unknown = <span class="number">0</span></span><br><span class="line">    Female = <span class="number">1</span></span><br><span class="line">    Male = <span class="number">2</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fmt.Println(Unknown, Female, Male)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果不指定类型和初始值, 则与上一行非空常量的值相同</p>
+<ol start="8">
+<li>iota<br>只能用在常量的赋值中, 每个const关键字出现时被重置为0, 每出现一个常量, iota自动加1<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Unknown = <span class="literal">iota</span></span><br><span class="line">    Female = <span class="literal">iota</span></span><br><span class="line">    Male = <span class="literal">iota</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fmt.Println(Unknown, Female, Male)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>后面的iota可以省略<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Unknown = <span class="literal">iota</span></span><br><span class="line">    Female</span><br><span class="line">    Male</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fmt.Println(Unknown, Female, Male)</span><br></pre></td></tr></table></figure></p>
+<ol start="9">
+<li>类型别名与类型定义</li>
+</ol>
+<ul>
+<li><p>type 类型别名 = 类型<br>type stringAlias = string<br>使用stringAlias和string等效, 编译完成后不会有别名类型</p>
+</li>
+<li><p>type 新的类型名 类型<br>type NewString string<br>NewString是一种新的类型, 依然具备string的特性</p>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Go//" class="article-tag-list-link color3">Go</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/16/Golang东一榔头西一棒槌系列(2) -变量与类型/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-vim" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/20/vim/">Vim</a>
+    </h1>
+  
+
+        
+        <a href="/2020/02/20/vim/" class="archive-article-date">
+  	<time datetime="2020-02-19T18:15:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在Github刷题, 在线编辑器可以选择Emacs或者Vim.<br>但是有些快捷键浏览器占着, Emacs没法用. 就尝试下Vim吧~</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Vim//" class="article-tag-list-link color4">Vim</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/02/20/vim/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-flutter入门100关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -242,342 +522,9 @@
 
 
   
-    <article id="post-flutter" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/15/flutter/">flutter</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/15/flutter/" class="archive-article-date">
-  	<time datetime="2020-01-15T06:04:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="android-x-适配问题"><a href="#android-x-适配问题" class="headerlink" title="android x 适配问题"></a>android x 适配问题</h1><h1 id="cached-network-image有问题"><a href="#cached-network-image有问题" class="headerlink" title="cached_network_image有问题"></a>cached_network_image有问题</h1><p>Compiler message:<br>../../../.pub-cache/hosted/pub.flutter-io.cn/cached_network_image-1.1.3/lib/src/cached_network_image_provider.dart:42:24: Error: The method ‘CachedNetworkImageProvider.load’ has fewer positional arguments than those of overridden method ‘ImageProvider.load’.<br>  ImageStreamCompleter load(CachedNetworkImageProvider key) {<br>                       ^<br>../../software/flutter/packages/flutter/lib/src/painting/image_provider.dart:403:24: Context: This is the overridden method (‘load’).<br>  ImageStreamCompleter load(T key, DecoderCallback decode);<br>                       ^<br>Exception: Errors during snapshot creation: null</p>
-<p>将cached_network_image的版本号升级到2.0.0-rc<br>  flutter_cache_manager: ^1.1.2</p>
-<h1 id="过滤掉提示重复的文件"><a href="#过滤掉提示重复的文件" class="headerlink" title="过滤掉提示重复的文件"></a>过滤掉提示重复的文件</h1><p>Execution failed for task ‘:app:transformResourcesWithMergeJavaResForDebug’.</p>
-<p>More than one file was found with OS independent path ‘META-INF/proguard/androidx-annotations.pro’</p>
-<p>在build.gradle文件的android节点下增加packagingOptions，过滤掉提示重复的文件。</p>
-<p>packagingOptions {<br>       exclude ‘META-INF/proguard/androidx-annotations.pro’<br>}</p>
-<h1 id="申请网络权限"><a href="#申请网络权限" class="headerlink" title="申请网络权限"></a>申请网络权限</h1><p>  <uses-permission android:name="android.permission.READ_PHONE_STATE"><br>  <uses-permission android:name="android.permission.INTERNET"><br>  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"><br>  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission></uses-permission></uses-permission></uses-permission></p>
-<h1 id="kotlin依赖在阿里云拉不下来"><a href="#kotlin依赖在阿里云拉不下来" class="headerlink" title="kotlin依赖在阿里云拉不下来"></a>kotlin依赖在阿里云拉不下来</h1><p>使.gradle下的init.gradle文件失效, 到google去拉 </p>
-<h1 id="Aapt2Exception"><a href="#Aapt2Exception" class="headerlink" title="Aapt2Exception"></a>Aapt2Exception</h1><p>Error: java.util.concurrent.ExecutionException: com.android.builder.internal.aapt.v2.Aapt2Exception: AAPT2 error: check logs for details</p>
-<p>在项目的gradle.properties中添加: android.enableAapt2=false</p>
-<h1 id="依赖不好使"><a href="#依赖不好使" class="headerlink" title="依赖不好使"></a>依赖不好使</h1><ol>
-<li><p>指定分支<br>zefyr:<br>   git:</p>
-<pre><code>url: git://github.com/memspace/zefyr.git
-ref: fix-text-input-connection-closed
-path: packages/zefyr
-</code></pre></li>
-<li><p>自己手动改<br>../../.pub-cache/hosted/pub.dartlang.org/zefyr-0.8.0/lib/src/widgets/input.dart</p>
-</li>
-</ol>
-<h1 id="Flutter导航"><a href="#Flutter导航" class="headerlink" title="Flutter导航"></a>Flutter导航</h1><h2 id="Dart语言"><a href="#Dart语言" class="headerlink" title="Dart语言"></a>Dart语言</h2><p>Isolate</p>
-<h2 id="基础组件"><a href="#基础组件" class="headerlink" title="基础组件:"></a>基础组件:</h2><p>Widget<br>图片和Icon<br>按钮<br>进度指示器<br>输入框和表单<br>单选框和复选框</p>
-<h2 id="布局类组件"><a href="#布局类组件" class="headerlink" title="布局类组件"></a>布局类组件</h2><h3 id="线性布局-Row-Column"><a href="#线性布局-Row-Column" class="headerlink" title="线性布局(Row,Column)"></a>线性布局(Row,Column)</h3><p>布局沿水平方向,主轴就是水平方向,纵轴即垂直方向<br>布局沿垂直方向,主轴就是垂直方向,纵轴即水平方向<br>主轴对齐: MainAxisAligment<br>纵轴对齐: CrossAxisAligment</p>
-<h3 id="弹性布局-Flex"><a href="#弹性布局-Flex" class="headerlink" title="弹性布局(Flex)"></a>弹性布局(Flex)</h3><p>允许子组件按照一定比例来分配父容器空间.</p>
-<h3 id="流式布局-Wrap-Flow"><a href="#流式布局-Wrap-Flow" class="headerlink" title="流式布局(Wrap,Flow)"></a>流式布局(Wrap,Flow)</h3><p>超出屏幕显示范围会自动折行的布局成为流式布局.</p>
-<h3 id="层叠布局-Stack-Positioned"><a href="#层叠布局-Stack-Positioned" class="headerlink" title="层叠布局(Stack,Positioned)"></a>层叠布局(Stack,Positioned)</h3><p>对齐与相对定位(Align)</p>
-<h2 id="容器类组件"><a href="#容器类组件" class="headerlink" title="容器类组件"></a>容器类组件</h2><p>填充(Padding)<br>尺寸限制类容器(ConstrainedBox)<br>装饰容器(DecoratedBox)<br>变换(Transform)<br>Container容器<br>Scaffold<br>TabBar<br>底部导航<br>剪裁(Clip)</p>
-<h2 id="可滚动组件"><a href="#可滚动组件" class="headerlink" title="可滚动组件"></a>可滚动组件</h2><p>SingleChildScrollView<br>ListView<br>GridView<br>CustomScrollView<br>滚动监听及控制</p>
-<h2 id="功能性组件"><a href="#功能性组件" class="headerlink" title="功能性组件"></a>功能性组件</h2><p>导航返回拦截(WillPopScope)<br>数据共享(InheritedWidget)<br>跨组件状态共享(Provider)<br>颜色和主题(Theme)<br>异步UI更新(FutureBuilder,StreamBuilder)<br>对话框(AlertDialog)</p>
-<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>插值器: 设置属性值从初始值到结束值的变化规律<br>估值器: 设置属性值从初始值到结束值的变化具体数值<br>动画类型: </p>
-<ol>
-<li>补间(Tween)动画: 定义开始点,结束点,时间和速度等参数,框架自动计算</li>
-<li>基于物理的动画: 模拟真实世界的行为</li>
-</ol>
-<p>相关类: </p>
-<ol>
-<li>Animation: 动画核心类<br>abstract, 知道动画的当前状态(开始,停止或向前或是后移动),但不知道显示内容<br>本身和UI渲染没有任何关系, 可以通过访问其value属性获取动画的当前值.</li>
-<li>AnimationController: 动画管理类<br>在给定的持续时间内线性生成0.0到1.0的值,不使用的时候要做dispose处理<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// duration: 动画执行的时间, vsync: 防止动画离屏之后继续消耗资源</span></span><br><span class="line">AnimationController(duration: <span class="built_in">Duration</span>(milliseconds: <span class="number">2000</span>), vsync: <span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>TickerProvider: 获取每一帧刷新的通知,作用是给动画添加了一个动起来的引擎</p>
-<ol start="3">
-<li><p>CurvedAnimation: 定义非线性曲线动画</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CurvedAnimation(parent: controller, curve: Curves.easeIn)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Tween: 补间对象,用于计算动画使用的数据范围之间的插值</p>
-</li>
-<li><p>Listeners和StatusListeners: 监听动画状态改变</p>
-</li>
-</ol>
-<p>Hero动画<br>交织动画<br>动画过渡组件</p>
-<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><h2 id="网络IO"><a href="#网络IO" class="headerlink" title="网络IO"></a>网络IO</h2><p>Dio</p>
-<h2 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h2><p>Element和BuildContext<br>RenderObject和RenderBox</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">flutter</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/15/flutter/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Android" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/11/Android/">Android</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/11/Android/" class="archive-article-date">
-  	<time datetime="2020-01-11T04:41:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Content Provider: 获取其他应用的信息<br>Service: 从后台计算,下载,处理的结果<br>BroadCast Reciever: 获取广播信息<br>Intent: 组件之间通信</p>
-<h1 id="Android控件架构"><a href="#Android控件架构" class="headerlink" title="Android控件架构"></a>Android控件架构</h1><h1 id="View的测量与绘制"><a href="#View的测量与绘制" class="headerlink" title="View的测量与绘制"></a>View的测量与绘制</h1><h1 id="ViewGroup的测量与绘制"><a href="#ViewGroup的测量与绘制" class="headerlink" title="ViewGroup的测量与绘制"></a>ViewGroup的测量与绘制</h1><h1 id="自定义控件的三种方式"><a href="#自定义控件的三种方式" class="headerlink" title="自定义控件的三种方式"></a>自定义控件的三种方式</h1><h1 id="事件的拦截机制"><a href="#事件的拦截机制" class="headerlink" title="事件的拦截机制"></a>事件的拦截机制</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Others//" class="article-tag-list-link color2">Others</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/11/Android/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-CTM系列(2) - 声明式计算模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/24/CTM系列(2) - 声明式计算模型/">CTM系列(2) - 声明式计算模型</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/24/CTM系列(2) - 声明式计算模型/" class="archive-article-date">
-  	<time datetime="2019-12-24T08:19:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="声明式计算模型-p31-74-p108"><a href="#声明式计算模型-p31-74-p108" class="headerlink" title="声明式计算模型 p31(74) - p108"></a>声明式计算模型 p31(74) - p108</h2><blockquote>
-<p>encompass 包含</p>
-</blockquote>
-<p>编程有三件事:</p>
-<ol>
-<li>计算模型: 定义了编程语言的语句怎样被抽象机器执行.</li>
-<li>编程模型: 编程技巧和设计原则的集合</li>
-<li>推断技巧集合: 正确性</li>
-</ol>
-<p>(我被我的蹩脚翻译恶心吐了, 此后使用英文吧)</p>
-<p>The first and simplest computation model – declarative programming (stateless programming)</p>
-<p>encompasses the core ideas of two main declarative paradigms: functional and logic programming.</p>
-<blockquote>
-<p>embryonic 未成熟的</p>
-</blockquote>
-<h3 id="2-1-define-the-syntax-and-semantics-of-practical-programming-languages"><a href="#2-1-define-the-syntax-and-semantics-of-practical-programming-languages" class="headerlink" title="2.1 define the syntax and semantics of practical programming languages"></a>2.1 define the syntax and semantics of practical programming languages</h3><p>syntax: “grammer”<br>semantics: “meaning”</p>
-<p>Extended Backus-Naur<br>Form (EBNF)<br>扩展的巴科斯范式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;digit&gt; ::= 0|1|2|3|4|5|6|7|8|9</span><br><span class="line">&lt;int&gt; ::= &lt;digit&gt; &#123; &lt;digit&gt; &#125;</span><br><span class="line">大括号表示可以重复任意次v</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>Precedence 优先级</p>
-</blockquote>
-<p>context-free 和 content-sensitive 语法</p>
-<p>语法的歧义: 2*3+4的两种解析方法<br>解决办法: 1. 设定优先级, 把优先级高的放到解析树离根更远的地方</p>
-<pre><code>2. 实用结合律, 对于2-3-4, 是左结合还是右结合
-</code></pre><blockquote>
-<p>affirmative 肯定的<br>linguistic 语言的</p>
-</blockquote>
-<p>用the kernel language approach来定义编程语言的语意</p>
-<ol>
-<li>定义一个简单核心语言</li>
-<li>把编程语言翻译到那个简单语言: 语言的抽象和语法糖 </li>
-</ol>
-<blockquote>
-<p>axiomatic 公理<br>clutter 杂乱<br>evolve 逐步发展<br>analogous 相似的</p>
-</blockquote>
-<p>总结: 讲了编程语言的syntax(语法)和semantics(语义),<br>(读完感觉没啥收获, 这个是最打击人的.完全没有读下去的兴趣了.<br>还是跟英文有关系吧, 这节的定位应当就是那种介绍背景的, 泛泛而谈, 让读者知道有这回事就行.<br>我来读就是做英文阅读理解, 连读11页, 就像万里长征过草地,爬雪山, 忍着困意和乏味读完了, 发现: 就这? 就这? 就这?)</p>
-<h3 id="2-2-data-structures-single-assignment-store-and-its-contents-partial-values-and-dataflow-variables"><a href="#2-2-data-structures-single-assignment-store-and-its-contents-partial-values-and-dataflow-variables" class="headerlink" title="2.2 data structures: single-assignment store and its contents, partial values and dataflow variables"></a>2.2 data structures: single-assignment store and its contents, partial values and dataflow variables</h3><p>p87<br>声明式模型使用single-assignment store – 变量可以initially unbound, 也可以bound to one value</p>
-<h4 id="Declaratice-variables"><a href="#Declaratice-variables" class="headerlink" title="Declaratice variables"></a>Declaratice variables</h4><p>这个和SICP里面讲的那个变量替换应该是一回事.<br>一旦绑定, variable就是value了.</p>
-<blockquote>
-<p>indistinguishable 无法分辨的;</p>
-</blockquote>
-<h4 id="Value-store"><a href="#Value-store" class="headerlink" title="Value store"></a>Value store</h4><p>Standard ML, Haskell, Scheme使用value store (不可变)<br>C++, Java使用cell store (可变)</p>
-<p>而本书使用 sigle-assignment store. 原因:</p>
-<ol>
-<li>想使用partial values, 举例: a procedure can return an output by binding an unbound variable argument.</li>
-<li>声明式并发</li>
-<li>想扩展这个模型用于relational(logic) programming 和 constraint programming</li>
-<li>性能好, 比如尾递归和不同的list</li>
-</ol>
-<h4 id="Value-creation"><a href="#Value-creation" class="headerlink" title="Value creation"></a>Value creation</h4><p>如果变量已经被绑定, single-assignment 操作会检查这两个value是否适配, 如果不适配就会报错.</p>
-<h4 id="Value-identifiers"><a href="#Value-identifiers" class="headerlink" title="Value identifiers"></a>Value identifiers</h4><h4 id="Partial-values"><a href="#Partial-values" class="headerlink" title="Partial values"></a>Partial values</h4><p>含有未知数的值</p>
-<h4 id="Variable-variable-binding"><a href="#Variable-variable-binding" class="headerlink" title="Variable-variable binding"></a>Variable-variable binding</h4><h4 id="Dataflow-variable"><a href="#Dataflow-variable" class="headerlink" title="Dataflow variable"></a>Dataflow variable</h4><h3 id="2-3-defines-the-kernel-language-syntax"><a href="#2-3-defines-the-kernel-language-syntax" class="headerlink" title="2.3 defines the kernel language syntax"></a>2.3 defines the kernel language syntax</h3><h3 id="2-4-defines-the-kernel-language-semantics-in-terms-of-a-simple-abstract-machine"><a href="#2-4-defines-the-kernel-language-semantics-in-terms-of-a-simple-abstract-machine" class="headerlink" title="2.4 defines the kernel language semantics in terms of a simple abstract machine"></a>2.4 defines the kernel language semantics in terms of a simple abstract machine</h3><h3 id="2-5-defines-a-practical-programming-language-on-top-of-the-kernel-language"><a href="#2-5-defines-a-practical-programming-language-on-top-of-the-kernel-language" class="headerlink" title="2.5 defines a practical programming language on top of the kernel language"></a>2.5 defines a practical programming language on top of the kernel language</h3><h3 id="2-6-exception-handling"><a href="#2-6-exception-handling" class="headerlink" title="2.6 exception handling"></a>2.6 exception handling</h3><h3 id="2-7-advanced-topics"><a href="#2-7-advanced-topics" class="headerlink" title="2.7 advanced topics"></a>2.7 advanced topics</h3>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/读书笔记//" class="article-tag-list-link color5">读书笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/24/CTM系列(2) - 声明式计算模型/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/13/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/15/">Next &raquo;</a>
     </nav>
   
 

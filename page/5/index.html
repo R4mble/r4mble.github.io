@@ -157,106 +157,35 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-(1)-数据类型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java反射" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/22/(1)-数据类型/">(1)-数据类型</a>
+      <a class="article-title" href="/2020/04/23/Java反射/">Java反射</a>
     </h1>
   
 
         
-        <a href="/2020/04/22/(1)-数据类型/" class="archive-article-date">
-  	<time datetime="2020-04-22T09:42:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
+        <a href="/2020/04/23/Java反射/" class="archive-article-date">
+  	<time datetime="2020-04-23T03:59:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-23</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="字符串-string"><a href="#字符串-string" class="headerlink" title="字符串(string)"></a>字符串(string)</h3><pre><code>set name &quot;Tom&quot;
-get name
-append name &quot;Jack&quot;
-exists name
-del name
-</code></pre><p>批量操作:</p>
-<pre><code>mget name1 name2 name3
-mset name1 tom name2 jerry name3 jack
-</code></pre><p>设置过期:</p>
-<pre><code>expire name 5        #5s后过期
-setex name 5 &quot;tom&quot;  #5s后过期
-</code></pre><p>计数:</p>
-<pre><code>set counter 1000
-incr counter 
-decr counter
-incrby counter 5
+        <p>4.java反射获取私有属性，改变值</p>
+<p>Class类: 代表类的实体<br>Field类: 代表类的成员变量<br>Method类: 代表类的方法<br>Constructor类: 代表类的构造方法<br>        Class&lt;?&gt; classBook = Class.forName(“reflect.Book”);<br>        Object objectBook = classBook.newInstance();<br>        Field fieldTag = classBook.getDeclaredField(“tag”);<br>        fieldTag.setAccessible(true);<br>        fieldTag.set(objectBook, “interesting”);</p>
+<pre><code>System.out.println(objectBook);
+</code></pre><p>5.反射用途</p>
+<ul>
+<li>根据类名创建实例(类名可以从配置文件读取)</li>
+<li>用Method.invoke执行方法</li>
+</ul>
 
-setnx name &quot;jerry&quot;        #如果name不存在,则创建.
-</code></pre><h3 id="列表-list"><a href="#列表-list" class="headerlink" title="列表(list)"></a>列表(list)</h3><pre><code>lpush lists redis mongodb golang
-rpush lists mysql postgre
-lpop lists
-rpop lists
-lrange lists 0 10
-</code></pre><h4 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h4><p>LPUSH mylist 4 3 2 6 9<br>SORT mylist<br>LPUSH mylistalpha a d i e p<br>SORT mylistalpha ALPHA</p>
-<blockquote>
-<p>lindex对链表进行遍历, 性能随index变大而变差. index为-1表示倒数第一个元素.<br>  ltrim 保留start_index和end_index之间的区间, 其他的去掉.</p>
-</blockquote>
-<blockquote>
-<p>数据量较少时会使用一块连续的内存存储,压缩列表ziplist将元素连续存储.<br>  数据量较多时使用quicklist.<br>  Redis将链表和ziplist结合组成quicklist,多个ziplist使用双向<br>  指针串起来使用.这样既可以快速插入删除,也不会出现太大的空间冗余.</p>
-</blockquote>
-<h3 id="散列-hash"><a href="#散列-hash" class="headerlink" title="散列(hash)"></a>散列(hash)</h3><pre><code>hmset car name &quot;volvo&quot; color &quot;black&quot; price 20
-hmget car name
-hexists car name
-hdel car price
-</code></pre><blockquote>
-<p>数组 + 链表的二维结构, 第一维数组位置碰撞后,使用链表将元素串接起来.<br>    与Java的HashMap的不同点:<br>        Redis字典只能是字符串;<br>        Redis采用渐进式rehash策略,HashMap采用一次性全部rehash.<br>            Redis不堵塞服务,实现了高性能.</p>
-</blockquote>
-<pre><code>渐进式rehash: 在rehash的同时保留新旧两个hash结构,查询时会同时查询两个
-hash结构,然后在后续的定时任务中以及hash的子指令中,逐渐将旧hash内容迁移到
-新hash结构中.当hash移除了最后一个元素后,该数据结构自动被删除,内存被回收.
-
-HashMap的rehash: 
-</code></pre><h3 id="集合-set"><a href="#集合-set" class="headerlink" title="集合(set)"></a>集合(set)</h3><pre><code>sadd letters a
-sadd letters a b c
-srem letters c d
-smembers letters
-sadd setA 1 2 3
-sdiff setA setB
-</code></pre><p>相当于value为NULL的字典.</p>
-<h3 id="有序集合-zset"><a href="#有序集合-zset" class="headerlink" title="有序集合(zset)"></a>有序集合(zset)</h3><pre><code>zadd tutorials 1 redis 2 mongodb 3 mysql
-zrange tutorials 0 10 WITHSOCRES
-zrange bookstore 0 -1       默认按score从低到高排
-zrevrange bookstore 0 -1    按score从高到低排
-zcard bookstore                集合中元素的数量,key不存在时返回0
-zscore bookstore &quot;Java Concurrency&quot; 查看score(使用double存储,有精度问题)
-zrank bookstore &quot;Java Concurrency&quot; 排名,按照score从低往高排.
-zrangebysocre bookstore 0 8.9 根据score区间遍历zset
-zrem bookstore &quot;Java Concurrency&quot;
-</code></pre><h3 id="位图-bitmap"><a href="#位图-bitmap" class="headerlink" title="位图(bitmap)"></a>位图(bitmap)</h3><p>比特位组成的数组.<br>用途举例: 存用户一年的签到记录.</p>
-<pre><code>bitcount
-    统计指定位置范围内1的个数,start和end是字节索引,必须是8的倍数.
-    要查找用户某个月签到多少天,需要将这个月覆盖的字节全部取出然后统计.
-bitpos 来查找指定范围内出现的第一个0或1
-bitfield 一次操作多个位
-</code></pre><h3 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h3><p>提供不精确的去重计数方案, 标准误差0.81%</p>
-<pre><code>pfadd uv user1
-pfcount uv
-pfadd uv user2 user3 user1 user4
-pfcount uv  
-</code></pre><p>pfmerge 将多个pf计数值累加形成新的pf值</p>
-<p>布隆过滤器:<br>    场景举例: 推荐内容去重.</p>
-<pre><code>bf.add         bf.madd
-bf.exists         bf.mexists
-</code></pre><p>向布隆过滤器添加key时,使用多个hash函数对key进行hash算得一个整数索引,</p>
-<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><pre><code>SET session uuid11
-EXPIRE session 20 
-TTL session
-</code></pre><h3 id="发布-订阅"><a href="#发布-订阅" class="headerlink" title="发布/订阅"></a>发布/订阅</h3><pre><code>SUBSCRIBE redisChat
-PUBLISH redisChat &quot;Learn redis&quot;
-</code></pre>
       
 
       
@@ -270,7 +199,7 @@ PUBLISH redisChat &quot;Learn redis&quot;
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -279,7 +208,193 @@ PUBLISH redisChat &quot;Learn redis&quot;
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/22/(1)-数据类型/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/23/Java反射/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-死锁" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/23/死锁/">死锁</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/23/死锁/" class="archive-article-date">
+  	<time datetime="2020-04-23T03:52:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>线程A持有锁a等待获取锁b, 线程B持有锁b等待获取锁a</p>
+<ul>
+<li>竞争资源: 1.可剥夺资源:某进程获得这类资源后,该资源可以被其他进程或系统剥夺, 如CPU和主存<pre><code>2. 不可剥夺资源: 当系统把这类资源分配给某进程后, 再不能强行收回, 只能在进程用完后自行释放, 如磁带机,打印机等
+3. 临时资源: 硬件中断,信号,消息,缓存区内的消息等
+</code></pre>  产生死锁的竞争资源: 不可剥夺资源, 临时资源</li>
+</ul>
+<p>死锁产生的4个必要条件:<br>    1.互斥条件: 进程要求对所分配的资源进行排它性控制，即在一段时间内某资源仅为一进程所占用。<br>    2.请求和保持条件: 当进程因请求资源而阻塞时，对已获得的资源保持不放。<br>    3.不剥夺条件: 进程已获得的资源在未使用完之前，不能剥夺，只能在使用完时由自己释放。<br>    4.环路等待条件: 在发生死锁时，必然存在一个进程–资源的环形链。</p>
+<p>解决死锁的方法:<br>    1.资源一次性分配: 一次性分配所有资源，这样就不会再有请求了：（破坏请求条件）<br>    2.只要有一个资源得不到分配, 也不给这个进程分配其他的资源（破坏请保持条件）<br>    3.可剥夺资源: 当某进程获得了部分资源,但得不到其他资源,则释放已占有的资源（破坏不可剥夺条件）<br>    4.资源有序分配法: 系统给每类资源赋予一个编号,每一个进程按编号递增的顺序请求进程,释放则相反(破坏环路等待条件)</p>
+<p>死锁检测: Jstack命令 JConsole工具</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/并发编程//" class="article-tag-list-link color5">并发编程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/23/死锁/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java中的逆变与协变" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/22/Java中的逆变与协变/">Java中的逆变与协变</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/22/Java中的逆变与协变/" class="archive-article-date">
+  	<time datetime="2020-04-22T15:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>看到王垠博客的一篇文章<br><a href="http://www.yinwang.org/blog-cn/2020/02/13/java-type-system" target="_blank" rel="noopener">一道Java面试题</a></p>
+<p>里面说的是这样一段代码:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String[] a = <span class="keyword">new</span> String[<span class="number">2</span>];</span><br><span class="line">    Object[] b = a;</span><br><span class="line">    a[<span class="number">0</span>] = <span class="string">"hi"</span>;</span><br><span class="line">    b[<span class="number">1</span>] = Integer.valueOf(<span class="number">42</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看到后首先想的是逆变与协变.</p>
+<h1 id="里氏替换原则-LSP"><a href="#里氏替换原则-LSP" class="headerlink" title="里氏替换原则  LSP"></a>里氏替换原则  LSP</h1><blockquote>
+<p>所有引用基类的地方必须能透明地使用其子类的对象。</p>
+</blockquote>
+<h2 id="四个含义"><a href="#四个含义" class="headerlink" title="四个含义"></a>四个含义</h2><ul>
+<li>子类完全拥有父类的方法，且具体子类必须实现父类的抽象方法。</li>
+<li>子类中可以增加自己的方法。</li>
+<li>当子类覆盖或实现父类的方法时，方法的形参要比父类方法的更为宽松。</li>
+<li>当子类覆盖或实现父类的方法时，方法的返回值要比父类更严格。</li>
+</ul>
+<h2 id="逆变与协变的定义"><a href="#逆变与协变的定义" class="headerlink" title="逆变与协变的定义"></a>逆变与协变的定义</h2><p>如果A是B的子类, A的派生类也是B的派生类的子类, 那么我们称这种关系为协变;<br>如果A是B的子类, B的派生类是A的派生类的子类, 那么我们称这种关系为逆变;<br>如果A是B的子类, A的派生类与B的派生类没有继承关系, 那么我们称这种关系为不变;</p>
+<h1 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h1><p>Number是Integer的父类</p>
+<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><pre><code>ArrayList&lt;Integer&gt; numbers = new ArrayList&lt;Number&gt;();
+ArrayList&lt;Number&gt; numbers = new ArrayList&lt;Integer&gt;();
+</code></pre><p>以上两个都跑不通, 看出ArrayList<number> 与 ArrayList<integer>没有继承关系,<br>因此Java的泛型是不变的</integer></number></p>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><pre><code>Number[] numbers = new Integer[2];
+Integer[] integers = new Number[2];
+</code></pre><p>第一个可以, 第二个不行, 看出Number[] 是Integer[] 的父类,<br>因此Java的数组是协变的.</p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><pre><code>static Number method(Number num) {
+    return 1;
+}
+
+Object result = method(new Integer(2)); //correct
+Number result = method(new Object()); //error
+Integer result = method(new Integer(2)); //error
+</code></pre><p>传入形参的类型应为method形参的子类型<br>返回值应为method返回值的基类型</p>
+<hr>
+<p>至此, 我们来尝试回答一下王垠的问题: 哪一行错了？为什么？<br>分析: Java的数组时协变的, 因此 String是Object子类, String[] 也是 Object[] 的子类,<br>    也就有了我们喜闻乐见的父类引用指向子类对象:  Object[] b = a;<br>    从JVM的实现来看, b和a都是栈上指向堆上一块String[] 数组空间的引用.可以佐证的是对a[0]和b[1]的<br>    赋值会同时影响a和b.</p>
+<p>最酷的回答: Java错了. 原因: Java没有遵守里氏替换原则,所有引用基类的地方必须能透明地使用其子类的对象,<br>    名义上是Object, 实际上是String空间, 里面存的是char[] 数组, 往里面塞Integer, 当然是塞不进去.</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/22/Java中的逆变与协变/">展开全文 >></a>
         </p>
       
 
@@ -395,218 +510,9 @@ del lock:codehole
 
 
   
-    <article id="post-TCP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/22/TCP协议/">TCP协议</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/22/TCP协议/" class="archive-article-date">
-  	<time datetime="2020-04-22T08:13:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h1><p>提供了应用进程之间的端到端连接</p>
-<ul>
-<li>作用<ul>
-<li>为网络应用程序提供接口</li>
-<li>为端到端连接提供流量控制,差错控制,服务质量等管理服务</li>
-<li>提供多路复用,多路分解机制</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li><p>面向连接<br>双方在通信时, 要先建立通信线路, 然后再进行通信.<br>三个阶段: 1.建立连接 2.数据传输 3.释放连接</p>
-</li>
-<li><p>无连接<br>通信双方不需要事先建立通信线路, 而是把每个带有目的地址的包发送到线路上,由系统选定线路进行传输,不需要目标方进行回复.</p>
-</li>
-</ul>
-<blockquote>
-<p>在数据链路层中，通过MAC地址来寻找局域网中的主机；<br>在网际层中，通过IP地址来寻找网络中互连的主机或路由器。<br>在传输层中，需要通过端口进行寻址，来识别同一计算机中同时通信的不同应用程序</p>
-</blockquote>
-<p>3.套接字  主机的IP地址加上主机上的端口号</p>
-<ul>
-<li><p>多路复用<br>从源主机的不同套接字中收集数据块,并为每个数据块封装首部信息,从而生成报文段, 然后将报文段传递到网络层中</p>
-</li>
-<li><p>多路分解<br>将传输层报文段中的数据交付到正确的套接字</p>
-</li>
-</ul>
-<h1 id="TCP协议-Transmission-Control-Protocol"><a href="#TCP协议-Transmission-Control-Protocol" class="headerlink" title="TCP协议 Transmission Control Protocol"></a>TCP协议 Transmission Control Protocol</h1><p>面向连接的, 可靠的, 基于字节流的传输层通信协议.</p>
-<h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><ul>
-<li><p>面向流的处理<br>一个字节一个字节地接受数据, 把接收到的数据组成长度不同的段, 再传递到网际层.</p>
-</li>
-<li><p>重新排序<br>如果数据以错误的顺序到达目的地, TCP模块能够对数据重新排序, 恢复原始数据</p>
-</li>
-<li><p>流量控制<br>TCP能确保数据传输不会超过目的计算机接收数据的能力</p>
-</li>
-<li><p>优先级与安全<br>为TCP连接设置可选的优先级和安全</p>
-</li>
-<li><p>适当的关闭<br>确保所有数据被发送或接收以后, 再进行关闭</p>
-</li>
-</ul>
-<h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><p>服务端和客户端模式</p>
-<h2 id="TCP数据格式"><a href="#TCP数据格式" class="headerlink" title="TCP数据格式"></a>TCP数据格式</h2><ul>
-<li>源端口         16位</li>
-<li>目的端口       16位</li>
-<li>序列号         32位<br>表示本报文段所发送数据的第一个字节的编号</li>
-<li>确认号         32位</li>
-<li>数据偏移字段    4位<br>TCP首部长度  </li>
-<li>保留字段        4位</li>
-<li>标志位           </li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/22/TCP协议/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ICMP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/22/ICMP协议/">ARP协议</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/22/ICMP协议/" class="archive-article-date">
-  	<time datetime="2020-04-22T07:34:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="ICMP协议-Internet-Control-Message-Protocol-控制报文协议"><a href="#ICMP协议-Internet-Control-Message-Protocol-控制报文协议" class="headerlink" title="ICMP协议  Internet Control Message Protocol 控制报文协议"></a>ICMP协议  Internet Control Message Protocol 控制报文协议</h1><p>在IP主机和路由器之间传递控制消息, 描述网络是否通畅, 主机是否可达, 路由器是否可用等网络状态.</p>
-<ul>
-<li><p>为啥有ICMP?   因为IP协议不可靠,无连接</p>
-</li>
-<li><p>ICMP的作用    为了了解数据包在传输过程中在哪个环节出现了问题.  它可以跟踪消息, 把问题反馈给源主机.</p>
-</li>
-</ul>
-<h1 id="ICMP报文结构-8个字节"><a href="#ICMP报文结构-8个字节" class="headerlink" title="ICMP报文结构  8个字节"></a>ICMP报文结构  8个字节</h1><ul>
-<li>类型        1字节</li>
-<li>代码         1字节</li>
-<li>校验和       2字节</li>
-<li>扩展内容字段  4字节</li>
-</ul>
-<h1 id="路由跟踪"><a href="#路由跟踪" class="headerlink" title="路由跟踪"></a>路由跟踪</h1><p>检测发出数据包的主机到目标主机之间所经过的网关,并监听来自网关ICMP的应答</p>
-<p>traceroute <a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a></p>
-<h1 id="ICMP时间戳请求"><a href="#ICMP时间戳请求" class="headerlink" title="ICMP时间戳请求"></a>ICMP时间戳请求</h1>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/网络协议//" class="article-tag-list-link color5">网络协议</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/22/ICMP协议/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
     </nav>
   
 

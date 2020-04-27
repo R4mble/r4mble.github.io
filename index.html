@@ -162,7 +162,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>be identified with      混为一谈;<br>symbolic                象征的<br>versatile               多用途的, 多功能的<br>practically             adv. 几乎; 简直<br>imaginable              想像得到的<br>fairly                  相当地<br>handful                 少数<br>revised                 改进的<br>retained                adj. 保留的<br>incur                   招致，引发<br>typically               通常<br>indefinitely            无限期地<br>suffice                 足够<br>precede                 在…之前<br>employ                  采用<br>inhibit                 抑制；禁止<br>sophisticated           高雅的<br>datum                   资料；数据；[数]已知数<br>ellipsis                省略；省略符号<br>clutter                  使凌乱</p>
+        <p>be identified with      混为一谈;<br>symbolic                象征的<br>versatile               多用途的, 多功能的<br>practically             adv. 几乎; 简直<br>imaginable              想像得到的<br>fairly                  相当地<br>handful                 少数<br>revised                 改进的<br>retained                adj. 保留的<br>incur                   招致，引发<br>typically               通常<br>indefinitely            无限期地<br>suffice                 足够<br>precede                 在…之前<br>employ                  采用<br>inhibit                 抑制；禁止<br>sophisticated           高雅的<br>datum                   资料；数据；[数]已知数<br>ellipsis                省略；省略符号<br>clutter                 使凌乱<br>trivial                 不重要的</p>
 
       
 
@@ -175,7 +175,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/26/The Scheme Programming Language/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/27/The Scheme Programming Language/">展开全文 >></a>
         </p>
       
 
@@ -205,48 +205,125 @@
 
 
   
-    <article id="post-(2)-深入" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java Mail" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/25/(2)-深入/">The Scheme Programming Language(2)-深入</a>
+      <a class="article-title" href="/2020/04/27/Java Mail/">Java Mail</a>
     </h1>
   
 
         
-        <a href="/2020/04/25/(2)-深入/" class="archive-article-date">
-  	<time datetime="2020-04-25T04:30:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-25</time>
+        <a href="/2020/04/27/Java Mail/" class="archive-article-date">
+  	<time datetime="2020-04-27T03:22:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-27</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Syntactic-Extension"><a href="#Syntactic-Extension" class="headerlink" title="Syntactic Extension"></a>Syntactic Extension</h1><p>syntax-rules表达式构成transformer<br>syntax-rules后面跟着辅助关键词列表, 几乎总是()<br>在辅助关键词列表后面的是rules序列或者pattern/template pairs<br>pattern指定要接收什么input, template指定input会被转换成什么.</p>
-<p>pattern的第一个元素总是 _<br>如果有多个rule, 按顺序对input匹配pattern</p>
-<p>pattern variables</p>
-<p>对于let的定义: </p>
-<p>(define-syntax let<br>  (syntax-rules ()<br>    [(_ ((x e) …) b1 b2 …)<br>      ((lambda (x …) b1 b2 …) e …)]))</p>
-<p>…表示0次或多次<br>let的body至少有一个form, 所以指定b1, b2两个<br>let不要求至少有一个variable/value pair, 所以使用(x e)…<br>pattern variable有省略号, 在template里也要有</p>
-<p>举例:<br>(let ([x 3]) x)<br>会被解析成:<br>((lambda (x) x) 3)</p>
-<p>我悟了~</p>
-<p>let<em><br>(let</em> ([a 5] [b (+ a a)] [c (+ a b)])<br>  (list a b c))</p>
+        <h1 id="邮件服务器"><a href="#邮件服务器" class="headerlink" title="邮件服务器"></a>邮件服务器</h1><ul>
+<li>SMTP邮件服务器：替用户发送邮件和接收外面发送给本地用户的邮件</li>
+<li>POP3/IMAP邮件服务器：帮助用户读取SMTP邮件服务器接收进来的邮件</li>
+</ul>
+<h1 id="Java-Mail-API"><a href="#Java-Mail-API" class="headerlink" title="Java Mail API"></a>Java Mail API</h1><ul>
+<li><p>按照功能分类</p>
 <ul>
-<li><p>letrec let的变量不仅可以在body中看到, 在let表达式中也可见</p>
-<p>(letrec ([sum (lambda (ls)</p>
-<pre><code>(if (null? ls)
-  0
-  (+ (car ls) (sum (cdr ls)))))])
-</code></pre><p>(sum ‘(1 2 3 4 5)))  </p>
+<li>创建和解析邮件</li>
+<li>发送邮件</li>
+<li>接收邮件</li>
+</ul>
+</li>
+<li><p>四个核心类</p>
+<ul>
+<li>Message 抽象类,通常使用它的子类MimeMessage, 表示一份电子邮件</li>
+<li>Transport 发送邮件, 它的实例对象代表实现了某个邮件发送协议的邮件发送对象   </li>
+<li>Store 接收邮件的核心 API 类, 它的实例对象代表实现了某个邮件接收协议的邮件接收对象</li>
+<li>Session 定义整个应用程序所需的环境信息，以及收集客户端与邮件服务器建立网络连接的会话信息，<pre><code>例如邮件服务器的主机名、端口号、采用的邮件发送和接收协议等
+</code></pre></li>
+</ul>
 </li>
 </ul>
-<p>letrec的限制: 每一个expr必须可以在不对variables求值的情况下求值.<br>当expr是lambda表达式的时候总是满足这个限制, 即使variables出现在<br>lambda表达式中.</p>
-<p>这个可以<br>(letrec ([f (lambda () (+ x 2))]<br>          [x 1])<br>  (f))</p>
-<p>这个不行:<br>(letrec ([y (+ x 2)]<br>          [x 1])<br>  y)</p>
-<h1 id="3-3-Continuations"><a href="#3-3-Continuations" class="headerlink" title="3.3 Continuations"></a>3.3 Continuations</h1>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/27/Java Mail/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-(4)控制操作" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/26/(4)控制操作/">The Scheme Programming Language(4)控制操作</a>
+    </h1>
+  
+
+        
+        <a href="/2020/04/26/(4)控制操作/" class="archive-article-date">
+  	<time datetime="2020-04-26T12:59:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="5-1-apply"><a href="#5-1-apply" class="headerlink" title="5.1 apply"></a>5.1 apply</h1><p>当要传递给过程一些或所有参数都在列表内时，apply非常有用，因为这可以免于显式地对列表进行解构</p>
+<h1 id="5-2-顺序"><a href="#5-2-顺序" class="headerlink" title="5.2 顺序"></a>5.2 顺序</h1><p>(define swap-pair!<br>  (lambda (x)<br>    (let ([temp (car x)])<br>      (set-car! x (cdr x))<br>      (set-cdr! x temp)<br>      x)))<br>(swap-pair! (cons ‘a ‘b))</p>
+<p>begin常用来顺序化赋值、输入/输出，或其他导致副作用的操作<br>lambda、case-lambda、let、let*和letrec，以及cond、case和do的结果子句，都被视为在一个隐含的begin内部</p>
+<h1 id="5-3-条件"><a href="#5-3-条件" class="headerlink" title="5.3 条件"></a>5.3 条件</h1>
       
 
       
@@ -269,7 +346,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/25/(2)-深入/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/26/(4)控制操作/">展开全文 >></a>
         </p>
       
 
@@ -299,27 +376,81 @@
 
 
   
-    <article id="post-OCaml(0)-OCaml简介" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-(3)-过程和变量绑定" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/24/OCaml(0)-OCaml简介/">OCaml(0)-OCaml简介</a>
+      <a class="article-title" href="/2020/04/26/(3)-过程和变量绑定/">The Scheme Programming Language(3)-过程和变量绑定</a>
     </h1>
   
 
         
-        <a href="/2020/04/24/OCaml(0)-OCaml简介/" class="archive-article-date">
-  	<time datetime="2020-04-24T13:46:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
+        <a href="/2020/04/26/(3)-过程和变量绑定/" class="archive-article-date">
+  	<time datetime="2020-04-26T12:59:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>OCaml 是 ML语言的重要发展分支, 静态类型系统, 包含函数式特性, 命令式特征, 面向对象编程.<br>F# 是OCaml语言变体.</p>
+        <h1 id="4-1变量引用"><a href="#4-1变量引用" class="headerlink" title="4.1变量引用"></a>4.1变量引用</h1><p>一个库、顶级程序、lambda或者局部内容的定义域是一个整体，所以只要一个引用在定义完成前不立即求值，<br>那么变量的定义可以出现在引用第一次出现之后.</p>
+<p>这个可以:<br>(define f<br>  (lambda (x)<br>    (g x)))<br>(define g<br>  (lambda (x)<br>    (+ x x)))</p>
+<p>这个不行:<br>(define q (g 3))<br>(define g<br>  (lambda (x)<br>    (+ x x)))</p>
+<h1 id="4-2-lambda"><a href="#4-2-lambda" class="headerlink" title="4.2 lambda"></a>4.2 lambda</h1><p>前面讲过了, 参数的三种绑定规则</p>
+<h1 id="4-3-Case-Lambda"><a href="#4-3-Case-Lambda" class="headerlink" title="4.3 Case-Lambda"></a>4.3 Case-Lambda</h1><p>(do binds<br>   (predicate value)<br>    body)</p>
+<p>变量在binds部分被绑定，而如果predicate被求值为真，<br>则函数从循环中逃逸（escape）出来，并返回值value，否则循环继续进行。<br>binds部分的格式如下所示：<br>[binds] - ((p1 i1 u1) (p2 i2 u2)…)<br>变量p1,p2,…被分别初始化为i1,i2,…并在循环后分别被更新为u1,u2,</p>
+<p>(define make-list<br>  (case-lambda<br>    [(n) (make-list n #f)]<br>    [(n x)<br>      (do ([n n (- n 1)] [ls ‘() (cons x ls)])<br>        ((zero? n) ls))]))</p>
+<p>顺带学了do, 甚至觉得do比case-lambda更难.<br>case就是模式匹配嘛~ 挺常见的.</p>
+<ul>
+<li>给substring加个辅助函数</li>
+</ul>
+<p>(define substring1<br>  (case-lambda<br>    [(s) (substring1 s 0 (string-length s))]<br>    [(s start) (substring1 s start (string-length s))]<br>    [(s start end) (substring s start end)]))</p>
+<h1 id="4-4-局部绑定"><a href="#4-4-局部绑定" class="headerlink" title="4.4 局部绑定"></a>4.4 局部绑定</h1><p>let、let<em>、letrec, letrec</em></p>
+<p>let 是 lambda 的派生</p>
+<p>(define-syntax let<br>  (syntax-rules ()<br>    [(_ ((x e) …) b1 b2 …)<br>     ((lambda (x …) b1 b2 …) e …)]))</p>
+<p>let* 表达式从左到右计算, 每个表达式都在左边变量的范围内。值之间存在线性依赖关系或计算顺序很重要   </p>
+<p>比较有意思的是这个:</p>
+<p>(let ([x 0] [y 1])<br>  (let ([x y] [y x])<br>    (list x y))) =&gt; (1 0)</p>
+<p>(let ([x 0] [y 1])<br>  (let* ([x y] [y x])<br>    (list x y))) =&gt; (1 1)    </p>
+<p>let*在计算的时候, 把左侧的变量考虑进来了.</p>
+<p>let<em> 是嵌套的 let<br>(define-syntax let</em><br>  (syntax-rules ()<br>    [(_ () e1 e2 …)<br>      (let () e1 e2 …)]<br>    [(_ ((x1 v1) (x2 v2) …) e1 e2 …)<br>      (let ((x1 v2))<br>        (let* ((x2 v2) …) e1 e2 …))]))</p>
+<p>letrec 允许定义相互递归的过程</p>
+<blockquote>
+<p>这个加不加*无所谓<br>(letrec ([sum (lambda (x)<br>                (if (zero? x)<br>                  0<br>                  (+ x (sum (- x 1)))))])<br>  (sum 5))</p>
+</blockquote>
+<p>表达式expr …的求值顺序是未指定的，因此在计算所有值之前，<br>程序不能对由letrec表达式绑定的任何变量的引用求值</p>
+<p>当变量及其值之间存在循环依赖关系，且计算顺序不重要时，选择letrec</p>
+<p>当存在循环依赖项并且需要从左到右计算绑定时，选择letrec*而不是letrec</p>
+<p>letrec* 对var的引用可以在之后的任何时间进行求值，包括在任何后续绑定的expr的求值期间</p>
+<blockquote>
+<p>这个必须加<em><br>(letrec</em> ([sum (lambda (x)<br>                (if (zero? x)<br>                    0<br>                    (+ x (sum (- x 1)))))]<br>          [f (lambda () (cons n n-sum))]<br>          [n 15]<br>          [n-sum (sum n)])<br>(f))</p>
+</blockquote>
+<p>(letrec* ([f (lambda () (lambda () g))]<br>          [g (f)])<br>(eq? (g) g))</p>
+<p>(letrec* ([g (f)]<br>          [f (lambda () (lambda () g))])<br>(eq? (g) g)) =&gt; exception: attempt to reference undefined variable f</p>
+<h1 id="4-5-多值"><a href="#4-5-多值" class="headerlink" title="4.5 多值"></a>4.5 多值</h1><p>允许在每个左侧都有一个任意的形式参数列表(类似lambda)</p>
+<p>(let-value ([(a b) (values 1 2)] [c (values 1 2 3)])<br>  (list a b c)) =&gt; (1 2 (1 2 3))</p>
+<p>let<em>-value与let</em>类似，但按从左到右的顺序执行绑定</p>
+<p>(let*-values ([(a b) (values 1 2)] [(a b) (values b a)])<br>  (list a b)) =&gt; (2 1)</p>
+<h1 id="4-6-变量定义"><a href="#4-6-变量定义" class="headerlink" title="4.6 变量定义"></a>4.6 变量定义</h1><p>注意下这个:</p>
+<p>(define f<br>  (lambda (x)<br>    (+ x 1)))</p>
+<p>(let ([x 2])<br>  (define f<br>    (lambda (y)<br>      (+ y x)))<br>  (f 3))<br>=&gt; 5</p>
+<p>一组定义可以通过将它们封装在begin形式中来分组</p>
+<p>(define-syntax multi-define-syntax<br>  (syntax-rules ()<br>    [(_ (var expr) …)<br>      (begin<br>        (define-syntax var expr)<br>        …)]))<br>(let ()<br>  (define plus<br>    (lambda (x y)<br>      (if (zero? x)<br>        y<br>        (plus (sub1 x) (add1 y)))))<br>  (multi-define-syntax<br>    (add1 (syntax-rules () [(_ e) (+ e 1)]))<br>    (sub1 (syntax-rules () [(_ e) (- e 1)])))<br>  (plus 7 8))</p>
+<h1 id="4-7-赋值"><a href="#4-7-赋值" class="headerlink" title="4.7 赋值"></a>4.7 赋值</h1><p>更改状态</p>
+<p>(define flip-flop<br>  (let ([state #f])<br>    (lambda ()<br>      (set! state (not state))<br>      state)))</p>
+<p>(display (flip-flop))<br>(newline)<br>(display (flip-flop))<br>(newline)<br>(display (flip-flop))<br>(newline)<br>(display (flip-flop))</p>
+<p>(define acc<br>  (let ([count 0])<br>    (lambda ()<br>      (set! count (+ 1 count))<br>      (display count))))</p>
+<p>缓存</p>
+<p>(define memoize<br>  (lambda (proc)<br>    (let ([cache ‘()])<br>      (lambda (x)<br>        (cond<br>          [(assq x cache) =&gt; cdr]<br>          [else<br>            (let ([ans (proc x)])<br>              (set! cache (cons (cons x ans) cache))<br>              ans)])))))</p>
+<p>(define fibonacci<br>  (memoize<br>    (lambda (n)<br>      (if (&lt; n 2)<br>        1<br>        (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))))</p>
+<p>(fibonacci 100)</p>
+<p>(assq x cache)作用: 获取(cons ‘(1 2 3) (cons ‘(2 3) ‘())) 以x开头的元素</p>
+<p>const memoize = proc =&gt; (cache =&gt;<br>                                x =&gt;<br>                                    cache[x] || (res =&gt; cache[x] = res)(proc(x))<br>                        )([])</p>
+<p>const fib = memoize(n =&gt; n &lt; 2 ? 1 : fib(n-1) + fib(n-2))</p>
+<p>console.log(fib(55))</p>
 
       
 
@@ -334,7 +465,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/OCaml//" class="article-tag-list-link color1">OCaml</a>
+        			<a href="/categories/Scheme//" class="article-tag-list-link color2">Scheme</a>
         		</li>
       		
 		</ul>
@@ -343,80 +474,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/24/OCaml(0)-OCaml简介/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Erlang(3)-顺序结构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/24/Erlang(3)-顺序结构/">Erlang(3)-顺序结构</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/24/Erlang(3)-顺序结构/" class="archive-article-date">
-  	<time datetime="2020-04-24T13:02:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Erlang//" class="article-tag-list-link color2">Erlang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/24/Erlang(3)-顺序结构/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/04/26/(3)-过程和变量绑定/">展开全文 >></a>
         </p>
       
 
@@ -448,7 +506,7 @@
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 

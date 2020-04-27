@@ -157,6 +157,330 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Kotlin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/Kotlin/">Kotlin</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/Kotlin/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>is运算符<br>    检测一个表达式是否某类型的实例.如果是,在检测后可以直接当做该类型使用.<br>for循环<br>    普通的和索引遍历.<br>        for((k, v) in map) print(“$k -&gt; $v”)<br>when表达式<br>    模式匹配, 可以匹配具体的值, 也可以匹配类型.<br>in运算符<br>    检测某个数字是否在指定区间内.<br>        for (x in 9 downTo 0 step 3) print(x)<br>lambda表达式<br>    filter, sortedBy, map, forEach使用大括号<br>    list.filter{it &gt; 0}<br>类的创建<br>    不同指定实例类型, 不用new<br>DTO<br>    data class Customer(val name: String, val email: String)<br>    提供: getters, 对var还有setters<br>         equals(), hashCode(), toString(), copy()<br>默认参数<br>    fun foo(a: Int = 0, b: String = “”) {…}<br>访问map<br>    map[“key”]<br>延迟属性<br>    val p: String by lazy {}<br>扩展函数<br>    fun String.spaceToCamelCase() {…}<br>创建单例<br>    object Resource {<br>        val name = “Name”<br>    }</p>
+<p>if not null缩写<br>    val files = File(“Test”).listFiles()<br>    print(files?.size)</p>
+<p>if not null and else<br>    print(files?.size ?: “empty”)</p>
+<p>if null执行语句<br>    val email = values[“email”] ?: throw IllegalStateException(“Email is missing”)</p>
+<p>在可能会空的集合取第一个元素<br>    val mainEmail = emails.firstOrNull() ?: “”</p>
+<p>if not null执行代码<br>    value?.let {}</p>
+<p>可空布尔<br>    val b: Boolean? = …</p>
+<p>交换变量<br>    a = b.also {b = a}</p>
+<p>三个等号与两个等号<br>    数字装箱的 同一性 相等性</p>
+<p>基本类型<br>    在运行时表示为原生类型值,使用时像普通的类.<br>    较小类型不能隐式转换为较大的类型.</p>
+<p>密封类<br>    表示受限的类继承结构, 当一个值为有限集中的类型,不能有任何其他类型时.</p>
+<p>协程</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Kotlin//" class="article-tag-list-link color2">Kotlin</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/Kotlin/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-JVM类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/24/JVM类加载机制/">JVM类加载机制</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/24/JVM类加载机制/" class="archive-article-date">
+  	<time datetime="2019-04-23T18:30:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>JVM类加载机制: 虚拟机把描述类的数据从Class文件加载到内存,并对数据进行校验,转换解析和初始化,最终形成可以被虚拟机直接使用的Java类型.</p>
+<h2 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h2><p>类从加载到卸载的生命周期7个阶段:<br>    加载,验证,准备,解析,初始化,使用和卸载. (验证,准备,解析 统称为 连接)<br>    解析可以在初始化之后开始.</p>
+<p>5种必须对类进行初始化的情况:</p>
+<pre><code>1. 遇到new, getstatic, putstatic, invokestatic这4条字节码时.
+2. 使用reflect包方法对类进行反射调用时.
+3. 初始化一个类而它的父类还没有进行初始化, 需要先初始化它的父类
+4. 虚拟机启动时用户指定要执行的主类
+5. 动态语言支持
+</code></pre><p>不会触发初始化的引用–被动引用:</p>
+<pre><code>1. 通过子类来引用父类中定义的静态字段,只会触发父类的初始化而不会触发子类的初始化.
+2. 通过数组定义来引用类,不会触发类的初始化
+    package org.fenixsoft.classloading
+        SuperClass[] sca = new SuperClass[10];
+    类org.fenixsoft.classloading.SuperClass不会被初始化.
+    但是Lorg.fenixsoft.classloading.SuperClass会被初始化.这是由虚拟机自动生成的,直接继承自java.lang.Object的子类
+        创建动作由指令newarray触发.这个类代表了org.fenixsoft.classloading.SuperClass的一维数组,
+        数组中应有的属性和方法(length属性和clone()方法)都实现在这个类里面
+3. 常量在编译阶段会存入调用类的常量池中,本质上没有直接引用到常量的类.
+</code></pre><p>对于接口初始化时,不要求其父接口全部完成初始化,只有真正使用到的时候才会初始化.</p>
+<h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><p>加载</p>
+<pre><code>1. 通过一个类的全限定名来获取定义此类的二进制字节流
+2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构
+3. 在Java堆中生成一个代表这个类的java.lang.Class对象,作为方法区这些数据的访问入口
+</code></pre><p>验证</p>
+<p>准备</p>
+<p>解析</p>
+<p>初始化</p>
+<p>类加载的三个步骤: 加载,链接,初始化</p>
+<ul>
+<li><p>加载: 把类的class文件读到内存里, 为它创建一个java.lang.Class对象.<br>从本地文件系统加载class文件; 从jar包加载class文件(如JDBC的数据库驱动类); 通过网络加载class文件; 把一个java源文件动态编译,加载</p>
+</li>
+<li><p>链接: 三个阶段: 验证,准备,解析</p>
+<pre><code>验证: 检验被加载的类是否有正确的内部结构
+   文件格式验证: 验证字节流是否符合Class文件格式规范,并且能被当前的虚拟机加载处理,如主次版本号是否在当前虚拟机处理范围内.
+               常量池中是否有不被支持常量类型.
+   元数据验证: 对字节码描述的信息进行语义分析,分析是否符合java的语言语法的规范
+   字节码验证: 分析数据流和控制, 确定语义是合法符合逻辑的
+   符合引用验证: 保证引用会被访问到, 不会出现类无法访问的情况
+
+准备: 类准备阶段为类的静态变量分配内存, 设置默认初始值
+解析: 将类的二进制数据中的符号引用替换成直接引用
+</code></pre></li>
+<li><p>初始化: 为类的静态变量赋予正确的初始值.如 private static int a = 10; 在链接的准备阶段, a=0, 在初始化阶段a=10</p>
+</li>
+</ul>
+<p>类加载的时机: 创建类的实例,即new一个对象; 访问某个类或接口的静态变量,或者对该静态变量赋值; 调用类的静态方法;<br>            反射(Class.forName(“com.App”)); 初始化一个类的子类(会先初始化子类的父类); JVM启动时标明的启动类</p>
+<pre><code>对于final类型的静态变量, 如果该变量的值可以在编译时就确定下来, Java编译器会在它出现的位置替换成它的值, 程序访问该
+静态变量, 不会导致该类的初始化.   如果final类型的静态Field的值不能在编译时确定下来, 则必须等到运行时才可以确定该变量
+的值, 访问该静态变量会导致该类被初始化
+</code></pre><p>类加载器: 三种类加载器: 根类加载器, 扩展类加载器, 系统类加载器</p>
+<pre><code>    - 根类加载器(bootstrap class loader): 加载java的核心类,用C++实现,不继承自java.lang.ClassLoader.
+    - 扩展类加载器(extension class loader): 加载JRE的扩展目录, lib/ext或者java.ext.dirs系统属性指定的目录中的JAR包的类
+                                          由java实现, 父加载器为null
+    - 系统类加载器(system class loader): 在JVM启动时加载来自java命令的-classpath选项, java.class.path系统属性,
+                                        或者CLASSPATH所指定的jar包和类路径.用户自定义的类加载器都以此类加载器作为父加载器.
+                                        由java实现, 父加载器为ExtClassLoader
+
+类加载器加载Class的8个步骤: 1.检测此Class是否载入过, 缓冲区是否有此Class; 有则跳至8, 否则2
+                         2.如果没有父类加载器,要么父类是根加载器,要么本身就是根加载器,跳至4; 如果父类加载器存在,进入3
+                         3.请求使用父类加载器去载入目标类, 成功则8, 否则5
+                         4.请求使用根类加载器去载入目标类, 成功则8, 否则7
+                         5.当前类加载器尝试寻找Class文件, 找到则6, 否则7
+                         6.从文件中载入Class, 成功则跳至8
+                         7.抛出ClassNotFoundException异常
+                         8.返回对应的java.lang.Class对象
+</code></pre><p>类加载机制: 三种机制: 全盘负责, 双亲委派, 缓存机制<br>        1.全盘负责: 一个类加载器负责加载某个Class时,该Class所依赖和引用其他Class也将由该类加载器负责载入<br>        2.双亲委派: 先让父类加载器试图加载该Class, 只有父类加载器无法加载该类时才尝试从自己的类路径中加载该类<br>                   某个特定的类加载器在接到加载类的请求时, 首先将加载任务委托给父加载器, 依次递归, 父加载器无法<br>                   完成该加载任务时, 才自己去加载<br>        3.缓存机制:  所有加载过的Class都会被缓存, 修改了Class之后, 必须重新启动JVM, 修改才会生效</p>
+<p>根类加载器 &lt;- 扩展类加载器 &lt;- 系统类加载器 &lt;- 用户类加载器<br>双亲委派优势: 1.java类随它的类加载器一起具备了一种优先级的层次关系, 避免类的重复加载<br>            2.java核心api中定义类型不会被随意替换, 假设网络传递一个java.lang.Integer的类, 启动类加载器在发现这个类后,<br>                直接返回已经加载过的Integer.class, 防止核心API库被篡改</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java//" class="article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/24/JVM类加载机制/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-沪江网校新标日语(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/14/沪江网校新标日语(1)/">沪江网校新标日语(1)</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/14/沪江网校新标日语(1)/" class="archive-article-date">
+  	<time datetime="2019-04-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>私<br>wa ta shi<br>わたし<br>我</p>
+<p>あなた　<br>a na ta<br>你</p>
+<p>あの人<br>a no hi to<br>あのひと<br>那个人</p>
+<p>~さん<br>sa nn<br>姓氏之后</p>
+<p>~らやん<br>ra ya nn<br>小孩子或亲近的女孩子</p>
+<p>~君<br>ku nn<br>くん<br>年龄相当或年轻的男性</p>
+<p>日本<br>ni ho nn<br>にほん</p>
+<p>日本人<br>ni ho nn ji nn<br>にほんじん</p>
+<p>中国<br>chu u go ku<br>ちゅうごく</p>
+<p>中国人<br>chu u go ku ji nn<br>ちゅごくじん</p>
+<p>韓国<br>ka nn ko ku<br>かんこく</p>
+<p>韓国人<br>ka nn ko ku ji nn</p>
+<p>先生<br>se nn se i<br>せんせい<br>老师,律师,艺术家,领导人,专家</p>
+<p>学生<br>ga ku se i<br>がくせい<br>大学生</p>
+<p>大学<br>da i ga ku<br>だいがく</p>
+<p>学 ga ku<br>生 se i</p>
+<p>会社<br>ka i sha<br>かいしゃ<br>公司</p>
+<p>会社員<br>ka i sha i nn<br>かいしゃいん<br>公司职员</p>
+<p>社員<br>sha i nn<br>しゃいん<br>职员</p>
+<p>企業<br>ki gyou<br>きぎょう</p>
+<p>企画<br>ki ka ku<br>策划</p>
+<p>はい<br>ha i<br>是</p>
+<p>いいえ<br>i i e<br>不是</p>
+<p>そうです<br>so u de su<br>是的</p>
+<p>違います<br>chi ga i ma su<br>ちがいます<br>不是</p>
+<p>分かりません<br>wa ka ri ma se nn<br>わかりません<br>不知道</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/日语//" class="article-tag-list-link color3">日语</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/14/沪江网校新标日语(1)/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-动态规划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -245,365 +569,9 @@
 
 
   
-    <article id="post-JavaScript函数式编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/JavaScript函数式编程/">JavaScript函数式编程</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/JavaScript函数式编程/" class="archive-article-date">
-  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/JavaScript函数式编程/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-神秘的Scala implicit" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/神秘的Scala implicit/">神秘的Scala implicit</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/神秘的Scala implicit/" class="archive-article-date">
-  	<time datetime="2019-04-05T12:41:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="神秘的Scala-implicit"><a href="#神秘的Scala-implicit" class="headerlink" title="神秘的Scala implicit"></a>神秘的Scala implicit</h1><h2 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h2><ul>
-<li>隐式值<br>  编译器会在方法省略隐式参数的情况下去搜索作用域内的隐式值作为缺少参数<br>  例: <pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def person(implicit name: String) = name</span><br><span class="line">implicit val p = &quot;ramble&quot;</span><br><span class="line">person  // ramble</span><br></pre></td></tr></table></figure>
-</code></pre></li>
-</ul>
-<ul>
-<li><p>隐式视图</p>
-<ol>
-<li><p>隐式转换为目标类型：把一种类型自动转换到另一种类型<br>例: </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def foo(msg: String) = println(msg)</span><br><span class="line">implicit def intToString(x: Int) = x.toString</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使对象调用类中本不存在的方法<br>例: </p>
- <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SwingType</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wantLearned</span></span>(sw: <span class="type">String</span>) = println(<span class="string">"兔子已经学会了"</span> + sw)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">swimming</span> </span>&#123;</span><br><span class="line">    <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">learningType</span></span>(s: <span class="type">AnimalType</span>) = <span class="keyword">new</span> <span class="type">SwingType</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AnimalType</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">AnimalType</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="keyword">import</span> swimming._</span><br><span class="line">    <span class="keyword">val</span> rabbit = <span class="keyword">new</span> <span class="type">AnimalType</span></span><br><span class="line">    rabbit.wantLearned(<span class="string">"蛙泳"</span>)  <span class="comment">//兔子已经学会了蛙泳</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
-</ul>
-<ul>
-<li>隐式类</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Scala//" class="article-tag-list-link color1">Scala</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/神秘的Scala implicit/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-(3)-数据持久化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/05/(3)-数据持久化/">(3)-数据持久化</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/05/(3)-数据持久化/" class="archive-article-date">
-  	<time datetime="2019-04-05T04:36:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Redis in action</p>
-<pre><code>4. 数据安全与性能保障
-    数据持久化到硬盘
-    数据复制到其他机器
-    处理系统故障
-    Redis事物
-    非事物型流水线
-    诊断性能问题
-
-    4.1 持久化选项
-        4.1.1 快照 snapshotting
-            将存在于某一时刻的所有数据都写入硬盘里面
-
-            如果新的快照文件创建完毕之前,Redis,系统或硬件这三者
-            之中的任意一个崩溃,那么Redis将丢失最近一次创建快照之后
-            写入的所有数据.
-            快照持久化只适用于即使丢失一部分数据也不会造成问题的应用程序
-
-            创建快照的方法:
-                客户端向Redis发送bgsave命令来创建一个快照.
-                Redis会调用fork来创建一个子进程,然后子进程负责
-                将快照写入硬盘,父进程继续处理命令请求
-
-                客户端向Redis发送save命令来创建一个快照.
-                Redis在创建完毕之前不再响应其他任何命令.
-                在没有足够内存的情况,或者等待持久化操作执行完毕
-                也无所谓的情况下 才会使用此命令.
-
-                如果用户设置了save配置选项.如save 60 10000
-                Redis从最近一次创建快照算起,当60秒之内有10000次
-                写入时,Redis自动触发bgsave
-
-                Redis接收到shutdown命令或者接收到标准TERM信号时,
-                会执行save命令.save完成后关闭.
-
-                当一个Redis服务器连接另一个Redis服务器,并向对方发送sync
-                命令来开始一次复制操作时,如果主服务器没有在执行bgsave,或者
-                并非刚刚执行完bgsave,那么主服务器会执行bgsave.
-
-            使用快照持久化的场景:
-                1.个人开发
-                    降低快照持久化带来的资源消耗.
-                    save 900 1
-                    如果距离上次生成快照超过900秒,并在此期间执行了至少
-                    一次写入操作.那么触发一次新的bgsave
-
-                2.对日志进行聚合计算
-                    恢复因故障而被中断的日志处理操作
-
-
-
-
-        4.1.2只追加文件 append-only file AOF
-            在执行写命令时,将被执行的写命令复制到硬盘里面.以记录数据的变化.
-            Redis只要从头到尾重新执行一次AOF文件包含的所有写命令,就可以
-            恢复AOF文件所记录的数据集.
-            appendonly yes
-            appendfsync选项:
-                always
-                everysec
-                no
-
-        4.1.3 重写/压缩AOF文件
-             bgrewriteaof命令会移除aof文件中的冗余命令并重写aof文件,
-             使aof文件体积尽量变小, 工作原理与bgsave相似
-
-    4.2复制
-        主服务器向多个从服务器发送更新,并使用从服务器来处理所有的读请求.
-
-        4.2.1  从服务器的配置
-                启动redis服务器时,指定一个包含slaveof host port的配置文件.
-                redis服务器会根据ip和端口来连接主服务器.
-
-                正在运行的redis服务器,可以发送slaveof no one命令使服务器
-                终止复制操作,不再接受主服务器的数据更新
-                发送 slaveof host port来让服务器开始复制一个新的主服务器.
-</code></pre><h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><p>默认的持久化方式: 将服务器某个时间点上的数据库状态(非空数据库以及相关键值)保存到一个经过压缩的二进制文件中(dump.rdb)<br>手动持久化命令:</p>
-<ol>
-<li>SAVE: 阻塞Redis服务器进程</li>
-<li>BGSAVE: 派生出一个子进程,由子进程负责创建RDB文件,服务器父进程继续处理命令请求.<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4></li>
-</ol>
-<p>持久化<br>    快照: 全量备份, 内存数据的二进制序列化形式,存储紧凑<br>        调用glibc的函数fork产生一个子进程,快照持久化完全交给子进程来处理,<br>        父进程继续处理客户端请求. 子进程刚产生时与父进程共享内存中的代码段<br>        和数据段.<br>        fork函数会在父子进程同时返回, 父进程中返回子进程的pid, 子进程返回0<br>        如果操作系统内存资源不足,pid会是负数,表示fork失败.</p>
-<pre><code>    Copy on Write: 数据段页面分离, 父进程对一个页面的数据进行修改时,会将
-        被共享的页面复制一份分离出来, 然后对这个复制的页面进行修改, 这时子进程
-        对应的页面没有变化, 还是进程产生时那一瞬间的数据.
-
-AOF日志: 连续的增量备份, 内存数据修改的指令记录文本, 会在长期运行中
-      变得很庞大,数据库重启时需要加载AOF日志进行指令重放,时间很长.
-      需要定期AOF重写.
-      Redis会在收到客户端修改指令后,先进行参数校验,如果没问题就立即将该指令文本
-      存储到AOF日志中, 先存到磁盘再执行指令.
-
-      AOF重写
-          bgrewriteaof
-           开启一个子进程对内存进行遍历转换成一系列Redis的操作指令,序列化到一个新的
-           AOF日志文件中, 序列化完成后再将操作期间发生的增量AOF日志追加到这个新的AOF
-           日志文件中,追加后立即替代旧的AOF日志文件.
-
-        fsync(int fd)
-            程序对AOF日志文件进行写操作时,实际上是将内容写到了内核为文件描述符分配的一个
-            内存缓存中, 然后内核会异步将脏数据刷回到磁盘.
-            fsync将指定文件的内容强制从内核缓存刷新到磁盘.
-            通常在生产环境的服务器里,  每隔1s左右执行一次fsync操作.
-
-持久化操作主要在从节点进行.
-混合持久化:
-    Redis重启时先加载rdb内容,再重放增量AOF.
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Redis//" class="article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/05/(3)-数据持久化/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/37/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><a class="page-number" href="/page/37/">37</a><span class="page-number current">38</span><a class="page-number" href="/page/39/">39</a><a class="page-number" href="/page/40/">40</a><span class="space">&hellip;</span><a class="page-number" href="/page/50/">50</a><a class="extend next" rel="next" href="/page/39/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/37/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/36/">36</a><a class="page-number" href="/page/37/">37</a><span class="page-number current">38</span><a class="page-number" href="/page/39/">39</a><a class="page-number" href="/page/40/">40</a><span class="space">&hellip;</span><a class="page-number" href="/page/51/">51</a><a class="extend next" rel="next" href="/page/39/">Next &raquo;</a>
     </nav>
   
 

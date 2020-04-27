@@ -157,19 +157,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-es index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Elasticsearch速查手册" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/es index/">es index</a>
+      <a class="article-title" href="/2019/04/27/Elasticsearch速查手册/">Elasticsearch</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/es index/" class="archive-article-date">
+        <a href="/2019/04/27/Elasticsearch速查手册/" class="archive-article-date">
   	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
@@ -178,109 +178,217 @@
     <div class="article-entry" itemprop="articleBody">
       
         <ul>
-<li>创建索引</li>
-</ul>
-<pre><code>PUT /secisland
-{
-    &quot;settings&quot; : {
-        &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
+<li><p>创建库  </p>
+<pre><code>PUT http://127.0.0.1:9200/secisland
+</code></pre></li>
+<li><p>查看库状态    </p>
+<pre><code>GET http://127.0.0.1:9200/_cat/indices?v
+</code></pre></li>
+<li><p>插入数据</p>
+<pre><code>PUT http://127.0.0.1:9200/secisland/secilog/1
+参数:
+    {
+        &quot;computer&quot;: &quot;x1 carbon&quot;,
+        &quot;message&quot; : &quot;for coding&quot;
     }
-}
-三个主分片,两个副本分片
-</code></pre><ul>
-<li>修改副本分片的数量</li>
+</code></pre></li>
+<li><p>修改文档</p>
+<pre><code>POST http://127.0.0.1:9200/secisland/secilog/1/_update
+参数:
+    {
+        &quot;doc&quot;: {
+            &quot;computer&quot;: &quot;x1 carbon&quot;,
+            &quot;message&quot;: &quot;lenovo&quot;
+        }
+    }
+</code></pre></li>
+<li><p>查询文档</p>
+<pre><code>GET  http://127.0.0.1:9200/secisland/secilog/1/
+</code></pre></li>
+<li><p>删除文档</p>
+<pre><code>DELETE http://127.0.0.1:9200/secisland/secilog/1/
+</code></pre></li>
+<li><p>删除库</p>
+<pre><code>DELETE http://127.0.0.1:9200/secisland/
+</code></pre></li>
 </ul>
-<pre><code>PUT /secisland/_settings
-{
-    &quot;number_of_replicas&quot;: 1
-}
-</code></pre><ul>
-<li>创建自定义字段类型</li>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><ul>
+<li><p>创建三个主分片,两个副本分片的索引</p>
+<pre><code>PUT http://127.0.0.1:9200/secisland/
+参数: 
+    {
+        &quot;settings&quot;: {
+            &quot;index&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2}
+        }
+    }
+修改副本数量
+    PUT http://127.0.0.1:9200/secisland/_settings/
+    参数:
+     {
+        &quot;number_of_replicas&quot;: 1
+     }
+</code></pre></li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">PUT /secisland</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"settings"</span> : &#123;</span><br><span class="line">       <span class="string">"number_of_shards"</span>: <span class="number">3</span>, <span class="string">"number_of_replicas"</span>: <span class="number">2</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"mappings"</span>: &#123;</span><br><span class="line">        <span class="string">"secilog"</span>: &#123;</span><br><span class="line">            <span class="string">"properties"</span>: &#123;</span><br><span class="line">                <span class="string">"logType"</span>: &#123;</span><br><span class="line">                    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">                    <span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /secisland/_mapping/secilog</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"properties"</span>: &#123;</span><br><span class="line">        <span class="string">"logType"</span>: &#123;</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"string"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<pre><code>创建了一个名为secilog的类型，类型中有一个字段，字段的名称是logType，
-字段的数据类型是string，而且这个字段是不进行分析的。
-// 创建失败,
-</code></pre><ul>
-<li>增加映射</li>
-</ul>
-<pre><code>PUT /secisland
+<p>创建自定义字段类型</p>
+<pre><code>PUT http://127.0.0.1:9200/secisland
+参数:
+    {
+        &quot;settings&quot;: {&quot;number_of_shards&quot;: 3, &quot;number_of_replicas&quot;: 2},
+        &quot;mappings&quot;: {
+            &quot;secilog&quot;: 
+                {
+                    &quot;properties&quot;: 
+                        {
+                            &quot;logType&quot;: 
+                                {
+                                   &quot;type&quot;: &quot;text&quot;, 
+                                   &quot;index&quot;: &quot;not_analyzed&quot;
+                                }
+                        }
+                }
+            }
+    }
+</code></pre><h2 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h2><p>增加映射</p>
+<ul>
+<li><p>添加索引名为secisland, 文档类型为log, 其中包含字段message, 字段类型是字符串.</p>
+<pre><code>PUT http://127.0.0.1:9200/secisland/
+参数:
 {
     &quot;mappings&quot;: {
         &quot;log&quot;: {
             &quot;properties&quot;: {
-                &quot;message&quot;: {
-                    &quot;type&quot;: &quot;string&quot;
-                }
+                &quot;message&quot;: {&quot;type&quot;: &quot;text&quot;}
             }
         }
     }
 }
-// 失败.
-</code></pre><p>_source属性内是原始json文档.</p>
-<p>type已过时.一个index中最好只有一种type</p>
+</code></pre></li>
+</ul>
 <ul>
-<li>搜索</li>
+<li><p>向已存在的索引secisland添加文档类型为user, 包含字段name, 字段类型是keyword </p>
+<pre><code>PUT http://127.0.0.1:9200/secisland/_mapping/user
+  {
+      &quot;properties&quot;: {
+          &quot;name&quot;: {&quot;type&quot;: &quot;keyword&quot;}
+      }
+  }
+</code></pre></li>
+<li><p>多个索引设置映射</p>
+<pre><code>PUT http://127.0.0.1:9200/{index}/_mapping/{type}
+{body}
+</code></pre></li>
+<li><p>获取映射</p>
+<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog
+</code></pre></li>
+<li><p>获取字段映射</p>
+<pre><code>GET http://127.0.0.1:9200/secisland/_mapping/secilog/field/description
+
+只返回字段为description的内容.
+</code></pre></li>
 </ul>
-<pre><code>GET /megacorp/employee/_search
+<h2 id="索引别名"><a href="#索引别名" class="headerlink" title="索引别名:"></a>索引别名:</h2><pre><code>类似数据库中的视图.
 </code></pre><ul>
-<li>轻量搜索</li>
-</ul>
-<pre><code>GET /megacorp/_search?q=last_name:Smith
-</code></pre><ul>
-<li>查询表达式</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
+<li><p>为索引添加别名</p>
+<pre><code>PUT http://127.0.0.1:9200/_alias
 {
-    &quot;query&quot; : {
-        &quot;match&quot; : {
-            &quot;last_name&quot; : &quot;Smith&quot;
+    &quot;actions&quot;: {&quot;add&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
+}
+</code></pre></li>
+<li><p>删除别名</p>
+<pre><code>PUT http://127.0.0.1:9200/_alias
+{
+    &quot;actions&quot;: {&quot;remove&quot;: {&quot;index&quot;: &quot;secisland&quot;, &quot;alias&quot;: &quot;secisland_alias&quot;}}
+}
+</code></pre></li>
+<li><p>创建过滤索引别名</p>
+<pre><code>PUT http://127.0.0.1:9200/_alias
+{
+    &quot;actions&quot;: {
+        &quot;add&quot;: {
+            &quot;index&quot;: &quot;test1&quot;, &quot;alias&quot;: &quot;alias2&quot;,
+            &quot;filter&quot;: {&quot;term&quot;: {&quot;user&quot;: &quot;ramble&quot;}}
         }
     }
 }
-</code></pre><ul>
-<li>range过滤器</li>
+</code></pre></li>
 </ul>
-<pre><code>GET /megacorp/employee/_search
+<ul>
+<li><p>新建文档(不需要先创建索引)</p>
+<pre><code>PUT http://127.0.0.1:9200/blog/article/2 
 {
-    &quot;query&quot; : {
-        &quot;bool&quot;: {
-            &quot;must&quot;: {
-                &quot;match&quot; : {
-                    &quot;last_name&quot; : &quot;smith&quot; 
-                }
-            },
-            &quot;filter&quot;: {
-                &quot;range&quot; : {
-                    &quot;age&quot; : { &quot;lt&quot; : 30 } 
-                }
-            }
-        }
-    }
+    &quot;title&quot;: &quot;SB ES&quot;,
+    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
+    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
 }
-</code></pre><ul>
-<li>全文搜索</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
+
+返回结果
 {
-    &quot;query&quot; : {
-        &quot;match&quot; : {
-            &quot;about&quot; : &quot;rock climbing&quot;
-        }
-    }
-}    
-</code></pre><ul>
-<li>短语搜索, 精确匹配</li>
-</ul>
-<pre><code>GET /megacorp/employee/_search
+    &quot;_index&quot;: &quot;blog&quot;,
+    &quot;_type&quot;: &quot;article&quot;,
+    &quot;_id&quot;: &quot;2&quot;,
+    &quot;_version&quot;: 1,
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;_shards&quot;: {
+        &quot;total&quot;: 2,
+        &quot;successful&quot;: 1,
+        &quot;failed&quot;: 0
+    },
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1
+}
+</code></pre><p>  再执行一次的话, _version, _seq_no会加一, result会变成updated</p>
+</li>
+<li><p>不指定id, ES会自动生成唯一标识符.(改用了POST方法,因为是更改而不是创建)</p>
+<pre><code>POST http://127.0.0.1:9200/blog/article
 {
-    &quot;query&quot; : {
-        &quot;match_phrase&quot; : {
-            &quot;about&quot; : &quot;rock climbing&quot;
+    &quot;title&quot;: &quot;SB ES&quot;,
+    &quot;content&quot;: &quot;it&apos;s hard to learn&quot;,
+    &quot;tags&quot;: [&quot;stupid&quot;, &quot;hard&quot;]
+}
+返回结果
+{
+    &quot;_index&quot;: &quot;blog&quot;,
+    &quot;_type&quot;: &quot;article&quot;,
+    &quot;_id&quot;: &quot;_qm_l2sBFUlcgb1-d5N2&quot;,
+    &quot;_version&quot;: 1,
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;_shards&quot;: {
+        &quot;total&quot;: 2,
+        &quot;successful&quot;: 1,
+        &quot;failed&quot;: 0
+    },
+    &quot;_seq_no&quot;: 0,
+    &quot;_primary_term&quot;: 1
+}
+</code></pre></li>
+<li><p>检索文档</p>
+<pre><code>GET http://127.0.0.1:9200/blog/article/2 
+</code></pre></li>
+<li><p>更新文档</p>
+<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
+{
+    &quot;script&quot;: &quot;ctx._source.content = \&quot;new content\&quot;&quot;
+}
+只修改了content字段和version.
+</code></pre></li>
+</ul>
+<p>要更新索引中的文档, ES先获取文档,从_source属性获得数据,删除旧的<br>文件,更改_source属性,然后把它作为新的文档来索引.<br>信息一旦在Lucene的倒排索引中存储,就不能再被更改,ES通过一个带_update<br>参数的脚本来实现它.</p>
+<ul>
+<li><p>如果文档中没有该字段,使用upsert来提供该字段的默认值.</p>
+<pre><code>POST http://127.0.0.1:9200/blog/article/1/_update
+{
+    &quot;script&quot;: {
+        &quot;source&quot;: &quot;ctx._source.counter += params.count&quot;,
+        &quot;lang&quot;: &quot;painless&quot;,
+        &quot;params&quot;: {
+            &quot;count&quot;: 4
         }
-    }
-}    
-</code></pre>
+    },
+    &quot;upsert&quot;: {&quot;counter&quot;: 0}
+}
+</code></pre></li>
+</ul>
+
       
 
       
@@ -314,7 +422,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/es index/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/Elasticsearch速查手册/">展开全文 >></a>
         </p>
       
 

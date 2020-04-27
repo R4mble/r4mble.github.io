@@ -157,6 +157,173 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-MyBatis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/04/MyBatis/">MyBatis</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/04/MyBatis/" class="archive-article-date">
+  	<time datetime="2019-04-04T04:01:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="MyBatis实操经验"><a href="#MyBatis实操经验" class="headerlink" title="MyBatis实操经验"></a>MyBatis实操经验</h2><h2 id="MyBatis整体架构"><a href="#MyBatis整体架构" class="headerlink" title="MyBatis整体架构"></a>MyBatis整体架构</h2><ul>
+<li><p>基础支持层</p>
+<ul>
+<li>数据源模块（连接池功能，检测连接状态）</li>
+<li>事务管理模块，缓存模块（一级、二级缓存，运行在同一个JVM）</li>
+<li>Binding模块（将用户自定义的Mapper接口与映射配置文件关联起来）</li>
+<li>反射模块（封装java原生的反射，提供优化，缓存了类的元数据，提高反射性能）</li>
+<li>类型转换模块（别名机制，JDBC类型和Java类型的转换）</li>
+<li>日志模块（集成第三方日志模块）</li>
+<li>资源加载模块（对类加载器进行封装，确定类加载器的使用顺序</li>
+<li>提供了加载类文件和其他资源文件的功能）</li>
+<li>解析器模块（对XPath进行封装，为解析config文件提供支持；为处理动态SQL语句中的占位符提供支持）</li>
+</ul>
+</li>
+<li><p>核心处理层</p>
+<ul>
+<li>配置解析（加载mybatis-config.xml、*Mapper.xml和Mapper接口中的注解信息，解析后形成相应的对象保存到Configuration对象中，利用该对象创建SqlSessionFactory）</li>
+<li>参数映射，SQL解析，SQL执行（Executor维护一级、二级缓存，提供事务管理的相关操作，将数据库相关操作委托给StatementHandler完成。StatementHandler通过<pre><code>ParameterHandler完成SQL语句的实参绑定，然后通过java.sql.Statement对象执行SQL语句并得到结果集ResultSet，最后通过ResultSetHandler完成结果集映射，得到结果并返回），结果集映射，插件（拦截SQL语句进行重写）。
+</code></pre></li>
+</ul>
+</li>
+<li><p>接口层：SqlSession</p>
+</li>
+<li><p>解析器模块, XML解析方式</p>
+<ul>
+<li>DOM(Document Object Model)<ul>
+<li>树形结构解析，将整个XML文档读入内存构建DOM树：文档节点、元素节点、属性节点、文本节点、注释节点。</li>
+<li>易于编程、节点间导航和修改数据，资源消耗大。</li>
+</ul>
+</li>
+<li>SAX(Simple API for XML)<ul>
+<li>基于事件模型解析，推模式。解析到某类型节点时会触发注册在该类型节点上的回调函数。</li>
+<li>流式处理，需要自己维护节点之间的关系。</li>
+</ul>
+</li>
+<li>StAX(Streaming API for XML)<ul>
+<li>拉模式，应用程序通过调用解析器推进解析进程。<ul>
+<li>两套API：基于指针的，效率高但抽象程度低；基于迭代器的，应用程序把XML文档当做一系列事件对象来处理，效率低但抽象程度高。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>MyBatis在初始化过程中使用DOM解析方式。XPath是一种查询XML文档的语言。</p>
+</blockquote>
+<blockquote>
+<p>Java基本类型有默认值，在动态SQL部分属性判断总不为空，因此在实体类中使用包装类型。<br>Java中的byte[]对应数据库中的BOLB、LONGVARBINARY等<br>insert标签包含flushCache属性，默认为true，语句被调用时清空一、二级缓存。<br>给参数配置@Param注解后，MyBatis自动将参数封装为Map类型，@Param注解值作为Map中的key。</p>
+</blockquote>
+<p>动态SQL：</p>
+<ul>
+<li>if：用在where语句中，通过判断参数值来决定是否使用某个查询条件；用在update语句中判断是否更新某一个字段；用在insert语句中判断是否插入某个字段的值。</li>
+<li>choose(when、otherwise)：实现if…else逻辑</li>
+<li>trim(where、set)：<ul>
+<li>where: 如果该标签有返回值，就插入一个where，如果where后面的字符串是以and和or开头，则将它们剔除。</li>
+<li>set： 如果该标签有返回值，就插入一个set，如果set后面的字符串是以逗号结尾，则将逗号剔除。</li>
+<li>如果set元素中没有内容，set后面连着where，会产生SQL错误，因此需要在set标签最后加上id = #{id}</li>
+</ul>
+</li>
+<li>trim: <ul>
+<li>prefix: 当trim元素包含内容时，给内容增加prefix指定的前缀</li>
+<li>suffix: 当trim元素包含内容时，给内容增加suffix指定的前缀</li>
+<li>prefixOverrides: 当trim元素包含内容时，会把内容中匹配的前缀字符串去掉</li>
+<li>suffixOverrides: 当trim元素包含内容时，会把内容中匹配的后缀字符串去掉</li>
+</ul>
+</li>
+<li>foreach：${} 配合 in 的方式不能防止sql注入。可以用#{} 配合 foreach<ul>
+<li>collection: 要迭代循环的属性</li>
+<li>item：变量名</li>
+<li>index：索引属性名，List中为当前索引值，Map中为key</li>
+<li>open：整个循环内容开头的字符串</li>
+<li>close：整个循环内容结尾的字符串</li>
+<li>separator：每次循环的分隔符</li>
+<li>collection的属性设置<ul>
+<li>只有一个数组参数或者集合参数</li>
+<li>批量插入</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>bind： 防止sql注入。创建变量并绑定到上下文中。</li>
+</ul>
+<p>${} 与 #{}</p>
+<pre><code>#{}：解析为一个JDBC预编译语句的参数标记符，参数占位符。
+${}: 仅仅为String替换，在动态SQL解析阶段进行变量替换。
+</code></pre><p>高级查询<br>    高级结果映射</p>
+<pre><code>存储过程
+
+枚举或其他对象
+</code></pre><p>缓存配置<br>    一级缓存    </p>
+<pre><code>二级缓存
+</code></pre><p>@SpringBootTest 注解必须要加<br>路径前面的/不能省略<br>@RequestBody 在实体类上加上 @JsonRootName(value = “user”)<br>这么写json {“user”:{“email”:”<a href="mailto:sanshi.30@qq.com" target="_blank" rel="noopener">sanshi.30@qq.com</a>“,”username”:”Ramble”,”password”:”1234567”}}</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/MyBatis//" class="article-tag-list-link color3">MyBatis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/04/MyBatis/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-类型系统" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -420,95 +587,6 @@ F 表示为：λx.λy.y      它接收两个参数x和y,返回y, 也就是说它
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/04/03/Ramda搜索关键字得到图片列表并展示/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ramda中的lens源码解读" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/03/ramda中的lens源码解读/">Ramda中的lens源码解读</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/03/ramda中的lens源码解读/" class="archive-article-date">
-  	<time datetime="2019-04-02T17:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>先上源码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig (s -&gt; a) -&gt; ((a, s) -&gt; s) -&gt; Lens s a</span><br><span class="line"> * @param &#123;<span class="built_in">Function</span>&#125; getter</span><br><span class="line"> * @param &#123;<span class="built_in">Function</span>&#125; setter</span><br><span class="line"> * @<span class="keyword">return</span> &#123;Lens&#125;</span><br><span class="line"> * @see R.view, R.set, R.over, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      <span class="keyword">const</span> xLens = R.lens(R.prop(<span class="string">'x'</span>), R.assoc(<span class="string">'x'</span>));</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);            <span class="comment">//=&gt; 1</span></span><br><span class="line"> *      R.set(xLens, <span class="number">4</span>, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);          <span class="comment">//=&gt; &#123;x: 4, y: 2&#125;</span></span><br><span class="line"> *      R.over(xLens, R.negate, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; &#123;x: -1, y: 2&#125;</span></span><br><span class="line"> *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">var lens = _curry2(function lens(getter, setter) &#123;</span></span><br><span class="line"><span class="regexp">  return function(toFunctorFn) &#123;</span></span><br><span class="line"><span class="regexp">    return function(target) &#123;</span></span><br><span class="line"><span class="regexp">      return map(</span></span><br><span class="line"><span class="regexp">        function(focus) &#123;</span></span><br><span class="line"><span class="regexp">          return setter(focus, target);</span></span><br><span class="line"><span class="regexp">        &#125;,</span></span><br><span class="line"><span class="regexp">        toFunctorFn(getter(target))</span></span><br><span class="line"><span class="regexp">      );</span></span><br><span class="line"><span class="regexp">    &#125;;</span></span><br><span class="line"><span class="regexp">  &#125;;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure></p>
-<p>不得不说这文档写的真棒,我好了.<br>使用代换模型人肉解析:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> xLens = R.lens(R.prop(<span class="string">'x'</span>), R.assoc(<span class="string">'x'</span>));</span><br><span class="line">当执行完这一行时,</span><br><span class="line">xLens = <span class="function"><span class="keyword">function</span>(<span class="params">toFunctorFn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> map(</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">focus</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> R.assoc(<span class="string">'x'</span>)(focus, target);</span><br><span class="line">        &#125;,</span><br><span class="line">        toFunctorFn(R.prop(<span class="string">'x'</span>)(target))</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
-<p>同时也看下view的代码:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> * @typedefn Lens s a = Functor f =&gt; (a -&gt; f a) -&gt; s -&gt; f s</span><br><span class="line"> * @sig Lens s a -&gt; s -&gt; a</span><br><span class="line"> * @param &#123;Lens&#125; lens</span><br><span class="line"> * @param &#123;*&#125; x</span><br><span class="line"> * @<span class="keyword">return</span> &#123;*&#125;</span><br><span class="line"> * @see R.prop, R.lensIndex, R.lensProp</span><br><span class="line"> * @example</span><br><span class="line"> *</span><br><span class="line"> *      <span class="keyword">const</span> xLens = R.lensProp(<span class="string">'x'</span>);</span><br><span class="line"> *</span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; 1</span></span><br><span class="line"> *      R.view(xLens, &#123;<span class="attr">x</span>: <span class="number">4</span>, <span class="attr">y</span>: <span class="number">2</span>&#125;);  <span class="comment">//=&gt; 4</span></span><br><span class="line"> *<span class="regexp">/</span></span><br><span class="line"><span class="regexp">var view = _curry2(function view(lens, x) &#123;</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ Using `Const` effectively ignores the setter function of the `lens`,</span></span><br><span class="line"><span class="regexp">  /</span><span class="regexp">/ leaving the value returned by the getter function unmodified.</span></span><br><span class="line"><span class="regexp">  return lens(Const)(x).value;</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// `Const` is a functor that effectively ignores the function given to `map`.</span></span><br><span class="line"><span class="keyword">var</span> Const = <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;<span class="attr">value</span>: x, <span class="string">'fantasy-land/map'</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>; &#125;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="string">``</span><span class="string">`JavaScript</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> R.view(xLens, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> function(toFunctorFn) &#123;</span></span><br><span class="line"><span class="string">    return function(target) &#123;</span></span><br><span class="line"><span class="string">      return map(</span></span><br><span class="line"><span class="string">        function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, target);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        toFunctorFn(R.prop('x')(target))</span></span><br><span class="line"><span class="string">      );</span></span><br><span class="line"><span class="string">    &#125;;</span></span><br><span class="line"><span class="string">  &#125;; (Const)(x).vale</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  map(function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        Const(R.prop('x')(&#123;x: 1, y: 2&#125;)))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  map(function(focus) &#123;</span></span><br><span class="line"><span class="string">          return R.assoc('x')(focus, &#123;x: 1, y: 2&#125;);</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        Const(1))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    1</span></span><br></pre></td></tr></table></figure>
-<p>Ramda里面有很多地方用到了这个函数_dispatchable</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">函数式编程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/JavaScript//" class="article-tag-list-link color1">JavaScript</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/03/ramda中的lens源码解读/">展开全文 >></a>
         </p>
       
 

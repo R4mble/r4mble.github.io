@@ -480,19 +480,19 @@
 
 
   
-    <article id="post-DDIA系列(1)" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-es doc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/27/DDIA系列(1)/">DDIA系列(1)</a>
+      <a class="article-title" href="/2019/04/27/es doc/">es doc</a>
     </h1>
   
 
         
-        <a href="/2019/04/27/DDIA系列(1)/" class="archive-article-date">
+        <a href="/2019/04/27/es doc/" class="archive-article-date">
   	<time datetime="2019-04-27T15:33:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-27</time>
 </a>
         
@@ -500,23 +500,99 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="设计数据密集型的应用"><a href="#设计数据密集型的应用" class="headerlink" title="设计数据密集型的应用"></a>设计数据密集型的应用</h1><h2 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h2><p>容错: 硬件故障, 软件错误, 人为错误</p>
-<h2 id="可扩展性"><a href="#可扩展性" class="headerlink" title="可扩展性"></a>可扩展性</h2><p>推特获取主页信息流的方法:<br>方法一: </p>
-<ul>
-<li><p>follows table<br>follower_id, followee_id</p>
-</li>
-<li><p>tweets table<br>id, sender_id, text, timestamp</p>
-</li>
-<li><p>users table<br>id, screen_name, profile_image</p>
-</li>
+        <ul>
+<li>新建文档</li>
 </ul>
-<p>用户请求主页时间线时:<br>select tweets.<em>, users.</em><br>    from tweets<br>    join users on tweets.sender_id = users.id<br>    join follows on follows.followee_id = users.id<br>    where follows.follower_id = current_user;</p>
-<p>方法二:<br>    为每个用户的主页信息流维护一个缓存, 当一个用户发布推文时, 查找所有关注该用户的人, 将新推文插入到每个主页<br>时间线缓存中<br>    缺点: 大V的粉丝太多, 写入量太大</p>
-<p>解决方案:<br>    大多数用户发的推文写入粉丝主页时间线缓存中, 用户读取主页时间线时, 分别获取该用户关注的每个大v, 再与用户的主页时间线<br>缓存合并.</p>
-<ul>
-<li>可维护性</li>
+<pre><code>PUT /customer/_doc/1
+{
+&quot;name&quot;: &quot;John Doe&quot;
+}
+</code></pre><ul>
+<li>获取文档</li>
 </ul>
-
+<pre><code>GET /customer/_doc/1
+</code></pre><ul>
+<li>批量导入</li>
+</ul>
+<pre><code>curl -H &quot;Content-Type: application/json&quot; -XPOST &quot;localhost:9200/bank/_bulk?pretty&amp;refresh&quot; --data-binary &quot;@accounts.json&quot;
+curl &quot;localhost:9200/_cat/indices?v&quot;
+</code></pre><ul>
+<li>搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match_all&quot;: {}
+    },
+    &quot;sort&quot;: [
+        {
+            &quot;account_number&quot;: {
+                &quot;order&quot;: &quot;desc&quot;
+            }
+        }
+    ],
+    &quot;from&quot;: 10,
+    &quot;size&quot;: 10
+}
+from和size做分页
+</code></pre><ul>
+<li>匹配搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match&quot;: {
+            &quot;address&quot;: &quot;mill lane&quot;
+        }
+    }
+}    
+</code></pre><ul>
+<li>精确搜索</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;match_phrase&quot;: {
+            &quot;address&quot;: &quot;mill lane&quot;
+        }
+    }
+}
+</code></pre><ul>
+<li>must,should,must_not从句<br>  must: 文档必须完全匹配条件<br>  should: should下面会带一个以上的条件，至少满足一个条件，这个文档就符合should<br>  must_not: 文档必须不匹配条件</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;bool&quot;: {
+            &quot;must&quot;: [
+                {&quot;match&quot;: {&quot;age&quot;: &quot;40&quot;}}
+            ],
+            &quot;must_not&quot;: [
+                {&quot;match&quot;: {&quot;state&quot;: &quot;ID&quot;}}
+            ]
+        }
+    }
+}
+</code></pre><ul>
+<li>范围过滤器</li>
+</ul>
+<pre><code>GET /bank/_search
+{
+    &quot;query&quot;: {
+        &quot;bool&quot;: {
+            &quot;must&quot;: {&quot;match_all&quot;: {}},
+            &quot;filter&quot;: {
+                &quot;range&quot;: {
+                    &quot;balance&quot;: {
+                        &quot;gte&quot;: 20000,
+                        &quot;lte&quot;: 30000
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
       
 
       
@@ -541,7 +617,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
+        			<a href="/categories/Elasticsearch//" class="article-tag-list-link color4">Elasticsearch</a>
         		</li>
       		
 		</ul>
@@ -550,7 +626,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/27/DDIA系列(1)/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/27/es doc/">展开全文 >></a>
         </p>
       
 
